@@ -8,8 +8,8 @@ let mainWindow;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    minWidth: 400,
-    minHeight: 300,
+    minWidth: 500,
+    minHeight: 350,
     height: 600,
     width: 800,
     frame: false,
@@ -27,9 +27,8 @@ const createWindow = () => {
   mainWindow.loadFile('index.html');
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    // Open the link in the user's default web browser
     shell.openExternal(url);
-    return { action: 'deny' }; // Prevent opening a new window in Electron
+    return { action: 'deny' };
   });
 }
 app.whenReady().then(() => {
@@ -44,7 +43,7 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
 
-var version, clientID = "1211721853324890143", rpc = new DiscordRPC.Client({ transport: 'ipc' }), startTime = new Date();
+var version, clientID = "1211721853324890143", rpc = null, startTime = new Date();
 fs.readFile(path.join(__dirname, 'package.json'), 'utf8', (err, data) => {
   if (err) {
     console.error(err);
@@ -56,31 +55,11 @@ fs.readFile(path.join(__dirname, 'package.json'), 'utf8', (err, data) => {
   version =  JSONData.version;
 });
 
-/*function setRPC() {
-  console.log("setting activity");
-  rpc.setActivity({
-    details: `running version v0.0.0-RPC`,
-    startTimestamp: startTime,
-    largeImageKey: 'deadcodelogo',
-    largeImageText: 'made by deadcode',
-  });
-}
-
-rpc.on('ready', () => {
-  setRPC();
-});
-
-rpc.login({ clientID }).catch(console.error);*/
-
-
 
 async function setActivity() {
   if (!rpc || !mainWindow) {
     return;
   }
-
-  // You'll need to have snek_large and snek_small assets uploaded to
-  // https://discord.com/developers/applications/<application_id>/rich-presence/assets
   rpc.setActivity({
     details: `the launcher by deadcode.`,
     state: `running version ${version}.`,
@@ -91,13 +70,24 @@ async function setActivity() {
   });
 }
 
-rpc.on('ready', () => {
-  setActivity();
 
-  // activity can only be set every 15 seconds
-  setInterval(() => {
+
+
+function connectRPC() {
+  if (rpc) {
+    rpc.destroy();
+  }
+
+  rpc = new DiscordRPC.Client({ transport: 'ipc' });
+
+  rpc.on('ready', () => {
     setActivity();
-  }, 15e3);
-});
+  });
 
-rpc.login({ clientId: clientID }).catch(console.error);
+  rpc.login({ clientId: clientID }).catch(err => {
+    console.error('Failed to connect to Discord:', err);
+    setTimeout(connectRPC, 5 * 1000); // Retry connection after 15 seconds
+  });
+}
+
+connectRPC()
