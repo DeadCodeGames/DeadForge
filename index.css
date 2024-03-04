@@ -1,8 +1,20 @@
 @import url("./fonts/fonts.css");
 
+html:has(div#updatestatus[status="appnotloaded"]){
+    pointer-events: none;
+    opacity: 0;
+}
+
+html:not(:has(div#updatestatus[status="appnotloaded"])) {
+    opacity: 1;
+}
+
+html {
+    transition: opacity 0.5s ease-in-out;
+}
+
 body {
     margin: 0;
-    background: #2a2a2a;
 }
 
 div#window {
@@ -10,29 +22,26 @@ div#window {
     left: 0;
     position: absolute;
     height: 40px;
-    background: #161616;
     width: -webkit-fill-available;
     display: flex;
     justify-content: space-between;
     align-items: center;
     -webkit-app-region: drag;
-    padding: 0 10px;
+    padding: 0 0 0 10px;
     flex-direction: row;
     flex-wrap: nowrap;
 }
 
 div#window>div#controls, div#window>div#controls>* {
     -webkit-app-region: no-drag;
-    color: white;
     font-size: 16px;
     display: flex;
     flex-direction: row;
     align-items: center;
     cursor: pointer;
-}
-
-div#window>div#controls>*:not(:last-child) {
-    margin-right: 5px;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
 }
 
 div#window>div#titleleft {
@@ -42,30 +51,22 @@ div#window>div#titleleft {
 }
 
 div#window>div#titleleft>div#windowlogo {
-    color: #F0F0F0;
     font-family: 'Montserrat';
     font-size: 24px;
     font-weight: 700;
     letter-spacing: 1px;
     width: 30px;
     user-select: none;
-    -moz-user-select: none;
-    -khtml-user-select: none;
     -webkit-user-select: none;
-    -ms-user-select: none;
     padding-right: 10px;
 }
 
 div#window>div#titleleft>div#windowtitle {
-    color: #F0F0F0;
     font-family: 'Uni Sans CAPS', 'Montserrat';
     font-size: 14px;
     font-weight: 700;
     user-select: none;
-    -moz-user-select: none;
-    -khtml-user-select: none;
     -webkit-user-select: none;
-    -ms-user-select: none;
     text-transform: uppercase;
 }
 
@@ -75,8 +76,6 @@ div#app>div#sidebar {
     left: 0;
     width: 240px;
     height: -webkit-fill-available;
-    background: #161616;
-    color: #F0F0F0;
     transition: width 0.5s ease-in-out;
     padding: 10px 0 15px 10px;
     display: flex;
@@ -96,7 +95,6 @@ div#app>div#sidebar::after {
     width: 25px;
     left: 250px;
     border-top-left-radius: 25px;
-    box-shadow: 0 -25px 0 0 #161616;
     transition: left 0.5s ease-in-out;
     z-index: -1;
 }
@@ -111,25 +109,16 @@ div#app>div#sidebar.collapsed::after {
 
 div#app>div#sidebar div.material-symbols-outlined {
     font-size: 24px;
-    color: #F0F0F0;
     cursor: pointer;
     width: 30px;
     text-align: center;
     padding: 0 10px 0 0;
 }
 
-div#app>div#sidebar div#collapse, div#app>div#sidebar div#collapse * {
-    cursor: pointer;
-    transition: color 0.5s ease-in-out, opacity 0.5s ease-in-out;
-}
-
 div#app>div#sidebar div.sidebarlabel {
     opacity: 1;
     user-select: none;
-    -moz-user-select: none;
-    -khtml-user-select: none;
     -webkit-user-select: none;
-    -ms-user-select: none;
 }
 
 div#app:has(div#sidebar) {
@@ -140,15 +129,12 @@ div#app:has(div#sidebar.collapsed) {
     --sidebarwidth: 50px;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 750px) {
     div#app>div#sidebar {
         width: 40px !important;
     }
     div#app>div#sidebar::after {
         left: 50px;
-    }
-    div#app>div#sidebar div#collapse>div.material-symbols-outlined {
-        color: #424242;
     }
     div#app>div#sidebar div#collapse {
         pointer-events: none !important;
@@ -166,6 +152,22 @@ div#app>div#sidebar>*>* {
     flex-direction: row;
     align-items: center;
     overflow: hidden;
+    white-space: nowrap;
+}
+
+div#app>div#sidebar>* {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: fit-content;
+}
+
+div#app>div#sidebar>div#sidebarbottom>:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+div#app>div#sidebar>div#sidebartop>:not(:first-child) {
+    margin-top: 15px;
 }
 
 div#app>div#sidebar.collapsed div.sidebarlabel{
@@ -204,6 +206,653 @@ section#web {
     height: 100%;
 }
 
+section#settings {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 div#content[current="web"]>section#web {
     display: block;
+}
+
+div#content[current="settings"]>section#settings {
+    display: block;
+    height: 100%;
+    overflow-y: auto;
+}
+
+div#content[current="library"]>section#library {
+    display: block;
+    height: 100%;
+    overflow-y: auto;
+}
+
+div#updatestatus[status="checking"]::after, section#settings div#updatestatusSETTINGS[status="checking"]::after {
+    content: "sync";
+}
+
+div#updatestatus[status="downloading"]::after, section#settings div#updatestatusSETTINGS[status="downloading"]::after {
+    content: "downloading";
+}
+
+div#updatestatus[status="downloaded"]::after, section#settings div#updatestatusSETTINGS[status="downloaded"]::after {
+    content: "download_done";
+}
+
+div#updatestatus[status="uptodate"]::after {
+    content: "check";
+    opacity: 0;
+    transition: opacity 5s linear 10s;
+}
+
+div#updatestatus[status="appnotloaded"]::after {
+    content: "pending";
+}
+
+section#settings div#updatestatusSETTINGS[status="uptodate"]::after {
+    content: "check";
+}
+
+div#updatestatus[status="fail"]::after, section#settings div#updatestatusSETTINGS[status="fail"]::after {
+    content: "sync_problem";
+    animation: fail 1s steps(1) 0s infinite normal;
+}
+
+@keyframes fail {
+    0% {
+        opacity: 1
+    }
+    50%{
+        opacity: 0
+    }
+}
+
+div#updatestatus::after {
+    margin-left: 5px;
+    opacity: 1;
+}
+
+html.dark {
+    body {
+        background: #2a2a2a;
+    }
+
+    div#window {
+        background: #161616;
+    }
+
+    div#window>div#controls, div#window>div#controls>* {
+        color: white;
+    }
+
+	div#controls>div#minimize:hover, div#controls>div#maximize:hover {
+	    background-color: rgba(255, 255, 255, 0.25)
+	}
+
+    div#window>div#titleleft>* {
+        color: #F0F0F0;
+    }
+
+    div#app>div#sidebar {
+        background: #161616;
+        color: #F0F0F0; 
+    }
+    
+    div#app>div#sidebar::after {
+        box-shadow: 0 -25px 0 0 #161616;
+    }
+
+    div#app>div#sidebar div.material-symbols-outlined {
+        color: #F0F0F0;
+    }
+
+    div#app>div#sidebar div#switchColorMode {
+        & div.material-symbols-outlined::after {
+            content: "light_mode"
+        }
+
+        & div.sidebarlabel::after {
+            content: "LIGHT MODE";
+        }
+    }
+
+    div#app>div#content>section#settings>div#updateHERO {
+        background: #161616;
+        & div#updatestatusSETTINGS {
+            color: #F0F0F0;   
+        }
+        & div#updatestatusSETTINGSstring {
+            color: #F0F0F0;
+        }
+        & div#updateCheckSETTINGS {
+            color: #F0F0F0;
+        }
+    }
+
+    label[switchlabel] {
+        background: #E9E9E9;
+    }
+    
+    label[switchlabel]:after {
+        background: #f0f0f0;
+    }
+    
+    input[switch]:checked + label[switchlabel] {
+        background: #6495ed;
+    }
+
+    input[switch]:not(:checked) + label[switchlabel]:after {
+        background: #0f0f0f;
+    }
+
+    settingsoption {
+        color: #F0F0F0;
+    }
+    
+    settingsheading {
+        color: #E9E9E9;
+    }
+
+    hr {
+        border-color: #F0F0F0;
+    }
+
+    settingsoption:has(input[disabled]) {
+        color: lightgray !important;
+        & label[switchlabel] {
+            background: lightgray !important;
+        }
+        
+        & label[switchlabel]:after {
+            background: darkgray !important;
+        }
+    }
+
+    section#settings span, .settingsmaincontentbox:first-of-type:has(input[disabled])::after {
+        color: #F0F0F0;
+    }
+
+    section#settings div.settingsmaincontentbox {
+        color: #F0F0F0;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    html.dark div#app>div#sidebar div#collapse>div.material-symbols-outlined {
+        color: #424242;
+    };
+}
+
+
+html.light {
+    body {
+        background: #D5D5D5;
+    }
+
+    div#window {
+        background: #E9E9E9;
+    }
+
+    div#window>div#controls, div#window>div#controls>* {
+        color: black;
+    }
+
+	div#controls>div#minimize:hover, div#controls>div#maximize:hover {
+	    background-color: rgba(0, 0, 0, 0.25)
+	}
+
+    div#window>div#titleleft>* {
+        color: #0F0F0F;
+    }
+
+    div#app>div#sidebar {
+        background: #E9E9E9;
+        color: #0F0F0F; 
+    }
+    
+    div#app>div#sidebar::after {
+        box-shadow: 0 -25px 0 0 #E9E9E9;
+    }
+
+    div#app>div#sidebar div.material-symbols-outlined {
+        color: #0F0F0F;
+    }
+
+    div#app>div#sidebar div#switchColorMode {
+        & div.material-symbols-outlined::after {
+            content: "dark_mode"
+        }
+
+        & div.sidebarlabel::after {
+            content: "DARK MODE";
+        }
+    }
+
+    div#app>div#content>section#settings>div#updateHERO {
+        background: #E9E9E9;
+        & div#updatestatusSETTINGS {
+            color: #0F0F0F;   
+        }
+        & div#updateStatusSETTINGSstring {
+            color: #0F0F0F;
+        }
+        & div#updateCheckSETTINGS {
+            color: #0F0F0F;
+        }
+    }
+
+    label[switchlabel] {
+        background: #161616;
+    }
+    
+    label[switchlabel]:after {
+        background: #f0f0f0;
+    }
+    
+    input[switch]:checked + label[switchlabel] {
+        background: #404;
+    }
+
+    settingsoption {
+        color: #0F0F0F;
+    }
+    
+    settingsheading {
+        color: #161616;
+    }
+
+    hr {
+        border-color: #0F0F0F;
+    }
+
+    settingsoption:has(input[disabled]) {
+        color: darkgray;
+        & label[switchlabel] {
+            background: darkgray !important;
+        }
+        
+        & label[switchlabel]:after {
+            background: lightgray !important;
+        }
+    }
+
+    section#settings span, .settingsmaincontentbox:first-of-type:has(input[disabled])::after {
+        color: #0F0F0F;
+    }
+
+    section#settings div.settingsmaincontentbox {
+        color: #0F0F0F;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    html.light div#app>div#sidebar div#collapse>div.material-symbols-outlined {
+        color: #BDBDBD;
+    }
+}
+
+div#updateHERO {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 200px !important;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+div#updatestatusSETTINGS {
+    font-size: 96px;
+    margin-bottom: 15px;
+}
+
+div#updatestatusSETTINGSstring {
+    font-family: "Montserrat";
+    user-select: none;
+    -webkit-user-select: none;
+    font-size: 12px;
+}
+
+div#updateCheckSETTINGS {
+    font-size: 8px;
+    cursor: pointer;
+    font-family: "Montserrat";
+    margin-top: 5px;
+    font-style: italic;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+div#updateHERO:has(div#updatestatusSETTINGS[status="checking"]) div#updateCheckSETTINGS, div#updateHERO:has(div#updatestatusSETTINGS[status="downloading"]) div#updateCheckSETTINGS, div#updateHERO:has(div#updatestatusSETTINGS[status="downloaded"]) div#updateCheckSETTINGS {
+    display: none;
+}
+
+
+input[type=checkbox][switch]{
+	height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+label[switchlabel] {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 50px;
+	height: 25px;
+	background: #161616;
+	display: block;
+	border-radius: 100px;
+	position: relative;
+	transition: background 0.25s ease-in-out;
+}
+
+label[switchlabel]:after {
+	content: '';
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 15px;
+	height: 15px;
+	background: #fff;
+	border-radius: 27.5px;
+	transition: 0.25s;
+}
+
+input[switch]:checked + label[switchlabel] {
+	background: #6495ed;
+}
+
+input[switch]:checked + label[switchlabel]:after {
+	left: calc(100% - 5px);
+	transform: translateX(-100%);
+}
+
+label[switchlabel]:active:after, label:active~label[switchlabel]:after {
+	width: 25px;
+}
+
+settingsoption {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat';
+    margin-bottom: 15px;
+}
+
+settingsoption>label {
+    cursor: pointer;
+}
+
+settingsoption>label:first-child {
+    margin-right: 10px;
+}
+
+settingsheading {
+    font-family: 'Montserrat';
+    font-weight: 666;
+    font-style: italic;
+    font-size: 48px;
+    opacity: 75%;
+}
+
+section#settings hr {
+    width: 75%;
+    margin: 15px 0px;
+}
+
+div#settingsMainContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: fit-content;
+    justify-content: space-evenly;
+    height: fit-content;
+}
+
+div.settingsmaincontentbox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+kaomoji {
+    white-space: nowrap;
+    line-height: 10px;
+}
+
+section#settings span {
+    text-align: center;
+    font-family: 'Montserrat';
+    font-size: 12px;
+}
+
+section#settings a {
+    color: unset;
+}
+
+settingsoption:has(input[disabled])  {
+    font-style: italic;
+}
+
+.settingsmaincontentbox:first-of-type:has(input[disabled]:not([temp]))::after {
+    content: "Certain options may be disabled on Linux, as they are not supported.";
+    font-family: "Montserrat";
+    font-size: 12px;
+}
+
+html.dark {
+    ::-webkit-scrollbar {
+        width: 10px;
+        background-color: #161616;
+    }
+      
+      ::-webkit-scrollbar-thumb {
+        background-color: #CFCFCF;
+    }
+      
+      ::-webkit-scrollbar-track {
+        background-color: #161616;
+        opacity: 0.5;
+    }
+}
+
+html.light {
+    ::-webkit-scrollbar {
+        width: 10px;
+        background-color: #E9E9E9;
+    }
+      
+      ::-webkit-scrollbar-thumb {
+        background-color: #161616;
+    }
+      
+      ::-webkit-scrollbar-track {
+        background-color: #E9E9E9;
+        opacity: 0.5;
+    }
+
+    gamesection>info {
+        filter: invert(1);
+    }
+}
+
+gamesection {
+    height: 425px;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat';
+    color: #F0F0F0;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 15px 15px 64px 64px;
+    overflow: hidden;
+}
+
+section#library>gamesection>info>div.gametitle {
+    font-size: 40px;
+    font-weight: bold;
+}
+
+section#library>gamesection>info>div.gamesubtitle {
+    font-size: 16px;
+}
+
+section#library>gamesection>blank {
+    height: -webkit-fill-available;
+    width: calc(100% - 50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding: 25px;
+}
+
+section#library>gamesection#con {
+    background: url(./res/CONRPG.banner.png);
+    background-position: center 65%;
+    background-size: cover;
+}
+
+section#library>gamesection#restorebackup {
+    background: url(./res/RESTOREBACKUP.banner.png);
+    background-position: center 65%;
+    background-size: cover;
+}
+
+info {
+    text-align: center;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+info>* {
+    width: 100%;
+    text-align: center;
+}
+
+info::before {
+    background-image: linear-gradient(360deg, rgba(0,0,0,0.75), transparent);
+    height: 50px;
+    width: 100%;
+    content: ""
+}
+
+info>:first-child {
+    background-image: linear-gradient(180deg, rgba(0,0,0,0.75), black);
+}
+
+info>:not(:first-child) {
+    background: black;
+}
+
+info::after {
+    width: 100%;
+    background: black;
+    content: "";
+    height: 42px;
+}
+
+section#library>gamesection:not(:last-child) {margin-bottom: 30px;}
+
+gamesection button {
+    all: unset;
+    color: #0F0F0F;
+    background: #F0F0F0;
+    width: 150px;
+    height: 75px;
+    border-radius: 15px;
+    font-family: 'Uni Sans CAPS';
+    font-weight: bold;
+    text-align: center;
+}
+
+gamesection button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+gamesection a {
+    text-decoration: none;
+}
+
+div#window>div#controls>* {
+    height: 100%;
+    aspect-ratio: 1;
+}
+
+div#controls>div#close:hover {
+    background-color: red
+}
+
+div#controls>* {
+    transition: background 0.125s ease-in-out
+}
+
+section#settings div.settingsmaincontentbox {
+    creditsline {
+        height: 75px;
+        display: flex;
+        flex-direction: row;
+    }
+    
+    creditbanner {
+        width: fit-content;
+        display: flex;
+        flex-direction: row;
+        height: 50px;
+        align-items: center;
+        padding: 12.5px;
+        background: #80808080;
+        border-radius: 25px;
+    }
+    
+    creditpfp, creditpfp>img {
+        height: 50px;
+        border-radius: 25px;
+    }
+    
+    creditinfo {
+        display: flex;
+        flex-direction: column;
+        font-family: 'Uni Sans CAPS';
+    }
+    
+    creditpfp {
+        margin-right: 12.5px;
+    }
+    
+    credittype {
+        font-style: italic;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    creditname>logo {
+        font-family: 'Montserrat';
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        width: 30px;
+        user-select: none;
+        -webkit-user-select: none;
+        margin-left: 5px;
+    }
+    
+    creditname {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    creditbanner:not(:last-of-type) {
+        margin-right: 15px;
+    }
 }
