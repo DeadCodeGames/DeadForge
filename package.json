@@ -1,31 +1,65 @@
 {
-  "name": "electron",
-  "version": "0.1.0",
+  "name": "deadforge",
+  "version": "v2.0.0-Dev",
+  "description": "An Electron Launcher for DeadCode Projects (AND OTHER STUFF TOO NOW :3).",
+  "author": "DeadCodeGames <404@mail.deadcode.is-a.dev> (https://deadcode.is-a.dev)",
+  "contributors": [
+    "Richard Kanshen <kanshen@mail.deadcode.is-a.dev> (https://kanshen.click)",
+    "QlexcTheFox <80660200+musiconstereo@users.noreply.github.com> (https://github.com/MusicOnStereo)"
+  ],
+  "license": "BSD-3-Clause",
+  "repository": "github:DeadCodeGames/DeadForge",
   "private": true,
   "dependencies": {
+    "@dead404code/tailwind-remove-base-border-box": "^1.0.0-Patch",
+    "@dead404code/tailwind-utilities": "^1.0.1-Patch",
     "@electron/remote": "^2.1.2",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.2",
+    "@types/react-router-dom": "^5.3.3",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "electron-builder": "^24.13.3",
+    "electron-devtools-installer": "^4.0.0",
     "electron-window-state": "^5.0.3",
     "react": "^18.3.1",
+    "react-app-rewired": "^2.2.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
+    "typescript": "^5.8.3",
     "wait-on": "^8.0.0"
   },
-  "main": "public/main.js",
+  "devDependencies": {
+    "electron": "^35.1.4",
+    "electron-builder": "^24.13.3"
+  },
+  "main": "dist/main.js",
   "homepage": "./",
+  "build": {
+    "appId": "dev.deadcode.forge",
+    "productName": "DeadForge",
+    "win": {
+      "target": "nsis",
+      "artifactName": "dev.deadcode.forge-${version}.${ext}"
+    },
+    "mac": {
+      "target": "dmg",
+      "artifactName": "dev.deadcode.forge-${version}.${ext}"
+    },
+    "linux": {
+      "target": "deb",
+      "artifactName": "dev.deadcode.forge-${version}.${ext}"
+    }
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "electron:serve": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm run electron:start\"",
-    "electron:start": "wait-on tcp:3000 & electron ."
+    "react:start": "react-app-rewired start",
+    "react:build": "react-app-rewired build",
+    "react:test": "react-app-rewired test",
+    "react:eject": "react-scripts eject",
+    "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"npm run electron:start\"",
+    "electron:start": "npm run electron:build && wait-on tcp:3000 & electron .",
+    "electron:build": "tsc -p electron/electron.tsconfig.json",
+    "electron:package": "npm run react:build && npm run electron:build && electron-builder"
   },
   "eslintConfig": {
     "extends": [

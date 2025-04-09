@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('./fonts/fonts.css');
+@import url("https://cdn.jsdelivr.net/gh/DeadCodeGames/DeadCodeGames.github.io@main/fonts/Uni%20Sans/stylesheet.css");
+
+* {
+    @apply select-none;
+}
+
+/* App loading state */
+html:has(div#updatestatus[status="appnotloaded"]) {
+    @apply pointer-events-none opacity-0;
+}
+
+html:not(:has(div#updatestatus[status="appnotloaded"])) {
+    @apply opacity-100;
+}
+
+/* Transitions */
+html {
+    @apply transition-opacity duration-500 ease-in-out;
+}
+
+/* Body reset & base style */
+html, body {
+    @apply m-0 bg-black text-white;
+}
+
+/* Links */
+a {
+    all: unset;
+    @apply cursor-pointer underline m-[2.5px];
+}
+
+/* Checklist code blocks */
+div.checklist pre.code {
+    @apply border w-fit p-2 rounded-lg border-solid border-[#1F1F1F] bg-[#0F0F0F] my-4;
+}
