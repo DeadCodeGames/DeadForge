@@ -33,11 +33,16 @@
     "electron": "^35.1.4",
     "electron-builder": "^24.13.3"
   },
-  "main": "dist/main.js",
+  "main": "electron-dist/main.js",
   "homepage": "./",
   "build": {
     "appId": "dev.deadcode.forge",
     "productName": "DeadForge",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "electron-dist/**/*"
+    ],
     "win": {
       "target": "nsis",
       "artifactName": "dev.deadcode.forge-${version}.${ext}"

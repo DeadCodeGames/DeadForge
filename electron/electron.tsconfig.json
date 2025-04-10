@@ -2,7 +2,7 @@
     "compilerOptions": {
       "target": "ES2020",
       "module": "CommonJS",
-      "outDir": "../dist",
+      "outDir": "../electron-dist",
       "rootDir": "./",
       "strict": true,
       "esModuleInterop": true,
