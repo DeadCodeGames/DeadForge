@@ -14,8 +14,8 @@ export default function InitialLoader() {
     if (stage === 'unrender') return null;
     return (
         <div
-            className={`z-50 dark:bg-black dark:text-white bg-white text-black flex flex-col justify-center items-center w-screen h-screen absolute app-region-drag transition-opacity duration-500 ${
-                stage === 'fadeOut' ? 'transition-opacity opacity-0' : 'transition-opacity opacity-100'
+            className={`z-50 dark:bg-black dark:text-white bg-white text-black flex flex-col justify-center items-center w-screen h-screen absolute app-region-drag opacity-100 duration-500 ${
+                stage === 'fadeOut' ? 'transition-opacity !opacity-0' : 'transition-opacity !opacity-100'
             }`}
         >
             <div
