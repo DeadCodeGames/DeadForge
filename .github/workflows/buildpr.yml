@@ -1,0 +1,32 @@
+name: Build/test
+
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs: 
+  release:
+    runs-on: windows-latest
+    environment: windows
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.build_token }}
+          args: "--win"
+          build_script_name: "react:build && electron:build"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: packages
+          path: dist
