@@ -43,6 +43,8 @@ indexHTML = indexHTML.replace(
   `<div id="root">${loaderHTML}</div>`
 );
 
+indexHTML = indexHTML.replace(/<html lang="en">/, `<html lang="en" class="dark">`)
+
 
 minify(indexHTML, {
   collapseWhitespace: true,
