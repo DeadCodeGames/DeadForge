@@ -67,6 +67,7 @@
   "scripts": {
     "react:start": "react-app-rewired start",
     "react:build": "react-app-rewired build",
+    "postreact:build": "node scripts/hydrateLoader.js",
     "react:test": "react-app-rewired test",
     "react:eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"npm run electron:start\"",
