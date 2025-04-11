@@ -1,9 +1,9 @@
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function InitialLoader() {
     const [stage, setStage] = useState('initial');
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const timers: NodeJS.Timeout[] = [];
         timers.push(setTimeout(() => setStage('textResize'), 3000));
         timers.push(setTimeout(() => setStage('fadeOut'), 4500));
