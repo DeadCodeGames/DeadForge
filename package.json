@@ -69,7 +69,7 @@
     "electron:start": "npm run electron:build && wait-on tcp:3000 & electron .",
     "electron:build": "tsc -p electron/electron.tsconfig.json",
     "full-build": "npm run react:build && npm run electron:build",
-    "electron:package": "npm run full-build && electron-builder --win"
+    "electron:package": "npm run full-build && electron-builder"
   },
   "eslintConfig": {
     "extends": [

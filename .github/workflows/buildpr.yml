@@ -7,8 +7,17 @@ on:
 
 jobs: 
   test-build:
-    runs-on: windows-latest
-    environment: windows
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            args: -w
+          - os: ubuntu-22.04
+            args: -l
+          - os: macos-latest
+            args: -m
+
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
@@ -25,12 +34,12 @@ jobs:
         uses: DeadCodeGames/action-electron-builder@c673ffccac2e7f652a89e1797bcdd91446818396
         with:
           github_token: ${{ secrets.build_token }}
-          args: "--win"
+          args: ${{ matrix.args }}
           build_script_name: "full-build"
           skip_install: true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: packages
+          name: packages ${{matrix.os}}
           path: dist
