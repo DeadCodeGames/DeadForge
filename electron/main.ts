@@ -18,13 +18,14 @@ const createWindow = () => {
     })
 
     mainWindow = new BrowserWindow({
-        minWidth: 555,
-        minHeight: 350,
+        minWidth: 700,
+        minHeight: 450,
         height: mainWindowState.height,
         width: mainWindowState.width,
         frame: false,
         fullscreen: false,
         titleBarStyle: 'hidden',
+        backgroundColor: '#0F0F0F',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
