@@ -22,11 +22,12 @@ jobs:
         run: npm install --force
 
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: DeadCodeGames/action-electron-builder@c673ffc
         with:
           github_token: ${{ secrets.build_token }}
           args: "--win"
           build_script_name: "react:build && electron:build"
+          skip_install: true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
