@@ -105,7 +105,7 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
         <div
             id="window"
             data-type={type?.toLowerCase() || 'windows'}
-            className="absolute h-10 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-[#e9e9e9] dark:bg-[#161616] pl-2.5 pr-0 py-0"
+            className="absolute h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-[#e9e9e9] dark:bg-[#161616] pl-2.5 pr-0 py-0"
         >
             {type === 'Mac' ? (
                 <>
