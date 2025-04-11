@@ -6,7 +6,7 @@ export const AppContext = createContext<any>({ preferences: { theme: 'dark' } })
 
 function AppContextProvider({ children }: { children: React.ReactNode }) {
   const [context, setContext] = useState<any>({ preferences: { theme: 'dark' } });
-  const [shouldSetContext, setShouldSetContext] = useState<boolean>(false);
+  const [shouldSetContext, ] = useState<boolean>(false);
 
 /*  useEffect(() => {
     const fetchPreferences = async () => {
@@ -34,7 +34,7 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
   ) as React.JSX.Element;
 }
 export default function App() {
-  const [platform, setPlatform] = useState<"Linux" | "Windows" | "Mac" | null>(null);
+  const [platform, ] = useState<"Linux" | "Windows" | "Mac" | null>(null);
   /*useEffect(() => {
     async function getPlatform() {
       const platform = await window.Electron.getPlatform();
