@@ -35,7 +35,7 @@ jsMatches.forEach((match) => {
 });
 
 
-indexHTML = indexHTML.replace('</head>', `${preloadLinks}</head>`);
+indexHTML = indexHTML.replace('<head>', `<head>${preloadLinks}`);
 
 
 indexHTML = indexHTML.replace(
