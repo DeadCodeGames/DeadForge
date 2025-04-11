@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext } from "react";
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import WinControls from './components/WinControls/WinControls.tsx';
+import InitialLoader from "./components/Loader/InitialLoader.tsx";
 
 export const AppContext = createContext<any>({ preferences: { theme: 'dark' } });
 
@@ -45,6 +46,7 @@ export default function App() {
 
   return (
     <AppContextProvider>
+      <InitialLoader />
       <Router>
         <WinControls type={platform} />
         <div id="app">

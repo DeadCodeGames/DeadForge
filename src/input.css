@@ -8,14 +8,15 @@
     @apply select-none;
 }
 
-/* App loading state */
-html:has(div#updatestatus[status="appnotloaded"]) {
+/* App loading state 
+html[updateStatus="appnotloaded"] {
     @apply pointer-events-none opacity-0;
 }
 
-html:not(:has(div#updatestatus[status="appnotloaded"])) {
+html:not([updateStatus="appnotloaded"])y {
     @apply opacity-100;
 }
+*/
 
 /* Transitions */
 html {
@@ -24,7 +25,11 @@ html {
 
 /* Body reset & base style */
 html, body {
-    @apply m-0 bg-black text-white;
+    @apply m-0 bg-notQuiteWhite text-notQuiteBlack;
+}
+
+html.dark, body:is(.dark *) {
+    @apply bg-notQuiteBlack text-notQuiteWhite;
 }
 
 /* Links */
@@ -37,3 +42,4 @@ a {
 div.checklist pre.code {
     @apply border w-fit p-2 rounded-lg border-solid border-[#1F1F1F] bg-[#0F0F0F] my-4;
 }
+
