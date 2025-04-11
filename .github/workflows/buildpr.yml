@@ -1,0 +1,45 @@
+name: Build/test
+
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs: 
+  test-build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            args: -w
+          - os: ubuntu-22.04
+            args: -l
+          - os: macos-latest
+            args: -m
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Build/release Electron app
+        uses: DeadCodeGames/action-electron-builder@c673ffccac2e7f652a89e1797bcdd91446818396
+        with:
+          github_token: ${{ secrets.build_token }}
+          args: ${{ matrix.args }}
+          build_script_name: "full-build"
+          skip_install: true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages ${{matrix.os}}
+          path: dist
