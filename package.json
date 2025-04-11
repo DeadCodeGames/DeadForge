@@ -19,19 +19,19 @@
     "@types/react-router-dom": "^5.3.3",
     "electron-devtools-installer": "^4.0.0",
     "electron-window-state": "^5.0.3",
-    "react": "^18.3.1",
+    "react": "^19.1.0",
     "react-app-rewired": "^2.2.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.1",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.5.0",
     "react-scripts": "5.0.1"
   },
   "devDependencies": {
-    "electron": "^35.1.4",
+    "electron": "^35.1.5",
     "electron-builder": "^26.0.12",
     "typescript": "^5.8.3",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
-    "wait-on": "^8.0.0"
+    "wait-on": "^8.0.3"
   },
   "main": "./electron-dist/main.js",
   "homepage": "./",

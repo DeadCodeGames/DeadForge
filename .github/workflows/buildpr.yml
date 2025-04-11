@@ -32,7 +32,7 @@ jobs:
         run: npm install --force
 
       - name: Build/release Electron app
-        uses: DeadCodeGames/action-electron-builder@c673ffccac2e7f652a89e1797bcdd91446818396
+        uses: DeadCodeGames/action-electron-builder@effa1ea435ec026b5c7b953273d18d55b17b5d04
         with:
           github_token: ${{ secrets.build_token }}
           args: ${{ matrix.args }}
