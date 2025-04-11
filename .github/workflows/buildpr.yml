@@ -6,7 +6,7 @@ on:
       - synchronize
 
 jobs: 
-  release:
+  test-build:
     runs-on: windows-latest
     environment: windows
     steps:
@@ -18,6 +18,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install dependencies
+        run: npm install --force
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
@@ -26,7 +29,7 @@ jobs:
           build_script_name: "react:build && electron:build"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: packages
           path: dist
