@@ -73,7 +73,7 @@
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"npm run electron:start\"",
     "electron:start": "npm run electron:build && wait-on tcp:3000 & electron .",
     "electron:build": "tsc -p electron/electron.tsconfig.json",
-    "full-build": "concurrently -k \"npm run react:build\" \"npm run electron:build\"",
+    "full-build": "concurrently \"npm run react:build\" \"npm run electron:build\"",
     "electron:package": "npm run full-build && electron-builder"
   },
   "eslintConfig": {
