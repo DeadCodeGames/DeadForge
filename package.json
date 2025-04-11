@@ -19,23 +19,23 @@
     "@types/react-router-dom": "^5.3.3",
     "electron-devtools-installer": "^4.0.0",
     "electron-window-state": "^5.0.3",
-    "react": "^18.3.1",
+    "react": "^19.1.0",
     "react-app-rewired": "^2.2.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.1",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.5.0",
     "react-scripts": "5.0.1"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.27.0",
     "@babel/register": "^7.25.9",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
-    "electron": "^35.1.4",
+    "electron": "^35.1.5",
     "electron-builder": "^26.0.12",
     "html-minifier-terser": "^7.2.0",
     "typescript": "^5.8.3",
-    "wait-on": "^8.0.0"
+    "wait-on": "^8.0.3"
   },
   "main": "./electron-dist/main.js",
   "homepage": "./",
@@ -67,13 +67,12 @@
   "scripts": {
     "react:start": "react-app-rewired start",
     "react:build": "react-app-rewired build",
-    "postreact:build": "node scripts/hydrateLoader.js",
     "react:test": "react-app-rewired test",
     "react:eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"npm run electron:start\"",
     "electron:start": "npm run electron:build && wait-on tcp:3000 & electron .",
     "electron:build": "tsc -p electron/electron.tsconfig.json",
-    "full-build": "concurrently \"npm run react:build\" \"npm run electron:build\"",
+    "full-build": "npm run react:build && npm run electron:build",
     "electron:package": "npm run full-build && electron-builder"
   },
   "eslintConfig": {
