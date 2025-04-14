@@ -14,7 +14,7 @@
     "@dead404code/tailwind-remove-base-border-box": "^1.0.0-Patch",
     "@dead404code/tailwind-utilities": "^1.0.1-Patch",
     "@electron/remote": "^2.1.2",
-    "@types/react": "^19.1.0",
+    "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.2",
     "@types/react-router-dom": "^5.3.3",
     "electron-devtools-installer": "^4.0.0",
