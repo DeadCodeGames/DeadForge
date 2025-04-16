@@ -64,28 +64,35 @@ jobs:
             git config user.name "GitHub Actions Bot"
             git config user.email "actions@github.com"
 
-            # First, fetch the target branch
             git fetch origin ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
 
-            # Check if the l10n branch already exists
+            mkdir -p /tmp/locales_backup
+
+            echo "Backing up locale files..."
+            cp -R src/locales/* /tmp/locales_backup/ 2>/dev/null || true
+
+            echo "Resetting local changes..."
+            git reset --hard
+
             if git show-ref --quiet refs/remotes/origin/l10n_crowdin_translations; then
-              git stash push -u
+              echo "Branch l10n_crowdin_translations exists, checking it out..."
               
-              git checkout l10n_crowdin_translations
+              git checkout --force l10n_crowdin_translations
               
-              git stash pop
+              git pull origin l10n_crowdin_translations
             else
-              git add src/locales
-              git stash push -u
+              echo "Creating new branch l10n_crowdin_translations from ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}..."
               
-              echo "Creating branch from target: ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}"
               git checkout -b l10n_crowdin_translations origin/${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
-              
-              git stash pop
             fi
 
+            echo "Restoring locale files from backup..."
+            cp -R /tmp/locales_backup/* src/locales/ 2>/dev/null || true
+
             git add src/locales
+
             git diff --cached --quiet || git commit -m "chore(i18n): sync Crowdin translations"
+
             git push -u origin l10n_crowdin_translations
             echo "BRANCH_EXISTS=true" >> $GITHUB_OUTPUT
 
