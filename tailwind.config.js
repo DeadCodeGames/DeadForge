@@ -12,15 +12,15 @@ module.exports = {
                 "uniSansCAPS": ["Uni Sans CAPS", ...defaultTheme.fontFamily.sans],
                 "montserrat": ["Montserrat", "Noto Sans JP", ...defaultTheme.fontFamily.sans],
             },
-            keyframes: {
-                "heartPulse": {
-                    '0%, 25%, 60%': { transform: 'scale(1)' },
-                    '5%, 35%': { transform: 'scale(1.25)' },
-                }
+            fontSize: {
+                "0": "0px",
             },
-            animation: {
-                'heart-pulse': 'heartPulse 0.9375s linear infinite',
-            },
+            colors: {
+                "notQuiteBlack": "#0F0F0F",
+                "notQuiteWhite": "#F0F0F0",
+                "night": "#161616",
+                "fullMoon": "#E9E9E9"
+            }
         },
     },
     plugins: [

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path'; import url from 'url';
 import { app, BrowserWindow, Extension, ipcMain, nativeTheme } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
 require("@electron/remote/main").initialize()
@@ -30,6 +30,7 @@ const createWindow = () => {
             nodeIntegration: true,
             contextIsolation: true,
             devTools: app.isPackaged ? false : true,
+            webviewTag: true
         }
     });
 
@@ -81,3 +82,8 @@ ipcMain.handle('window:close', () => {
 ipcMain.handle('theme:get', () => {
     return nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
 });
+
+// Store preload script
+ipcMain.handle('store:preloadLink', () => {
+    return url.pathToFileURL(path.join(__dirname, "store.preload.js")).href;
+})

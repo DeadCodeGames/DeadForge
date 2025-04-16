@@ -10,7 +10,8 @@ declare global {
             onMaximize: (callback: (event: IpcRendererEvent) => void) => void;
             onUnmaximize: (callback: (event: IpcRendererEvent) => void) => void;
             getPreferences: () => object;
-            updatePreferences: (preferences: object) => void
+            updatePreferences: (preferences: object) => void;
+            getStorePreload: () => Promise<string>;
         };
     }
 }
