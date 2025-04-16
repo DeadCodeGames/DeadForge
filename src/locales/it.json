@@ -1,0 +1,10 @@
+{
+    "sidebar": {
+        "library": "Biblioteca",
+        "store": "Negozio",
+        "settings": "Impostazioni"
+    },
+    "store": {
+        "urlCopied": "L'URL è stato copiato con successo"
+    }
+}

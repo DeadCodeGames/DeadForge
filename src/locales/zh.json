@@ -1,0 +1,10 @@
+{
+    "sidebar": {
+        "library": "图书馆",
+        "store": "商店",
+        "settings": "设置"
+    },
+    "store": {
+        "urlCopied": "URL 已成功复制"
+    }
+}

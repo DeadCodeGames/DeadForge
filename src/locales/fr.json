@@ -1,0 +1,10 @@
+{
+    "sidebar": {
+        "library": "Bibliothèque",
+        "store": "Magasin",
+        "settings": "Paramètres"
+    },
+    "store": {
+        "urlCopied": "L'URL a été copiée avec succès"
+    }
+}
