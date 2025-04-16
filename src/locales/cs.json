@@ -1,0 +1,10 @@
+{
+    "sidebar": {
+        "library": "Knihovna",
+        "store": "Obchod",
+        "settings": "Nastavení"
+    },
+    "store": {
+        "urlCopied": "Adresa byla úspěšně zkopírovaná"
+    }
+}
