@@ -1,0 +1,123 @@
+name: Crowdin Action
+
+on:
+  push:
+    branches: 
+      - 2024/2025
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - 2024/2025
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  synchronize-with-crowdin:
+    runs-on: ubuntu-latest
+    outputs:
+      BRANCH_EXISTS: ${{ steps.pr_branch_make.outputs.BRANCH_EXISTS }}
+      SHOULD_SKIP: ${{ steps.run_crowdin.outputs.SHOULD_SKIP }}
+      TARGET_BRANCH: ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed to work with branches
+
+      - name: Detect base branch
+        id: get_target_branch
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "TARGET_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "TARGET_BRANCH=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Crowdin and handle no translation case
+        id: run_crowdin
+        run: |
+          set +e
+          npx @crowdin/cli upload sources --config .crowdin.yml
+          npx @crowdin/cli download --config .crowdin.yml --skip-untranslated-files
+          result=$?
+          if grep -q "Couldn't find any file to download" <<< "$(npx @crowdin/cli download --dryrun --config .crowdin.yml --skip-untranslated-files 2>&1)"; then
+            echo "No translations downloaded. Skipping i18n update."
+            echo "SHOULD_SKIP=true" >> $GITHUB_OUTPUT
+          else
+            echo "SHOULD_SKIP=false" >> $GITHUB_OUTPUT
+          fi
+          exit $result
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Ensure l10n_crowdin_translations branch exists (if needed)
+        id: pr_branch_make
+        if: steps.run_crowdin.outputs.SHOULD_SKIP != 'true'
+        run: |
+            git config user.name "GitHub Actions Bot"
+            git config user.email "actions@github.com"
+            git fetch origin
+
+            if git show-ref --quiet refs/remotes/origin/l10n_crowdin_translations; then
+              git checkout l10n_crowdin_translations
+              git rebase origin/${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
+            else
+              git checkout -b l10n_crowdin_translations origin/${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
+            fi
+
+            git add src/locales
+
+            git diff --cached --quiet || git commit -m "chore(i18n): sync Crowdin translations"
+
+            git push -u origin l10n_crowdin_translations
+
+            echo "BRANCH_EXISTS=true" >> $GITHUB_OUTPUT
+
+  update-i18n:
+    needs: synchronize-with-crowdin
+    runs-on: ubuntu-latest
+    if: ${{ needs.synchronize-with-crowdin.outputs.BRANCH_EXISTS == 'true' && needs.synchronize-with-crowdin.outputs.SHOULD_SKIP != 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: l10n_crowdin_translations
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Update i18n.ts
+        run: node .github/workflows/l10ncheck.js
+
+      - name: Commit changes
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add src/locales/*
+          git commit -m "Update i18n.ts with new languages" || echo "Nothing to commit."
+          git push origin l10n_crowdin_translations
+
+      - name: Create PR (if not exists)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_exists=$(gh pr list --head l10n_crowdin_translations --json number -q '.[0].number')
+          if [ -z "$pr_exists" ]; then
+            gh pr create \
+              --title "Update translations via Crowdin" \
+              --body "Automated PR with updated translations from Crowdin." \
+              --base "${{ needs.synchronize-with-crowdin.outputs.TARGET_BRANCH }}" \
+              --head l10n_crowdin_translations \
+              --draft
+          else
+            echo "PR already exists (#$pr_exists)"
+          fi

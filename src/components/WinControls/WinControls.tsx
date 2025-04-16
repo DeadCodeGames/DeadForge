@@ -59,8 +59,8 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
 
     const title = (
         <>
-            <div id="logo" className="text-lg px-1 text-[#0F0F0F] dark:text-[#F0F0F0] font-montserrat font-bold">××</div>
-            <div id="windowtitle" className="text-sm font-bold select-none px-1 font-uniSansCAPS text-[#0F0F0F] dark:text-[#F0F0F0]">
+            <div id="logo" className="text-lg px-1 text-notQuiteBlack dark:text-notQuiteWhite font-montserrat font-bold">××</div>
+            <div id="windowtitle" className="text-sm font-bold select-none px-1 font-uniSansCAPS text-notQuiteBlack dark:text-notQuiteWhite">
                 DeadForge
             </div>
         </>
@@ -88,7 +88,7 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
             <div id="close" className="material-symbols bg-red-500 hover:text-black" onClick={handleClose}>close</div>
             <div id="minimize" className="material-symbols bg-[#FFD200] hover:text-black" onClick={handleMinimize}>horizontal_rule</div>
             <div id="maximize" className="material-symbols bg-green-500 hover:text-black" onClick={handleMaximize}>{isMaximized ? 'collapse_content' : 'expand_content'}</div>
-            <div id="themechange" className="material-symbols bg-[#0F0F0F] hover:text-white dark:bg-[#F0F0F0] dark:hover:text-black" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>
+            <div id="themechange" className="material-symbols bg-notQuiteBlack hover:text-white dark:bg-notQuiteWhite dark:hover:text-black" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>
         </div>
     );
 
@@ -105,7 +105,7 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
         <div
             id="window"
             data-type={type?.toLowerCase() || 'windows'}
-            className="absolute h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-[#e9e9e9] dark:bg-[#161616] pl-2.5 pr-0 py-0"
+            className="absolute z-20 h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-notQuiteWhite dark:bg-notQuiteBlack pl-2.5 pr-0 py-0"
         >
             {type === 'Mac' ? (
                 <>

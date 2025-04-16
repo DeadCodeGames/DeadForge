@@ -10,4 +10,5 @@ contextBridge.exposeInMainWorld('Electron', {
     onUnmaximize: (callback: () => void) => ipcRenderer.on('browser-window-unmaximize', callback),
 
     getTheme: (): Promise<'light' | 'dark'> => ipcRenderer.invoke('theme:get'),
+    getStorePreload: (): Promise<string> => ipcRenderer.invoke('store:preloadLink')
 });

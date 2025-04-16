@@ -1,0 +1,10 @@
+{
+    "sidebar": {
+        "library": "Library",
+        "store": "Store",
+        "settings": "Settings"
+    },
+    "store": {
+        "urlCopied": "URL has been successfully copied"
+    }
+}
