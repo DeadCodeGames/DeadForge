@@ -53,6 +53,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+      
+      - name: Update i18n.ts
+        run: node .github/workflows/l10ncheck.js
 
       - name: Ensure l10n_crowdin_translations branch exists (if needed)
         id: pr_branch_make
@@ -76,36 +79,7 @@ jobs:
             git push -u origin l10n_crowdin_translations
 
             echo "BRANCH_EXISTS=true" >> $GITHUB_OUTPUT
-
-  update-i18n:
-    needs: synchronize-with-crowdin
-    runs-on: ubuntu-latest
-    if: ${{ needs.synchronize-with-crowdin.outputs.BRANCH_EXISTS == 'true' && needs.synchronize-with-crowdin.outputs.SHOULD_SKIP != 'true' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: l10n_crowdin_translations
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install --force
-
-      - name: Update i18n.ts
-        run: node .github/workflows/l10ncheck.js
-
-      - name: Commit changes
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
-          git add src/locales/*
-          git commit -m "Update i18n.ts with new languages" || echo "Nothing to commit."
-          git push origin l10n_crowdin_translations
-
+            
       - name: Create PR (if not exists)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -121,3 +95,4 @@ jobs:
           else
             echo "PR already exists (#$pr_exists)"
           fi
+            echo "BRANCH_EXISTS=true" >> $GITHUB_OUTPUT
