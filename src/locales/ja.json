@@ -1,0 +1,10 @@
+{
+    "sidebar": {
+        "library": "ライブラリー",
+        "store": "ストア",
+        "settings": "設定"
+    },
+    "store": {
+        "urlCopied": "URLは正常にコピーされました"
+    }
+}
