@@ -8,7 +8,6 @@ import it from './it.json';
 import ja from './ja.json';
 import sk from './sk.json';
 import zh from './zh.json';
-
 const resources = {
   en: { translation: en },
   cs: { translation: cs },
