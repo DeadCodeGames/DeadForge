@@ -132,7 +132,7 @@ const Store = () => {
       <div className="flex-1 relative">
         <webview
           ref={webviewRef}
-          src="http://localhost:3001"
+          src={process.env.REACT_APP_STORE_URL!}
           preload={storePreload}
           style={{
             position: "absolute",
