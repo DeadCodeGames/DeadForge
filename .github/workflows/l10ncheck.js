@@ -41,7 +41,7 @@ function updateI18nConfig() {
   
     // Replace the import section
     content = content.replace(
-      /^(import.*?from '\.\/.*?\.json';\s*)+$/m, 
+      /(import\s+\w+\s+from\s+'\.\/[\w-]+\.json';\s*)+/m, 
       updatedImports.join('\n') + '\n'
     );
   
