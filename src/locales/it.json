@@ -2,7 +2,8 @@
     "sidebar": {
         "library": "Biblioteca",
         "store": "Negozio",
-        "settings": "Impostazioni"
+        "settings": "Impostazioni",
+        "collapse": "Minimizza"
     },
     "store": {
         "urlCopied": "L'URL è stato copiato con successo"

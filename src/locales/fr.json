@@ -2,7 +2,8 @@
     "sidebar": {
         "library": "Bibliothèque",
         "store": "Magasin",
-        "settings": "Paramètres"
+        "settings": "Paramètres",
+        "collapse": "Réduire"
     },
     "store": {
         "urlCopied": "L'URL a été copiée avec succès"

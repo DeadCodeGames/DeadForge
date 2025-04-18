@@ -2,7 +2,8 @@
     "sidebar": {
         "library": "Knihovna",
         "store": "Obchod",
-        "settings": "Nastavení"
+        "settings": "Nastavení",
+        "collapse": "Sbalit"
     },
     "store": {
         "urlCopied": "Adresa byla úspěšně zkopírovaná"

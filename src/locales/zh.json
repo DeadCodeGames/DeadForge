@@ -2,7 +2,8 @@
     "sidebar": {
         "library": "图书馆",
         "store": "商店",
-        "settings": "设置"
+        "settings": "设置",
+        "collapse": "折叠"
     },
     "store": {
         "urlCopied": "URL 已成功复制"
