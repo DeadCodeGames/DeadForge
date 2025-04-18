@@ -64,6 +64,7 @@
     }
   },
   "scripts": {
+    "start": "npm run electron:serve",
     "react:start": "react-app-rewired start",
     "react:build": "react-app-rewired build",
     "react:test": "react-app-rewired test",

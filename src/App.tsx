@@ -61,9 +61,10 @@ export default function App() {
         <WinControls type={platform} />
         <div className="flex">
           <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon top-9">
-            <Navigation navItems={[
+            <Navigation navItemsTop={[
               { name: 'Library', path: '/library', icon: 'apps' },
-              { name: 'Store', path: '/store', icon: 'shopping_bag' },
+              { name: 'Store', path: '/store', icon: 'shopping_bag' }
+            ]} navItemsBottom={[
               { name: 'Settings', path: '/settings', icon: 'settings' }
             ]} />
             <div id="contents" className="w-full h-full relative dark:bg-notQuiteBlack bg-notQuiteWhite">
