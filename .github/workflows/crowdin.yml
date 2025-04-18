@@ -44,9 +44,9 @@ jobs:
         run: |
           set +e
           npx @crowdin/cli upload sources --config .crowdin.yml
-          npx @crowdin/cli download --config .crowdin.yml --skip-untranslated-files
+          OUTPUT=$(npx @crowdin/cli download --config .crowdin.yml --skip-untranslated-files)
           result=$?
-          if grep -q "Couldn't find any file to download" <<< "$(npx @crowdin/cli download --dryrun --config .crowdin.yml --skip-untranslated-files 2>&1)"; then
+          if echo $OUTPUT | grep -q "Couldn't find any file to download"; then
             echo "No translations downloaded. Skipping i18n update."
             echo "SHOULD_SKIP=true" >> $GITHUB_OUTPUT
           else

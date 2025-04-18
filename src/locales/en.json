@@ -2,7 +2,8 @@
     "sidebar": {
         "library": "Library",
         "store": "Store",
-        "settings": "Settings"
+        "settings": "Settings",
+        "collapse": "Collapse"
     },
     "store": {
         "urlCopied": "URL has been successfully copied"

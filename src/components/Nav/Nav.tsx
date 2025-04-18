@@ -1,6 +1,7 @@
 // Navigation.tsx
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 type NavItem = {
     name: string;
@@ -10,7 +11,7 @@ type NavItem = {
 
 export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) {
     const [isExpanded, setIsExpanded] = useState(true);
-
+    const { t } = useTranslation();
     const toggleExpand = () => {
         setIsExpanded(prev => { (document.querySelector('div#app') as HTMLElement)!.style.setProperty('--sidebarWidth', prev ? '48px' : '192px'); return !isExpanded });
     };
@@ -48,7 +49,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
                             }
                         >
                             <span className="material-symbols size-6">{item.icon}</span>
-                            <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-54px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
+                            <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
                         </NavLink>
                     ))}
                     <button
@@ -56,7 +57,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
                         className={`text-notQuiteBlack dark:text-notQuiteWhite cursor-pointer transition-transform ${baseItemClass} ${inactiveClass} text-left`}
                     >
                         <span className={`material-symbols size-6 duration-200 ease-in-out ${isExpanded ? expandedPointerClass : ""}`}>chevron_right</span>
-                        <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-54px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>Collapse</span>
+                        <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{ t('sidebar.collapse') }</span>
                     </button>
                 </div>
             </nav>
