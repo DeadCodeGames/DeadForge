@@ -1,0 +1,14 @@
+{
+    "sidebar": {
+        "library": "story place",
+        "store": "stoar",
+        "settings": "settingz",
+        "collapse": ""
+    },
+    "store": {
+        "urlCopied": ""
+    },
+    "tray": {
+        "exit": ""
+    }
+}

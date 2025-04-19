@@ -1,14 +1,14 @@
 {
     "sidebar": {
-        "library": "Logbook Hold",
-        "store": "Market",
-        "settings": "",
-        "collapse": ""
+        "library": "Library",
+        "store": "Store",
+        "settings": "Settings",
+        "collapse": "Collapse"
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "URL has been successfully copied"
     },
     "tray": {
-        "exit": ""
+        "exit": "Exit <0>DEADFORGE</0>" 
     }
 }

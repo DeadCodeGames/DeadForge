@@ -2,26 +2,28 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next'
 
 import en from './en.json';
-import cs from './cs.json';
-import de from './de.json';
-import fr from './fr.json';
-import it from './it.json';
-import ja from './ja.json';
-import ko from './ko.json';
-import lol from './lol.json';
-import sk from './sk.json';
-import zh from './zh.json';
+import cs_CZ from './cs_CZ.json';
+import de_DE from './de_DE.json';
+import en_PT from './en_PT.json';
+import fr_FR from './fr_FR.json';
+import it_IT from './it_IT.json';
+import ja_JP from './ja_JP.json';
+import ko_KR from './ko_KR.json';
+import lol_US from './lol_US.json';
+import sk_SK from './sk_SK.json';
+import zh_CN from './zh_CN.json';
 const resources = {
   en: { translation: en },
-  cs: { translation: cs },
-  de: { translation: de },
-  fr: { translation: fr },
-  it: { translation: it },
-  ja: { translation: ja },
-  ko: { translation: ko },
-  lol: { translation: lol },
-  sk: { translation: sk },
-  zh: { translation: zh },
+  cs_CZ: { translation: cs_CZ },
+  de_DE: { translation: de_DE },
+  en_PT: { translation: en_PT },
+  fr_FR: { translation: fr_FR },
+  it_IT: { translation: it_IT },
+  ja_JP: { translation: ja_JP },
+  ko_KR: { translation: ko_KR },
+  lol_US: { translation: lol_US },
+  sk_SK: { translation: sk_SK },
+  zh_CN: { translation: zh_CN },
 };
 
 i18n

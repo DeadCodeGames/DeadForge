@@ -1,0 +1,14 @@
+{
+    "sidebar": {
+        "library": "Knihovna",
+        "store": "Obchod",
+        "settings": "Nastavení",
+        "collapse": "Sbalit"
+    },
+    "store": {
+        "urlCopied": "Adresa byla úspěšně zkopírovaná"
+    },
+    "tray": {
+        "exit": "Ukončit <0>DEADFORGE</0>"
+    }
+}
