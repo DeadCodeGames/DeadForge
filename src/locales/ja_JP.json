@@ -1,14 +1,14 @@
 {
     "sidebar": {
-        "library": "ライブラリー",
-        "store": "ストア",
-        "settings": "設定",
-        "collapse": "折りたたむ"
+        "library": "",
+        "store": "",
+        "settings": "",
+        "collapse": ""
     },
     "store": {
-        "urlCopied": "URLは正常にコピーされました"
+        "urlCopied": ""
     },
     "tray": {
-        "exit": "<0>DEADFORGE</0>を終了"
+        "exit": ""
     }
 }
