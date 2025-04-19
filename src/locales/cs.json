@@ -7,5 +7,8 @@
     },
     "store": {
         "urlCopied": "Adresa byla úspěšně zkopírovaná"
+    },
+    "tray": {
+        "exit": "Ukončit <0>DEADFORGE</0>"
     }
 }

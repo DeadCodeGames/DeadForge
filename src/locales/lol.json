@@ -1,8 +1,8 @@
 {
     "sidebar": {
-        "library": "Logbook Hold",
-        "store": "Market",
-        "settings": "",
+        "library": "story place",
+        "store": "stoar",
+        "settings": "settingz",
         "collapse": ""
     },
     "store": {
