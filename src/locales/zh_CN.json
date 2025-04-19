@@ -1,4 +1,8 @@
 {
+    "meta": {
+        "name": "简体中文",
+        "emoji": "🇨🇳"
+    },
     "sidebar": {
         "library": "图书馆",
         "store": "商店",

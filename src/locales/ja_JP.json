@@ -1,4 +1,8 @@
 {
+    "meta": {
+        "name": "日本語",
+        "emoji": "🇯🇵"
+    },
     "sidebar": {
         "library": "ライブラリー",
         "store": "ストア",

@@ -1,4 +1,8 @@
 {
+    "meta": {
+        "name": "Pirate English",
+        "emoji": "🏴‍☠️"
+    },
     "sidebar": {
         "library": "Logbook Hold",
         "store": "Market",

@@ -1,4 +1,8 @@
 {
+    "meta": {
+        "name": "Français",
+        "emoji": "🇫🇷"
+    },
     "sidebar": {
         "library": "Bibliothèque",
         "store": "Magasin",

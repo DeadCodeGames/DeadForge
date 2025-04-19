@@ -1,4 +1,8 @@
 {
+    "meta": {
+        "name": "English (International)",
+        "emoji": "🇬🇧"
+    },
     "sidebar": {
         "library": "Library",
         "store": "Store",

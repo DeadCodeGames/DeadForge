@@ -1,4 +1,8 @@
 {
+    "meta": {
+        "name": "LOLCAT",
+        "emoji": "😹"
+    },
     "sidebar": {
         "library": "story place",
         "store": "stoar",
