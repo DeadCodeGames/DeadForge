@@ -6,7 +6,7 @@
 
 "files": [
   {
-    "source": "src/locales/en.json",
+    "source": "src/locales/en_001.json",
     "translation": "src/locales/%two_letters_code%.json"
   }
 ]

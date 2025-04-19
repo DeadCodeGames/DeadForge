@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next'
 
-import en from './en.json';
+import en_001 from './en_001.json';
 import cs_CZ from './cs_CZ.json';
 import de_DE from './de_DE.json';
 import en_PT from './en_PT.json';
@@ -13,7 +13,7 @@ import lol_US from './lol_US.json';
 import sk_SK from './sk_SK.json';
 import zh_CN from './zh_CN.json';
 const resources = {
-  en: { translation: en },
+  en_001: { translation: en_001 },
   cs_CZ: { translation: cs_CZ },
   de_DE: { translation: de_DE },
   en_PT: { translation: en_PT },
@@ -30,8 +30,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en',
-    fallbackLng: 'en',
+    lng: 'en_001',
+    fallbackLng: 'en_001',
     returnEmptyString: false,
     interpolation: {
       escapeValue: false,
