@@ -1,4 +1,3 @@
-// Navigation.tsx
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 type NavItem = {
     name: string;
     path: string;
-    icon: string; // Material icon name
+    icon: string;
 };
 
 export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) {
@@ -16,7 +15,6 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
         setIsExpanded(prev => { (document.querySelector('div#app') as HTMLElement)!.style.setProperty('--sidebarWidth', prev ? '48px' : '192px'); return !isExpanded });
     };
 
-    // Common styling for active and inactive nav items
     const baseItemClass = "flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start";
     const activeClass = "text-blue-500";
     const inactiveClass = "text-notQuiteBlack dark:text-notQuiteWhite hover:text-black dark:hover:text-white";

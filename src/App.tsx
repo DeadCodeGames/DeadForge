@@ -1,10 +1,10 @@
 import { useState, useEffect, createContext } from "react";
 import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import WinControls from './components/WinControls/WinControls.tsx';
-import Navigation from './components/Nav/Nav.tsx'; // Import new Navigation component
-// import Library from './pages/Library/Library.tsx'; // You'll need to create these page components
+import Navigation from './components/Nav/Nav.tsx';
+// import Library from './pages/Library/Library.tsx';
 import Store from './pages/Store/Store.tsx';
-// import Settings from './pages/Settings/Settings.tsx';
+import Settings from './pages/Settings/Settings.tsx';
 import Tray from './pages/Tray/Tray.tsx';
 import { useTranslation } from "react-i18next";
 
@@ -12,9 +12,9 @@ export const AppContext = createContext<any>({ preferences: { theme: 'dark' }, s
 
 function AppContextProvider({ children }: { children: React.ReactNode }) {
   const [context, setContext] = useState<any>({ preferences: { theme: 'dark' }, storePreload: null });
-  const [shouldSetContext,] = useState<boolean>(false);
+  const [shouldSetContext, setShouldSetContext] = useState<boolean>(false);
 
-  /*  useEffect(() => {
+    useEffect(() => {
       const fetchPreferences = async () => {
         try {
           const prefs = await window.Electron.getPreferences();
@@ -27,7 +27,7 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
       };
   
       fetchPreferences();
-    }, []);*/
+    }, []);
 
   useEffect(() => {
     async function fetchStorePreloadLink() {
@@ -50,7 +50,7 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
 }
 
 function AppContents() {
-  const [platform,] = useState<"Linux" | "Windows" | "Mac" | null>(null);
+  const [platform, setPlatform] = useState<"Linux" | "Windows" | "Mac" | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -60,13 +60,6 @@ function AppContents() {
       navigate(location);
     })
   }, [navigate]);
-  /*useEffect(() => {
-    async function getPlatform() {
-      const platform = await window.Electron.getPlatform();
-      setPlatform(platform);
-    }
-    getPlatform();
-  }, []);*/
   return (<>
     <WinControls type={platform} />
     <div className="flex">
@@ -82,7 +75,7 @@ function AppContents() {
             <Route path="/" /*element={<Library />}*/ />
             <Route path="/library" /*element={<Library />}*/ />
             <Route path="/store" element={<Store />} />
-            <Route path="/settings" /*element={<Settings />}*/ />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </div>

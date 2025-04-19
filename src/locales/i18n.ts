@@ -22,3 +22,4 @@ i18n
 i18n.on("languageChanged", (lang) => document.documentElement.lang = lang)
 
 export default i18n;
+export { resources };

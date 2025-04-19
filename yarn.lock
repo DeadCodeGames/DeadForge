@@ -2031,6 +2031,21 @@
   resolved "https://registry.npmjs.org/@trysound/sax/-/sax-0.2.0.tgz"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
+"@twemoji/api@15.1.0":
+  version "15.1.0"
+  resolved "https://registry.npmjs.org/@twemoji/api/-/api-15.1.0.tgz"
+  integrity sha512-CySXR4/e6vY0z9lC2tW9EVjsH6zzz2/LQvLRMwwpHsDI4xcaweSIP+LcESf1Mq7w2/zcrrhG4ozniMvpSsEXag==
+  dependencies:
+    "@twemoji/parser" "15.1.0"
+    fs-extra "^8.0.1"
+    jsonfile "^5.0.0"
+    universalify "^0.1.2"
+
+"@twemoji/parser@15.1.0":
+  version "15.1.0"
+  resolved "https://registry.npmjs.org/@twemoji/parser/-/parser-15.1.0.tgz"
+  integrity sha512-3HTiSxPvkWUJ4kZeCvwyKlIwkpTUfBOk6igpBBRQni58ceQMv5YK4smkc8vX/eqOlMMNER/9qobv+Q6Q8LVrqA==
+
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.20.5"
   resolved "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.20.5.tgz"
@@ -2161,6 +2176,11 @@
     "@types/express-serve-static-core" "^4.17.33"
     "@types/qs" "*"
     "@types/serve-static" "*"
+
+"@types/flat@^5.0.5":
+  version "5.0.5"
+  resolved "https://registry.npmjs.org/@types/flat/-/flat-5.0.5.tgz"
+  integrity sha512-nPLljZQKSnac53KDUDzuzdRfGI0TDb5qPrb+SrQyN3MtdQrOnGsKniHN1iYZsJEBIVQve94Y6gNz22sgISZq+Q==
 
 "@types/fs-extra@^9.0.11", "@types/fs-extra@9.0.13":
   version "9.0.13"
@@ -2308,6 +2328,13 @@
   integrity sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==
   dependencies:
     "@types/history" "^4.7.11"
+    "@types/react" "*"
+
+"@types/react-twemoji@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.npmjs.org/@types/react-twemoji/-/react-twemoji-0.4.3.tgz"
+  integrity sha512-VzWkjmO8yJ31JSWgQhe0LCLU3FxcurTOklECm9p8v1xI/WfUBOGbSrqPjQPL46LE4oOqfrYIQ+0LM/8I6A8EDQ==
+  dependencies:
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^19.1.0":
@@ -5442,6 +5469,11 @@ flat-cache@^3.0.4:
     keyv "^4.5.3"
     rimraf "^3.0.2"
 
+flat@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npmjs.org/flat/-/flat-6.0.1.tgz"
+  integrity sha512-/3FfIa8mbrg3xE7+wAhWeV+bd7L2Mof+xtZb5dRDKZ+wDvYJK4WDYeIOuOhre5Yv5aQObZrlbRmk3RTSiuQBtw==
+
 flatted@^3.2.9:
   version "3.3.1"
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.3.1.tgz"
@@ -5537,6 +5569,15 @@ fs-extra@^11.1.1:
     graceful-fs "^4.2.0"
     jsonfile "^6.0.1"
     universalify "^2.0.0"
+
+fs-extra@^8.0.1:
+  version "8.1.0"
+  resolved "https://registry.npmjs.org/fs-extra/-/fs-extra-8.1.0.tgz"
+  integrity sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==
+  dependencies:
+    graceful-fs "^4.2.0"
+    jsonfile "^4.0.0"
+    universalify "^0.1.0"
 
 fs-extra@^8.1.0:
   version "8.1.0"
@@ -7241,6 +7282,15 @@ jsonfile@^4.0.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
+jsonfile@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/jsonfile/-/jsonfile-5.0.0.tgz"
+  integrity sha512-NQRZ5CRo74MhMMC3/3r5g2k4fjodJ/wh8MxjFbCViWKFjxrnudWSY5vomh+23ZaXzAS7J3fBZIR2dV6WbmfM0w==
+  dependencies:
+    universalify "^0.1.2"
+  optionalDependencies:
+    graceful-fs "^4.1.6"
+
 jsonfile@^6.0.1:
   version "6.1.0"
   resolved "https://registry.npmjs.org/jsonfile/-/jsonfile-6.1.0.tgz"
@@ -7419,6 +7469,11 @@ lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
   integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
+
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-4.5.0.tgz"
+  integrity sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==
 
 lodash.memoize@^4.1.2:
   version "4.1.2"
@@ -8975,7 +9030,7 @@ prompts@^2.0.1, prompts@^2.4.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.8.1:
+prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -9231,6 +9286,15 @@ react-scripts@5.0.1:
     workbox-webpack-plugin "^6.4.1"
   optionalDependencies:
     fsevents "^2.3.2"
+
+react-twemoji@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/react-twemoji/-/react-twemoji-0.6.0.tgz"
+  integrity sha512-D7lP83ysE+yXZd5U1RV3aFiD90D0LCz5tgDaIXt4AYazCakGVTYClof8lf0uYLr4TzDHgYX46rMASEEqiopSAQ==
+  dependencies:
+    "@twemoji/api" "15.1.0"
+    lodash.isequal "^4.5.0"
+    prop-types "^15.7.2"
 
 react@^19.1.0:
   version "19.1.0"
@@ -10812,7 +10876,7 @@ unique-string@^2.0.0:
   dependencies:
     crypto-random-string "^2.0.0"
 
-universalify@^0.1.0:
+universalify@^0.1.0, universalify@^0.1.2:
   version "0.1.2"
   resolved "https://registry.npmjs.org/universalify/-/universalify-0.1.2.tgz"
   integrity sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
