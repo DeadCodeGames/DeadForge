@@ -1,14 +1,14 @@
 {
     "sidebar": {
-        "library": "",
-        "store": "",
-        "settings": "",
-        "collapse": ""
+        "library": "图书馆",
+        "store": "商店",
+        "settings": "设置",
+        "collapse": "折叠"
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "URL 已成功复制"
     },
     "tray": {
-        "exit": ""
+        "exit": "退出<0>DEADFORGE</0>"
     }
 }

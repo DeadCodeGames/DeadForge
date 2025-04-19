@@ -1,14 +1,14 @@
 {
     "sidebar": {
-        "library": "",
-        "store": "",
-        "settings": "",
-        "collapse": ""
+        "library": "Biblioteca",
+        "store": "Negozio",
+        "settings": "Impostazioni",
+        "collapse": "Minimizza"
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "L'URL è stato copiato con successo"
     },
     "tray": {
-        "exit": ""
+        "exit": "Esci da <0>DEADFORGE</0>"
     }
 }

@@ -1,8 +1,8 @@
 {
     "sidebar": {
-        "library": "",
-        "store": "",
-        "settings": "",
+        "library": "story place",
+        "store": "stoar",
+        "settings": "settingz",
         "collapse": ""
     },
     "store": {
