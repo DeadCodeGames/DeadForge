@@ -23,7 +23,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
     const expandedPointerClass = "-scale-x-100";
 
     return (
-        <div className="h-[calc(100vh-36px)] bg-notQuiteWhite dark:bg-notQuiteBlack flex flex-col transition-[max-width,min-width] duration-300 min-w-[var(--sidebarWidth)] max-w-[var(--sidebarWidth)] z-10 after:content-[''] after:fixed after:pointer-events-none after:bg-transparent after:h-[25px] after:w-[25px] after:rounded-tl-[25px] after:left-[var(--sidebarWidth)] after:transition-[left] after:duration-300 after:top-9 after:z-[-1] after:shadow-[-25px_-25px_0_25px_theme('colors.notQuiteWhite')] after:dark:shadow-[-25px_-25px_0_25px_theme('colors.notQuiteBlack')]">
+        <div className="h-[calc(100vh-36px)] bg-notQuiteWhite dark:bg-notQuiteBlack flex flex-col transition-[max-width,min-width,background-color] duration-300 min-w-[var(--sidebarWidth)] max-w-[var(--sidebarWidth)] z-10 after:content-[''] after:fixed after:pointer-events-none after:bg-transparent after:h-[25px] after:w-[25px] after:rounded-tl-[25px] after:left-[var(--sidebarWidth)] after:transition-[left,background_colors] after:duration-300 after:top-9 after:z-[-1] after:shadow-[-25px_-25px_0_25px_theme('colors.notQuiteWhite')] after:dark:shadow-[-25px_-25px_0_25px_theme('colors.notQuiteBlack')]">
             <nav className="flex flex-col justify-between gap-1 p-2 pt-0 overflow-hidden h-full">
                 <div className='flex flex-col gap-1'>
                     {navItemsTop.map((item) => (
@@ -57,7 +57,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
                         className={`text-notQuiteBlack dark:text-notQuiteWhite cursor-pointer transition-transform ${baseItemClass} ${inactiveClass} text-left`}
                     >
                         <span className={`material-symbols size-6 duration-200 ease-in-out ${isExpanded ? expandedPointerClass : ""}`}>chevron_right</span>
-                        <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{ t('sidebar.collapse') }</span>
+                        <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity,color] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{ t('sidebar.collapse') }</span>
                     </button>
                 </div>
             </nav>

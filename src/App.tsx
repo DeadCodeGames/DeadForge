@@ -1,39 +1,40 @@
 import { useState, useEffect, createContext } from "react";
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import WinControls from './components/WinControls/WinControls.tsx';
 import Navigation from './components/Nav/Nav.tsx'; // Import new Navigation component
 // import Library from './pages/Library/Library.tsx'; // You'll need to create these page components
 import Store from './pages/Store/Store.tsx';
 // import Settings from './pages/Settings/Settings.tsx';
+import Tray from './pages/Tray/Tray.tsx';
 import { useTranslation } from "react-i18next";
 
 export const AppContext = createContext<any>({ preferences: { theme: 'dark' }, storePreload: null });
 
 function AppContextProvider({ children }: { children: React.ReactNode }) {
   const [context, setContext] = useState<any>({ preferences: { theme: 'dark' }, storePreload: null });
-  const [shouldSetContext, ] = useState<boolean>(false);
+  const [shouldSetContext,] = useState<boolean>(false);
 
-/*  useEffect(() => {
-    const fetchPreferences = async () => {
-      try {
-        const prefs = await window.Electron.getPreferences();
-        setContext({ preferences: prefs });
-        console.log(prefs)
-        setShouldSetContext(true);
-      } catch (error) {
-        console.error('Failed to fetch client preferences:', error);
-      }
-    };
-
-    fetchPreferences();
-  }, []);*/
+  /*  useEffect(() => {
+      const fetchPreferences = async () => {
+        try {
+          const prefs = await window.Electron.getPreferences();
+          setContext({ preferences: prefs });
+          console.log(prefs)
+          setShouldSetContext(true);
+        } catch (error) {
+          console.error('Failed to fetch client preferences:', error);
+        }
+      };
+  
+      fetchPreferences();
+    }, []);*/
 
   useEffect(() => {
     async function fetchStorePreloadLink() {
       const link = await window.Electron.getStorePreload();
-      setContext((prev: any) => { return {...prev, storePreload: link }})
+      setContext((prev: any) => { return { ...prev, storePreload: link } })
     }
-    if (!context.storePreload) {
+    if (!context.storePreload && !window.Electron.isTray) {
       fetchStorePreloadLink();
     }
     if (shouldSetContext) window.Electron.updatePreferences(context.preferences);
@@ -41,14 +42,24 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{ context, setContext }}>
-      {children}
+      <Router>
+        {children}
+      </Router>
     </AppContext.Provider>
   ) as React.JSX.Element;
 }
 
-export default function App() {
-    const [platform,] = useState<"Linux" | "Windows" | "Mac" | null>(null);
-    const { t } = useTranslation();
+function AppContents() {
+  const [platform,] = useState<"Linux" | "Windows" | "Mac" | null>(null);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.Electron.onTrayNavigate((event, location) => {
+      console.log(location);
+      navigate(location);
+    })
+  }, [navigate]);
   /*useEffect(() => {
     async function getPlatform() {
       const platform = await window.Electron.getPlatform();
@@ -56,30 +67,37 @@ export default function App() {
     }
     getPlatform();
   }, []);*/
+  return (<>
+    <WinControls type={platform} />
+    <div className="flex">
+      <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon transition-colors duration-300 top-9">
+        <Navigation navItemsTop={[
+          { name: t('sidebar.library'), path: '/library', icon: 'apps' },
+          { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
+        ]} navItemsBottom={[
+          { name: t('sidebar.settings'), path: '/settings', icon: 'settings' }
+        ]} />
+        <div id="contents" className="w-full h-full relative dark:bg-notQuiteBlack bg-notQuiteWhite transition-colors duration-300">
+          <Routes>
+            <Route path="/" /*element={<Library />}*/ />
+            <Route path="/library" /*element={<Library />}*/ />
+            <Route path="/store" element={<Store />} />
+            <Route path="/settings" /*element={<Settings />}*/ />
+          </Routes>
+        </div>
+      </div>
+    </div>
+  </>)
+}
+
+export default function App() {
 
   return (
     <AppContextProvider>
-      <Router>
-        <WinControls type={platform} />
-        <div className="flex">
-          <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon top-9">
-            <Navigation navItemsTop={[
-              { name: t('sidebar.library'), path: '/library', icon: 'apps' },
-              { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
-            ]} navItemsBottom={[
-              { name: t('sidebar.settings'), path: '/settings', icon: 'settings' }
-            ]} />
-            <div id="contents" className="w-full h-full relative dark:bg-notQuiteBlack bg-notQuiteWhite">
-              <Routes>
-                <Route path="/" /*element={<Library />}*/ />
-                <Route path="/library" /*element={<Library />}*/ />
-                <Route path="/store" element={<Store />} />
-                <Route path="/settings" /*element={<Settings />}*/ />
-              </Routes>
-            </div>
-          </div>
-        </div>
-      </Router>
+      <Routes>
+        <Route path="/tray" element={window.Electron.isTray ? <Tray /> : <Navigate to="/library" />} />
+        <Route path="*" element={<AppContents />} />
+      </Routes>
     </AppContextProvider>
   ) as React.JSX.Element;
 }

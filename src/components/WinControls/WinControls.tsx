@@ -59,15 +59,15 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
 
     const title = (
         <>
-            <div id="logo" className="text-lg px-1 text-notQuiteBlack dark:text-notQuiteWhite font-montserrat font-bold">××</div>
-            <div id="windowtitle" className="text-sm font-bold select-none px-1 font-uniSansCAPS text-notQuiteBlack dark:text-notQuiteWhite">
+            <div id="logo" className="text-lg px-1 text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300 font-montserrat font-bold">××</div>
+            <div id="windowtitle" className="text-sm font-bold select-none px-1 font-uniSansCAPS text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300">
                 DeadForge
             </div>
         </>
     );
 
     const windowsControls = (
-        <div id="controls" className="flex flex-row items-center cursor-pointer h-full text-center justify-center app-region-no-drag *:h-full *:aspect-[1] *:transition-[background] *:duration-[0.125s] *:ease-[ease-in-out] *:flex *:items-center *:justify-center text-black dark:text-white">
+        <div id="controls" className="flex flex-row items-center cursor-pointer h-full text-center justify-center app-region-no-drag *:h-full *:aspect-[1] *:transition-[background] *:duration-[0.125s] *:ease-in-out *:flex *:items-center *:justify-center text-black dark:text-white">
             <div id="themechange" className="material-symbols text-xl hover:bg-[rgba(0,0,0,0.25)] dark:hover:bg-[rgba(255,255,255,0.25)]" onClick={handleThemeChange}>
                 {htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}
             </div>
@@ -105,7 +105,7 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
         <div
             id="window"
             data-type={type?.toLowerCase() || 'windows'}
-            className="absolute z-20 h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-notQuiteWhite dark:bg-notQuiteBlack pl-2.5 pr-0 py-0"
+            className="absolute z-20 h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-notQuiteWhite dark:bg-notQuiteBlack transition-colors duration-300 ease-in-out pl-2.5 pr-0 py-0"
         >
             {type === 'Mac' ? (
                 <>

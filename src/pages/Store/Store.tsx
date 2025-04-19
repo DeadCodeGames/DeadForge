@@ -77,7 +77,7 @@ const Store = () => {
   }
 
   return (
-    <div className="flex flex-col h-full w-full bg-fullMoon text-notQuiteBlack dark:bg-night dark:text-notQuiteWhite">
+    <div className="flex flex-col h-full w-full bg-fullMoon text-notQuiteBlack dark:bg-night dark:text-notQuiteWhite transition-colors duration-300 ease-in-out">
       {/* URL Bar */}
       <div 
         className="flex items-center bg-navy px-2 py-2 border-b border-gray-700"
@@ -116,10 +116,10 @@ const Store = () => {
         </div>
         <div 
           onClick={copyUrl}
-          className="flex-1 bg-fullMoon dark:bg-night text-night-moon pl-3 pr-2 py-0.5 rounded flex items-center cursor-pointer hover:bg-neutral-300 dark:hover:bg-neutral-800"
+          className="flex-1 bg-fullMoon dark:bg-night transition-colors duration-300 ease-in-out text-night-moon pl-3 pr-2 py-0.5 rounded flex items-center cursor-pointer hover:bg-neutral-300 dark:hover:bg-neutral-800"
           title="Click to copy URL"
         >
-          <span className="truncate flex-1">{currentUrl}</span>
+          <span className="truncate flex-1 text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300 ease-in-out">{currentUrl}</span>
           {copied ? (
             <span className="flex items-center text-gray-700 dark:text-neutral-400 text-sm">URL has been successfully copied <Check size={16} className="text-green-500 ml-2" /></span>
           ) : (
