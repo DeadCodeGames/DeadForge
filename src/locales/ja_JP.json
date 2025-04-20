@@ -14,5 +14,52 @@
     },
     "tray": {
         "exit": "<0>DEADFORGE</0>を終了"
+    },
+    "settings": {
+        "title": "",
+        "theming": {
+            "title": "",
+            "theme": "",
+            "themeDescription": "",
+            "systemTheme": "",
+            "darkTheme": "",
+            "lightTheme": "",
+            "windowFrame": "",
+            "windowFrameDescription": "",
+            "windowFrameAuto": "",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
+            "themeButtonInFrame": "",
+            "themeButtonInFrameDescription": "",
+            "language": "",
+            "languageDescription": ""
+        },
+        "behavior": {
+            "title": "",
+            "defaultPage": "",
+            "defaultPageDescription": "",
+            "settingsWindow": "",
+            "settingsWindowDescription": "",
+            "useTray": "",
+            "useTrayDescription": "",
+            "autoStart": "",
+            "autoStartDescription": ""
+        },
+        "appData": {
+            "title": "",
+            "initialSetup": "",
+            "initialSetupDescription": "",
+            "replaySetup": "",
+            "dataManagement": "",
+            "dataManagementDescription": "",
+            "exportData": "",
+            "importData": "",
+            "resetData": "",
+            "autoUpdate": "",
+            "autoUpdateDescription": "",
+            "betaUpdates": "",
+            "betaUpdatesDescription": ""
+        }
     }
 }
