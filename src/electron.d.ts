@@ -17,5 +17,8 @@ declare global {
             updatePreferences: (preferences: object) => void;
             getStorePreload: () => Promise<string>;
         };
+        process: {
+            platform: "linux" | "win32" | "darwin";
+        }
     }
 }

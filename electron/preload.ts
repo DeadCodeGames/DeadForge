@@ -15,3 +15,7 @@ contextBridge.exposeInMainWorld('Electron', {
 
     onTrayNavigate: (callback: () => void) => ipcRenderer.on('tray:navigate', callback),
 });
+
+contextBridge.exposeInMainWorld('process', {
+    platform: process.platform
+})

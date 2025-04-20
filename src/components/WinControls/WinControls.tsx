@@ -1,8 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import { AppContext } from '../../App.tsx';
 
-export default function WinControls({ type }: { type: null | 'Linux' | 'Windows' | 'Mac' }) {
+export default function WinControls() {
     const { context, setContext } = useContext(AppContext);
+    const { showThemeButton, windowFrame: type } = context.preferences;
     const [isMaximized, setIsMaximized] = useState<boolean>(false);
     const [htmlClass, setHtmlClass] = useState<string>(document.documentElement.className);
 
@@ -68,9 +69,9 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
 
     const windowsControls = (
         <div id="controls" className="flex flex-row items-center cursor-pointer h-full text-center justify-center app-region-no-drag *:h-full *:aspect-[1] *:transition-[background] *:duration-[0.125s] *:ease-in-out *:flex *:items-center *:justify-center text-black dark:text-white">
-            <div id="themechange" className="material-symbols text-xl hover:bg-[rgba(0,0,0,0.25)] dark:hover:bg-[rgba(255,255,255,0.25)]" onClick={handleThemeChange}>
+            {showThemeButton && <div id="themechange" className="material-symbols text-xl hover:bg-[rgba(0,0,0,0.25)] dark:hover:bg-[rgba(255,255,255,0.25)]" onClick={handleThemeChange}>
                 {htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}
-            </div>
+            </div>}
             <div id="minimize" className="material-symbols text-base hover:bg-[rgba(0,0,0,0.25)] dark:hover:bg-[rgba(255,255,255,0.25)]" onClick={handleMinimize}>
                 horizontal_rule
             </div>
@@ -88,18 +89,20 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
             <div id="close" className="material-symbols bg-red-500 hover:text-black" onClick={handleClose}>close</div>
             <div id="minimize" className="material-symbols bg-[#FFD200] hover:text-black" onClick={handleMinimize}>horizontal_rule</div>
             <div id="maximize" className="material-symbols bg-green-500 hover:text-black" onClick={handleMaximize}>{isMaximized ? 'collapse_content' : 'expand_content'}</div>
-            <div id="themechange" className="material-symbols bg-notQuiteBlack hover:text-white dark:bg-notQuiteWhite dark:hover:text-black" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>
+            {showThemeButton && <div id="themechange" className="material-symbols bg-notQuiteBlack hover:text-white dark:bg-notQuiteWhite dark:hover:text-black" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>}
         </div>
     );
 
     const linuxControls = (
         <div id="controls" className="flex flex-row items-center app-region-no-drag *:text-base gap-x-2.5 dark:*:bg-[#323232] dark:hover:*:bg-[#404040] *:bg-[#d0d0d0] hover:*:bg-[#c0c0c0] *:text-black dark:*:text-white *:p-0.5 *:rounded-full pr-2.5">
-            <div id="themechange" className="material-symbols cursor-pointer" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>
+            {showThemeButton && <div id="themechange" className="material-symbols cursor-pointer" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>}
             <div id="minimize" className="material-symbols cursor-pointer" onClick={handleMinimize}>horizontal_rule</div>
             <div id="maximize" className="material-symbols cursor-pointer" onClick={handleMaximize}>{isMaximized ? 'collapse_content' : 'expand_content'}</div>
             <div id="close" className="material-symbols cursor-pointer" onClick={handleClose}>close</div>
         </div>
     );
+
+    const macFillerWithTheme = "w-[94px]", macFillerWithoutTheme = "w-[70px]";
 
     return (
         <div
@@ -107,13 +110,13 @@ export default function WinControls({ type }: { type: null | 'Linux' | 'Windows'
             data-type={type?.toLowerCase() || 'windows'}
             className="absolute z-20 h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-notQuiteWhite dark:bg-notQuiteBlack transition-colors duration-300 ease-in-out pl-2.5 pr-0 py-0"
         >
-            {type === 'Mac' ? (
+            {type === 'mac' || (type === 'auto'  && process.platform === 'darwin') ? (
                 <>
                     <div id="titleleft">{macControls}</div>
                     <div id="titlemiddle" className='flex flex-row items-center'>{title}</div>
-                    <div id="titleright" className='w-[94px] pr-2.5'></div>
+                    <div id="titleright" className={`${showThemeButton ? macFillerWithTheme : macFillerWithoutTheme} pr-2.5`}></div>
                 </>
-            ) : type === 'Linux' ? (
+            ) : type === 'linux' || (type === 'auto' && process.platform === 'linux') ? (
                 <>
                     <div id="titleleft"></div>
                     <div id="titlemiddle" className='flex flex-row items-center'>{title}</div>

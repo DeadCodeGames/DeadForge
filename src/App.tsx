@@ -8,28 +8,47 @@ import Settings from './pages/Settings/Settings.tsx';
 import Tray from './pages/Tray/Tray.tsx';
 import { useTranslation } from "react-i18next";
 
-export const AppContext = createContext<any>({ preferences: { theme: 'dark' }, storePreload: null });
+const defaultPreferences = {
+  theme: "dark",
+  windowFrame: "auto",
+  showThemeButton: false,
+  language: "en_001",
+  defaultPage: "library",
+  useSettingsWindow: false,
+  useTray: false,
+  autoStart: false,
+  autoUpdate: false,
+  betaUpdates: false
+}
+
+export const AppContext = createContext<any>(
+  {
+    preferences: defaultPreferences,
+    storePreload: null
+  }
+);
 
 function AppContextProvider({ children }: { children: React.ReactNode }) {
-  const [context, setContext] = useState<any>({ preferences: { theme: 'dark' }, storePreload: null });
+  const [context, setContext] = useState<any>({ preferences: defaultPreferences, storePreload: null });
   const [shouldSetContext, setShouldSetContext] = useState<boolean>(false);
 
-    useEffect(() => {
-      const fetchPreferences = async () => {
-        try {
-          const prefs = await window.Electron.getPreferences();
-          setContext({ preferences: prefs });
-          console.log(prefs)
-          setShouldSetContext(true);
-        } catch (error) {
-          console.error('Failed to fetch client preferences:', error);
-        }
-      };
-  
-      fetchPreferences();
-    }, []);
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const prefs = await window.Electron.getPreferences();
+        setContext({ preferences: prefs });
+        console.log(prefs)
+        setShouldSetContext(true);
+      } catch (error) {
+        console.error('Failed to fetch client preferences:', error);
+      }
+    };
+
+    fetchPreferences();
+  }, []);
 
   useEffect(() => {
+    console.log(JSON.stringify(context))
     async function fetchStorePreloadLink() {
       const link = await window.Electron.getStorePreload();
       setContext((prev: any) => { return { ...prev, storePreload: link } })
@@ -50,7 +69,6 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
 }
 
 function AppContents() {
-  const [platform, setPlatform] = useState<"Linux" | "Windows" | "Mac" | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -61,16 +79,16 @@ function AppContents() {
     })
   }, [navigate]);
   return (<>
-    <WinControls type={platform} />
+    <WinControls />
     <div className="flex">
-      <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon transition-colors duration-300 top-9">
+      <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon transition-colors duration-300 top-9 overflow-hidden">
         <Navigation navItemsTop={[
           { name: t('sidebar.library'), path: '/library', icon: 'apps' },
           { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
         ]} navItemsBottom={[
           { name: t('sidebar.settings'), path: '/settings', icon: 'settings' }
         ]} />
-        <div id="contents" className="w-full h-full relative dark:bg-notQuiteBlack bg-notQuiteWhite transition-colors duration-300">
+        <div id="contents" className="w-[calc(100vw-var(--sidebarWidth))] h-[calc(100vh-36px)] relative dark:bg-notQuiteBlack bg-notQuiteWhite transition-colors duration-300 overflow-hidden">
           <Routes>
             <Route path="/" /*element={<Library />}*/ />
             <Route path="/library" /*element={<Library />}*/ />
