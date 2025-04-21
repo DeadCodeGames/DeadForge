@@ -16,7 +16,6 @@
         "exit": "Exit <0>DEADFORGE</0>"
     },
     "settings": {
-        "title": "Settings",
         "theming": {
             "title": "Appearance",
             "theme": "Theme",
