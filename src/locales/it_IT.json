@@ -58,7 +58,9 @@
             "autoUpdate": "",
             "autoUpdateDescription": "",
             "betaUpdates": "",
-            "betaUpdatesDescription": ""
+            "betaUpdatesDescription": "",
+            "languageUpdates": "",
+            "languageUpdatesDescription": ""
         }
     }
 }
