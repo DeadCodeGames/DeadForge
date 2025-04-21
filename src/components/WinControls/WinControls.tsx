@@ -38,9 +38,34 @@ export default function WinControls() {
     }, []);
 
     useEffect(() => {
-        document.documentElement.classList.add(context.preferences.theme === 'dark' ? 'dark' : 'light');
-        document.documentElement.classList.remove(context.preferences.theme === 'dark' ? 'light' : 'dark');
+        if (context.preferences.theme === "system") {
+            document.documentElement.classList.add("system");
+            document.documentElement.classList.remove("dark", "light");
+        } else {
+            document.documentElement.classList.add(context.preferences.theme === 'dark' ? 'dark' : 'light');
+            document.documentElement.classList.remove(context.preferences.theme === 'dark' ? 'light' : 'dark');
+        }
     }, [context.preferences.theme]);
+
+    
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        mediaQuery.onchange = (e) => {
+            const userTheme = context.preferences.theme;
+            if (userTheme !== "system") return;
+            if (e.matches) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
+        };
+
+        return () => { mediaQuery.onchange = () => { }; };
+    })
 
     const handleMinimize = () => window.Electron.minimize();
     const handleMaximize = () => {
@@ -51,12 +76,20 @@ export default function WinControls() {
     const handleThemeChange = () => {
         const newTheme = htmlClass.includes('dark') ? 'light' : 'dark';
         document.documentElement.classList.remove(newTheme === 'dark' ? 'light' : 'dark');
+        document.documentElement.classList.remove("system");
         document.documentElement.classList.add(newTheme);
         setContext({
             ...context,
             preferences: { ...context.preferences, theme: newTheme },
         });
     };
+
+    const handleThemeChangeAuto = () => {
+        setContext({
+            ...context,
+            preferences: { ...context.preferences, theme: "system" },
+        });
+    }
 
     const title = (
         <>
@@ -69,8 +102,8 @@ export default function WinControls() {
 
     const windowsControls = (
         <div id="controls" className="flex flex-row items-center cursor-pointer h-full text-center justify-center app-region-no-drag *:h-full *:aspect-[1] *:transition-[background] *:duration-[0.125s] *:ease-in-out *:flex *:items-center *:justify-center text-black dark:text-white">
-            {showThemeButton && <div id="themechange" className="material-symbols text-xl hover:bg-[rgba(0,0,0,0.25)] dark:hover:bg-[rgba(255,255,255,0.25)]" onClick={handleThemeChange}>
-                {htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}
+            {showThemeButton && <div id="themechange" className="material-symbols text-xl hover:bg-[rgba(0,0,0,0.25)] dark:hover:bg-[rgba(255,255,255,0.25)]" onClick={handleThemeChange} onAuxClick={handleThemeChangeAuto}>
+                {htmlClass.includes("system") ? "settings" : htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}
             </div>}
             <div id="minimize" className="material-symbols text-base hover:bg-[rgba(0,0,0,0.25)] dark:hover:bg-[rgba(255,255,255,0.25)]" onClick={handleMinimize}>
                 horizontal_rule
@@ -89,13 +122,13 @@ export default function WinControls() {
             <div id="close" className="material-symbols bg-red-500 hover:text-black" onClick={handleClose}>close</div>
             <div id="minimize" className="material-symbols bg-[#FFD200] hover:text-black" onClick={handleMinimize}>horizontal_rule</div>
             <div id="maximize" className="material-symbols bg-green-500 hover:text-black" onClick={handleMaximize}>{isMaximized ? 'collapse_content' : 'expand_content'}</div>
-            {showThemeButton && <div id="themechange" className="material-symbols bg-notQuiteBlack hover:text-white dark:bg-notQuiteWhite dark:hover:text-black" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>}
+            {showThemeButton && <div id="themechange" className="material-symbols bg-notQuiteBlack hover:text-white dark:bg-notQuiteWhite dark:hover:text-black" onClick={handleThemeChange} onAuxClick={handleThemeChangeAuto}>{htmlClass.includes("system") ? "settings" : htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>}
         </div>
     );
 
     const linuxControls = (
         <div id="controls" className="flex flex-row items-center app-region-no-drag *:text-base gap-x-2.5 dark:*:bg-[#323232] dark:hover:*:bg-[#404040] *:bg-[#d0d0d0] hover:*:bg-[#c0c0c0] *:text-black dark:*:text-white *:p-0.5 *:rounded-full pr-2.5">
-            {showThemeButton && <div id="themechange" className="material-symbols cursor-pointer" onClick={handleThemeChange}>{htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>}
+            {showThemeButton && <div id="themechange" className="material-symbols cursor-pointer" onClick={handleThemeChange} onAuxClick={handleThemeChangeAuto}>{htmlClass.includes("system") ? "settings" : htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>}
             <div id="minimize" className="material-symbols cursor-pointer" onClick={handleMinimize}>horizontal_rule</div>
             <div id="maximize" className="material-symbols cursor-pointer" onClick={handleMaximize}>{isMaximized ? 'collapse_content' : 'expand_content'}</div>
             <div id="close" className="material-symbols cursor-pointer" onClick={handleClose}>close</div>
@@ -110,7 +143,7 @@ export default function WinControls() {
             data-type={type?.toLowerCase() || 'windows'}
             className="absolute z-20 h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-notQuiteWhite dark:bg-notQuiteBlack transition-colors duration-300 ease-in-out pl-2.5 pr-0 py-0"
         >
-            {type === 'mac' || (type === 'auto'  && process.platform === 'darwin') ? (
+            {type === 'mac' || (type === 'auto' && process.platform === 'darwin') ? (
                 <>
                     <div id="titleleft">{macControls}</div>
                     <div id="titlemiddle" className='flex flex-row items-center'>{title}</div>

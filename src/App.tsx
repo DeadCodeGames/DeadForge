@@ -48,7 +48,6 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    console.log(JSON.stringify(context))
     async function fetchStorePreloadLink() {
       const link = await window.Electron.getStorePreload();
       setContext((prev: any) => { return { ...prev, storePreload: link } })

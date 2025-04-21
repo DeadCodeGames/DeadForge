@@ -131,12 +131,12 @@ export default function Settings() {
         return [`hsl(${hue}, 100%, 40%)`, `hsla(${hue}, 100%, 40%, 0.125)`];
     };
 
-    const themePickExpanded = "ml-1.5 max-w-full w-fit", themePickCollapsed = "ml-0 max-w-0 w-0", themePickBaseExpanded = "max-w-full w-full", themePickBaseCollapsed = "max-w-6 w-6";
+    const themePickExpanded = "ml-0 max-w-full w-full", themePickCollapsed = "ml-0 max-w-0 w-0", themePickBaseExpanded = "max-w-xs w-full", themePickBaseCollapsed = "max-w-6 w-6";
 
     return (
         <div className="w-[calc(100%-48px)] h-[calc(100%-48px)] dark:bg-night bg-fullMoon text-night dark:text-fullMoon transition-colors duration-300 font-notoSans overflow-y-auto p-6 relative">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-4xl font-uniSansCAPS font-bold mb-6">{t("settings.title")}</h1>
+                <h1 className="text-4xl font-uniSansCAPS font-bold mb-6">{t("sidebar.settings")}</h1>
 
                 {/* Theming Section */}
                 <div className="mb-8">
@@ -151,24 +151,24 @@ export default function Settings() {
                         <div className="flex space-x-2 justify-end">
                             <button
                                 onClick={() => handleThemeChange("system")}
-                                className={`min-w-6 flex items-center justify-center p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-300 ease-in-out ${context.preferences.theme === "system" ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}` : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`}`}
+                                className={`min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "system" ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}` : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`}`}
                             >
                                 <span className="material-symbols">settings</span>
-                                <span className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-300 ease-in-out ${context.preferences.theme === "system" ? themePickExpanded : themePickCollapsed}`}>{t("settings.theming.systemTheme")}</span>
+                                <span className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-1000 ease-in-out ${context.preferences.theme === "system" ? themePickExpanded : themePickCollapsed}`}>{t("settings.theming.systemTheme")}</span>
                             </button>
                             <button
                                 onClick={() => handleThemeChange("dark")}
-                                className={`min-w-6 flex items-center justify-center p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-300 ease-in-out ${context.preferences.theme === "dark" ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}` : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`}`}
+                                className={`min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "dark" ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}` : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`}`}
                             >
                                 <span className="material-symbols">dark_mode</span>
-                                <span className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-300 ease-in-out ${context.preferences.theme === "dark" ? themePickExpanded : themePickCollapsed}`}>{t("settings.theming.darkTheme")}</span>
+                                <span className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-1000 ease-in-out ${context.preferences.theme === "dark" ? themePickExpanded : themePickCollapsed}`}>{t("settings.theming.darkTheme")}</span>
                             </button>
                             <button
                                 onClick={() => handleThemeChange("light")}
-                                className={`min-w-6 flex items-center justify-center p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-300 ease-in-out ${context.preferences.theme === "light" ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}` : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`}`}
+                                className={`min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "light" ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}` : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`}`}
                             >
                                 <span className="material-symbols">light_mode</span>
-                                <span className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-300 ease-in-out ${context.preferences.theme === "light" ? themePickExpanded : themePickCollapsed}`}>{t("settings.theming.lightTheme")}</span>
+                                <span className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-1000 ease-in-out ${context.preferences.theme === "light" ? themePickExpanded : themePickCollapsed}`}>{t("settings.theming.lightTheme")}</span>
                             </button>
                         </div>
                     </div>
