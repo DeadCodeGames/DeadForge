@@ -100,6 +100,16 @@ export default function Settings() {
         }));
     };
 
+    const handleLanguageUpdatesChange = (langUpdates: boolean) => {
+        setContext((prev: any) => ({
+            ...prev,
+            preferences: {
+                ...prev.preferences,
+                langUpdates
+            }
+        }));
+    };
+
     const replaySetup = () => {
         console.log("Replaying initial setup sequence");
     };
@@ -399,6 +409,24 @@ export default function Settings() {
                                 className="sr-only peer"
                                 checked={context.preferences.betaUpdates}
                                 onChange={(e) => handleBetaUpdatesChange(e.target.checked)}
+                                disabled={!context.preferences.autoUpdate}
+                            />
+                            <div className={`relative w-11 h-6 bg-notQuiteBlack dark:bg-notQuiteWhite rounded-full peer-focus:outline-none peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-fullMoon dark:after:bg-night after:rounded-full after:h-5 after:w-5 after:transition-all opacity-50 peer-checked:opacity-100 ${!context.preferences.autoUpdate ? 'opacity-30' : ''}`}></div>
+                        </label>
+                    </div>
+
+                    {/* Language Updates */}
+                    <div className="flex justify-between items-center mb-4 p-4 bg-opacity-5 bg-notQuiteBlack dark:bg-opacity-5 dark:bg-notQuiteWhite rounded-lg">
+                        <div>
+                            <div className="font-bold">{t("settings.appData.languageUpdates")}</div>
+                            <div className="text-opacity-70 text-notQuiteBlack dark:text-opacity-70 dark:text-notQuiteWhite italic">{t("settings.appData.languageUpdatesDescription")}</div>
+                        </div>
+                        <label className="inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                className="sr-only peer"
+                                checked={context.preferences.langUpdates}
+                                onChange={(e) => handleLanguageUpdatesChange(e.target.checked)}
                                 disabled={!context.preferences.autoUpdate}
                             />
                             <div className={`relative w-11 h-6 bg-notQuiteBlack dark:bg-notQuiteWhite rounded-full peer-focus:outline-none peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-fullMoon dark:after:bg-night after:rounded-full after:h-5 after:w-5 after:transition-all opacity-50 peer-checked:opacity-100 ${!context.preferences.autoUpdate ? 'opacity-30' : ''}`}></div>

@@ -58,7 +58,9 @@
             "autoUpdate": "Automatic Updates",
             "autoUpdateDescription": "Automatically download and install application updates",
             "betaUpdates": "Beta Updates",
-            "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires auto-updates)"
+            "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires auto-updates)",
+            "languageUpdates": "Language Pack Updates",
+            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update. You can opt into receive these small updates, containing only localization changes (requires auto-updates)"
         }
     }
 }

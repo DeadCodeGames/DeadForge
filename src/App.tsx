@@ -18,7 +18,8 @@ const defaultPreferences = {
   useTray: false,
   autoStart: false,
   autoUpdate: false,
-  betaUpdates: false
+  betaUpdates: false,
+  langUpdates: false
 }
 
 export const AppContext = createContext<any>(
