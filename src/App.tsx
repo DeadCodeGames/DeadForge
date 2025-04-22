@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 
 const defaultPreferences = {
   theme: "dark",
+  sidebarCollapsed: false,
   windowFrame: "auto",
   showThemeButton: false,
   language: "en_001",
@@ -50,7 +51,7 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function fetchStorePreloadLink() {
-      const link = await window.Electron.getStorePreload();
+      const link = window.Electron.storePreload;
       setContext((prev: any) => { return { ...prev, storePreload: link } })
     }
     if (!context.storePreload && !window.Electron.isTray) {
@@ -88,7 +89,7 @@ function AppContents() {
         ]} navItemsBottom={[
           { name: t('sidebar.settings'), path: '/settings', icon: 'settings' }
         ]} />
-        <div id="contents" className="w-[calc(100vw-var(--sidebarWidth))] h-[calc(100vh-36px)] relative dark:bg-notQuiteBlack bg-notQuiteWhite transition-colors duration-300 overflow-hidden">
+        <div id="contents" className="left-[var(--sidebarWidth)] right-0 h-[calc(100vh-36px)] absolute dark:bg-notQuiteBlack bg-notQuiteWhite transition-[color,background-color,border-color,text-decoration-color,fill,stroke,left] duration-300 overflow-hidden">
           <Routes>
             <Route path="/" /*element={<Library />}*/ />
             <Route path="/library" /*element={<Library />}*/ />

@@ -3,6 +3,7 @@ declare global {
     interface Window {
         Electron: {
             isTray: boolean;
+            storePreload: string;
             onTrayGetContentsHeight: (callback: (event: IpcRendererEvent) => void) => void;
             sendTrayChoice: (choice: string | object) => void;
             onTrayNavigate: (callback: (event: IpcRendererEvent, location: string) => void) => void;
@@ -15,10 +16,12 @@ declare global {
             onUnmaximize: (callback: (event: IpcRendererEvent) => void) => void;
             getPreferences: () => object;
             updatePreferences: (preferences: object) => void;
-            getStorePreload: () => Promise<string>;
         };
-        process: {
+        Process: {
             platform: "linux" | "win32" | "darwin";
+        },
+        App: {
+            isPackaged: boolean;
         }
     }
 }

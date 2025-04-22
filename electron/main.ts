@@ -12,6 +12,7 @@ let mainWindow: BrowserWindow | null = null;
 let trayWindow: BrowserWindow | null = null;
 let tray: Tray;
 
+const FIRST_DEV_RUN = !app.isPackaged && Boolean(process.argv.find((s) => s === "--first-run"));
 
 const createWindow = () => {
     let mainWindowState = windowStateKeeper({
@@ -32,12 +33,13 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: true,
-            devTools: app.isPackaged ? false : true,
-            webviewTag: true
+            devTools: app.isPackaged ? true : true,
+            webviewTag: true,
+            additionalArguments: [`--isPackaged=${app.isPackaged}`]
         }
     });
 
-    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html#/library")}` : "http://localhost:3000#/library");
+    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/library` : "http://localhost:3000#/library");
     if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
 
     mainWindow.on('closed', () => {
@@ -48,14 +50,14 @@ const createWindow = () => {
 // App ready
 app.whenReady().then(async () => {
     await new Promise((resolve) => setTimeout(() => {
-        !app.isPackaged && console.warn("Sometimes, during development, the development server starts way too late, and the window page is an error instead.");
-        !app.isPackaged && console.warn("This should not be an issue in prod, but is annoying in dev.");
-        !app.isPackaged && console.warn("While refreshing the main window fixes it, you cannot really refresh the tray window because of how the IPC flow was designed.");
-        !app.isPackaged && console.warn("For this reason, there is a 2.5s delay before creating the windows during dev.");
+        FIRST_DEV_RUN && console.warn("Sometimes, during development, the development server starts way too late, and the window page is an error instead.");
+        FIRST_DEV_RUN && console.warn("This ̶s̶h̶o̶u̶l̶d̶ ̶n̶o̶t̶ ̶b̶e̶ is not an issue in prod, but is annoying in dev.");
+        FIRST_DEV_RUN && console.warn("While refreshing the main window fixes it, you cannot really refresh the tray window because of how the IPC flow was designed.");
+        FIRST_DEV_RUN && console.warn("For this reason, there is a 2.5s delay before creating the windows on the first launch during dev. Any further refreshes caused by editing files in the electron/ folder have a delay of 0.");
         createWindow();
         createTrayWindow();
         resolve(null);
-    }, app.isPackaged ? 0 : 2500));
+    }, !FIRST_DEV_RUN ? 0 : 2500));
 
     tray = new Tray(path.join(__dirname, 'trayIcon.png'));
     let trayTimer: null | NodeJS.Timeout = null;
@@ -65,13 +67,13 @@ app.whenReady().then(async () => {
         }
         if (!trayWindow) return;
 
-        trayWindow.webContents.send('tray:getContentsHeight');
-
         await new Promise<void>((resolve) => {
             ipcMain.once('tray:contentsHeightResponse', (event, height) => {
                 trayWindow!.setBounds({ height });
                 resolve();
             });
+
+            trayWindow?.webContents.send('tray:getContentsHeight');
         });
 
         const { x, y } = tray.getBounds();
@@ -131,11 +133,6 @@ ipcMain.handle('theme:get', () => {
     return nativeTheme.shouldUseDarkColors ? 'dark' : 'light';
 });
 
-// Store preload script
-ipcMain.handle('store:preloadLink', () => {
-    return url.pathToFileURL(path.join(__dirname, "store.preload.js")).href;
-})
-
 /* <--------------------------- Tray --------------------------------> */
 
 const createTrayWindow = () => {
@@ -158,7 +155,7 @@ const createTrayWindow = () => {
     });
 
     const trayURL = app.isPackaged
-        ? `file://${path.join(__dirname, "../build/index.html#/tray")}`
+        ? `file://${path.join(__dirname, "../build/index.html")}#/tray`
         : "http://localhost:3000#/tray";
 
     trayWindow.loadURL(trayURL);

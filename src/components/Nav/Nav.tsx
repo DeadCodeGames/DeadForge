@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { AppContext } from '@/App';
 
 type NavItem = {
     name: string;
@@ -9,10 +10,41 @@ type NavItem = {
 };
 
 export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) {
-    const [isExpanded, setIsExpanded] = useState(true);
     const { t } = useTranslation();
+    const { context, setContext } = useContext(AppContext);
+    const collapsed = context.preferences.sidebarCollapsed;
+
+    const [forceCollapse, setForceCollapse] = useState(window.innerWidth < 900);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setForceCollapse(window.innerWidth < 900);
+            (document.querySelector('div#app') as HTMLElement).style.setProperty(
+                '--sidebarWidth',
+                (window.innerWidth < 900 || collapsed) ? '48px' : '192px'
+            )
+        };
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [collapsed]);
+
     const toggleExpand = () => {
-        setIsExpanded(prev => { (document.querySelector('div#app') as HTMLElement)!.style.setProperty('--sidebarWidth', prev ? '48px' : '192px'); return !isExpanded });
+        const newCollapsed = !collapsed;
+        if (window.innerWidth < 900) return;
+        (document.querySelector('div#app') as HTMLElement).style.setProperty(
+            '--sidebarWidth',
+            newCollapsed ? '48px' : '192px'
+        );
+        setContext({
+            ...context,
+            preferences: {
+                ...context.preferences,
+                sidebarCollapsed: newCollapsed
+            }
+        });
     };
 
     const baseItemClass = "flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start";
@@ -33,7 +65,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
                             }
                         >
                             <span className="material-symbols size-6">{item.icon}</span>
-                            <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-54px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
+                            <span className={!(collapsed || forceCollapse) ? "ml-3 font-montserrat w-[calc(100%-54px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
                         </NavLink>
                     ))}
                 </div>
@@ -47,15 +79,16 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
                             }
                         >
                             <span className="material-symbols size-6">{item.icon}</span>
-                            <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
+                            <span className={!(collapsed || forceCollapse) ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
                         </NavLink>
                     ))}
                     <button
                         onClick={toggleExpand}
-                        className={`text-notQuiteBlack dark:text-notQuiteWhite cursor-pointer transition-transform ${baseItemClass} ${inactiveClass} text-left`}
+                        disabled={forceCollapse}
+                        className={`text-notQuiteBlack dark:text-notQuiteWhite cursor-pointer transition-[transform,opacity] ${baseItemClass} ${inactiveClass} text-left opacity-100 disabled:opacity-50`}
                     >
-                        <span className={`material-symbols size-6 duration-200 ease-in-out ${isExpanded ? expandedPointerClass : ""}`}>chevron_right</span>
-                        <span className={isExpanded ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity,color] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{ t('sidebar.collapse') }</span>
+                        <span className={`material-symbols size-6 duration-200 ease-in-out ${!(collapsed || forceCollapse) ? expandedPointerClass : ""}`}>chevron_right</span>
+                        <span className={!(collapsed || forceCollapse) ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity,color] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{ t('sidebar.collapse') }</span>
                     </button>
                 </div>
             </nav>

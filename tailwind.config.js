@@ -17,6 +17,8 @@ module.exports = {
                 "0": "0px",
             },
             colors: {
+                "cornflowerBlue": "#6495ED",
+                "purpleNotFound": "#404",
                 "notQuiteBlack": "#0F0F0F",
                 "notQuiteWhite": "#F0F0F0",
                 "night": "#161616",

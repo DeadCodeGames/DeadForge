@@ -11,12 +11,12 @@
   "repository": "github:DeadCodeGames/DeadForge",
   "private": true,
   "dependencies": {
-    "@electron/remote": "^2.1.2",
     "electron-window-state": "^5.0.3"
   },
   "devDependencies": {
     "@dead404code/tailwind-remove-base-border-box": "^1.0.0-Patch",
     "@dead404code/tailwind-utilities": "^1.0.1-Patch",
+    "@electron/remote": "^2.1.2",
     "@types/flat": "^5.0.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.2",
@@ -30,6 +30,7 @@
     "flat": "^6.0.1",
     "i18next": "^25.0.0",
     "lucide-react": "^0.487.0",
+    "nodemon": "^3.1.9",
     "react": "^19.1.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^19.1.0",
@@ -37,6 +38,7 @@
     "react-router-dom": "^7.5.0",
     "react-scripts": "5.0.1",
     "react-twemoji": "^0.6.0",
+    "twemoji": "^14.0.2",
     "typescript": "^5.8.3",
     "wait-on": "^8.0.3"
   },
@@ -72,10 +74,11 @@
     "start": "npm run electron:serve",
     "react:start": "react-app-rewired start",
     "react:build": "react-app-rewired build",
+    "prereact:build": "node scripts/fetchTwemoji.js",
     "react:test": "react-app-rewired test",
     "react:eject": "react-scripts eject",
-    "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"npm run electron:start\"",
-    "electron:start": "npm run electron:build && wait-on tcp:3000 & electron .",
+    "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"wait-on tcp:3000 && npm run electron:dev\"",
+    "electron:dev": "node electron/dev.js",
     "electron:build": "tsc -p electron/electron.tsconfig.json",
     "full-build": "concurrently --kill-others-on-fail \"npm run react:build\" \"npm run electron:build\"",
     "electron:package": "npm run full-build && electron-builder"

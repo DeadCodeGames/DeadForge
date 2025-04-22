@@ -143,13 +143,13 @@ export default function WinControls() {
             data-type={type?.toLowerCase() || 'windows'}
             className="absolute z-20 h-9 w-[-webkit-fill-available] flex justify-between items-center flex-row flex-nowrap left-0 top-0 app-region-drag bg-notQuiteWhite dark:bg-notQuiteBlack transition-colors duration-300 ease-in-out pl-2.5 pr-0 py-0"
         >
-            {type === 'mac' || (type === 'auto' && process.platform === 'darwin') ? (
+            {type === 'mac' || (type === 'auto' && window.Process.platform === 'darwin') ? (
                 <>
                     <div id="titleleft">{macControls}</div>
                     <div id="titlemiddle" className='flex flex-row items-center'>{title}</div>
                     <div id="titleright" className={`${showThemeButton ? macFillerWithTheme : macFillerWithoutTheme} pr-2.5`}></div>
                 </>
-            ) : type === 'linux' || (type === 'auto' && process.platform === 'linux') ? (
+            ) : type === 'linux' || (type === 'auto' && window.Process.platform === 'linux') ? (
                 <>
                     <div id="titleleft"></div>
                     <div id="titlemiddle" className='flex flex-row items-center'>{title}</div>

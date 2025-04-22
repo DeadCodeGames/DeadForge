@@ -17,7 +17,7 @@ function TrayDivider() {
 export default function Tray() {
     const { t } = useTranslation();
     useEffect(() => {
-        window.Electron.onTrayGetContentsHeight(async () => { 
+        window.Electron.onTrayGetContentsHeight(async () => {
             return (document.querySelector("div#root") as HTMLElement).offsetHeight;
         });
     })
