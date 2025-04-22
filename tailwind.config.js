@@ -23,6 +23,9 @@ module.exports = {
                 "notQuiteWhite": "#F0F0F0",
                 "night": "#161616",
                 "fullMoon": "#E9E9E9"
+            },
+            screens: {
+                "settingsShrink": {max: "999px"}
             }
         },
     },

@@ -15,7 +15,7 @@ contextBridge.exposeInMainWorld('Electron', {
     onUnmaximize: (callback: () => void) => ipcRenderer.on('browser-window-unmaximize', callback),
 
     getTheme: (): Promise<'light' | 'dark'> => ipcRenderer.invoke('theme:get'),
-    getPreferences: (): Promise<object> => ipcRenderer.invoke('preferences:get'),
+    getPreferences: (): Promise<object | ""> => ipcRenderer.invoke('preferences:get'),
     setPreferences: (preferences: object) => ipcRenderer.invoke('preferences:set', preferences),
 
     onTrayNavigate: (callback: () => void) => ipcRenderer.on('tray:navigate', callback),

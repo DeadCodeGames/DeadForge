@@ -15,11 +15,11 @@ declare global {
             getPlatform: () => Promise<"Linux" | "Windows" | "Mac">;
             onMaximize: (callback: (event: IpcRendererEvent) => void) => void;
             onUnmaximize: (callback: (event: IpcRendererEvent) => void) => void;
-            getPreferences: () => object;
+            getPreferences: () => object | "";
             setPreferences: (preferences: object) => void;
         };
         Process: {
-            platform: "linux" | "win32" | "darwin";
+            platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
         },
         App: {
             isPackaged: boolean;

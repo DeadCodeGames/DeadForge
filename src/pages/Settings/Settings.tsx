@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { AppContext } from "@/App.tsx";
 import { resources } from "@/locales/i18n.ts";
 import { useTranslation } from "react-i18next";
@@ -145,14 +145,17 @@ export default function Settings() {
 
     const themePickExpanded = "ml-0 max-w-full w-full", themePickCollapsed = "ml-0 max-w-0 w-0", themePickBaseExpanded = "max-w-xs w-full", themePickBaseCollapsed = "max-w-6 w-6";
 
+    const SettingsSeparator = () => (<hr className="border-notQuiteBlack dark:border-notQuiteWhite border-0 border-t-2 border-solid opacity-50 my-8 settingsShrink:my-4 rounded-full" />)
+    const SettingsSectionTitle = ({ children }: {children: React.JSX.Element | string}) => (<h2 className="text-xl settingsShrink:text-2xl settingsShrink:text-center font-uniSansCAPS font-bold mb-4">{children}</h2>)
+
     return (
         <div className="w-[calc(100%-48px)] h-[calc(100%-48px)] dark:bg-night bg-fullMoon text-night dark:text-fullMoon transition-colors duration-300 font-notoSans overflow-y-auto p-6 relative">
-            <div className="max-w-6xl mx-auto">
-                <h1 className="text-4xl font-uniSansCAPS font-bold mb-6">{t("sidebar.settings")}</h1>
+            <div className="max-w-6xl mx-auto px-12 py-8 settingsShrink:p-0">
+                <h1 className="text-5xl font-uniSansCAPS font-bold settingsShrink:text-center mb-6 settingsShrink:mb-4">{t("sidebar.settings")}</h1>
 
                 {/* Theming Section */}
                 <div className="mb-8">
-                    <h2 className="text-xl font-uniSansCAPS font-bold mb-4">{t("settings.theming.title")}</h2>
+                    <SettingsSectionTitle>{t("settings.theming.title")}</SettingsSectionTitle>
 
                     {/* Theme Switcher */}
                     <SettingsOption
@@ -283,11 +286,11 @@ export default function Settings() {
 
                 </div>
 
-                <hr className="border-notQuiteBlack dark:border-notQuiteWhite border-0 border-t-2 border-solid opacity-50 my-8 rounded-full" />
+                <SettingsSeparator />
 
                 {/* Behavior Section */}
                 <div className="mb-8">
-                    <h2 className="text-xl font-uniSansCAPS font-bold mb-4">{t("settings.behavior.title")}</h2>
+                    <SettingsSectionTitle>{t("settings.behavior.title")}</SettingsSectionTitle>
 
                     {/* Default Launcher Page */}
 
@@ -300,6 +303,7 @@ export default function Settings() {
                             >
                                 <SelectOption value="library">{t("sidebar.library")}</SelectOption>
                                 <SelectOption value="store">{t("sidebar.store")}</SelectOption>
+                                <SelectOption value="arcade">{t("sidebar.arcade")}</SelectOption>
                             </Select>
                         }
                     />
@@ -322,18 +326,20 @@ export default function Settings() {
 
                     {/* Auto-start on Boot */}
                     <SettingsOption title={t("settings.behavior.autoStart")} description={t("settings.behavior.autoStartDescription")}
-                        controls={<FlipSwitch checked={context.preferences.autoStart}
+                        controls={<FlipSwitch
+                            checked={(window.Process.platform !== "win32" && window.Process.platform !== "darwin") ? false : context.preferences.autoStart}
                             onChange={(e) => handleAutoStartChange(e.target.checked)}
+                            disabled={window.Process.platform !== "win32" && window.Process.platform !== "darwin"}
                         />
                         }
                     />
                 </div>
 
-                <hr className="border-notQuiteBlack dark:border-notQuiteWhite border-0 border-t-2 border-solid opacity-50 my-8 rounded-full" />
+                <SettingsSeparator />
 
                 {/* App Data & Updates Section */}
                 <div className="mb-8">
-                    <h2 className="text-xl font-uniSansCAPS font-bold mb-4">{t("settings.appData.title")}</h2>
+                    <SettingsSectionTitle>{t("settings.appData.title")}</SettingsSectionTitle>
 
                     {/* Replay Initial Setup */}
                     <SettingsOption title={t("settings.appData.initialSetup")} description={t("settings.appData.initialSetupDescription")}

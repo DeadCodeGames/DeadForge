@@ -39,8 +39,11 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
     const fetchPreferences = async () => {
       try {
         const prefs = await window.Electron.getPreferences();
-        setContext({ preferences: prefs });
-        console.log(prefs)
+        if (prefs !== "") {
+          setContext({ preferences: prefs }); 
+        } else {
+          console.warn("Could not retrieve user preferences. This can be caused by the app being first launched, or manual manipulation.\nA new file has been generated, however, any previous settings have been lost.")
+        }
         setShouldSetContext(true);
       } catch (error) {
         console.error('Failed to fetch client preferences:', error);
@@ -52,6 +55,7 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function fetchStorePreloadLink() {
+      if (!shouldSetContext) return;
       const link = window.Electron.storePreload;
       setContext((prev: any) => { return { ...prev, storePreload: link } })
     }

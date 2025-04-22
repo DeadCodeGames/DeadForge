@@ -16,6 +16,15 @@ let initialLoad = true;
 
 const FIRST_DEV_RUN = !app.isPackaged && Boolean(process.argv.find((s) => s === "--first-run"));
 
+let initialPrefs: any;
+try {
+    initialPrefs = JSON.parse(fs.readFileSync(path.join(app.getPath("userData"), "preferences.json"), { encoding: "utf-8" }));
+} catch (e) {
+    console.log(e)
+    initialPrefs = "";
+}
+console.log(initialPrefs)
+
 const createWindow = () => {
     let mainWindowState = windowStateKeeper({
         defaultHeight: 600,
@@ -25,8 +34,8 @@ const createWindow = () => {
     })
 
     mainWindow = new BrowserWindow({
-        minWidth: 555,
-        minHeight: 350,
+        minWidth: 650,
+        minHeight: 450,
         x: mainWindowState.x || undefined,
         y: mainWindowState.y || undefined,
         height: mainWindowState.height,
@@ -46,7 +55,7 @@ const createWindow = () => {
 
     mainWindowState.manage(mainWindow)
 
-    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/library` : "http://localhost:3000#/library");
+    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/${initialPrefs.defaultPage || "library"}` : `http://localhost:3000#/${initialPrefs.defaultPage || "library"}`);
     if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
 
     mainWindow.on('closed', () => {
@@ -199,11 +208,17 @@ const createTrayWindow = () => {
 };
 
 ipcMain.handle('preferences:get', () => {
-    const preferences = fs.readFileSync(path.join(app.getPath('userData'), 'preferences.json'), 'utf-8');
-    return JSON.parse(preferences);
+    let preferences: string;
+    try {
+        preferences = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'preferences.json'), 'utf-8'));
+    } catch (err) {
+        preferences = "";
+    }
+    return preferences;
 });
 
 ipcMain.handle('preferences:set', (event: Electron.IpcMainInvokeEvent, newPreferences: object) => {
+    console.log(newPreferences)
     fs.writeFileSync(path.join(app.getPath('userData'), 'preferences.json'), JSON.stringify(newPreferences));
 });
 

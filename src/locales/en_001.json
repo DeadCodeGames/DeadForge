@@ -44,7 +44,8 @@
             "useTray": "Show in System Tray",
             "useTrayDescription": "Keep the application in the system tray when window is closed",
             "autoStart": "Start on Boot",
-            "autoStartDescription": "Launch the application automatically when your computer starts"
+            "autoStartDescription": "Launch the application automatically when your computer starts",
+            "unavailableOnLinux": "This setting is not available on Linux systems"
         },
         "appData": {
             "title": "App Data & Updates",
