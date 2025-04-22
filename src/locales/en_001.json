@@ -30,7 +30,7 @@
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
             "themeButtonInFrame": "Show Theme Toggle in Window Frame",
-            "themeButtonInFrameDescription": "Whether to include a theme switch button in the window's title bar for quick access",
+            "themeButtonInFrameDescription": "Whether to include a theme switch button in the window's title bar for quick access\nLeft click to switch between dark and light, right click to set to system preferences",
             "language": "Language",
             "languageDescription": "Select your preferred language for the application"
         },
@@ -58,9 +58,9 @@
             "autoUpdate": "Automatic Updates",
             "autoUpdateDescription": "Automatically download and install application updates",
             "betaUpdates": "Beta Updates",
-            "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires auto-updates)",
+            "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires Automatic Updates)",
             "languageUpdates": "Language Pack Updates",
-            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update. You can opt into receive these small updates, containing only localization changes (requires auto-updates)"
+            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receive these small updates, containing only localization changes (requires Automatic Updates)"
         }
     }
 }

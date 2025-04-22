@@ -58,7 +58,7 @@
             "autoUpdate": "Automatické aktualizácie",
             "autoUpdateDescription": "Automaticky stiahnuť a nainštalovať aktualizácie aplikácie",
             "betaUpdates": "Predbežné (Beta) aktualizácie",
-            "betaUpdatesDescription": "Inštalovať predbežné beta verzie s novými funkciami skôr (vyžaduje automatické aktualizácie)",
+            "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": ""
         }
