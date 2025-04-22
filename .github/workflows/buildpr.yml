@@ -34,7 +34,7 @@ jobs:
       - name: Build/release Electron app
         uses: DeadCodeGames/action-electron-builder@effa1ea435ec026b5c7b953273d18d55b17b5d04
         with:
-          github_token: ${{ secrets.build_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           args: ${{ matrix.args }}
           build_script_name: "full-build"
           skip_install: true
