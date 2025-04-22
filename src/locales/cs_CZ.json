@@ -44,7 +44,8 @@
             "useTray": "Zobrazit v oblasti oznámení",
             "useTrayDescription": "Ponechat aplikaci na pozadí po uzavření okna, skrytou v oblasti oznámení",
             "autoStart": "Spustit při startu",
-            "autoStartDescription": "Spustit aplikaci automaticky po spustení počítače"
+            "autoStartDescription": "Spustit aplikaci automaticky po spustení počítače",
+            "unavailableOnLinux": ""
         },
         "appData": {
             "title": "Data a aktualizace aplikace",

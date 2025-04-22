@@ -44,7 +44,8 @@
             "useTray": "",
             "useTrayDescription": "",
             "autoStart": "",
-            "autoStartDescription": ""
+            "autoStartDescription": "",
+            "unavailableOnLinux": ""
         },
         "appData": {
             "title": "",
