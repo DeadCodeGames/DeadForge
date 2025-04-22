@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { AppContext } from "@/App";
 
-function TrayItem({name, icon, onClick}: {name: string | React.JSX.Element, icon?: string, onClick: () => void}) {
+function TrayItem({ name, icon, onClick }: { name: string | React.JSX.Element, icon?: string, onClick: () => void }) {
     return (
         <div className="app-region-no-drag w-[calc(100%-16px)] py-2 px-2 rounded-lg text-base font-notoSans hover:bg-fullMoon hover:dark:bg-night" onClick={onClick}>{name}</div>
     )
@@ -22,7 +22,7 @@ export default function Tray() {
         });
     })
 
-    const {context} = useContext(AppContext);
+    const { context } = useContext(AppContext);
     useEffect(() => {
         document.documentElement.classList.add(context.preferences.theme === 'dark' ? 'dark' : 'light');
         document.documentElement.classList.remove(context.preferences.theme === 'dark' ? 'light' : 'dark');
@@ -30,11 +30,11 @@ export default function Tray() {
     return (
         <div className="app-region-drag w-[calc(100vw-16px)] h-full dark:bg-notQuiteBlack bg-notQuiteWhite dark:text-notQuiteWhite text-notQuiteBlack font-notoSans flex flex-col p-2">
             <TrayItem name={t('sidebar.library')} icon="apps" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/library' }) }} />
-            <TrayItem name={<span className="font-uniSansCAPS"><span className="font-bold">DEADFORGE</span> ARCADE</span>} onClick={() => {}} />
-            <TrayItem name={t('sidebar.store')} icon="store" onClick={() => { window.Electron.sendTrayChoice({type: 'navigate', destination: '/store'}) }} />
+            <TrayItem name={<Trans i18nKey="arcade.title" components={[<span className="font-uniSansCAPS font-bold">DEADFORGE</span>,<span className="font-uniSansCAPS">ARCADE</span>]} />} onClick={() => { }} />
+            <TrayItem name={t('sidebar.store')} icon="store" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/store' }) }} />
             <TrayItem name={t('sidebar.settings')} icon="settings" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/settings' }) }} />
             <TrayDivider />
-            <TrayItem name={ <Trans i18nKey="tray.exit"><span className="font-uniSansCAPS font-bold">DEADFORGE</span></Trans> } icon="logout" onClick={() => window.Electron.sendTrayChoice({type: 'exit'})} />
+            <TrayItem name={<Trans i18nKey="tray.exit"><span className="font-uniSansCAPS font-bold">DEADFORGE</span></Trans>} icon="logout" onClick={() => window.Electron.sendTrayChoice({ type: 'exit' })} />
             <hr />
         </div>
     )

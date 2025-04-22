@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AppContext } from '@/App';
 
 type NavItem = {
-    name: string;
+    name: string | React.JSX.Element;
     path: string;
     icon: string;
 };

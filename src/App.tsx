@@ -95,7 +95,7 @@ function AppContents() {
       <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon transition-colors duration-300 top-9 overflow-hidden">
         <Navigation navItemsTop={[
           { name: t('sidebar.library'), path: '/library', icon: 'apps' },
-          { name: "Arcade", path: '/arcade', icon: 'joystick' },
+          { name: t('sidebar.arcade'), path: '/arcade', icon: 'joystick' },
           { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
         ]} navItemsBottom={[
           { name: t('sidebar.settings'), path: '/settings', icon: 'settings' }
