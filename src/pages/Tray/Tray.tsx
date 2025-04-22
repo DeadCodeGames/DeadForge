@@ -29,9 +29,10 @@ export default function Tray() {
     }, [context.preferences.theme]);
     return (
         <div className="app-region-drag w-[calc(100vw-16px)] h-full dark:bg-notQuiteBlack bg-notQuiteWhite dark:text-notQuiteWhite text-notQuiteBlack font-notoSans flex flex-col p-2">
-            <TrayItem name={t('sidebar.library')} icon="apps" onClick={() => { window.Electron.sendTrayChoice({type: 'navigate', destination: '/library'}) }} />
+            <TrayItem name={t('sidebar.library')} icon="apps" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/library' }) }} />
+            <TrayItem name={<span className="font-uniSansCAPS"><span className="font-bold">DEADFORGE</span> ARCADE</span>} onClick={() => {}} />
             <TrayItem name={t('sidebar.store')} icon="store" onClick={() => { window.Electron.sendTrayChoice({type: 'navigate', destination: '/store'}) }} />
-            <TrayItem name={t('sidebar.settings')} icon="settings" onClick={() => { window.Electron.sendTrayChoice({type: 'navigate', destination: '/settings'}) }} />
+            <TrayItem name={t('sidebar.settings')} icon="settings" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/settings' }) }} />
             <TrayDivider />
             <TrayItem name={ <Trans i18nKey="tray.exit"><span className="font-uniSansCAPS font-bold">DEADFORGE</span></Trans> } icon="logout" onClick={() => window.Electron.sendTrayChoice({type: 'exit'})} />
             <hr />

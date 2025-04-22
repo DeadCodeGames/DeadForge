@@ -23,6 +23,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/react-twemoji": "^0.4.3",
     "concurrently": "^9.1.2",
+    "cpx": "^1.5.0",
     "cross-env": "^7.0.3",
     "electron": "^35.1.5",
     "electron-builder": "^26.0.12",
@@ -79,7 +80,7 @@
     "react:eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"wait-on tcp:3000 && npm run electron:dev\"",
     "electron:dev": "node electron/dev.js",
-    "electron:build": "tsc -p electron/electron.tsconfig.json",
+    "electron:build": "tsc -p electron/electron.tsconfig.json && cpx \"electron/**/*.{png,jpg}\" electron-dist -C",
     "full-build": "concurrently --kill-others-on-fail \"npm run react:build\" \"npm run electron:build\"",
     "electron:package": "npm run full-build && electron-builder"
   },

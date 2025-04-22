@@ -10,12 +10,13 @@ declare global {
             minimize: () => void;
             maximize: () => void;
             close: () => void;
+            reload: () => void;
             isMaximized: () => Promise<boolean>;
             getPlatform: () => Promise<"Linux" | "Windows" | "Mac">;
             onMaximize: (callback: (event: IpcRendererEvent) => void) => void;
             onUnmaximize: (callback: (event: IpcRendererEvent) => void) => void;
             getPreferences: () => object;
-            updatePreferences: (preferences: object) => void;
+            setPreferences: (preferences: object) => void;
         };
         Process: {
             platform: "linux" | "win32" | "darwin";

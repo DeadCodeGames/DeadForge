@@ -9,11 +9,14 @@ contextBridge.exposeInMainWorld('Electron', {
     maximize: () => ipcRenderer.invoke('window:maximize'),
     isMaximized: (): Promise<boolean> => ipcRenderer.invoke('window:isMaximized'),
     close: () => ipcRenderer.invoke('window:close'),
+    reload: () => ipcRenderer.invoke('app:reload'),
 
     onMaximize: (callback: () => void) => ipcRenderer.on('browser-window-maximize', callback),
     onUnmaximize: (callback: () => void) => ipcRenderer.on('browser-window-unmaximize', callback),
 
     getTheme: (): Promise<'light' | 'dark'> => ipcRenderer.invoke('theme:get'),
+    getPreferences: (): Promise<object> => ipcRenderer.invoke('preferences:get'),
+    setPreferences: (preferences: object) => ipcRenderer.invoke('preferences:set', preferences),
 
     onTrayNavigate: (callback: () => void) => ipcRenderer.on('tray:navigate', callback),
 });

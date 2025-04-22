@@ -7,6 +7,7 @@ import Store from './pages/Store/Store.tsx';
 import Settings from './pages/Settings/Settings.tsx';
 import Tray from './pages/Tray/Tray.tsx';
 import { useTranslation } from "react-i18next";
+import Arcade from "./pages/Arcade/Arcade.tsx";
 
 const defaultPreferences = {
   theme: "dark",
@@ -57,7 +58,7 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
     if (!context.storePreload && !window.Electron.isTray) {
       fetchStorePreloadLink();
     }
-    if (shouldSetContext) window.Electron.updatePreferences(context.preferences);
+    if (shouldSetContext) window.Electron.setPreferences(context.preferences);
   }, [context, shouldSetContext]);
 
   return (
@@ -79,12 +80,22 @@ function AppContents() {
       navigate(location);
     })
   }, [navigate]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", (e) => { if (e.key === 'r' && e.ctrlKey) { e.stopImmediatePropagation(); e.preventDefault(); window.addEventListener("beforeunload", e => e.preventDefault()); setTimeout(() => { window.Electron.reload() }, 0)} })
+    
+    return () => {
+      window.removeEventListener("keydown", (e) => { if (e.key === 'r' && e.ctrlKey) {e.stopImmediatePropagation(); e.preventDefault(); window.addEventListener("beforeunload", e => e.preventDefault()); setTimeout(() => { window.Electron.reload() }, 0)} })
+    }
+  })
+
   return (<>
     <WinControls />
     <div className="flex">
       <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon transition-colors duration-300 top-9 overflow-hidden">
         <Navigation navItemsTop={[
           { name: t('sidebar.library'), path: '/library', icon: 'apps' },
+          { name: "Arcade", path: '/arcade', icon: 'joystick' },
           { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
         ]} navItemsBottom={[
           { name: t('sidebar.settings'), path: '/settings', icon: 'settings' }
@@ -93,6 +104,7 @@ function AppContents() {
           <Routes>
             <Route path="/" /*element={<Library />}*/ />
             <Route path="/library" /*element={<Library />}*/ />
+            <Route path="/arcade" element={<Arcade />} />
             <Route path="/store" element={<Store />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>

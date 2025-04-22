@@ -1,12 +1,12 @@
 const nodemon = require("nodemon");
-const { spawn } = require("child_process");
+const { exec, spawn } = require("child_process");
 
 let firstRun = true;
 let electronProcess = null;
 
 function buildElectron() {
   return new Promise((resolve, reject) => {
-    const tsc = spawn("tsc", ["-p", "electron/electron.tsconfig.json"], { stdio: "inherit" });
+    const tsc = exec('npm run electron:build');
     tsc.on("close", (code) => {
       if (code === 0) resolve();
       else reject(new Error(`tsc exited with code ${code}`));
@@ -26,6 +26,8 @@ function launchElectron(isFirstRun) {
     stdio: "inherit",
     env: { ...process.env }
   });
+
+  console.log(electronProcess)
 
   electronProcess.on("close", (code) => {
     console.log(`[electron] exited with code ${code}`);
@@ -49,7 +51,7 @@ nodemon.on("start", async () => {
   }
 });
 
-nodemon.on("restart", async () => {
+/* nodemon.on("restart", async () => {
   console.log("[nodemon] Files changed, rebuilding and restarting Electron…");
   try {
     await buildElectron();
@@ -57,4 +59,4 @@ nodemon.on("restart", async () => {
   } catch (err) {
     console.error("Build failed:", err.message);
   }
-});
+}); */

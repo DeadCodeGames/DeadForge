@@ -1,6 +1,7 @@
-import path from 'path'; import url from 'url';
+import path from 'path'; import url from 'url'; import fs from 'fs';
 import { app, BrowserWindow, Extension, ipcMain, nativeTheme, Tray } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
+let gotInstanceLock = app.requestSingleInstanceLock();
 require("@electron/remote/main").initialize()
 const windowStateKeeper = require('electron-window-state');
 let installExtension: (extensionReference: ExtensionReference | string | Array<ExtensionReference | string>, options?: InstallExtensionOptions) => Promise<Extension[]>, REACT_DEVELOPER_TOOLS: ExtensionReference;
@@ -11,24 +12,28 @@ if (!app.isPackaged) {
 let mainWindow: BrowserWindow | null = null;
 let trayWindow: BrowserWindow | null = null;
 let tray: Tray;
+let initialLoad = true;
 
 const FIRST_DEV_RUN = !app.isPackaged && Boolean(process.argv.find((s) => s === "--first-run"));
 
 const createWindow = () => {
     let mainWindowState = windowStateKeeper({
         defaultHeight: 600,
-        defaultWidth: 800,
-        maximize: true
+        defaultWidth: 900,
+        maximize: true,
+        fullscreen: true
     })
 
     mainWindow = new BrowserWindow({
         minWidth: 555,
         minHeight: 350,
+        x: mainWindowState.x || undefined,
+        y: mainWindowState.y || undefined,
         height: mainWindowState.height,
         width: mainWindowState.width,
         frame: false,
-        fullscreen: false,
         titleBarStyle: 'hidden',
+        icon: path.join(__dirname, 'windowIcon.png'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -39,15 +44,20 @@ const createWindow = () => {
         }
     });
 
+    mainWindowState.manage(mainWindow)
+
     mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/library` : "http://localhost:3000#/library");
     if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
 
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
+
+    mainWindow.webContents.on("did-navigate", () => { if (!initialLoad) { app.relaunch(); app.quit() } else initialLoad = false; });
 };
 
-// App ready
+if (!gotInstanceLock && app.isPackaged) { app.quit(); } else
+if (!gotInstanceLock || !app.isPackaged) { gotInstanceLock = app.requestSingleInstanceLock(); }
 app.whenReady().then(async () => {
     await new Promise((resolve) => setTimeout(() => {
         FIRST_DEV_RUN && console.warn("Sometimes, during development, the development server starts way too late, and the window page is an error instead.");
@@ -94,6 +104,13 @@ app.whenReady().then(async () => {
         mainWindow?.focus();
     });
 });
+
+app.on('second-instance', () => {
+    if (!app.isPackaged) { app.quit(); } else {
+        mainWindow?.show();
+        mainWindow?.focus();
+    }
+})
 
 // Quit when all windows are closed (except on macOS)
 app.on('window-all-closed', () => {
@@ -176,8 +193,20 @@ const createTrayWindow = () => {
         else if (choice.type === 'navigate') {
             mainWindow?.webContents.send("tray:navigate", choice.destination);
             mainWindow?.show();
-            mainWindow?.restore();
             mainWindow?.focus();
         }
     })
 };
+
+ipcMain.handle('preferences:get', () => {
+    const preferences = fs.readFileSync(path.join(app.getPath('userData'), 'preferences.json'), 'utf-8');
+    return JSON.parse(preferences);
+});
+
+ipcMain.handle('preferences:set', (event: Electron.IpcMainInvokeEvent, newPreferences: object) => {
+    fs.writeFileSync(path.join(app.getPath('userData'), 'preferences.json'), JSON.stringify(newPreferences));
+});
+
+ipcMain.handle('app:reload', () => {
+    app.relaunch(); app.exit(0)
+});
