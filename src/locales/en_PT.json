@@ -5,6 +5,7 @@
     },
     "sidebar": {
         "library": "Logbook Hold",
+        "arcade": "",
         "store": "Market",
         "settings": "",
         "collapse": ""

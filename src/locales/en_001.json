@@ -5,6 +5,7 @@
     },
     "sidebar": {
         "library": "Library",
+        "arcade": "Arcade",
         "store": "Store",
         "settings": "Settings",
         "collapse": "Collapse"
@@ -60,7 +61,7 @@
             "betaUpdates": "Beta Updates",
             "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires Automatic Updates)",
             "languageUpdates": "Language Pack Updates",
-            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receive these small updates, containing only localization changes (requires Automatic Updates)"
+            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receiving these small updates, containing only localization changes (requires Automatic Updates)"
         }
     }
 }

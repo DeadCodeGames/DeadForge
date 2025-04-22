@@ -5,6 +5,7 @@
     },
     "sidebar": {
         "library": "图书馆",
+        "arcade": "",
         "store": "商店",
         "settings": "设置",
         "collapse": "折叠"

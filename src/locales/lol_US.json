@@ -5,6 +5,7 @@
     },
     "sidebar": {
         "library": "story place",
+        "arcade": "",
         "store": "stoar",
         "settings": "settingz",
         "collapse": ""

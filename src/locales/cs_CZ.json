@@ -5,6 +5,7 @@
     },
     "sidebar": {
         "library": "Knihovna",
+        "arcade": "",
         "store": "Obchod",
         "settings": "Nastavení",
         "collapse": "Sbalit"
@@ -19,7 +20,7 @@
         "theming": {
             "title": "Vzhled",
             "theme": "Motiv",
-            "themeDescription": "",
+            "themeDescription": "Vyberte si mezi světlým, tmavým a automatickým (systémovým) motivem",
             "systemTheme": "Dle systému",
             "darkTheme": "Tmavý",
             "lightTheme": "Světlý",
@@ -29,15 +30,15 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
-            "themeButtonInFrame": "",
-            "themeButtonInFrameDescription": "",
+            "themeButtonInFrame": "Zobrazit přepínač motivů v záhlaví okna",
+            "themeButtonInFrameDescription": "Zvolte, zda zahrnout tlačítko přepínače motivů do hlavičky okna pro rychlý přístup\nLevým tlačítkem přepnete mezi tmavým a světlem, klikněte pravým tlačítkem myši pro přepnutí na automatický (systémový) motiv",
             "language": "Jazyk",
-            "languageDescription": ""
+            "languageDescription": "Vyberte si váš preferovaný jazyk aplikace"
         },
         "behavior": {
             "title": "Chování",
             "defaultPage": "Výchozí stránka",
-            "defaultPageDescription": "",
+            "defaultPageDescription": "Vyberte stránku, která se zobrazí při spuštění aplikace",
             "settingsWindow": "Otevírat nastavení ve samostatném okně",
             "settingsWindowDescription": "Otevírat nastavení ve samostatném okně namísto sekce ve hlavním okně",
             "useTray": "Zobrazit v oblasti oznámení",
@@ -48,7 +49,7 @@
         "appData": {
             "title": "Data a aktualizace aplikace",
             "initialSetup": "Prvotní nastavení",
-            "initialSetupDescription": "",
+            "initialSetupDescription": "Restartovat počáteční sekvence nastavení, která se zobrazí při prvním spuštění",
             "replaySetup": "Spustit prvotní nastavení",
             "dataManagement": "Správa dat",
             "dataManagementDescription": "Export, import a resetování všech dat aplikace",
@@ -58,8 +59,8 @@
             "autoUpdate": "Automatické aktualizace",
             "autoUpdateDescription": "Automaticky stáhnout a nainštalovat aktualizace aplikace",
             "betaUpdates": "Předběžné (Beta) aktualizace",
-            "betaUpdatesDescription": "",
-            "languageUpdates": "",
+            "betaUpdatesDescription": "Instalovat předběžné beta verzie s novými funkcemi dříve (vyžaduje Automatické aktualizace)",
+            "languageUpdates": "Aktualizace jazykových balíčků",
             "languageUpdatesDescription": ""
         }
     }

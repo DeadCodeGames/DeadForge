@@ -5,6 +5,7 @@
     },
     "sidebar": {
         "library": "Bibliothèque",
+        "arcade": "",
         "store": "Magasin",
         "settings": "Paramètres",
         "collapse": "Réduire"

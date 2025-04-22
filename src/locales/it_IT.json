@@ -5,6 +5,7 @@
     },
     "sidebar": {
         "library": "Biblioteca",
+        "arcade": "",
         "store": "Negozio",
         "settings": "Impostazioni",
         "collapse": "Minimizza"
