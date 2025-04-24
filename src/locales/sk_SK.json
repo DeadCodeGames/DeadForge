@@ -5,7 +5,7 @@
     },
     "sidebar": {
         "library": "Knižnica",
-        "arcade": "",
+        "arcade": "Arcade",
         "store": "Obchod",
         "settings": "Nastavenia",
         "collapse": "Zbaliť"
@@ -45,7 +45,7 @@
             "useTrayDescription": "Ponechať aplikáciu na pozadí po uzatvorení okna, skrytú v oblasti oznámení",
             "autoStart": "Spustiť pri štarte",
             "autoStartDescription": "Spustiť aplikáciu automaticky po spustení počítača",
-            "unavailableOnLinux": ""
+            "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch"
         },
         "appData": {
             "title": "Dáta a aktualizácie aplikácie",
@@ -62,7 +62,7 @@
             "betaUpdates": "Predbežné (Beta) aktualizácie",
             "betaUpdatesDescription": "Inštalovať predbežné beta verzie s novými funkciami skôr (vyžaduje Automatické aktualizácie)",
             "languageUpdates": "Aktualizácie jazykových balíčkov",
-            "languageUpdatesDescription": ""
+            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)"
         }
     }
 }
