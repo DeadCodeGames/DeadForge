@@ -14,9 +14,11 @@
     "electron-window-state": "^5.0.3"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.27.0",
+    "@babel/register": "^7.25.9",
     "@dead404code/tailwind-remove-base-border-box": "^1.0.0-Patch",
     "@dead404code/tailwind-utilities": "^1.0.1-Patch",
-    "@electron/remote": "^2.1.2",
     "@types/flat": "^5.0.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.2",
@@ -29,6 +31,7 @@
     "electron-builder": "^26.0.12",
     "electron-devtools-installer": "^4.0.0",
     "flat": "^6.0.1",
+    "html-minifier-terser": "^7.2.0",
     "i18next": "^25.0.0",
     "lucide-react": "^0.487.0",
     "nodemon": "^3.1.9",
@@ -50,6 +53,10 @@
     "extends": null,
     "productName": "DeadForge",
     "compression": "maximum",
+    "directories": {
+      "buildResources": "buildResources/**/*"
+    },
+    "icon": "./electron-dist/windowIcon.png",
     "files": [
       "build/**/*",
       "electron-dist/**/*",

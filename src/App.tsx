@@ -8,6 +8,7 @@ import Settings from './pages/Settings/Settings.tsx';
 import Tray from './pages/Tray/Tray.tsx';
 import { useTranslation } from "react-i18next";
 import Arcade from "./pages/Arcade/Arcade.tsx";
+import InitialLoader from "./components/Loader/InitialLoader.tsx";
 
 const defaultPreferences = {
   theme: "dark",
@@ -122,6 +123,7 @@ export default function App() {
 
   return (
     <AppContextProvider>
+      <InitialLoader />
       <Routes>
         <Route path="/tray" element={window.Electron.isTray ? <Tray /> : <Navigate to="/library" />} />
         <Route path="*" element={<AppContents />} />

@@ -34,7 +34,7 @@ const createWindow = () => {
     })
 
     mainWindow = new BrowserWindow({
-        minWidth: 650,
+        minWidth: 700,
         minHeight: 450,
         x: mainWindowState.x || undefined,
         y: mainWindowState.y || undefined,
@@ -43,6 +43,7 @@ const createWindow = () => {
         frame: false,
         titleBarStyle: 'hidden',
         icon: path.join(__dirname, 'windowIcon.png'),
+        backgroundColor: '#0F0F0F',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
