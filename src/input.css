@@ -8,14 +8,15 @@
     @apply select-none;
 }
 
-/* App loading state */
-html:has(div#updatestatus[status="appnotloaded"]) {
+/* App loading state 
+html[updateStatus="appnotloaded"] {
     @apply pointer-events-none opacity-0;
 }
 
-html:not(:has(div#updatestatus[status="appnotloaded"])) {
+html:not([updateStatus="appnotloaded"])y {
     @apply opacity-100;
 }
+*/
 
 /* Transitions */
 html {
@@ -24,7 +25,11 @@ html {
 
 /* Body reset & base style */
 html, body {
-    @apply m-0 bg-black text-white;
+    @apply m-0 bg-notQuiteWhite text-notQuiteBlack;
+}
+
+html.dark, body:is(.dark *) {
+    @apply bg-notQuiteBlack text-notQuiteWhite;
 }
 
 /* Links */
@@ -41,4 +46,3 @@ div.checklist pre.code {
 .inverse-quarter {
     clip-path: path('M0,0 H25 V25 H0 Z M25,0 A25,25 0 0 0 0,25 Z');
 }
-  

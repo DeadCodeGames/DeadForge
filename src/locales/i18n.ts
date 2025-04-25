@@ -13,6 +13,7 @@ import ko_KR from './ko_KR.json';
 import lol_US from './lol_US.json';
 import sk_SK from './sk_SK.json';
 import zh_CN from './zh_CN.json';
+
 const resources: Record<string, { translation: object }> = {
   en_001: { translation: en_001 },
 };

@@ -13,6 +13,6 @@
       "allowJs": false,
       "types": ["electron"]
     },
-    "include": ["main.ts", "preload.ts", "store.preload.ts"]
+    "include": ["main.ts", "preload.ts", "store.preload.ts", "tray.preload.ts", "settings.preload.ts"]
   }
   

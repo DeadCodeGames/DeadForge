@@ -1,10 +1,10 @@
-"use client"
-
 import { useState, useRef, useEffect, useContext } from "react";
 import { AppContext } from '../../App.tsx'
 import { ArrowLeft, ArrowRight, Home, RefreshCw, Copy, Check } from 'lucide-react';
+import { useTranslation } from "react-i18next";
 
 const Store = () => {
+  const { t } = useTranslation();
   const [currentUrl, setCurrentUrl] = useState<string>(process.env.REACT_APP_STORE_URL!)
   const [canGoBack, setCanGoBack] = useState(false)
   const [canGoForward, setCanGoForward] = useState(false)
@@ -77,51 +77,51 @@ const Store = () => {
   }
 
   return (
-    <div className="flex flex-col h-full w-full bg-fullMoon text-notQuiteBlack dark:bg-night dark:text-notQuiteWhite">
+    <div className="flex flex-col h-full w-full bg-fullMoon text-notQuiteBlack dark:bg-night dark:text-notQuiteWhite transition-colors duration-300 ease-in-out">
       {/* URL Bar */}
       <div 
-        className="flex items-center bg-navy pl-2 pr-1 py-1 border-b border-gray-700"
+        className="flex items-center bg-navy px-2 py-2 border-b border-gray-700"
       >
         <div className="flex space-x-1 mr-2">
           <button
             onClick={goBack}
             disabled={!canGoBack}
-            className={`p-1 rounded hover:bg-neutral-700 ${!canGoBack ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`p-1 rounded rounded-tl-2xl hover:bg-neutral-300 dark:hover:bg-neutral-800 ${!canGoBack ? 'opacity-50 cursor-not-allowed' : ''}`}
             title="Go Back"
           >
-            <ArrowLeft size={18} className="text-night-moon" />
+            <ArrowLeft size={20} className="text-night-moon" />
           </button>
           <button
             onClick={goForward}
             disabled={!canGoForward}
-            className={`p-1 rounded hover:bg-neutral-700 ${!canGoForward ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`p-1 rounded hover:bg-neutral-300 dark:hover:bg-neutral-800 ${!canGoForward ? 'opacity-50 cursor-not-allowed' : ''}`}
             title="Go Forward"
           >
-            <ArrowRight size={18} className="text-night-moon" />
+            <ArrowRight size={20} className="text-night-moon" />
           </button>
           <button
             onClick={goHome}
-            className="p-1 rounded hover:bg-neutral-700"
+            className="p-1 rounded hover:bg-neutral-300 dark:hover:bg-neutral-800"
             title="Go Home"
           >
-            <Home size={18} className="text-night-moon" />
+            <Home size={20} className="text-night-moon" />
           </button>
           <button
             onClick={refresh}
-            className="p-1 rounded hover:bg-neutral-700"
+            className="p-1 rounded hover:bg-neutral-300 dark:hover:bg-neutral-800"
             title="Refresh"
           >
-            <RefreshCw size={18} className={`text-night-moon ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw size={20} className={`text-night-moon ${isLoading ? 'animate-spin' : ''}`} />
           </button>
         </div>
         <div 
           onClick={copyUrl}
-          className="flex-1 bg-fullMoon dark:bg-night text-night-moon px-3 py-1 rounded flex items-center cursor-pointer hover:bg-neutral-300 dark:hover:bg-neutral-800"
+          className="flex-1 bg-fullMoon dark:bg-night transition-colors duration-300 ease-in-out text-night-moon pl-3 pr-2 py-0.5 rounded flex items-center cursor-pointer hover:bg-neutral-300 dark:hover:bg-neutral-800"
           title="Click to copy URL"
         >
-          <span className="truncate flex-1">{currentUrl}</span>
+          <span className="truncate flex-1 text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300 ease-in-out">{currentUrl}</span>
           {copied ? (
-            <span className="flex items-center text-gray-700 dark:text-neutral-400">URL has been successfully copied <Check size={16} className="text-green-500 ml-2" /></span>
+            <span className="flex items-center text-gray-700 dark:text-neutral-400 text-sm">{t('store.urlCopied')} <Check size={16} className="text-green-500 ml-2" /></span>
           ) : (
             <Copy size={16} className="text-gray-700 dark:text-gray-400 ml-2" />
           )}
@@ -132,7 +132,7 @@ const Store = () => {
       <div className="flex-1 relative">
         <webview
           ref={webviewRef}
-          src="http://localhost:3001"
+          src={process.env.REACT_APP_STORE_URL!}
           preload={storePreload}
           style={{
             position: "absolute",
