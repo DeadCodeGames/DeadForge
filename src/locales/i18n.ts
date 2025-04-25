@@ -1,5 +1,6 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next'
+import { initReactI18next } from 'react-i18next';
+import {unflatten, flatten} from 'flat';
 
 import en_001 from './en_001.json';
 import cs_CZ from './cs_CZ.json';
@@ -12,19 +13,11 @@ import ko_KR from './ko_KR.json';
 import lol_US from './lol_US.json';
 import sk_SK from './sk_SK.json';
 import zh_CN from './zh_CN.json';
-const resources = {
+const resources: Record<string, { translation: object }> = {
   en_001: { translation: en_001 },
-  cs_CZ: { translation: cs_CZ },
-  de_DE: { translation: de_DE },
-  en_PT: { translation: en_PT },
-  fr_FR: { translation: fr_FR },
-  it_IT: { translation: it_IT },
-  ja_JP: { translation: ja_JP },
-  ko_KR: { translation: ko_KR },
-  lol_US: { translation: lol_US },
-  sk_SK: { translation: sk_SK },
-  zh_CN: { translation: zh_CN },
 };
+
+if (!window.App.isPackaged) resources.stringsDebug = { translation: unflatten(Object.fromEntries(Object.entries(flatten(en_001)!).map(([k,]) => [k, k]))) };
 
 i18n
   .use(initReactI18next)

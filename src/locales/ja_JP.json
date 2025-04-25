@@ -14,7 +14,8 @@
         "urlCopied": "URLは正常にコピーされました"
     },
     "tray": {
-        "exit": "<0>DEADFORGE</0>を終了"
+        "exit": "<0>DEADFORGE</0>を終了",
+        "arcade": ""
     },
     "settings": {
         "theming": {

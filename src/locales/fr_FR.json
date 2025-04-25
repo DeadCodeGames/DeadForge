@@ -14,7 +14,8 @@
         "urlCopied": "L'URL a été copiée avec succès"
     },
     "tray": {
-        "exit": "Quitter <0>DEADFORGE</0>"
+        "exit": "Quitter <0>DEADFORGE</0>",
+        "arcade": ""
     },
     "settings": {
         "theming": {

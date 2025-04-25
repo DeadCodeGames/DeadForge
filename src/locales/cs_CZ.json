@@ -14,7 +14,8 @@
         "urlCopied": "Adresa byla úspěšně zkopírovaná"
     },
     "tray": {
-        "exit": "Ukončit <0>DEADFORGE</0>"
+        "exit": "Ukončit <0>DEADFORGE</0>",
+        "arcade": ""
     },
     "settings": {
         "theming": {

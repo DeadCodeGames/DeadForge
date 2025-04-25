@@ -14,7 +14,8 @@
         "urlCopied": ""
     },
     "tray": {
-        "exit": ""
+        "exit": "",
+        "arcade": ""
     },
     "settings": {
         "theming": {
