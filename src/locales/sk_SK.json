@@ -15,7 +15,7 @@
     },
     "tray": {
         "exit": "Ukončiť <0>DEADFORGE</0>",
-        "arcade": ""
+        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
     },
     "settings": {
         "theming": {

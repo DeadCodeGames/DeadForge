@@ -15,7 +15,7 @@
     },
     "tray": {
         "exit": "<0>DEADFORGE</0>を終了",
-        "arcade": ""
+        "arcade": "<0>DEADFORGE</0> <1>アーケード</1>"
     },
     "settings": {
         "theming": {
