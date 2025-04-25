@@ -34,7 +34,9 @@
             "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
             "themeButtonInFrameDescription": "",
             "language": "言語",
-            "languageDescription": ""
+            "languageDescription": "",
+            "languageShowIncomplete": "",
+            "languageShowIncompleteDescription": ""
         },
         "behavior": {
             "title": "行動",

@@ -34,7 +34,9 @@
             "themeButtonInFrame": "",
             "themeButtonInFrameDescription": "",
             "language": "",
-            "languageDescription": ""
+            "languageDescription": "",
+            "languageShowIncomplete": "",
+            "languageShowIncompleteDescription": ""
         },
         "behavior": {
             "title": "",
