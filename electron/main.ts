@@ -1,8 +1,8 @@
 import path from 'path'; import url from 'url'; import fs from 'fs';
 import { app, BrowserWindow, Extension, ipcMain, nativeTheme, Tray } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
+import { Preferences } from './preferences'; 
 let gotInstanceLock = app.requestSingleInstanceLock();
-require("@electron/remote/main").initialize()
 const windowStateKeeper = require('electron-window-state');
 let installExtension: (extensionReference: ExtensionReference | string | Array<ExtensionReference | string>, options?: InstallExtensionOptions) => Promise<Extension[]>, REACT_DEVELOPER_TOOLS: ExtensionReference;
 if (!app.isPackaged) {
@@ -11,6 +11,7 @@ if (!app.isPackaged) {
 
 let mainWindow: BrowserWindow | null = null;
 let trayWindow: BrowserWindow | null = null;
+let settingsWindow: BrowserWindow | null = null;
 let tray: Tray;
 let initialLoad = true;
 
@@ -23,7 +24,43 @@ try {
     console.log(e)
     initialPrefs = "";
 }
-console.log(initialPrefs)
+
+const createTray = () => {
+    tray = new Tray(path.join(__dirname, 'trayIcon.png'));
+    let trayTimer: null | NodeJS.Timeout = null;
+    let trayClickEvent = async () => {
+        if (trayTimer) { clearTimeout(trayTimer); trayTimer = null; return; } else {
+            await new Promise((resolve) => { trayTimer = setTimeout(() => { if (trayTimer === null) return; trayTimer = null; resolve(null) }, 500) });
+        }
+        if (!trayWindow) return;
+
+        await new Promise<void>((resolve) => {
+            ipcMain.once('tray:contentsHeightResponse', (event, height) => {
+                trayWindow!.setBounds({ height });
+                resolve();
+            });
+
+            trayWindow?.webContents.send('tray:getContentsHeight');
+        });
+
+        const { x, y } = tray.getBounds();
+        const { height } = trayWindow.getBounds();
+
+        // Simple tray positioner
+        trayWindow.setPosition(x - 4, y - height - 8);
+        trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
+    }
+
+    tray.on('click', trayClickEvent);
+    tray.on('right-click', trayClickEvent);
+
+    tray.on('double-click', () => {
+        clearTimeout(trayTimer!); trayTimer = null;
+        mainWindow?.show();
+        mainWindow?.restore();
+        mainWindow?.focus();
+    });
+}
 
 const createWindow = () => {
     let mainWindowState = windowStateKeeper({
@@ -79,40 +116,7 @@ app.whenReady().then(async () => {
         resolve(null);
     }, !FIRST_DEV_RUN ? 0 : 2500));
 
-    tray = new Tray(path.join(__dirname, 'trayIcon.png'));
-    let trayTimer: null | NodeJS.Timeout = null;
-    let trayClickEvent = async () => {
-        if (trayTimer) { clearTimeout(trayTimer); trayTimer = null; return; } else {
-            await new Promise((resolve) => { trayTimer = setTimeout(() => { if (trayTimer === null) return; trayTimer = null; resolve(null) }, 500) });
-        }
-        if (!trayWindow) return;
-
-        await new Promise<void>((resolve) => {
-            ipcMain.once('tray:contentsHeightResponse', (event, height) => {
-                trayWindow!.setBounds({ height });
-                resolve();
-            });
-
-            trayWindow?.webContents.send('tray:getContentsHeight');
-        });
-
-        const { x, y } = tray.getBounds();
-        const { height } = trayWindow.getBounds();
-
-        // Simple tray positioner
-        trayWindow.setPosition(x - 4, y - height - 8);
-        trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
-    }
-
-    tray.on('click', trayClickEvent);
-    tray.on('right-click', trayClickEvent);
-
-    tray.on('double-click', () => {
-        clearTimeout(trayTimer!); trayTimer = null;
-        mainWindow?.show();
-        mainWindow?.restore();
-        mainWindow?.focus();
-    });
+    if (initialPrefs.useTray) createTray();
 });
 
 app.on('second-instance', () => {
@@ -201,12 +205,65 @@ const createTrayWindow = () => {
         trayWindow?.hide()
         if (choice.type === 'exit') app.quit();
         else if (choice.type === 'navigate') {
+            console.log("sending")
             mainWindow?.webContents.send("tray:navigate", choice.destination);
             mainWindow?.show();
             mainWindow?.focus();
         }
     })
 };
+
+/* <------------------------- Settings ------------------------------> */
+
+const createSettingsWindow = () => {
+    settingsWindow = new BrowserWindow({
+        minWidth: 700,
+        minHeight: 450,
+        height: 1000,
+        width: 750,
+        frame: false,
+        titleBarStyle: 'hidden',
+        icon: path.join(__dirname, 'windowIcon.png'),
+        backgroundColor: '#0F0F0F',
+        webPreferences: {
+            preload: path.join(__dirname, 'settings.preload.js'),
+            nodeIntegration: true,
+            contextIsolation: true,
+            devTools: app.isPackaged ? true : true,
+            webviewTag: true,
+            additionalArguments: [`--isPackaged=${app.isPackaged}`]
+        }
+    });
+
+    settingsWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/settings` : `http://localhost:3000#/settings`);
+    if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
+
+    settingsWindow.on('closed', () => {
+        settingsWindow = null;
+    });
+};
+
+// IPC handlers
+ipcMain.handle('settings:minimize', () => {
+    settingsWindow?.minimize();
+});
+
+ipcMain.handle('settings:maximize', () => {
+    if (!settingsWindow) return;
+    if (settingsWindow.isMaximized()) {
+        settingsWindow.unmaximize();
+    } else {
+        settingsWindow.maximize();
+    }
+});
+
+ipcMain.handle('settings:isMaximized', () => {
+    return settingsWindow?.isMaximized() ?? false;
+});
+
+ipcMain.handle('settings:close', () => {
+    settingsWindow?.close();
+});
 
 ipcMain.handle('preferences:get', () => {
     let preferences: string;
@@ -218,10 +275,35 @@ ipcMain.handle('preferences:get', () => {
     return preferences;
 });
 
-ipcMain.handle('preferences:set', (event: Electron.IpcMainInvokeEvent, newPreferences: object) => {
-    console.log(newPreferences)
+ipcMain.handle('preferences:set', (event: Electron.IpcMainInvokeEvent, newPreferences: Preferences, isSettingsOpen: boolean, fromSettingsWindow?: boolean) => {
     fs.writeFileSync(path.join(app.getPath('userData'), 'preferences.json'), JSON.stringify(newPreferences));
+    if (!trayWindow && newPreferences.useTray) {
+        createTrayWindow();
+        createTray();
+    }
+    else if (trayWindow && !newPreferences.useTray) {
+        trayWindow?.destroy();
+        trayWindow = null;
+        tray?.destroy();
+    }
+    if (newPreferences.autoStart && !app.getLoginItemSettings().openAtLogin) {
+        app.setLoginItemSettings({ openAtLogin: true });
+    } else if (!newPreferences.autoStart && app.getLoginItemSettings().openAtLogin) {
+        app.setLoginItemSettings({ openAtLogin: false });
+    }
+    if (settingsWindow && fromSettingsWindow) {
+        mainWindow?.webContents.send('preferences:update', newPreferences);
+    }
+    if (newPreferences.useSettingsWindow && !settingsWindow && isSettingsOpen) {
+        createSettingsWindow();
+    } else if (!newPreferences.useSettingsWindow && settingsWindow) {
+        settingsWindow?.destroy();
+        settingsWindow = null;
+        mainWindow!.webContents.send('tray:choice', { type: 'navigate', destination: '/settings' });
+    }
 });
+
+ipcMain.on('window:openSettingsWindow', createSettingsWindow)
 
 ipcMain.handle('app:reload', () => {
     app.relaunch(); app.exit(0)

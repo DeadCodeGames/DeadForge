@@ -1,8 +1,10 @@
+/// <reference types="navigation-api-types" />
 import { IpcRendererEvent } from 'electron'
 declare global {
     interface Window {
         Electron: {
             isTray: boolean;
+            isSettingsWindow: boolean;
             storePreload: string;
             onTrayGetContentsHeight: (callback: (event: IpcRendererEvent) => void) => void;
             sendTrayChoice: (choice: string | object) => void;
@@ -15,8 +17,10 @@ declare global {
             getPlatform: () => Promise<"Linux" | "Windows" | "Mac">;
             onMaximize: (callback: (event: IpcRendererEvent) => void) => void;
             onUnmaximize: (callback: (event: IpcRendererEvent) => void) => void;
-            getPreferences: () => object | "";
-            setPreferences: (preferences: object) => void;
+            getPreferences: () => Preferences | "";
+            setPreferences: (preferences: object, isSettingsOpen: boolean, fromSettingsWindow: boolean) => void;
+            onPreferencesUpdate: (callback: (e:any, newPrefs: object) => void) => void,
+            openSettingsWindow: () => void;
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
@@ -25,4 +29,19 @@ declare global {
             isPackaged: boolean;
         }
     }
+}
+
+export type Preferences = {
+    theme: string,
+    sidebarCollapsed: boolean,
+    windowFrame: string,
+    showThemeButton: boolean,
+    language: string,
+    defaultPage: string,
+    useSettingsWindow: boolean,
+    useTray: boolean,
+    autoStart: boolean,
+    autoUpdate: boolean,
+    betaUpdates: boolean,
+    langUpdates: boolean
 }

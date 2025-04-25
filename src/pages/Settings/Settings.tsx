@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { AppContext } from "@/App.tsx";
-import { resources } from "@/locales/i18n.ts";
+import i18n, { resources } from "@/locales/i18n.ts";
 import { useTranslation } from "react-i18next";
 import LocalTwemoji from "@/components/CustomElements/LocalTwemoji.tsx";
 import { flatten } from "flat";
@@ -11,6 +11,17 @@ import SettingsOption from "./SettingsOption";
 export default function Settings() {
     const { context, setContext } = useContext(AppContext);
     const { t } = useTranslation();
+
+    useEffect(() => {
+        if (!window.Electron.isSettingsWindow && context.preferences.useSettingsWindow) {
+            if (window.navigation!.canGoBack) {
+                  window.history.back();
+            } else {
+                window.location.hash = context.preferences.defaultPage;
+            }
+            window.Electron.openSettingsWindow();
+        }
+    })
 
     const handleThemeChange = (theme: string) => {
         setContext((prev: any) => ({
@@ -40,6 +51,7 @@ export default function Settings() {
                 language
             }
         }));
+        i18n.changeLanguage(language);
     };
 
     const handleDefaultPageChange = (defaultPage: string) => {
@@ -109,7 +121,7 @@ export default function Settings() {
                 ...prev.preferences,
                 langUpdates
             }
-        }));
+        }));;
     };
 
     const replaySetup = () => {
@@ -129,7 +141,7 @@ export default function Settings() {
     };
 
     const calculateTranslationPercentage = (lang: string) => {
-        if (lang === "en_001") return 100;
+        if (lang === "en_001" || lang === "stringsDebug") return 100;
 
         const enTranslations: number = Object.entries(flatten(resources["en_001"].translation)!).filter(([key]) => key !== "meta").length;
 
@@ -345,7 +357,8 @@ export default function Settings() {
                     <SettingsOption title={t("settings.appData.initialSetup")} description={t("settings.appData.initialSetupDescription")}
                         controls={<button
                             onClick={replaySetup}
-                            className="px-4 py-2 rounded-lg bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack font-bold"
+                            className="px-4 py-2 rounded-lg bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack font-bold disabled:cursor-not-allowed disabled:opacity-50"
+                            disabled
                         >
                             {t("settings.appData.replaySetup")}
                         </button>
@@ -355,22 +368,25 @@ export default function Settings() {
                     {/* Data Management */}
                     <SettingsOption title={t("settings.appData.dataManagement")} description={t("settings.appData.dataManagementDescription")}
                         controls={
-                            <div className="flex space-x-2">
+                            <div className="flex flex-row gap-4 flex-wrap justify-end settingsWrap:justify-center">
                                 <button
                                     onClick={exportData}
-                                    className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold"
+                                    className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled
                                 >
                                     {t("settings.appData.exportData")}
                                 </button>
                                 <button
                                     onClick={importData}
-                                    className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold"
+                                    className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled
                                 >
                                     {t("settings.appData.importData")}
                                 </button>
                                 <button
                                     onClick={resetData}
-                                    className="px-4 py-2 rounded-lg bg-red-600 text-white font-bold"
+                                    className="px-4 py-2 rounded-lg bg-red-600 text-white font-bold disabled:cursor-not-allowed disabled:opacity-50"
+                                    disabled
                                 >
                                     {t("settings.appData.resetData")}
                                 </button>

@@ -34,6 +34,7 @@
     "html-minifier-terser": "^7.2.0",
     "i18next": "^25.0.0",
     "lucide-react": "^0.487.0",
+    "navigation-api-types": "^0.6.1",
     "nodemon": "^3.1.9",
     "react": "^19.1.0",
     "react-app-rewired": "^2.2.1",
@@ -42,6 +43,7 @@
     "react-router-dom": "^7.5.0",
     "react-scripts": "5.0.1",
     "react-twemoji": "^0.6.0",
+    "tsx": "^4.19.3",
     "twemoji": "^14.0.2",
     "typescript": "^5.8.3",
     "wait-on": "^8.0.3"
@@ -81,8 +83,9 @@
   "scripts": {
     "start": "npm run electron:serve",
     "react:start": "react-app-rewired start",
-    "react:build": "react-app-rewired build",
     "prereact:build": "node scripts/fetchTwemoji.js",
+    "react:build": "react-app-rewired build",
+    "postreact:build": "tsx scripts/hydrateLoader.js",
     "react:test": "react-app-rewired test",
     "react:eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none npm run react:start\" \"wait-on tcp:3000 && npm run electron:dev\"",

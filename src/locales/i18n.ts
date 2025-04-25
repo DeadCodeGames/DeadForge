@@ -1,11 +1,14 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next'
+import { initReactI18next } from 'react-i18next';
+import {unflatten, flatten} from 'flat';
 
 import en_001 from './en_001.json';
 
-const resources = {
+const resources: Record<string, { translation: object }> = {
   en_001: { translation: en_001 },
 };
+
+if (!window.App.isPackaged) resources.stringsDebug = { translation: unflatten(Object.fromEntries(Object.entries(flatten(en_001)!).map(([k,]) => [k, k]))) };
 
 i18n
   .use(initReactI18next)

@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext } from "react";
-import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import WinControls from './components/WinControls/WinControls.tsx';
 import Navigation from './components/Nav/Nav.tsx';
 // import Library from './pages/Library/Library.tsx';
@@ -9,6 +9,7 @@ import Tray from './pages/Tray/Tray.tsx';
 import { useTranslation } from "react-i18next";
 import Arcade from "./pages/Arcade/Arcade.tsx";
 import InitialLoader from "./components/Loader/InitialLoader.tsx";
+import i18n from "./locales/i18n.ts";
 
 const defaultPreferences = {
   theme: "dark",
@@ -41,7 +42,8 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
       try {
         const prefs = await window.Electron.getPreferences();
         if (prefs !== "") {
-          setContext({ preferences: prefs }); 
+          setContext((prev: any) => { return { ...prev, preferences: prefs } }); 
+          i18n.changeLanguage(prefs.language);
         } else {
           console.warn("Could not retrieve user preferences. This can be caused by the app being first launched, or manual manipulation.\nA new file has been generated, however, any previous settings have been lost.")
         }
@@ -51,20 +53,31 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
+    window.Electron.onPreferencesUpdate((e: any, newPrefs: any) => {
+      if (window.Electron.isSettingsWindow) return;
+      setContext((prev: any) => { return { ...prev, preferences: newPrefs } });
+      if (!newPrefs.useSettingsWindow) { console.log("l"); window.location.hash = "/settings" };
+      i18n.changeLanguage(newPrefs.language);
+    })
+
     fetchPreferences();
+
+    return () => window.Electron.onPreferencesUpdate(() => {});
   }, []);
 
   useEffect(() => {
     async function fetchStorePreloadLink() {
-      if (!shouldSetContext) return;
+      if (!shouldSetContext || window.Electron.isTray) return;
       const link = window.Electron.storePreload;
       setContext((prev: any) => { return { ...prev, storePreload: link } })
     }
     if (!context.storePreload && !window.Electron.isTray) {
       fetchStorePreloadLink();
     }
-    if (shouldSetContext) window.Electron.setPreferences(context.preferences);
-  }, [context, shouldSetContext]);
+    if (shouldSetContext && !window.Electron.isTray) window.Electron.setPreferences(context.preferences, window.location.pathname === "#/settings", window.Electron.isSettingsWindow);
+    // using JSON.stringify here, because... useEffect deps arrays do not fuck with objects, yk?
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(context), shouldSetContext]);
 
   return (
     <AppContext.Provider value={{ context, setContext }}>
@@ -81,8 +94,14 @@ function AppContents() {
 
   useEffect(() => {
     window.Electron.onTrayNavigate((event, location) => {
-      console.log(location);
-      navigate(location);
+      if (location === "/settings") {
+        window.Electron.openSettingsWindow();
+        console.log("opening")
+        return; 
+      } else {
+        navigate(location);
+      }
+      
     })
   }, [navigate]);
 
@@ -103,7 +122,7 @@ function AppContents() {
           { name: t('sidebar.arcade'), path: '/arcade', icon: 'joystick' },
           { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
         ]} navItemsBottom={[
-          { name: t('sidebar.settings'), path: '/settings', icon: 'settings' }
+          { name: t('sidebar.settings'), path: '/settings', icon: 'settings', onClick: (e) => { window.Electron.openSettingsWindow() } }
         ]} />
         <div id="contents" className="left-[var(--sidebarWidth)] right-0 h-[calc(100vh-36px)] absolute dark:bg-notQuiteBlack bg-notQuiteWhite transition-[color,background-color,border-color,text-decoration-color,fill,stroke,left] duration-300 overflow-hidden">
           <Routes>
@@ -123,11 +142,14 @@ export default function App() {
 
   return (
     <AppContextProvider>
-      <InitialLoader />
-      <Routes>
-        <Route path="/tray" element={window.Electron.isTray ? <Tray /> : <Navigate to="/library" />} />
-        <Route path="*" element={<AppContents />} />
-      </Routes>
+      {!(window.Electron.isTray || window.Electron.isSettingsWindow) && <InitialLoader />}
+      {window.Electron.isTray && <Tray />}
+      {window.Electron.isSettingsWindow && <><WinControls /><div className="h-[calc(100vh-36px)] absolute w-full top-9 overflow-hidden"><Settings /></div></>}
+      {!(window.Electron.isTray || window.Electron.isSettingsWindow) &&
+        <Routes>
+          <Route path="*" element={<AppContents />} />
+        </Routes>
+      }
     </AppContextProvider>
   ) as React.JSX.Element;
 }

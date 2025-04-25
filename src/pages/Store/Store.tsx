@@ -1,10 +1,10 @@
-"use client"
-
 import { useState, useRef, useEffect, useContext } from "react";
 import { AppContext } from '../../App.tsx'
 import { ArrowLeft, ArrowRight, Home, RefreshCw, Copy, Check } from 'lucide-react';
+import { useTranslation } from "react-i18next";
 
 const Store = () => {
+  const { t } = useTranslation();
   const [currentUrl, setCurrentUrl] = useState<string>(process.env.REACT_APP_STORE_URL!)
   const [canGoBack, setCanGoBack] = useState(false)
   const [canGoForward, setCanGoForward] = useState(false)
@@ -121,7 +121,7 @@ const Store = () => {
         >
           <span className="truncate flex-1 text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300 ease-in-out">{currentUrl}</span>
           {copied ? (
-            <span className="flex items-center text-gray-700 dark:text-neutral-400 text-sm">URL has been successfully copied <Check size={16} className="text-green-500 ml-2" /></span>
+            <span className="flex items-center text-gray-700 dark:text-neutral-400 text-sm">{t('store.urlCopied')} <Check size={16} className="text-green-500 ml-2" /></span>
           ) : (
             <Copy size={16} className="text-gray-700 dark:text-gray-400 ml-2" />
           )}

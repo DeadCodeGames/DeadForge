@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '@/App';
+import { ControlledNavLink } from '../ControlledNavLink';
 
 type NavItem = {
     name: string | React.JSX.Element;
     path: string;
     icon: string;
+    onClick?: (e?: any) => void;
 };
 
 export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) {
@@ -47,7 +48,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
         });
     };
 
-    const baseItemClass = "flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start";
+    const baseItemClass = "flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start text-left";
     const activeClass = "text-blue-500";
     const inactiveClass = "text-notQuiteBlack dark:text-notQuiteWhite hover:text-black dark:hover:text-white";
     const expandedPointerClass = "-scale-x-100";
@@ -57,30 +58,32 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
             <nav className="flex flex-col justify-between gap-1 p-2 pt-0 overflow-hidden h-full">
                 <div className='flex flex-col gap-1'>
                     {navItemsTop.map((item) => (
-                        <NavLink
+                        <ControlledNavLink
                             key={item.path}
                             to={item.path}
                             className={({ isActive }) =>
                                 `${baseItemClass} ${isActive ? activeClass : inactiveClass}`
                             }
+                            onClick={item.onClick ? item.onClick : () => {}}
                         >
                             <span className="material-symbols size-6">{item.icon}</span>
-                            <span className={!(collapsed || forceCollapse) ? "ml-3 font-montserrat w-[calc(100%-54px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
-                        </NavLink>
+                            <span className={!(collapsed || forceCollapse) ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
+                        </ControlledNavLink>
                     ))}
                 </div>
                 <div className='flex flex-col gap-1'>
                     {navItemsBottom.map((item) => (
-                        <NavLink
+                        <ControlledNavLink
                             key={item.path}
                             to={item.path}
                             className={({ isActive }) =>
                                 `${baseItemClass} ${isActive ? activeClass : inactiveClass}`
                             }
+                            onClick={item.onClick ? item.onClick : () => {}}
                         >
                             <span className="material-symbols size-6">{item.icon}</span>
                             <span className={!(collapsed || forceCollapse) ? "ml-3 font-montserrat w-[calc(100%-24px)] overflow-hidden opacity-100 transition-[width,margin-left,opacity] duration-300" : "ml-[0px] font-montserrat w-[0px] overflow-hidden opacity-0 transition-[width,margin-left,opacity] duration-300"}>{item.name}</span>
-                        </NavLink>
+                        </ControlledNavLink>
                     ))}
                     <button
                         onClick={toggleExpand}

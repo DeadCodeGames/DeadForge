@@ -27,8 +27,6 @@ function launchElectron(isFirstRun) {
     env: { ...process.env }
   });
 
-  console.log(electronProcess)
-
   electronProcess.on("close", (code) => {
     console.log(`[electron] exited with code ${code}`);
     electronProcess = null;

@@ -1,4 +1,3 @@
-// scripts/fetch-twemoji.js
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
@@ -26,9 +25,7 @@ function extractEmojisFromLocales() {
     return emojis;
 }
 
-// === CONFIG: Array of emoji strings ===
-// You can dynamically generate this or keep it static
-const EMOJIS = extractEmojisFromLocales(); // <-- example set
+const EMOJIS = extractEmojisFromLocales();
 
 const OUTPUT_DIR = path.join(__dirname, '../public/twemoji');
 
@@ -49,7 +46,6 @@ function fetchAndSave(url, outPath) {
 }
 
 (async () => {
-    // Clean up the output dir
     if (fs.existsSync(OUTPUT_DIR)) fs.rmSync(OUTPUT_DIR, { recursive: true });
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 

@@ -14,7 +14,8 @@
         "urlCopied": "URL has been successfully copied"
     },
     "tray": {
-        "exit": "Exit <0>DEADFORGE</0>"
+        "exit": "Exit <0>DEADFORGE</0>",
+        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
     },
     "settings": {
         "theming": {
