@@ -1,0 +1,69 @@
+{
+    "meta": {
+        "name": "Pirate English",
+        "emoji": "🏴‍☠️"
+    },
+    "sidebar": {
+        "library": "Logbook Hold",
+        "arcade": "",
+        "store": "Market",
+        "settings": "",
+        "collapse": ""
+    },
+    "store": {
+        "urlCopied": ""
+    },
+    "tray": {
+        "exit": "",
+        "arcade": ""
+    },
+    "settings": {
+        "theming": {
+            "title": "",
+            "theme": "",
+            "themeDescription": "",
+            "systemTheme": "",
+            "darkTheme": "",
+            "lightTheme": "",
+            "windowFrame": "",
+            "windowFrameDescription": "",
+            "windowFrameAuto": "",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
+            "themeButtonInFrame": "",
+            "themeButtonInFrameDescription": "",
+            "language": "",
+            "languageDescription": ""
+        },
+        "behavior": {
+            "title": "",
+            "defaultPage": "",
+            "defaultPageDescription": "",
+            "settingsWindow": "",
+            "settingsWindowDescription": "",
+            "useTray": "",
+            "useTrayDescription": "",
+            "autoStart": "",
+            "autoStartDescription": "",
+            "unavailableOnLinux": ""
+        },
+        "appData": {
+            "title": "",
+            "initialSetup": "",
+            "initialSetupDescription": "",
+            "replaySetup": "",
+            "dataManagement": "",
+            "dataManagementDescription": "",
+            "exportData": "",
+            "importData": "",
+            "resetData": "",
+            "autoUpdate": "",
+            "autoUpdateDescription": "",
+            "betaUpdates": "",
+            "betaUpdatesDescription": "",
+            "languageUpdates": "",
+            "languageUpdatesDescription": ""
+        }
+    }
+}

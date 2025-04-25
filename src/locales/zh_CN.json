@@ -1,0 +1,69 @@
+{
+    "meta": {
+        "name": "简体中文",
+        "emoji": "🇨🇳"
+    },
+    "sidebar": {
+        "library": "图书馆",
+        "arcade": "",
+        "store": "商店",
+        "settings": "设置",
+        "collapse": "折叠"
+    },
+    "store": {
+        "urlCopied": "URL 已成功复制"
+    },
+    "tray": {
+        "exit": "退出<0>DEADFORGE</0>",
+        "arcade": ""
+    },
+    "settings": {
+        "theming": {
+            "title": "",
+            "theme": "",
+            "themeDescription": "",
+            "systemTheme": "",
+            "darkTheme": "",
+            "lightTheme": "",
+            "windowFrame": "",
+            "windowFrameDescription": "",
+            "windowFrameAuto": "",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
+            "themeButtonInFrame": "",
+            "themeButtonInFrameDescription": "",
+            "language": "",
+            "languageDescription": ""
+        },
+        "behavior": {
+            "title": "",
+            "defaultPage": "",
+            "defaultPageDescription": "",
+            "settingsWindow": "",
+            "settingsWindowDescription": "",
+            "useTray": "",
+            "useTrayDescription": "",
+            "autoStart": "",
+            "autoStartDescription": "",
+            "unavailableOnLinux": ""
+        },
+        "appData": {
+            "title": "",
+            "initialSetup": "",
+            "initialSetupDescription": "",
+            "replaySetup": "",
+            "dataManagement": "",
+            "dataManagementDescription": "",
+            "exportData": "",
+            "importData": "",
+            "resetData": "",
+            "autoUpdate": "",
+            "autoUpdateDescription": "",
+            "betaUpdates": "",
+            "betaUpdatesDescription": "",
+            "languageUpdates": "",
+            "languageUpdatesDescription": ""
+        }
+    }
+}

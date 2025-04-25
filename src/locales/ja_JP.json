@@ -1,0 +1,69 @@
+{
+    "meta": {
+        "name": "日本語",
+        "emoji": "🇯🇵"
+    },
+    "sidebar": {
+        "library": "ライブラリー",
+        "arcade": "アーケード",
+        "store": "ストア",
+        "settings": "設定",
+        "collapse": "折りたたむ"
+    },
+    "store": {
+        "urlCopied": "URLは正常にコピーされました"
+    },
+    "tray": {
+        "exit": "<0>DEADFORGE</0>を終了",
+        "arcade": "<0>DEADFORGE</0> <1>アーケード</1>"
+    },
+    "settings": {
+        "theming": {
+            "title": "外観",
+            "theme": "テーマ",
+            "themeDescription": "ライト、ダーク、自動（システム）テーマから選択",
+            "systemTheme": "システム",
+            "darkTheme": "ダーク",
+            "lightTheme": "ライト",
+            "windowFrame": "ウィンドウ枠のスタイル",
+            "windowFrameDescription": "",
+            "windowFrameAuto": "自動（OSに基づいて）",
+            "windowFrameWindows": "Windows",
+            "windowFrameMac": "macOS",
+            "windowFrameLinux": "Linux",
+            "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
+            "themeButtonInFrameDescription": "",
+            "language": "言語",
+            "languageDescription": ""
+        },
+        "behavior": {
+            "title": "行動",
+            "defaultPage": "デフォルトページ",
+            "defaultPageDescription": "",
+            "settingsWindow": "設定を別ウィンドウで開く",
+            "settingsWindowDescription": "",
+            "useTray": "システムトレイに表示",
+            "useTrayDescription": "",
+            "autoStart": "システム起動時に実行",
+            "autoStartDescription": "",
+            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません"
+        },
+        "appData": {
+            "title": "アプリデータとアップデート",
+            "initialSetup": "初期設定",
+            "initialSetupDescription": "",
+            "replaySetup": "初期設定を再度開始",
+            "dataManagement": "データ管理",
+            "dataManagementDescription": "全てのアプリデータをエクスポート、インポート、リセットする",
+            "exportData": "エクスポート",
+            "importData": "インポート",
+            "resetData": "リセット",
+            "autoUpdate": "自動アップデート",
+            "autoUpdateDescription": "アプリアップデートを自動的にダウンロードしてインストールします",
+            "betaUpdates": "ベータアップデート",
+            "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
+            "languageUpdates": "言語パックのアップデート",
+            "languageUpdatesDescription": ""
+        }
+    }
+}

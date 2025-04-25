@@ -1,0 +1,69 @@
+{
+    "meta": {
+        "name": "Slovenčina",
+        "emoji": "🇸🇰"
+    },
+    "sidebar": {
+        "library": "Knižnica",
+        "arcade": "Arcade",
+        "store": "Obchod",
+        "settings": "Nastavenia",
+        "collapse": "Zbaliť"
+    },
+    "store": {
+        "urlCopied": "Adresa bola úspešne skopírovaná"
+    },
+    "tray": {
+        "exit": "Ukončiť <0>DEADFORGE</0>",
+        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
+    },
+    "settings": {
+        "theming": {
+            "title": "Vzhľad",
+            "theme": "Motív",
+            "themeDescription": "Vyberte si medzi svetlým, tmavým, a automatickým (systémovým) motívom",
+            "systemTheme": "Podľa systému",
+            "darkTheme": "Tmavý",
+            "lightTheme": "Svetlý",
+            "windowFrame": "Hlavička okna",
+            "windowFrameDescription": "Vyberte si hlavičku okna, ktorá sedí vášmu operačnému systému, alebo ktorá vám vyhovuje",
+            "windowFrameAuto": "Auto (podľa OS)",
+            "windowFrameWindows": "Windows",
+            "windowFrameMac": "macOS",
+            "windowFrameLinux": "Linux",
+            "themeButtonInFrame": "Zobrazovať menič motívu v hlavičke okna",
+            "themeButtonInFrameDescription": "Zobrazovať menič motívu okna v hlavičke okna pre rýchly prístup.\nKliknutím ľavým tlačidlom myši prepnete medzi tmavým a svetlým motívom, kliknutím pravým tlačidlom prepnete na automatický (systémový) motív",
+            "language": "Jazyk",
+            "languageDescription": "Vyberte si váš preferovaný jazyk pre rozhranie aplikácie"
+        },
+        "behavior": {
+            "title": "Správanie",
+            "defaultPage": "Predvolená stránka",
+            "defaultPageDescription": "Vyberte si, ktorú stránku uvidíte po otvorení aplikácie",
+            "settingsWindow": "Otvárať nastavenia v samostatnom okne",
+            "settingsWindowDescription": "Otvárať nastavenia v samostatnom okne namiesto sekcie v hlavnom okne",
+            "useTray": "Zobraziť v oblasti oznámení",
+            "useTrayDescription": "Ponechať aplikáciu na pozadí po uzatvorení okna, skrytú v oblasti oznámení",
+            "autoStart": "Spustiť pri štarte",
+            "autoStartDescription": "Spustiť aplikáciu automaticky po spustení počítača",
+            "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch"
+        },
+        "appData": {
+            "title": "Dáta a aktualizácie aplikácie",
+            "initialSetup": "Prvotné nastavenie",
+            "initialSetupDescription": "Spustiť znova sekvenciu prvotného nastavenia, ktorú ste videli pri prvom otvorení aplikácie",
+            "replaySetup": "Spustiť prvotné nastavenie",
+            "dataManagement": "Správa dát",
+            "dataManagementDescription": "Export, import a resetovanie všetkých dát aplikácie",
+            "exportData": "Exportovať",
+            "importData": "Importovať",
+            "resetData": "Resetovať",
+            "autoUpdate": "Automatické aktualizácie",
+            "autoUpdateDescription": "Automaticky stiahnuť a nainštalovať aktualizácie aplikácie",
+            "betaUpdates": "Predbežné (Beta) aktualizácie",
+            "betaUpdatesDescription": "Inštalovať predbežné beta verzie s novými funkciami skôr (vyžaduje Automatické aktualizácie)",
+            "languageUpdates": "Aktualizácie jazykových balíčkov",
+            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)"
+        }
+    }
+}
