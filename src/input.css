@@ -18,6 +18,18 @@ html:not([updateStatus="appnotloaded"])y {
 }
 */
 
+::-webkit-scrollbar {
+    @apply w-2
+}
+  
+  ::-webkit-scrollbar-thumb {
+    @apply dark:bg-fullMoon bg-night rounded-lg
+}
+  
+  ::-webkit-scrollbar-track {
+    @apply dark:bg-notQuiteBlack bg-notQuiteWhite
+}
+
 /* Transitions */
 html {
     @apply transition-opacity duration-500 ease-in-out;

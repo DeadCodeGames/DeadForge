@@ -17,6 +17,7 @@ const defaultPreferences = {
   windowFrame: "auto",
   showThemeButton: false,
   language: "en_001",
+  showIncompleteLanguages: false,
   defaultPage: "library",
   useSettingsWindow: false,
   useTray: false,

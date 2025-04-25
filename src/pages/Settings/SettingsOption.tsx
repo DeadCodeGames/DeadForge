@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import FlipSwitch from '@/components/CustomElements/FlipSwitch';
 
-export default function SettingsOption({ title, description, controls }: { title: string, description: string, controls: React.JSX.Element }) {
+export default function SettingsOption({ title, description, controls }: { title: string, description: string | React.JSX.Element, controls: React.JSX.Element }) {
     const [isBelow1000, setIsBelow1000] = useState<boolean>(false);
 
     useEffect(() => {

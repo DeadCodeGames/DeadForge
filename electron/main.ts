@@ -101,6 +101,11 @@ const createWindow = () => {
     });
 
     mainWindow.webContents.on("did-navigate", () => { if (!initialLoad) { app.relaunch(); app.quit() } else initialLoad = false; });
+
+    mainWindow!.webContents.setWindowOpenHandler(({ url }) => {
+        require('electron').shell.openExternal(url);
+        return { action: 'deny' };
+    });
 };
 
 if (!gotInstanceLock && app.isPackaged) { app.quit(); } else
@@ -294,6 +299,7 @@ ipcMain.handle('preferences:set', (event: Electron.IpcMainInvokeEvent, newPrefer
     if (settingsWindow && fromSettingsWindow) {
         mainWindow?.webContents.send('preferences:update', newPreferences);
     }
+    trayWindow?.webContents.send('preferences:update', newPreferences);
     if (newPreferences.useSettingsWindow && !settingsWindow && isSettingsOpen) {
         createSettingsWindow();
     } else if (!newPreferences.useSettingsWindow && settingsWindow) {
