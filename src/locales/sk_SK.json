@@ -31,12 +31,14 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
             "themeButtonInFrame": "Zobrazovať menič motívu v hlavičke okna",
             "themeButtonInFrameDescription": "Zobrazovať menič motívu okna v hlavičke okna pre rýchly prístup.\nKliknutím ľavým tlačidlom myši prepnete medzi tmavým a svetlým motívom, kliknutím pravým tlačidlom prepnete na automatický (systémový) motív",
             "language": "Jazyk",
             "languageDescription": "Vyberte si váš preferovaný jazyk pre rozhranie aplikácie",
-            "languageShowIncomplete": "",
-            "languageShowIncompleteDescription": ""
+            "languageShowIncomplete": "Zobrazovať nekompletné preklady",
+            "languageShowIncompleteDescription": "Zobraziť preklady, ktoré nie sú kompletné. Môžete nám pomôcť DEADFORGE preložiť na našom <0>Crowdine</0>."
         },
         "behavior": {
             "title": "Správanie",

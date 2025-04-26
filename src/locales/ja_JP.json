@@ -31,12 +31,14 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
             "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
             "themeButtonInFrameDescription": "",
             "language": "言語",
             "languageDescription": "",
-            "languageShowIncomplete": "",
-            "languageShowIncompleteDescription": ""
+            "languageShowIncomplete": "未完了の翻訳を表示",
+            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。"
         },
         "behavior": {
             "title": "行動",

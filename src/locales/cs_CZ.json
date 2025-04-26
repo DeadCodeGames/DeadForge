@@ -31,12 +31,14 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
             "themeButtonInFrame": "Zobrazit přepínač motivů v záhlaví okna",
             "themeButtonInFrameDescription": "Zvolte, zda zahrnout tlačítko přepínače motivů do hlavičky okna pro rychlý přístup\nLevým tlačítkem přepnete mezi tmavým a světlem, klikněte pravým tlačítkem myši pro přepnutí na automatický (systémový) motiv",
             "language": "Jazyk",
             "languageDescription": "Vyberte si váš preferovaný jazyk aplikace",
-            "languageShowIncomplete": "",
-            "languageShowIncompleteDescription": ""
+            "languageShowIncomplete": "Zobrazovat neúplné překlady",
+            "languageShowIncompleteDescription": "Zobrazit překlady, které nejsou kompletné. Můžete nám pomoci s překladem DEADFORGE na našem <0>Crowdinu</0>."
         },
         "behavior": {
             "title": "Chování",
