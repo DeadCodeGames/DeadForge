@@ -31,10 +31,14 @@
             "windowFrameWindows": "",
             "windowFrameMac": "",
             "windowFrameLinux": "",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
             "themeButtonInFrame": "",
             "themeButtonInFrameDescription": "",
             "language": "",
-            "languageDescription": ""
+            "languageDescription": "",
+            "languageShowIncomplete": "",
+            "languageShowIncompleteDescription": ""
         },
         "behavior": {
             "title": "",

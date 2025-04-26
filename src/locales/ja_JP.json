@@ -31,6 +31,8 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
             "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
             "themeButtonInFrameDescription": "",
             "language": "言語",
