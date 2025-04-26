@@ -283,3 +283,20 @@
     font-style: normal;
     font-display: swap;
 }
+
+@font-face {
+    font-family: 'Corporate Logo';
+    src: url('Corporate-Logo-Medium-ver3.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Corporate Logo';
+    src: url('Corporate-Logo-Bold-ver3.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+

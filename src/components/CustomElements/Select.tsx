@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 type SelectOptionProps = {
   value: string;
   children: React.ReactNode;
   selected?: boolean;
+  hiddenFromSelect?: boolean;
   onClick?: (value: string) => void;
   measuringRef?: React.Ref<HTMLDivElement>;
 };
 
-export const SelectOption: React.FC<SelectOptionProps> = ({ value, children, selected, onClick, measuringRef }) => {
+export const SelectOption: React.FC<SelectOptionProps> = ({ value, children, selected, hiddenFromSelect = false, onClick, measuringRef }) => {
   return (
     <div
       ref={measuringRef}
@@ -42,7 +43,7 @@ export const Select: React.FC<SelectProps> = ({ value, onChange, children, class
     ? (selectedChild.props as any).children
     : placeholder;
   
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (initialRender) {
       setInitialRender(false);
       
@@ -102,6 +103,7 @@ export const Select: React.FC<SelectProps> = ({ value, onChange, children, class
   };
   
   const enhancedChildren = React.Children.map(children, (child) => {
+    if ((child as any).props.hiddenFromSelect) return (<></>);
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
         ...(child.props as any),

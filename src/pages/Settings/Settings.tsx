@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { AppContext } from "@/App.tsx";
 import i18n, { resources } from "@/locales/i18n.ts";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import LocalTwemoji from "@/components/CustomElements/LocalTwemoji.tsx";
 import { flatten } from "flat";
 import { Select, SelectOption } from "@/components/CustomElements/Select.tsx";
@@ -15,7 +15,7 @@ export default function Settings() {
     useEffect(() => {
         if (!window.Electron.isSettingsWindow && context.preferences.useSettingsWindow) {
             if (window.navigation!.canGoBack) {
-                  window.history.back();
+                window.history.back();
             } else {
                 window.location.hash = context.preferences.defaultPage;
             }
@@ -53,6 +53,36 @@ export default function Settings() {
         }));
         i18n.changeLanguage(language);
     };
+
+    const handleSetIncludeCurrentLocationInHeader = (showCurrentPageTitleInFrame: boolean) => {
+        setContext((prev: any) => ({
+            ...prev,
+            preferences: {
+                ...prev.preferences,
+                showCurrentPageTitleInFrame,
+            },
+        }));
+    }
+
+    const handleSetIncludeThemeSwitchInHeader = (showThemeButton: boolean) => {
+        setContext((prev: any) => ({
+            ...prev,
+            preferences: {
+                ...prev.preferences,
+                showThemeButton,
+            },
+        }));
+    }
+
+    const handleSetShowIncompleteLanguagesChange = (showIncompleteLanguages: boolean) => {
+        setContext((prev: any) => ({
+            ...prev,
+            preferences: {
+                ...prev.preferences,
+                showIncompleteLanguages
+            }
+        }));
+    }
 
     const handleDefaultPageChange = (defaultPage: string) => {
         setContext((prev: any) => ({
@@ -143,9 +173,9 @@ export default function Settings() {
     const calculateTranslationPercentage = (lang: string) => {
         if (lang === "en_001" || lang === "stringsDebug") return 100;
 
-        const enTranslations: number = Object.entries(flatten(resources["en_001"].translation)!).filter(([key]) => key !== "meta").length;
+        const enTranslations: number = Object.entries(flatten(resources["en_001"].translation)!).filter(([key]) => !key.startsWith("meta")).length;
 
-        const langTranslations: number = Object.entries(flatten((resources as any)[lang].translation)!).filter(([key, value]) => key !== "meta" && value !== "").length
+        const langTranslations: number = Object.entries(flatten((resources as any)[lang].translation)!).filter(([key, value]) => !key.startsWith("meta") && value !== "").length
 
         return Math.round((langTranslations / enTranslations) * 100);
     };
@@ -158,7 +188,7 @@ export default function Settings() {
     const themePickExpanded = "ml-0 max-w-full w-full", themePickCollapsed = "ml-0 max-w-0 w-0", themePickBaseExpanded = "max-w-xs w-full", themePickBaseCollapsed = "max-w-6 w-6";
 
     const SettingsSeparator = () => (<hr className="border-notQuiteBlack dark:border-notQuiteWhite border-0 border-t-2 border-solid opacity-50 my-8 settingsShrink:my-4 rounded-full" />)
-    const SettingsSectionTitle = ({ children }: {children: React.JSX.Element | string}) => (<h2 className="text-xl settingsShrink:text-2xl settingsShrink:text-center font-uniSansCAPS font-bold mb-4">{children}</h2>)
+    const SettingsSectionTitle = ({ children }: { children: React.JSX.Element | string }) => (<h2 className="text-xl settingsShrink:text-2xl settingsShrink:text-center font-uniSansCAPS font-bold mb-4">{children}</h2>)
 
     return (
         <div className="w-[calc(100%-48px)] h-[calc(100%-48px)] dark:bg-night bg-fullMoon text-night dark:text-fullMoon transition-colors duration-300 font-notoSans overflow-y-auto p-6 relative">
@@ -177,7 +207,7 @@ export default function Settings() {
                             <div className="flex space-x-2 justify-end">
                                 <button
                                     onClick={() => handleThemeChange("system")}
-                                    className={`min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "system"
+                                    className={`text-nowrap min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "system"
                                         ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}`
                                         : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`
                                         }`}
@@ -194,7 +224,7 @@ export default function Settings() {
                                 </button>
                                 <button
                                     onClick={() => handleThemeChange("dark")}
-                                    className={`min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "dark"
+                                    className={`text-nowrap min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "dark"
                                         ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}`
                                         : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`
                                         }`}
@@ -211,7 +241,7 @@ export default function Settings() {
                                 </button>
                                 <button
                                     onClick={() => handleThemeChange("light")}
-                                    className={`min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "light"
+                                    className={`text-nowrap min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "light"
                                         ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}`
                                         : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`
                                         }`}
@@ -246,6 +276,18 @@ export default function Settings() {
                             </Select>}
                     />
 
+                    {/* Include CurrentPageTitle in Window Frame */}
+                    <SettingsOption
+                        title={t("settings.theming.currentPageTitleInFrame")}
+                        description={t("settings.theming.currentPageTitleInFrameDescription")}
+                        controls={
+                            <FlipSwitch
+                                checked={context.preferences.showCurrentPageTitleInFrame}
+                                onChange={(e) => handleSetIncludeCurrentLocationInHeader(e.target.checked)}
+                            />
+                        }
+                    />
+
                     {/* Include Theme Switch in Window Frame */}
                     <SettingsOption
                         title={t("settings.theming.themeButtonInFrame")}
@@ -253,15 +295,7 @@ export default function Settings() {
                         controls={
                             <FlipSwitch
                                 checked={context.preferences.showThemeButton}
-                                onChange={(e) => {
-                                    setContext((prev: any) => ({
-                                        ...prev,
-                                        preferences: {
-                                            ...prev.preferences,
-                                            showThemeButton: e.target.checked,
-                                        },
-                                    }));
-                                }}
+                                onChange={(e) => handleSetIncludeThemeSwitchInHeader(e.target.checked)}
                             />
                         }
                     />
@@ -275,24 +309,47 @@ export default function Settings() {
                                 onChange={handleLanguageChange}
                                 className="p-2 rounded-lg dark:bg-night bg-fullMoon border border-notQuiteBlack dark:border-notQuiteWhite"
                             >
-                                {Object.keys(resources).map((lang: string) => {
-                                    const percentage = calculateTranslationPercentage(lang);
-                                    const [color, backgroundColor] = getPercentageColor(percentage);
-                                    return (
-                                        <SelectOption key={lang} value={lang}>
-                                            <div className="flex row items-center justify-between w-full">
-                                                <div className="flex flex-row items-center">
-                                                    <LocalTwemoji controlled options={{ className: '!w-12 !aspect-square mr-1', base: window.App.isPackaged ? `${process.env.PUBLIC_URL}/twemoji` : undefined }}>{(resources as any)[lang].translation.meta.emoji}</LocalTwemoji>
-                                                    <span className="ml-2 mr-8">{(resources as any)[lang].translation.meta.name}</span>
+                                {Object.keys(resources)
+                                    .sort((langA, langB) => {
+                                        const percentageA = calculateTranslationPercentage(langA);
+                                        const percentageB = calculateTranslationPercentage(langB);
+
+                                        if (percentageA !== percentageB) {
+                                            return percentageB - percentageA; // Sort by percentage in descending order
+                                        }
+
+                                        const nameA = (resources as any)[langA].translation.meta.name;
+                                        const nameB = (resources as any)[langB].translation.meta.name;
+                                        return nameA.localeCompare(nameB); // Then sort by name in ascending order
+                                    })
+                                    .map((lang: string) => {
+                                        const percentage = calculateTranslationPercentage(lang);
+                                        const [color, backgroundColor] = getPercentageColor(percentage);
+
+                                        return (
+                                            <SelectOption key={lang} value={lang} hiddenFromSelect={!context.preferences.showIncompleteLanguages && percentage !== 100}>
+                                                <div className="flex row items-center justify-between w-full">
+                                                    <div className="flex flex-row items-center">
+                                                        <LocalTwemoji controlled options={{ className: '!w-8 !aspect-square mx-1', base: window.App.isPackaged ? `${process.env.PUBLIC_URL}/twemoji` : undefined }}>{(resources as any)[lang].translation.meta.emoji}</LocalTwemoji>
+                                                        <span className="ml-2 mr-8">{(resources as any)[lang].translation.meta.name}</span>
+                                                    </div>
+                                                    <div className="border-2 border-solid rounded-full text-sm px-2 py-1" style={{ color: color, backgroundColor }}>
+                                                        {percentage}%
+                                                    </div>
                                                 </div>
-                                                <div className="border-2 border-solid rounded-full px-2.5 py-1.5" style={{ color: color, backgroundColor }}>
-                                                    {percentage}%
-                                                </div>
-                                            </div>
-                                        </SelectOption>
-                                    );
-                                })}
+                                            </SelectOption>
+                                        );
+                                    })}
                             </Select>
+                        }
+                    />
+
+                    <SettingsOption title={t('settings.theming.languageShowIncomplete')} description={<Trans i18nKey='settings.theming.languageShowIncompleteDescription' components={[(<a href="https://crowdin.com/project/deadforge" target="_blank" rel="noopener noreferrer">Crowdin</a>)]} />}
+                        controls={
+                            <FlipSwitch
+                                checked={context.preferences.showIncompleteLanguages}
+                                onChange={(e) => { handleSetShowIncompleteLanguagesChange(e.target.checked) }}
+                            />
                         }
                     />
 
@@ -368,7 +425,7 @@ export default function Settings() {
                     {/* Data Management */}
                     <SettingsOption title={t("settings.appData.dataManagement")} description={t("settings.appData.dataManagementDescription")}
                         controls={
-                            <div className="flex flex-row gap-4 flex-wrap justify-end settingsWrap:justify-center">
+                            <div className="flex flex-row gap-4 flex-wrap justify-end settingsShrink:justify-center">
                                 <button
                                     onClick={exportData}
                                     className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold disabled:cursor-not-allowed disabled:opacity-50"

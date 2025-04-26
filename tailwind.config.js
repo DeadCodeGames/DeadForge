@@ -9,7 +9,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 "consolas": ["Consolas", "Courier New", 'Courier', 'monospace'],
-                "uniSansCAPS": ["Uni Sans CAPS", ...defaultTheme.fontFamily.sans],
+                "uniSansCAPS": ["Uni Sans CAPS", "Corporate Logo", ...defaultTheme.fontFamily.sans],
                 "montserrat": ["Montserrat", "Noto Sans JP", ...defaultTheme.fontFamily.sans],
                 "notoSans": ["Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Sans SC", "Noto Sans TC", "Noto Sans Hebrew", ...defaultTheme.fontFamily.sans],
             },
