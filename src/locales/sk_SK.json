@@ -31,6 +31,8 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "Zobraziť aktuálny názov stranky v hlavičke okna",
+            "currentPageTitleInFrameDescription": "Zobrazovať aktuálny názov stranky v hlavičke okna",
             "themeButtonInFrame": "Zobrazovať menič motívu v hlavičke okna",
             "themeButtonInFrameDescription": "Zobrazovať menič motívu okna v hlavičke okna pre rýchly prístup.\nKliknutím ľavým tlačidlom myši prepnete medzi tmavým a svetlým motívom, kliknutím pravým tlačidlom prepnete na automatický (systémový) motív",
             "language": "Jazyk",

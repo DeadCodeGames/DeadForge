@@ -31,6 +31,8 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "Zobrazit aktuální název stranky v záhlaví okna",
+            "currentPageTitleInFrameDescription": "Zobrazovat aktuální název stranky v hlavičce okna",
             "themeButtonInFrame": "Zobrazit přepínač motivů v záhlaví okna",
             "themeButtonInFrameDescription": "Zvolte, zda zahrnout tlačítko přepínače motivů do hlavičky okna pro rychlý přístup\nLevým tlačítkem přepnete mezi tmavým a světlem, klikněte pravým tlačítkem myši pro přepnutí na automatický (systémový) motiv",
             "language": "Jazyk",

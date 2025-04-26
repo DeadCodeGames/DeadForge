@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 type SelectOptionProps = {
   value: string;
@@ -43,7 +43,7 @@ export const Select: React.FC<SelectProps> = ({ value, onChange, children, class
     ? (selectedChild.props as any).children
     : placeholder;
   
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (initialRender) {
       setInitialRender(false);
       

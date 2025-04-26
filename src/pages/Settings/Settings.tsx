@@ -54,6 +54,16 @@ export default function Settings() {
         i18n.changeLanguage(language);
     };
 
+    const handleSetIncludeCurrentLocationInHeader = (showCurrentPageTitleInFrame: boolean) => {
+        setContext((prev: any) => ({
+            ...prev,
+            preferences: {
+                ...prev.preferences,
+                showCurrentPageTitleInFrame,
+            },
+        }));
+    }
+
     const handleSetIncludeThemeSwitchInHeader = (showThemeButton: boolean) => {
         setContext((prev: any) => ({
             ...prev,
@@ -264,6 +274,18 @@ export default function Settings() {
                                 <SelectOption value="mac">{t("settings.theming.windowFrameMac")}</SelectOption>
                                 <SelectOption value="linux">{t("settings.theming.windowFrameLinux")}</SelectOption>
                             </Select>}
+                    />
+
+                    {/* Include CurrentPageTitle in Window Frame */}
+                    <SettingsOption
+                        title={t("settings.theming.currentPageTitleInFrame")}
+                        description={t("settings.theming.currentPageTitleInFrameDescription")}
+                        controls={
+                            <FlipSwitch
+                                checked={context.preferences.showCurrentPageTitleInFrame}
+                                onChange={(e) => handleSetIncludeCurrentLocationInHeader(e.target.checked)}
+                            />
+                        }
                     />
 
                     {/* Include Theme Switch in Window Frame */}

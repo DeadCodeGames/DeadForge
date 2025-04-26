@@ -31,6 +31,8 @@
             "windowFrameWindows": "Windows",
             "windowFrameMac": "macOS",
             "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "Show Current Page Title in Window Frame",
+            "currentPageTitleInFrameDescription": "Whether to include the current page title in the window's title bar",
             "themeButtonInFrame": "Show Theme Toggle in Window Frame",
             "themeButtonInFrameDescription": "Whether to include a theme switch button in the window's title bar for quick access\nLeft click to switch between dark and light, right click to set to system preferences",
             "language": "Language",

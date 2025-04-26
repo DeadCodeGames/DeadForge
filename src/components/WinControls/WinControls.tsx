@@ -1,7 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
-import { AppContext } from '../../App.tsx';
+import { AppContext } from '@/App.tsx';
+import { useTranslation } from "react-i18next";
 
 export default function WinControls() {
+    const { t } = useTranslation();
     const { context, setContext } = useContext(AppContext);
     const { showThemeButton, windowFrame: type } = context.preferences;
     const [isMaximized, setIsMaximized] = useState<boolean>(false);
@@ -91,11 +93,27 @@ export default function WinControls() {
         });
     }
 
+    const LocationTitle = () => {
+        if (!context.preferences.showCurrentPageTitleInFrame) return "";
+        switch (window.location.hash.substring(2)) {
+            case "library":
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.library")}</span>;
+            case "arcade":
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.arcade")}</span>;
+            case "store":
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.store")}</span>;
+            case "settings":
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.settings")}</span>;
+            default:
+                return "";
+        }
+    }
+
     const title = (
         <>
             <div id="logo" className="text-lg px-1 text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300 font-montserrat font-bold">××</div>
             <div id="windowtitle" className="text-sm font-bold select-none px-1 font-uniSansCAPS text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300">
-                DeadForge
+                DeadForge<LocationTitle />
             </div>
         </>
     );

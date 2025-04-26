@@ -186,6 +186,7 @@ const createTrayWindow = () => {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: true,
+            devTools: app.isPackaged ? false : true,
             preload: path.join(__dirname, 'tray.preload.js'),
         }
     });
@@ -210,7 +211,6 @@ const createTrayWindow = () => {
         trayWindow?.hide()
         if (choice.type === 'exit') app.quit();
         else if (choice.type === 'navigate') {
-            console.log("sending")
             mainWindow?.webContents.send("tray:navigate", choice.destination);
             mainWindow?.show();
             mainWindow?.focus();
@@ -221,6 +221,12 @@ const createTrayWindow = () => {
 /* <------------------------- Settings ------------------------------> */
 
 const createSettingsWindow = () => {
+    if (settingsWindow) {
+        settingsWindow.show();
+        settingsWindow.focus();
+        return;
+    }
+
     settingsWindow = new BrowserWindow({
         minWidth: 700,
         minHeight: 450,
@@ -234,8 +240,7 @@ const createSettingsWindow = () => {
             preload: path.join(__dirname, 'settings.preload.js'),
             nodeIntegration: true,
             contextIsolation: true,
-            devTools: app.isPackaged ? true : true,
-            webviewTag: true,
+            devTools: app.isPackaged ? false : true,
             additionalArguments: [`--isPackaged=${app.isPackaged}`]
         }
     });

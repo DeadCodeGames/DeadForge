@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext } from "react";
+import { IpcRendererEvent } from "electron";
 import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import WinControls from './components/WinControls/WinControls.tsx';
 import Navigation from './components/Nav/Nav.tsx';
@@ -15,6 +16,7 @@ const defaultPreferences = {
   theme: "dark",
   sidebarCollapsed: false,
   windowFrame: "auto",
+  showCurrentPageTitleInFrame: true,
   showThemeButton: false,
   language: "en_001",
   showIncompleteLanguages: false,
@@ -94,16 +96,22 @@ function AppContents() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    window.Electron.onTrayNavigate((event, location) => {
+    const handleTrayNavigate = (event: IpcRendererEvent, location: string) => {
+      console.log(event, location);
       if (location === "/settings") {
         window.Electron.openSettingsWindow();
-        console.log("opening")
-        return; 
+        console.log("opening");
+        return;
       } else {
         navigate(location);
       }
-      
-    })
+    };
+  
+    window.Electron.onTrayNavigate(handleTrayNavigate);
+  
+    return () => {
+      window.Electron.onTrayNavigate(handleTrayNavigate);
+    };
   }, [navigate]);
 
   useEffect(() => {
