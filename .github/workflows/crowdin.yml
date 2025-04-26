@@ -1,0 +1,118 @@
+name: Crowdin Action
+
+on:
+  push:
+    branches: 
+      - 2024/2025
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - 2024/2025
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  synchronize-with-crowdin:
+    runs-on: ubuntu-latest
+    outputs:
+      BRANCH_EXISTS: ${{ steps.pr_branch_make.outputs.BRANCH_EXISTS }}
+      SHOULD_SKIP: ${{ steps.run_crowdin.outputs.SHOULD_SKIP }}
+      TARGET_BRANCH: ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed to work with branches
+
+      - name: Detect base branch
+        id: get_target_branch
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "TARGET_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "TARGET_BRANCH=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Crowdin and handle no translation case
+        id: run_crowdin
+        run: |
+          set +e
+          npx @crowdin/cli upload sources --config .crowdin.yml
+          OUTPUT=$(npx @crowdin/cli download --config .crowdin.yml --skip-untranslated-strings)
+          result=$?
+          if echo $OUTPUT | grep -q "Couldn't find any file to download"; then
+            echo "No translations downloaded. Skipping i18n update."
+            echo "SHOULD_SKIP=true" >> $GITHUB_OUTPUT
+          else
+            echo "SHOULD_SKIP=false" >> $GITHUB_OUTPUT
+          fi
+          exit $result
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+      
+      - name: Update i18n.ts
+        run: node .github/workflows/l10ncheck.js
+
+      - name: Ensure l10n_crowdin_translations branch exists (if needed)
+        id: pr_branch_make
+        if: steps.run_crowdin.outputs.SHOULD_SKIP != 'true'
+        run: |
+            git config user.name "GitHub Actions Bot"
+            git config user.email "actions@github.com"
+
+            git fetch origin ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
+
+            mkdir -p /tmp/locales_backup
+
+            echo "Backing up locale files..."
+            cp -R src/locales/* /tmp/locales_backup/ 2>/dev/null || true
+
+            echo "Resetting local changes..."
+            git reset --hard
+
+            if git show-ref --quiet refs/remotes/origin/l10n_crowdin_translations; then
+              echo "Branch l10n_crowdin_translations exists, checking it out..."
+              
+              git checkout --force l10n_crowdin_translations
+              
+              git pull origin l10n_crowdin_translations
+            else
+              echo "Creating new branch l10n_crowdin_translations from ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}..."
+              
+              git checkout -b l10n_crowdin_translations origin/${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
+            fi
+
+            echo "Restoring locale files from backup..."
+            cp -R /tmp/locales_backup/* src/locales/ 2>/dev/null || true
+
+            git add src/locales
+
+            git diff --cached --quiet || git commit -m "chore(i18n): sync Crowdin translations"
+
+            git push -u origin l10n_crowdin_translations
+            echo "BRANCH_EXISTS=true" >> $GITHUB_OUTPUT
+
+      - name: Create PR (if not exists)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_exists=$(gh pr list --head l10n_crowdin_translations --json number -q '.[0].number')
+          if [ -z "$pr_exists" ]; then
+            gh pr create \
+              --title "Update translations via Crowdin" \
+              --body "Automated PR with updated translations from Crowdin." \
+              --base "${{ steps.get_target_branch.outputs.TARGET_BRANCH }}" \
+              --head l10n_crowdin_translations \
+              --draft
+          else
+            echo "PR already exists (#$pr_exists)"
+          fi
+            echo "BRANCH_EXISTS=true" >> $GITHUB_OUTPUT

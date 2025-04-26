@@ -1,0 +1,73 @@
+{
+    "meta": {
+        "name": "LOLCAT",
+        "emoji": "😹"
+    },
+    "sidebar": {
+        "library": "story place",
+        "arcade": "",
+        "store": "stoar",
+        "settings": "settingz",
+        "collapse": ""
+    },
+    "store": {
+        "urlCopied": ""
+    },
+    "tray": {
+        "exit": "",
+        "arcade": ""
+    },
+    "settings": {
+        "theming": {
+            "title": "",
+            "theme": "",
+            "themeDescription": "",
+            "systemTheme": "",
+            "darkTheme": "",
+            "lightTheme": "",
+            "windowFrame": "",
+            "windowFrameDescription": "",
+            "windowFrameAuto": "",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
+            "themeButtonInFrame": "",
+            "themeButtonInFrameDescription": "",
+            "language": "",
+            "languageDescription": "",
+            "languageShowIncomplete": "",
+            "languageShowIncompleteDescription": ""
+        },
+        "behavior": {
+            "title": "",
+            "defaultPage": "",
+            "defaultPageDescription": "",
+            "settingsWindow": "",
+            "settingsWindowDescription": "",
+            "useTray": "",
+            "useTrayDescription": "",
+            "autoStart": "",
+            "autoStartDescription": "",
+            "unavailableOnLinux": ""
+        },
+        "appData": {
+            "title": "",
+            "initialSetup": "",
+            "initialSetupDescription": "",
+            "replaySetup": "",
+            "dataManagement": "",
+            "dataManagementDescription": "",
+            "exportData": "",
+            "importData": "",
+            "resetData": "",
+            "autoUpdate": "",
+            "autoUpdateDescription": "",
+            "betaUpdates": "",
+            "betaUpdatesDescription": "",
+            "languageUpdates": "",
+            "languageUpdatesDescription": ""
+        }
+    }
+}

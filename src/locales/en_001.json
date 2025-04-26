@@ -1,0 +1,73 @@
+{
+    "meta": {
+        "name": "English (International)",
+        "emoji": "🇬🇧"
+    },
+    "sidebar": {
+        "library": "Library",
+        "arcade": "Arcade",
+        "store": "Store",
+        "settings": "Settings",
+        "collapse": "Collapse"
+    },
+    "store": {
+        "urlCopied": "URL has been successfully copied"
+    },
+    "tray": {
+        "exit": "Exit <0>DEADFORGE</0>",
+        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
+    },
+    "settings": {
+        "theming": {
+            "title": "Appearance",
+            "theme": "Theme",
+            "themeDescription": "Choose between light, dark, or system theme",
+            "systemTheme": "System",
+            "darkTheme": "Dark",
+            "lightTheme": "Light",
+            "windowFrame": "Window Frame Style",
+            "windowFrameDescription": "Select the window frame style to match your operating system, or personal preference",
+            "windowFrameAuto": "Auto (Based on OS)",
+            "windowFrameWindows": "Windows",
+            "windowFrameMac": "macOS",
+            "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "Show Current Page Title in Window Frame",
+            "currentPageTitleInFrameDescription": "Whether to include the current page title in the window's title bar",
+            "themeButtonInFrame": "Show Theme Toggle in Window Frame",
+            "themeButtonInFrameDescription": "Whether to include a theme switch button in the window's title bar for quick access\nLeft click to switch between dark and light, right click to set to system preferences",
+            "language": "Language",
+            "languageDescription": "Select your preferred language for the application",
+            "languageShowIncomplete": "Show Incomplete Translations",
+            "languageShowIncompleteDescription": "Show translations that are not fully translated yet. You can contribute to these translations over on <0>Crowdin</0>."
+        },
+        "behavior": {
+            "title": "Behavior",
+            "defaultPage": "Default Page",
+            "defaultPageDescription": "Choose which page to show when the application starts",
+            "settingsWindow": "Open Settings in Separate Window",
+            "settingsWindowDescription": "Display settings in a dedicated window instead of within the main application",
+            "useTray": "Show in System Tray",
+            "useTrayDescription": "Keep the application in the system tray when window is closed",
+            "autoStart": "Start on Boot",
+            "autoStartDescription": "Launch the application automatically when your computer starts",
+            "unavailableOnLinux": "This setting is not available on Linux systems"
+        },
+        "appData": {
+            "title": "App Data & Updates",
+            "initialSetup": "Initial Setup",
+            "initialSetupDescription": "Restart the initial setup sequence that appears on first launch",
+            "replaySetup": "Replay Setup",
+            "dataManagement": "Data Management",
+            "dataManagementDescription": "Export, import, or reset all your application data",
+            "exportData": "Export",
+            "importData": "Import",
+            "resetData": "Reset",
+            "autoUpdate": "Automatic Updates",
+            "autoUpdateDescription": "Automatically download and install application updates",
+            "betaUpdates": "Beta Updates",
+            "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires Automatic Updates)",
+            "languageUpdates": "Language Pack Updates",
+            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receiving these small updates, containing only localization changes (requires Automatic Updates)"
+        }
+    }
+}

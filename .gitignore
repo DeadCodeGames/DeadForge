@@ -9,6 +9,7 @@
 /coverage
 
 # production
+/public/twemoji
 /build
 /dist
 /electron-dist
