@@ -146,7 +146,7 @@ export default function WinControls() {
         <div id="controls" className="text-sm flex flex-row items-center h-full text-center justify-center app-region-no-drag gap-x-2.5 px-1 py-[11px] *:text-sm *:flex *:flex-row *:items-center *:h-full *:text-center *:justify-center *:app-region-no-drag *:cursor-pointer *:text-transparent *:transition-[color] *:duration-[0.25s] *:ease-[ease] *:p-0 *:rounded-[100%] hover:text-[rgba(0,0,0,0.75)]">
             <div id="close" className="material-symbols bg-red-500 hover:text-black" onClick={handleClose}>close</div>
             <div id="minimize" className="material-symbols bg-[#FFD200] hover:text-black" onClick={handleMinimize}>horizontal_rule</div>
-            <div id="maximize" className="material-symbols bg-green-500 hover:text-black" onClick={handleMaximize}>{isMaximized ? 'collapse_content' : 'expand_content'}</div>
+            <div id="maximize" className="material-symbols bg-green-500 hover:text-black" onClick={handleMaximize}>{isMaximized ? 'expand_content' : 'collapse_content'}</div>
             {showThemeButton && <div id="themechange" className="material-symbols bg-notQuiteBlack hover:text-white dark:bg-notQuiteWhite dark:hover:text-black" onClick={handleThemeChange} onAuxClick={handleThemeChangeAuto}>{htmlClass.includes("system") ? "settings" : htmlClass.includes('dark') ? 'light_mode' : 'dark_mode'}</div>}
         </div>
     );
