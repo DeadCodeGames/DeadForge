@@ -43,13 +43,20 @@ export default function WinControls() {
         if (context.preferences.theme === "system") {
             document.documentElement.classList.add("system");
             document.documentElement.classList.remove("dark", "light");
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            }
         } else {
             document.documentElement.classList.add(context.preferences.theme === 'dark' ? 'dark' : 'light');
-            document.documentElement.classList.remove(context.preferences.theme === 'dark' ? 'light' : 'dark');
+            document.documentElement.classList.remove(context.preferences.theme === 'dark' ? 'light' : 'dark', "system");
         }
     }, [context.preferences.theme]);
 
-    
+
 
     useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
