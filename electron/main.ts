@@ -1,7 +1,7 @@
-import path from 'path'; import url from 'url'; import fs from 'fs';
+import path from 'path'; /* import url from 'url'; */ import fs from 'fs';
 import { app, BrowserWindow, Extension, ipcMain, nativeTheme, Tray } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
-import { Preferences } from './preferences'; 
+import { Preferences, OldPreferences, defaultPreferences } from './preferences';
 let gotInstanceLock = app.requestSingleInstanceLock();
 const windowStateKeeper = require('electron-window-state');
 let installExtension: (extensionReference: ExtensionReference | string | Array<ExtensionReference | string>, options?: InstallExtensionOptions) => Promise<Extension[]>, REACT_DEVELOPER_TOOLS: ExtensionReference;
@@ -17,12 +17,42 @@ let initialLoad = true;
 
 const FIRST_DEV_RUN = !app.isPackaged && Boolean(process.argv.find((s) => s === "--first-run"));
 
-let initialPrefs: any;
+function migratePreferences(v1Prefs: OldPreferences): Preferences {
+    const newPrefs: Preferences = { ...defaultPreferences };
+    fs.writeFileSync(path.join(app.getPath("userData"), "preferences.v1.json"), JSON.stringify(v1Prefs));
+
+    // Migrate known fields
+    if (v1Prefs.colorScheme) newPrefs.theme = v1Prefs.colorScheme;
+    if (typeof v1Prefs.menubarCollapsed === "boolean") newPrefs.sidebarCollapsed = v1Prefs.menubarCollapsed;
+    if (typeof v1Prefs.closeToTray === "boolean") newPrefs.useTray = v1Prefs.closeToTray;
+    if (typeof v1Prefs.startup === "boolean") newPrefs.autoStart = v1Prefs.startup;
+    if (typeof v1Prefs.betaEnabled === "boolean") newPrefs.betaUpdates = v1Prefs.betaEnabled;
+
+    fs.writeFileSync(path.join(app.getPath("userData"), "preferences.json"), JSON.stringify(newPrefs));
+
+    return newPrefs;
+}
+
+function isOldPreferences(obj: any): obj is OldPreferences {
+    return (
+      typeof obj === 'object' &&
+      'colorScheme' in obj &&
+      'menubarCollapsed' in obj &&
+      'closeToTray' in obj &&
+      'startup' in obj &&
+      'betaEnabled' in obj
+    );
+  }
+
+let initialPrefs: Preferences | OldPreferences;
 try {
     initialPrefs = JSON.parse(fs.readFileSync(path.join(app.getPath("userData"), "preferences.json"), { encoding: "utf-8" }));
+    if (isOldPreferences(initialPrefs)) {
+        initialPrefs = migratePreferences(initialPrefs);
+    }
 } catch (e) {
     console.log(e)
-    initialPrefs = "";
+    initialPrefs = defaultPreferences;
 }
 
 const createTray = () => {
@@ -109,7 +139,7 @@ const createWindow = () => {
 };
 
 if (!gotInstanceLock && app.isPackaged) { app.quit(); } else
-if (!gotInstanceLock || !app.isPackaged) { gotInstanceLock = app.requestSingleInstanceLock(); }
+    if (!gotInstanceLock || !app.isPackaged) { gotInstanceLock = app.requestSingleInstanceLock(); }
 app.whenReady().then(async () => {
     await new Promise((resolve) => setTimeout(() => {
         FIRST_DEV_RUN && console.warn("Sometimes, during development, the development server starts way too late, and the window page is an error instead.");

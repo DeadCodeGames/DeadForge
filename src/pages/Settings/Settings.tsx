@@ -442,7 +442,7 @@ export default function Settings() {
                                 </button>
                                 <button
                                     onClick={resetData}
-                                    className="px-4 py-2 rounded-lg bg-red-600 text-white font-bold disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="px-4 py-2 rounded-lg bg-danger text-white font-bold disabled:cursor-not-allowed disabled:opacity-50"
                                     disabled
                                 >
                                     {t("settings.appData.resetData")}

@@ -44,12 +44,8 @@ function AppContextProvider({ children }: { children: React.ReactNode }) {
     const fetchPreferences = async () => {
       try {
         const prefs = await window.Electron.getPreferences();
-        if (prefs !== "") {
-          setContext((prev: any) => { return { ...prev, preferences: prefs } }); 
-          i18n.changeLanguage(prefs.language);
-        } else {
-          console.warn("Could not retrieve user preferences. This can be caused by the app being first launched, or manual manipulation.\nA new file has been generated, however, any previous settings have been lost.")
-        }
+        setContext((prev: any) => { return { ...prev, preferences: prefs } }); 
+        i18n.changeLanguage(prefs.language);
         setShouldSetContext(true);
       } catch (error) {
         console.error('Failed to fetch client preferences:', error);

@@ -17,7 +17,7 @@ declare global {
             getPlatform: () => Promise<"Linux" | "Windows" | "Mac">;
             onMaximize: (callback: (event: IpcRendererEvent) => void) => void;
             onUnmaximize: (callback: (event: IpcRendererEvent) => void) => void;
-            getPreferences: () => Preferences | "";
+            getPreferences: () => Preferences;
             setPreferences: (preferences: object, isSettingsOpen: boolean, fromSettingsWindow: boolean) => void;
             onPreferencesUpdate: (callback: (e:any, newPrefs: object) => void) => void,
             openSettingsWindow: () => void;
