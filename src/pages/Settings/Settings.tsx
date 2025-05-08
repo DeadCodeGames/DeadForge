@@ -155,15 +155,18 @@ export default function Settings() {
     };
 
     const replaySetup = () => {
-        console.log("Replaying initial setup sequence");
+        setContext((prev: any) => ({
+            ...prev,
+            setupModalActive: true
+        }))
     };
 
-    const exportData = () => {
-        console.log("Exporting user data");
+    const exportData = async () => {
+        console.log(await window.Electron.exportBackup());
     };
 
-    const importData = () => {
-        console.log("Importing user data");
+    const importData = async () => {
+        console.log(await window.Electron.importBackup())
     };
 
     const resetData = () => {
@@ -415,7 +418,6 @@ export default function Settings() {
                         controls={<button
                             onClick={replaySetup}
                             className="px-4 py-2 rounded-lg bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                            disabled
                         >
                             {t("settings.appData.replaySetup")}
                         </button>
@@ -429,14 +431,14 @@ export default function Settings() {
                                 <button
                                     onClick={exportData}
                                     className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                                    disabled
+                                    
                                 >
                                     {t("settings.appData.exportData")}
                                 </button>
                                 <button
                                     onClick={importData}
                                     className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                                    disabled
+                                    
                                 >
                                     {t("settings.appData.importData")}
                                 </button>
@@ -477,6 +479,13 @@ export default function Settings() {
                         }
                     />
                 </div>
+
+                <span>
+                    <div className="whitespace-nowrap leading-4 text-center">
+                        {' ႔ ႔'}<br />
+                        {'ᠸ^ ^  <'}
+                    </div>
+                </span>
             </div>
         </div>
     );

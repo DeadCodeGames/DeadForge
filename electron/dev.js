@@ -19,7 +19,7 @@ function launchElectron(isFirstRun) {
     electronProcess.kill();
   }
 
-  const args = ["."];
+  const args = ["--trace-warnings", "."];
   if (isFirstRun) args.push("--first-run");
 
   electronProcess = spawn("electron", args, {

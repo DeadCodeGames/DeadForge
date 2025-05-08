@@ -20,7 +20,7 @@ module.exports = {
                 "danger": "#ED2821",
                 "warning": "#FBB000",
                 "success": "#43A047",
-                "neutral": "#1E88E5",
+                "progress": "#1E88E5",
                 "cornflowerBlue": "#6495ED",
                 "purpleNotFound": "#404",
                 "notQuiteBlack": "#0F0F0F",

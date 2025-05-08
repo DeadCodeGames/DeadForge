@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('Electron', {
     isTray: true,
     isSettingsWindow: false,
+    isNotificationsWindow: false,
     onTrayGetContentsHeight: (callback: () => Promise<number>) => {
         ipcRenderer.on('tray:getContentsHeight', async () => {
             const height = await callback();

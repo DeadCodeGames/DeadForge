@@ -1,12 +1,30 @@
 import path from 'path'; /* import url from 'url'; */ import fs from 'fs';
-import { app, BrowserWindow, Extension, ipcMain, nativeTheme, Tray } from 'electron';
+import { app, BrowserWindow, dialog, Extension, ipcMain, nativeTheme, Tray } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
 import { Preferences, OldPreferences, defaultPreferences } from './preferences';
+import * as SteamStuff from './mainHelpers/SteamStuff'; import * as EpicStuff from './mainHelpers/EpicStuff'; import * as ItchStuff from './mainHelpers/ItchStuff';
+import { importBackup, exportBackup, validateBackup } from './mainHelpers/BackupStuff';
+import { closeDB, initUserDB, insertPathIntoDB, removePathFromDB } from './mainHelpers/DataDB';
+import { initWatchers } from './mainHelpers/WatchManager';
 let gotInstanceLock = app.requestSingleInstanceLock();
 const windowStateKeeper = require('electron-window-state');
 let installExtension: (extensionReference: ExtensionReference | string | Array<ExtensionReference | string>, options?: InstallExtensionOptions) => Promise<Extension[]>, REACT_DEVELOPER_TOOLS: ExtensionReference;
 if (!app.isPackaged) {
     ({ default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer'));
+}
+
+export function getResourcePath(...parts: string[]) {
+    const basePath = app.isPackaged
+        ? path.join(path.dirname(app.getAppPath()), 'app.asar.unpacked', 'resources')
+        : path.join(__dirname, '..', 'resources');
+
+    const fullPath = path.join(basePath, ...parts);
+
+    if (!fs.existsSync(fullPath)) {
+        console.warn('Resource not found:', fullPath);
+    }
+
+    return fullPath;
 }
 
 let mainWindow: BrowserWindow | null = null;
@@ -17,9 +35,12 @@ let initialLoad = true;
 
 const FIRST_DEV_RUN = !app.isPackaged && Boolean(process.argv.find((s) => s === "--first-run"));
 
-function migratePreferences(v1Prefs: OldPreferences): Preferences {
+let legacyPreferencesAvailable = false, legacyPreferences: OldPreferences;
+
+function migratePreferences(v1Prefs: OldPreferences, options?: { dryRun?: true }): undefined;
+function migratePreferences(v1Prefs: OldPreferences, options?: { dryRun?: false }): Preferences;
+function migratePreferences(v1Prefs: OldPreferences, options?: { dryRun?: boolean }): Preferences | undefined {
     const newPrefs: Preferences = { ...defaultPreferences };
-    fs.writeFileSync(path.join(app.getPath("userData"), "preferences.v1.json"), JSON.stringify(v1Prefs));
 
     // Migrate known fields
     if (v1Prefs.colorScheme) newPrefs.theme = v1Prefs.colorScheme;
@@ -28,32 +49,45 @@ function migratePreferences(v1Prefs: OldPreferences): Preferences {
     if (typeof v1Prefs.startup === "boolean") newPrefs.autoStart = v1Prefs.startup;
     if (typeof v1Prefs.betaEnabled === "boolean") newPrefs.betaUpdates = v1Prefs.betaEnabled;
 
-    fs.writeFileSync(path.join(app.getPath("userData"), "preferences.json"), JSON.stringify(newPrefs));
+    legacyPreferences = v1Prefs;
 
-    return newPrefs;
+    fs.writeFileSync(path.join(app.getPath("userData"), "preferences.v1.json"), JSON.stringify(v1Prefs));
+
+    if (options?.dryRun) {
+        fs.writeFileSync(path.join(app.getPath("userData"), "preferences.json"), JSON.stringify(defaultPreferences));
+        legacyPreferencesAvailable = true;
+        return;
+    } else {
+        fs.writeFileSync(path.join(app.getPath("userData"), "preferences.json"), JSON.stringify(newPrefs));
+        legacyPreferencesAvailable = false;
+        return newPrefs;
+    }
+
 }
 
-function isOldPreferences(obj: any): obj is OldPreferences {
+function isOldPreferences(obj: OldPreferences | Preferences): obj is OldPreferences {
     return (
-      typeof obj === 'object' &&
-      'colorScheme' in obj &&
-      'menubarCollapsed' in obj &&
-      'closeToTray' in obj &&
-      'startup' in obj &&
-      'betaEnabled' in obj
+        typeof obj === 'object' &&
+        'colorScheme' in obj &&
+        'menubarCollapsed' in obj &&
+        'closeToTray' in obj &&
+        'startup' in obj &&
+        'betaEnabled' in obj
     );
-  }
+}
 
 let initialPrefs: Preferences | OldPreferences;
 try {
     initialPrefs = JSON.parse(fs.readFileSync(path.join(app.getPath("userData"), "preferences.json"), { encoding: "utf-8" }));
     if (isOldPreferences(initialPrefs)) {
-        initialPrefs = migratePreferences(initialPrefs);
+        migratePreferences(initialPrefs, { dryRun: true });
+        initialPrefs = defaultPreferences;
     }
 } catch (e) {
-    console.log(e)
+    console.log(e);
     initialPrefs = defaultPreferences;
 }
+
 
 const createTray = () => {
     tray = new Tray(path.join(__dirname, 'trayIcon.png'));
@@ -102,7 +136,7 @@ const createWindow = () => {
 
     mainWindow = new BrowserWindow({
         minWidth: 700,
-        minHeight: 450,
+        minHeight: 725,
         x: mainWindowState.x || undefined,
         y: mainWindowState.y || undefined,
         height: mainWindowState.height,
@@ -129,7 +163,7 @@ const createWindow = () => {
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
-
+    mainWindow.webContents.openDevTools();
     mainWindow.webContents.on("did-navigate", () => { if (!initialLoad) { app.relaunch(); app.quit() } else initialLoad = false; });
 
     mainWindow!.webContents.setWindowOpenHandler(({ url }) => {
@@ -141,6 +175,8 @@ const createWindow = () => {
 if (!gotInstanceLock && app.isPackaged) { app.quit(); } else
     if (!gotInstanceLock || !app.isPackaged) { gotInstanceLock = app.requestSingleInstanceLock(); }
 app.whenReady().then(async () => {
+    initUserDB();
+    initWatchers();
     await new Promise((resolve) => setTimeout(() => {
         FIRST_DEV_RUN && console.warn("Sometimes, during development, the development server starts way too late, and the window page is an error instead.");
         FIRST_DEV_RUN && console.warn("This ̶s̶h̶o̶u̶l̶d̶ ̶n̶o̶t̶ ̶b̶e̶ is not an issue in prod, but is annoying in dev.");
@@ -306,13 +342,21 @@ ipcMain.handle('settings:close', () => {
 });
 
 ipcMain.handle('preferences:get', () => {
-    let preferences: string;
+    let preferences: Preferences;
     try {
         preferences = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'preferences.json'), 'utf-8'));
+        if (fs.existsSync(path.join(app.getPath('userData'), 'preferences.v1.json'))) {
+            legacyPreferencesAvailable = true;
+            legacyPreferences = JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'preferences.v1.json'), 'utf-8'));
+        }
+        if (isOldPreferences(preferences)) {
+            migratePreferences(preferences, { dryRun: true });
+            preferences = defaultPreferences;
+        }
     } catch (err) {
-        preferences = "";
+        preferences = defaultPreferences;
     }
-    return preferences;
+    return {preferences, v1PrefsAvailable: legacyPreferencesAvailable || fs.existsSync(path.join(app.getPath('userData'), 'preferences.v1.json')), v1Prefs: legacyPreferences};
 });
 
 ipcMain.handle('preferences:set', (event: Electron.IpcMainInvokeEvent, newPreferences: Preferences, isSettingsOpen: boolean, fromSettingsWindow?: boolean) => {
@@ -349,3 +393,85 @@ ipcMain.on('window:openSettingsWindow', createSettingsWindow)
 ipcMain.handle('app:reload', () => {
     app.relaunch(); app.exit(0)
 });
+
+ipcMain.handle("dialog:showOpenDialog", async (event, options) => {
+    const window = BrowserWindow.getFocusedWindow()
+    if (!window) {
+        return { canceled: true, filePaths: [] }
+    }
+
+    return await dialog.showOpenDialog(window, options)
+})
+
+ipcMain.handle('steam:getGamesData', async (_, SteamPath: string) => {
+    return await SteamStuff.getInstalledSteamGames(path.join(SteamPath, 'appcache', 'appinfo.vdf'), path.join(SteamPath, 'steamapps', 'libraryfolders.vdf'));
+})
+
+ipcMain.handle('epic:getGamesData', (_, manifestsDir: string) => {
+    return EpicStuff.getInstalledEpicGames(manifestsDir);
+});
+
+ipcMain.handle('itch:getGamesData', (_, itchAppDir: string) => {
+    return ItchStuff.readItchDB(path.join(itchAppDir, "db", "butler.db"));
+})
+
+ipcMain.handle('backup:export', async (): Promise<string | { canceled: true }> => {
+    const window = BrowserWindow.getFocusedWindow()
+    if (!window) {
+        return { canceled: true }
+    }
+
+    const selectResult = await dialog.showSaveDialog(window, { defaultPath: path.join(app.getPath('downloads'), 'deadforge_backup.bak'), filters: [{ name: 'DeadForge Backup Archive', extensions: ['bak', 'zip'] }] });
+    
+    const result = exportBackup(selectResult.filePath).then(r => { return r }, e => { console.log(e); return { canceled: true as const } });
+    return result;
+})
+
+ipcMain.handle('backup:import', async (): Promise<[string, Preferences] | { canceled: true }> => {
+    const window = BrowserWindow.getFocusedWindow();
+    if (!window) {
+        return { canceled: true }
+    }
+
+    const selectResult = await dialog.showOpenDialog(window, { properties: ['openFile'], filters: [{ name: 'DeadForge Backup Archive', extensions: ['bak', 'zip'] }] });
+    if (selectResult.filePaths.length === 0) { return { canceled: true } }
+
+    // send request to main window for confirmation
+
+    return await importBackup(selectResult.filePaths[0]);
+})
+
+ipcMain.handle('backup:validate', async (_, path: string): Promise<[true, Preferences] | [false, {}]> => {
+    const data = await validateBackup(path);
+    return data;
+})
+
+ipcMain.handle('onboarding:finished', async (_, data) => {
+    if (data.deadforgeBackup.backupImported && await validateBackup(data.deadforgeBackup.backupPath)) {
+        importBackup(data.deadforgeBackup.backupPath);
+    } else {
+        if (data.deadforgeBackup.prefsTransfered && legacyPreferencesAvailable) {
+            migratePreferences(
+                JSON.parse(fs.readFileSync(path.join(app.getPath('userData'), 'preferences.v1.json'), 'utf-8')) as OldPreferences,
+                { dryRun: false }
+            );
+        };
+        if (data.steam.enabled && await SteamStuff.getInstalledSteamGames(path.join(data.steam.path, 'appcache', 'appinfo.vdf'), path.join(data.steam.path, 'steamapps', 'libraryfolders.vdf'))) {
+            insertPathIntoDB('steam', data.steam.path);
+        } else {
+            removePathFromDB('steam');
+        }
+        if (data.epic.enabled && EpicStuff.getInstalledEpicGames(data.epic.path)) {
+            insertPathIntoDB('epic', data.epic.path);
+        } else {
+            removePathFromDB('epic');
+        }
+        if (data.itchio.enabled && await ItchStuff.readItchDB(path.join(data.itchio.path, "db", "butler.db"))) {
+            insertPathIntoDB('itchio', data.itchio.path);
+        } else {
+            removePathFromDB('itchio')
+        }
+    }
+})
+
+app.on('before-quit', closeDB);

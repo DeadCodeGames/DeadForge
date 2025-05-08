@@ -1,4 +1,5 @@
 export type Preferences = {
+    initialSetupComplete: boolean,
     theme: string,
     sidebarCollapsed: boolean,
     windowFrame: string,
@@ -26,6 +27,7 @@ export type OldPreferences = {
 }
 
 export const defaultPreferences: Preferences = {
+    initialSetupComplete: false,
     theme: "dark",
     sidebarCollapsed: false,
     windowFrame: "auto",
@@ -38,4 +40,4 @@ export const defaultPreferences: Preferences = {
     autoUpdate: false,
     betaUpdates: false,
     langUpdates: false
-  }
+}

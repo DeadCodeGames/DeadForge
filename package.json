@@ -10,6 +10,10 @@
   "license": "BSD-3-Clause",
   "repository": "github:DeadCodeGames/DeadForge",
   "private": true,
+  "engineStrict": true,
+  "engines": {
+    "node": "^22.14.0"
+  },
   "dependencies": {
     "electron-window-state": "^5.0.3"
   },
@@ -19,11 +23,19 @@
     "@babel/register": "^7.25.9",
     "@dead404code/tailwind-remove-base-border-box": "^1.0.0-Patch",
     "@dead404code/tailwind-utilities": "^1.0.1-Patch",
+    "@electron/rebuild": "^3.7.2",
+    "@icons-pack/react-simple-icons": "^12.7.0",
+    "@types/adm-zip": "^0.5.7",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/flat": "^5.0.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.2",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-twemoji": "^0.4.3",
+    "adm-zip": "^0.5.16",
+    "better-sqlite3": "^11.9.1",
+    "chokidar": "^4.0.3",
+    "clsx": "^2.1.1",
     "concurrently": "^9.1.2",
     "cpx": "^1.5.0",
     "cross-env": "^7.0.3",
@@ -33,6 +45,7 @@
     "flat": "^6.0.1",
     "html-minifier-terser": "^7.2.0",
     "i18next": "^25.0.0",
+    "json-stream-stringify": "^3.1.6",
     "lucide-react": "^0.487.0",
     "navigation-api-types": "^0.6.1",
     "nodemon": "^3.1.9",
@@ -43,9 +56,11 @@
     "react-router-dom": "^7.5.0",
     "react-scripts": "5.0.1",
     "react-twemoji": "^0.6.0",
+    "tailwind-merge": "^3.2.0",
     "tsx": "^4.19.3",
     "twemoji": "^14.0.2",
     "typescript": "^5.8.3",
+    "vdf": "^0.0.2",
     "wait-on": "^8.0.3"
   },
   "main": "./electron-dist/main.js",
@@ -64,9 +79,19 @@
       "electron-dist/**/*",
       "package.json",
       "!node_modules/*/{test,__tests__,tests}/**",
-      "!**/*.map"
+      "!**/*.map",
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": [
+          "**/*"
+        ]
+      }
     ],
     "asar": true,
+    "asarUnpack": [
+      "resources/bin/VDFParser/**"
+    ],
     "win": {
       "target": "nsis",
       "artifactName": "dev.deadcode.forge-${version}.${ext}"
@@ -81,6 +106,7 @@
     }
   },
   "scripts": {
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
     "start": "npm run electron:serve",
     "react:start": "react-app-rewired start",
     "prereact:build": "node scripts/fetchTwemoji.js",

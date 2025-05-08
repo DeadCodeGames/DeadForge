@@ -11,8 +11,12 @@ import { useTranslation } from "react-i18next";
 import Arcade from "./pages/Arcade/Arcade.tsx";
 import InitialLoader from "./components/Loader/InitialLoader.tsx";
 import i18n from "./locales/i18n.ts";
+import FirstLaunchModal from "./SetupModal/SetupModal.tsx";
+import { NotificationProvider } from "./pages/Notifications/NotificationsProvider.tsx";
+import NotificationDisplay from "./pages/Notifications/NotificationsDisplay.tsx";
 
 const defaultPreferences = {
+  initialSetupComplete: false,
   theme: "dark",
   sidebarCollapsed: false,
   windowFrame: "auto",
@@ -32,25 +36,30 @@ const defaultPreferences = {
 export const AppContext = createContext<any>(
   {
     preferences: defaultPreferences,
-    storePreload: null
+    storePreload: null,
+    setupModalActive: false,
+    v1PrefsAvailable: false,
+    v1Prefs: {}
   }
 );
 
 function AppContextProvider({ children }: { children: React.ReactNode }) {
-  const [context, setContext] = useState<any>({ preferences: defaultPreferences, storePreload: null });
+  const [context, setContext] = useState<any>({ preferences: defaultPreferences, storePreload: null, setupModalActive: false, v1PrefsAvailable: false, v1Prefs: {} });
   const [shouldSetContext, setShouldSetContext] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const prefs = await window.Electron.getPreferences();
-        setContext((prev: any) => { return { ...prev, preferences: prefs } }); 
+        const {preferences: prefs, v1PrefsAvailable, v1Prefs} = await window.Electron.getPreferences();
+        console.log(prefs, v1PrefsAvailable);
+        setContext((prev: any) => ({ ...prev, preferences: prefs, setupModalActive: !prefs.initialSetupComplete, v1PrefsAvailable, v1Prefs }));
         i18n.changeLanguage(prefs.language);
         setShouldSetContext(true);
       } catch (error) {
         console.error('Failed to fetch client preferences:', error);
       }
     };
+    
 
     window.Electron.onPreferencesUpdate((e: any, newPrefs: any) => {
       if (window.Electron.isSettingsWindow) return;
@@ -120,6 +129,7 @@ function AppContents() {
 
   return (<>
     <WinControls />
+    <FirstLaunchModal />
     <div className="flex">
       <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon transition-colors duration-300 top-9 overflow-hidden">
         <Navigation navItemsTop={[
@@ -147,10 +157,11 @@ export default function App() {
 
   return (
     <AppContextProvider>
-      {!(window.Electron.isTray || window.Electron.isSettingsWindow) && <InitialLoader />}
+      {!(window.Electron.isTray || window.Electron.isSettingsWindow || window.Electron.isNotificationsWindow) && <InitialLoader />}
       {window.Electron.isTray && <Tray />}
       {window.Electron.isSettingsWindow && <><WinControls /><div className="h-[calc(100vh-36px)] absolute w-full top-9 overflow-hidden"><Settings /></div></>}
-      {!(window.Electron.isTray || window.Electron.isSettingsWindow) &&
+      {window.Electron.isNotificationsWindow && <NotificationProvider><NotificationDisplay /></NotificationProvider>}
+      {!(window.Electron.isTray || window.Electron.isSettingsWindow || window.Electron.isNotificationsWindow) &&
         <Routes>
           <Route path="*" element={<AppContents />} />
         </Routes>

@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { AppContext } from '@/App.tsx';
 import { useTranslation } from "react-i18next";
+import DEADCODELogo from '../CustomElements/DEADCODELogo';
 
 export default function WinControls() {
     const { t } = useTranslation();
@@ -118,7 +119,7 @@ export default function WinControls() {
 
     const title = (
         <>
-            <div id="logo" className="text-lg px-1 text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300 font-montserrat font-bold">××</div>
+            <DEADCODELogo id="logo" className='px-1' />
             <div id="windowtitle" className="text-sm font-bold select-none px-1 font-uniSansCAPS text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300">
                 DeadForge<LocationTitle />
             </div>

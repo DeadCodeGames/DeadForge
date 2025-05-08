@@ -37,11 +37,7 @@ html {
 
 /* Body reset & base style */
 html, body {
-    @apply m-0 bg-notQuiteWhite text-notQuiteBlack;
-}
-
-html.dark, body:is(.dark *) {
-    @apply bg-notQuiteBlack text-notQuiteWhite;
+    @apply m-0 bg-notQuiteWhite text-notQuiteBlack dark:bg-notQuiteBlack dark:text-notQuiteWhite;
 }
 
 /* Links */
@@ -50,11 +46,10 @@ a {
     @apply cursor-pointer underline m-[2.5px];
 }
 
-/* Checklist code blocks */
-div.checklist pre.code {
-    @apply border w-fit p-2 rounded-lg border-solid border-[#1F1F1F] bg-[#0F0F0F] my-4;
-}
-
 .inverse-quarter {
     clip-path: path('M0,0 H25 V25 H0 Z M25,0 A25,25 0 0 0 0,25 Z');
+}
+
+code.singleLine {
+    @apply p-1 dark:bg-night bg-notQuiteWhite rounded-md border border-solid border-night/25 dark:border-fullMoon/25 leading-8 box-decoration-clone
 }

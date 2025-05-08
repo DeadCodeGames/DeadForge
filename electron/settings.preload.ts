@@ -3,6 +3,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 contextBridge.exposeInMainWorld('Electron', {
     isTray: false,
     isSettingsWindow: true,
+    isNotificationsWindow: false,
     minimize: () => ipcRenderer.invoke('settings:minimize'),
     maximize: () => ipcRenderer.invoke('settings:maximize'),
     isMaximized: (): Promise<boolean> => ipcRenderer.invoke('settings:isMaximized'),
