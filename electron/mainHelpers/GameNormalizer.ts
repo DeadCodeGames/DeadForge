@@ -1,5 +1,5 @@
 import { SteamLauncherData } from "../preload";
-import { LaunchOption, NormalizedGame } from "../types";
+import { LaunchOption, NormalizedDLC, NormalizedGame } from "../types";
 import { join } from "path";
 import { getInstalledSteamGamePath } from "./SteamStuff";
 import { getFriendlyOSName } from "./idkOtherRandomStuffLMAO";
@@ -24,18 +24,16 @@ export async function normalizeCaveToGame(cave: any): Promise<NormalizedGame> {
             iconUrl: undefined,
             logoUrl: undefined,
             heroUrl: undefined,
+            headerUrl: undefined,
+            capsuleUrl: undefined,
         },
         raw: null,
+        type: "Game"
     };
 }
 
 export async function normalizeSteamEntryToGame(SteamPath: string, entry: SteamLauncherData["datasets"][number]): Promise<NormalizedGame | undefined> {
     if (!(entry.data.appinfo?.config?.launch)) return undefined;
-    console.log({
-        iconUrl: entry.data.appinfo.common.icon + ".jpg",
-        logoUrl: JSON.stringify(entry.data.appinfo.common?.library_assets_full?.library_logo),
-        heroUrl: JSON.stringify(entry.data.appinfo.common?.library_assets_full?.library_hero),
-    })
     const launchOptions: LaunchOption[] = await Promise.all(entry.data.appinfo.config.launch
         .filter(option => (option.config?.oslist?.includes(getFriendlyOSName(process.platform)) || option.executable.endsWith(".exe")))
         .map(async (option, index) => ({
@@ -50,11 +48,15 @@ export async function normalizeSteamEntryToGame(SteamPath: string, entry: SteamL
             ),
             arguments: option.arguments ? [option.arguments] : [],
         })));
+    const names = {
+        "default": entry.data.appinfo.common.name,
+        ...entry.data.appinfo.common.name_localized
+    }
 
     return ({
         id: String(entry.id),
         source: 'steam',
-        name: entry.data.appinfo.common.name,
+        name: names,
         installPath: await getInstalledSteamGamePath(join(SteamPath, 'appcache', 'appinfo.vdf'), join(SteamPath, 'steamapps', 'libraryfolders.vdf'), entry.id),
         launchOptions,
         sizeBytes: entry.size,
@@ -62,9 +64,33 @@ export async function normalizeSteamEntryToGame(SteamPath: string, entry: SteamL
             iconUrl: entry.data.appinfo.common.icon + ".jpg",
             logoUrl: JSON.stringify(entry.data.appinfo.common?.library_assets_full?.library_logo),
             heroUrl: JSON.stringify(entry.data.appinfo.common?.library_assets_full?.library_hero),
+            headerUrl: JSON.stringify(entry.data.appinfo.common?.library_assets_full?.library_header) || JSON.stringify(entry.data.appinfo.common?.header_image),
+            capsuleUrl: JSON.stringify(entry.data.appinfo.common?.library_assets_full?.library_capsule) || JSON.stringify(entry.data.appinfo.common?.small_capsule),
         },
         raw: null,
+        type: entry.data.appinfo.common.type
     })
+}
+
+export async function normalizeSteamDLCEntryToDLC(SteamPath: string, entry: SteamLauncherData["datasets"][number]): Promise<NormalizedDLC | undefined> {
+    if (!entry?.data?.appinfo?.extended?.dlcforappid) return undefined;
+    const names = {
+        "default": entry.data.appinfo.common.name,
+        ...entry.data.appinfo.common.name_localized
+    }
+    return {
+        id: String(entry.id),
+        parentGameId: String(entry.data.appinfo.extended.dlcforappid),
+        source: 'steam',
+        name: names,
+        sizeBytes: entry.size,
+        media: {
+            headerUrl: JSON.stringify(entry.data.appinfo.common.header_image) || JSON.stringify(entry.data.appinfo.common.library_assets_full?.library_header),
+            capsuleUrl: JSON.stringify(entry.data.appinfo.common.small_capsule) || JSON.stringify(entry.data.appinfo.common.library_assets_full?.library_capsule),
+        },
+        raw: null,
+        type: entry.data.appinfo.common.type
+    }
 }
 
 export function normalizeEpicManifestToGame(manifest: any): NormalizedGame | undefined {
@@ -100,9 +126,12 @@ export function normalizeEpicManifestToGame(manifest: any): NormalizedGame | und
             media: {
                 iconUrl: undefined,
                 logoUrl: undefined,
-                heroUrl: undefined
+                heroUrl: undefined,
+                headerUrl: undefined,
+                capsuleUrl: undefined,
             },
-            raw: manifest
+            raw: manifest,
+            type: 'Game'
         };
 
         return normalizedGame;
@@ -113,15 +142,29 @@ export function normalizeEpicManifestToGame(manifest: any): NormalizedGame | und
 }
 
 export function prepareGameForSQL(game: NormalizedGame) {
-    console.log(game);
     return {
         id: game.id,
-        name: game.name,
+        name: typeof game.name === 'string' ? game.name : JSON.stringify(game.name),
         installPath: game.installPath ?? null,
         launchOptions: JSON.stringify(game.launchOptions ?? []),
         icon: game.media?.iconUrl ?? `%USERDATA%/game_assets/${game.id}.icon.png`,
         logo: game.media?.logoUrl ?? `%USERDATA%/game_assets/${game.id}.logo.png`,
-        header: game.media?.heroUrl ?? `%USERDATA%/game_assets/${game.id}.header.png`,
+        header: game.media?.headerUrl ?? `%USERDATA%/game_assets/${game.id}.header.png`,
+        hero: game.media?.heroUrl ?? `%USERDATA%/game_assets/${game.id}.hero.png`,
+        capsule: game.media?.capsuleUrl ?? `%USERDATA%/game_assets/${game.id}.capsule.png`,
         raw: null,
+        type: game.type
+    };
+}
+
+export function prepareDLCForSQL(dlc: NormalizedDLC) {
+    return {
+        id: dlc.id,
+        parentGameId: dlc.parentGameId,
+        name: typeof dlc.name === 'string' ? dlc.name : JSON.stringify(dlc.name),
+        header: dlc.media?.headerUrl ?? `%USERDATA%/game_assets/${dlc.id}.header.png`,
+        capsule: dlc.media?.capsuleUrl ?? `%USERDATA%/game_assets/${dlc.id}.capsule.png`,
+        raw: null,
+        type: dlc.type
     };
 }

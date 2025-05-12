@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { OldPreferences, Preferences } from './preferences';
 import { SteamGameObject } from './steamTypes';
+import { NormalizedDLC, NormalizedGame, NormalizedGameJoin } from './types';
 const path = require('path');
 const { pathToFileURL } = require('url');
 
@@ -35,11 +36,21 @@ contextBridge.exposeInMainWorld('Electron', {
     importBackup: (): Promise<[string, Preferences] | { canceled: true }> => ipcRenderer.invoke('backup:import'),
     validateBackup: (path: string): Promise<[true, Preferences] | [false, {}]> => ipcRenderer.invoke('backup:validate', path),
     onboardingFinished: (data: any) => ipcRenderer.invoke('onboarding:finished', data),
+    
+    fetchGames: (): Promise<[NormalizedGame[], NormalizedDLC[], NormalizedGameJoin[]]> => ipcRenderer.invoke('games:fetch'),
+    onGamesUpdate: (callback: (event: any, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[]) => void) => ipcRenderer.on('games:update', callback),
+    removeGamesUpdateListener: (callback: (event: any, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[]) => void) => ipcRenderer.removeListener('games:update', callback),
 });
 
 contextBridge.exposeInMainWorld('Process', {
     platform: process.platform,
     username: process.env.USERNAME || process.env.USER,
+    versions: {
+        chrome: process.versions.chrome,
+        node: process.versions.node,
+        electron: process.versions.electron,
+        deadforge: process.argv.find((arg: string) => arg.startsWith('--deadforgeVersion'))?.split('=')[1]
+    }
 })
 
 contextBridge.exposeInMainWorld('App', {

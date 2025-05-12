@@ -3,14 +3,16 @@ import chokidar, { FSWatcher } from "chokidar";
 import { getPathsFromDB } from "./DataDB";
 import { readItchDB } from "./ItchStuff";
 import { default as db } from "./DataDB";
-import { normalizeCaveToGame, normalizeEpicManifestToGame, normalizeSteamEntryToGame, prepareGameForSQL } from "./GameNormalizer";
+import { normalizeCaveToGame, normalizeEpicManifestToGame, normalizeSteamDLCEntryToDLC, normalizeSteamEntryToGame, prepareDLCForSQL, prepareGameForSQL } from "./GameNormalizer";
 import { deleteRow, insertRow, selectRows } from "./dbHelpers";
-import { getInstalledSteamGames } from "./SteamStuff";
+import { getInstalledSteamDLCs, getInstalledSteamGames } from "./SteamStuff";
 import { getInstalledEpicGames } from "./EpicStuff";
-import { NormalizedGame } from "../types";
+import { NormalizedDLC, NormalizedGame } from "../types";
+import { notifyGamesUpdate } from "../main";
 
 type Watchers = {
-    steam?: FSWatcher;
+    steamInfo?: FSWatcher;
+    steamFolders?: FSWatcher;
     epic?: FSWatcher;
     itchio?: FSWatcher;
 };
@@ -25,7 +27,6 @@ function insertGamesTransaction(
     normalizedGames: NormalizedGame[]
 ) {
     const runTransaction = db().transaction((games) => {
-        console.log(games);
         for (const id of currentIds) {
             if (!newIds.has(id)) {
                 deleteRow(db(), table, { id });
@@ -38,36 +39,75 @@ function insertGamesTransaction(
     });
 
     runTransaction(normalizedGames);
+    
+    // Emit an event to notify that games have been updated
+    emitter.emit("gamesUpdated");
+}
+
+function insertDLCsTransaction(
+    table: string,
+    currentIds: Set<string>,
+    newIds: Set<string>,
+    normalizedDLCs: NormalizedDLC[]
+) {
+    const runTransaction = db().transaction((dlcs) => {
+        for (const id of currentIds) {
+            if (!newIds.has(id)) {
+                deleteRow(db(), table, { id });
+            }
+        }
+        for (const dlc of dlcs) {
+            const sqlData = prepareDLCForSQL(dlc);
+            insertRow(db(), table, sqlData, 'replace');
+        }
+    });
+
+    runTransaction(normalizedDLCs);
+
+    // Emit an event to notify that games have been updated
+    emitter.emit("gamesUpdated");
 }
 
 async function watchSteam(path: string | undefined) {
-    watchers.steam?.close();
+    watchers.steamInfo?.close();
+    watchers.steamFolders?.close();
     if (!path) return;
 
     const watchSteamHelper = async () => {
-        const data = await getInstalledSteamGames(`${path}/appcache/appinfo.vdf`, `${path}/steamapps/libraryfolders.vdf`);
-        if (!data) return;
+        let gamesData = await getInstalledSteamGames(`${path}/appcache/appinfo.vdf`, `${path}/steamapps/libraryfolders.vdf`);
+        let dlcsData = await getInstalledSteamDLCs(`${path}/appcache/appinfo.vdf`, `${path}/steamapps/libraryfolders.vdf`);
+        if (!gamesData || !dlcsData) return;
 
-        const currentSteamDB = selectRows(db(), 'steamGames');
-        const currentIds = new Set(currentSteamDB.map((row: any) => row.id));
-        const newIds = new Set(data.datasets.map(game => String(game.id)));
+        const currentSteamGamesDB = selectRows(db(), 'steamGames');
+        const currentSteamDLCsDB = selectRows(db(), 'steamDLCs');
+        const currentSteamGamesIds = new Set(currentSteamGamesDB.map((row: any) => row.id));
+        const currentSteamDLCsIds = new Set(currentSteamDLCsDB.map((row: any) => row.id));
+        const newGameIds = new Set(gamesData.datasets.filter((game: any) => game.data.appinfo.type !== "DLC").map(game => String(game.id)));
+        const newDLCIds = new Set(dlcsData.datasets.filter((game: any) => game.data.appinfo.type === "DLC").map(game => String(game.data.appinfo.extended.dlcforappid)));
 
-        const games = data.datasets;
+        const datasets = [...gamesData.datasets, ...dlcsData.datasets];
         const normalizedGames: NormalizedGame[] = [];
+        const normalizedDLCs: NormalizedDLC[] = [];
         
-        for (const game of games) {
-            const normalizedGame = await normalizeSteamEntryToGame(path, game);
+        for (const dataset of datasets) {
+            const normalizedGame = await normalizeSteamEntryToGame(path, dataset);
+            const normalizedDLC = await normalizeSteamDLCEntryToDLC(path, dataset);
             if (normalizedGame) {
                 normalizedGames.push(normalizedGame);
+            } else if (normalizedDLC) {
+                normalizedDLCs.push(normalizedDLC);
             }
         }
         
-        insertGamesTransaction('steamGames', currentIds, newIds, normalizedGames);
+        insertGamesTransaction('steamGames', currentSteamGamesIds, newGameIds, normalizedGames);
+        insertDLCsTransaction('steamDLCs', currentSteamDLCsIds, newDLCIds, normalizedDLCs);
     }
     await watchSteamHelper();
 
-    watchers.steam = chokidar.watch(`${path}/appcache/appinfo.vdf`, { persistent: true });
-    watchers.steam.on("change", watchSteamHelper);
+    watchers.steamInfo = chokidar.watch(`${path}/appcache/appinfo.vdf`, { persistent: true });
+    watchers.steamFolders = chokidar.watch(`${path}/steamapps/libraryfolders.vdf`, { persistent: true });
+    watchers.steamInfo.on("all", watchSteamHelper);
+    watchers.steamFolders.on("all", watchSteamHelper);
 }
 
 async function watchEpic(path: string | undefined) {
@@ -152,6 +192,12 @@ export function initWatchers() {
     for (const [key, val] of Object.entries(paths)) {
         updateWatcher(key, val);
     }
+    
+    // Listen for games updates and notify the main process
+    emitter.on("gamesUpdated", () => {
+        console.log("Games database updated, notifying renderer...");
+        notifyGamesUpdate();
+    });
 }
 
 emitter.on("pathChanged", (key: string, val: string | undefined) => {

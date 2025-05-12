@@ -48,7 +48,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
         });
     };
 
-    const baseItemClass = "text-nowrap flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start text-left";
+    const baseItemClass = "no-user-drag text-nowrap flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start text-left";
     const activeClass = "text-blue-500";
     const inactiveClass = "text-notQuiteBlack dark:text-notQuiteWhite hover:text-black dark:hover:text-white";
     const expandedPointerClass = "-scale-x-100";

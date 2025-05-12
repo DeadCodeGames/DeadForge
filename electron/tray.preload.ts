@@ -1,3 +1,5 @@
+import { NormalizedGame } from "./types";
+
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('Electron', {
@@ -13,6 +15,9 @@ contextBridge.exposeInMainWorld('Electron', {
     sendTrayChoice: (choice: string | object) => ipcRenderer.send('tray:choice', choice),
     getPreferences: (): Promise<object | ""> => ipcRenderer.invoke('preferences:get'),
     onPreferencesUpdate: (callback: (newPrefs: object) => void) => ipcRenderer.on('preferences:update', callback),
+    fetchGames: (): Promise<NormalizedGame[]> => ipcRenderer.invoke('games:fetch'),
+    onGamesUpdate: (callback: (event: any, games: NormalizedGame[]) => void) => ipcRenderer.on('games:update', callback),
+    removeGamesUpdateListener: (callback: (event: any, games: NormalizedGame[]) => void) => ipcRenderer.removeListener('games:update', callback),
 });
 
 contextBridge.exposeInMainWorld('Process', {

@@ -22,17 +22,18 @@ html:not([updateStatus="appnotloaded"])y {
     @apply w-2
 }
   
-  ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     @apply dark:bg-fullMoon bg-night rounded-lg
 }
   
-  ::-webkit-scrollbar-track {
-    @apply dark:bg-notQuiteBlack bg-notQuiteWhite
+::-webkit-scrollbar-track {
+    @apply dark:bg-notQuiteBlack bg-notQuiteWhite rounded-lg
 }
 
 /* Transitions */
 html {
     @apply transition-opacity duration-500 ease-in-out;
+    --osuLogoAnimationSpeed: calc(1s);
 }
 
 /* Body reset & base style */
@@ -53,3 +54,55 @@ a {
 code.singleLine {
     @apply p-1 dark:bg-night bg-notQuiteWhite rounded-md border border-solid border-night/25 dark:border-fullMoon/25 leading-8 box-decoration-clone
 }
+
+html[data-location^="/library"] div#app {
+    --sidebarWidth: 48px !important;
+}
+
+html[data-location^="/library"] div#app>div:has(nav:hover>div>button>span[class*="-scale-x-100"]) {
+    --sidebarWidth: 192px !important;
+}
+
+html[data-location^="/library"] div#app>div#contents {
+    @apply transition-[filter] duration-200 ease-in-out;
+}
+
+html[data-location^="/library"] div#app:has(div>nav:hover>div>button>span[class*="-scale-x-100"])>div#contents {
+    @apply brightness-75;
+}
+
+@keyframes osuLogoBase {
+    0% {
+        transform: scale(1);
+    }
+    99% {
+        transform: scale(0.80);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes osuLogoOutlines {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    40% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+img.osuLogoBase {
+    animation: osuLogoBase var(--osuLogoAnimationSpeed) linear infinite forwards;
+}
+
+img.osuLogoOutlines {
+    animation: osuLogoOutlines var(--osuLogoAnimationSpeed) linear infinite forwards;
+}
+

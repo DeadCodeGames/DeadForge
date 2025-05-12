@@ -1,10 +1,10 @@
 import path from 'path'; /* import url from 'url'; */ import fs from 'fs';
-import { app, BrowserWindow, dialog, Extension, ipcMain, nativeTheme, Tray } from 'electron';
+import { app, BrowserWindow, dialog, Extension, ipcMain, nativeTheme, Tray, protocol } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
 import { Preferences, OldPreferences, defaultPreferences } from './preferences';
 import * as SteamStuff from './mainHelpers/SteamStuff'; import * as EpicStuff from './mainHelpers/EpicStuff'; import * as ItchStuff from './mainHelpers/ItchStuff';
 import { importBackup, exportBackup, validateBackup } from './mainHelpers/BackupStuff';
-import { closeDB, initUserDB, insertPathIntoDB, removePathFromDB } from './mainHelpers/DataDB';
+import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB } from './mainHelpers/DataDB';
 import { initWatchers } from './mainHelpers/WatchManager';
 let gotInstanceLock = app.requestSingleInstanceLock();
 const windowStateKeeper = require('electron-window-state');
@@ -135,7 +135,7 @@ const createWindow = () => {
     })
 
     mainWindow = new BrowserWindow({
-        minWidth: 700,
+        minWidth: 1010,
         minHeight: 725,
         x: mainWindowState.x || undefined,
         y: mainWindowState.y || undefined,
@@ -151,7 +151,7 @@ const createWindow = () => {
             contextIsolation: true,
             devTools: app.isPackaged ? true : true,
             webviewTag: true,
-            additionalArguments: [`--isPackaged=${app.isPackaged}`]
+            additionalArguments: [`--isPackaged=${app.isPackaged}`, `--deadforgeVersion=${require('../package.json').version}`]
         }
     });
 
@@ -172,9 +172,134 @@ const createWindow = () => {
     });
 };
 
+protocol.registerSchemesAsPrivileged([
+    { 
+        scheme: 'local', 
+        privileges: { 
+            standard: true, 
+            supportFetchAPI: true,
+            secure: true,
+            corsEnabled: true,
+            bypassCSP: true
+        } 
+    }
+]);
+
+function getFallbackFilePath(fallback: string, filePath: string, delocalized?: string) {
+    const fallbackMap: Record<string, string> = {
+        defaultIcon: path.join(__dirname, 'windowIcon.png'),
+        delocalized: (() => {
+            if (!filePath) return '';
+            
+            const parsedPath = path.parse(filePath);
+            const fileName = parsedPath.name + parsedPath.ext;
+            
+            const languageSuffixes = Object.values(SteamStuff.steamLanguageMap);
+            
+            for (const suffix of languageSuffixes) {
+                const suffixPattern = `_${suffix}`;
+                if (fileName.includes(suffixPattern) && 
+                    (fileName.endsWith(suffixPattern) || 
+                     fileName.indexOf(suffixPattern) + suffixPattern.length < fileName.length)) {
+                    const baseFileName = fileName.replace(suffixPattern, '');
+                    if (fs.existsSync(path.join(parsedPath.dir, baseFileName))) {return path.join(parsedPath.dir, baseFileName)};
+                }
+            }
+
+            if (delocalized) {
+                let delocalizedFilePath: string;
+                if (process.platform === 'win32') {
+                    const hostAndPath = delocalized + (delocalized || '');
+                    if (hostAndPath.length > 0 && hostAndPath[1] === '/') {
+                        delocalizedFilePath = hostAndPath[0] + ':' + hostAndPath.substring(1);
+                    } else {
+                        delocalizedFilePath = delocalized;
+                    }
+                } else {
+                    delocalizedFilePath = delocalized;
+                }
+    
+                delocalizedFilePath = decodeURIComponent(delocalizedFilePath);
+                return delocalizedFilePath;
+            }
+            
+            return filePath;
+        })()
+    };
+
+    return fallbackMap[fallback] || '';
+}
+
+
+// Add this helper function for registering the local protocol
+function registerLocalProtocol() {
+    protocol.handle('local', (request) => {
+        const url = new URL(request.url);
+
+        try {
+            let filePath: string;
+            if (process.platform === 'win32') {
+                const hostAndPath = url.hostname + (url.pathname || '');
+                if (hostAndPath.length > 0 && hostAndPath[1] === '/') {
+                    filePath = hostAndPath[0] + ':' + hostAndPath.substring(1);
+                } else {
+                    filePath = url.pathname;
+                }
+            } else {
+                filePath = url.pathname;
+            }
+
+            filePath = decodeURIComponent(filePath);
+
+            if (!fs.existsSync(filePath)) {
+                console.error(`File not found: ${filePath}`);
+
+                const fallback = url.searchParams.get('fallback');
+                const delocalized = url.searchParams.get('delocalized') || undefined;
+                if (fallback) {
+                    const fallbackPath = getFallbackFilePath(fallback, filePath, delocalized);
+
+                    if (fs.existsSync(fallbackPath)) {
+                        console.log(`Serving fallback: ${fallbackPath}`);
+                        const data = fs.readFileSync(fallbackPath);
+                        const mimeType = getMimeType(fallbackPath);
+
+                        return new Response(data, {
+                            headers: {
+                                'Content-Type': mimeType,
+                                'Access-Control-Allow-Origin': '*'
+                            }
+                        });
+                    } else {
+                        console.error(`Fallback file not found: ${fallbackPath}`);
+                    }
+                }
+
+                return new Response(null, { status: 404 });
+            }
+
+            const data = fs.readFileSync(filePath);
+            const mimeType = getMimeType(filePath);
+
+            return new Response(data, {
+                headers: {
+                    'Content-Type': mimeType,
+                    'Access-Control-Allow-Origin': '*'
+                }
+            });
+        } catch (error) {
+            console.error('Error serving file from local protocol:', error);
+            return new Response(null, { status: 500 });
+        }
+    });
+}
+
+
 if (!gotInstanceLock && app.isPackaged) { app.quit(); } else
     if (!gotInstanceLock || !app.isPackaged) { gotInstanceLock = app.requestSingleInstanceLock(); }
+
 app.whenReady().then(async () => {
+    registerLocalProtocol();
     initUserDB();
     initWatchers();
     await new Promise((resolve) => setTimeout(() => {
@@ -356,7 +481,7 @@ ipcMain.handle('preferences:get', () => {
     } catch (err) {
         preferences = defaultPreferences;
     }
-    return {preferences, v1PrefsAvailable: legacyPreferencesAvailable || fs.existsSync(path.join(app.getPath('userData'), 'preferences.v1.json')), v1Prefs: legacyPreferences};
+    return { preferences, v1PrefsAvailable: legacyPreferencesAvailable || fs.existsSync(path.join(app.getPath('userData'), 'preferences.v1.json')), v1Prefs: legacyPreferences };
 });
 
 ipcMain.handle('preferences:set', (event: Electron.IpcMainInvokeEvent, newPreferences: Preferences, isSettingsOpen: boolean, fromSettingsWindow?: boolean) => {
@@ -422,7 +547,7 @@ ipcMain.handle('backup:export', async (): Promise<string | { canceled: true }> =
     }
 
     const selectResult = await dialog.showSaveDialog(window, { defaultPath: path.join(app.getPath('downloads'), 'deadforge_backup.bak'), filters: [{ name: 'DeadForge Backup Archive', extensions: ['bak', 'zip'] }] });
-    
+
     const result = exportBackup(selectResult.filePath).then(r => { return r }, e => { console.log(e); return { canceled: true as const } });
     return result;
 })
@@ -475,3 +600,40 @@ ipcMain.handle('onboarding:finished', async (_, data) => {
 })
 
 app.on('before-quit', closeDB);
+
+ipcMain.handle('games:fetch', () => {
+    return [getAllGamesFromDB(), getAllDLCsFromDB(), getAllGameJoinsFromDB()];
+});
+
+export function notifyGamesUpdate() {
+    if (mainWindow) {
+        const games = getAllGamesFromDB();
+        const dlcs = getAllDLCsFromDB();
+        const gameJoins = getAllGameJoinsFromDB();
+        mainWindow.webContents.send('games:update', games, dlcs, gameJoins);
+    }
+}
+
+// Add a helper function to determine MIME type based on file extension
+function getMimeType(filePath: string): string {
+    const extension = path.extname(filePath).toLowerCase();
+    const mimeTypes: Record<string, string> = {
+        '.html': 'text/html',
+        '.js': 'text/javascript',
+        '.css': 'text/css',
+        '.json': 'application/json',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.svg': 'image/svg+xml',
+        '.mp3': 'audio/mpeg',
+        '.mp4': 'video/mp4',
+        '.wav': 'audio/wav',
+        '.pdf': 'application/pdf',
+        '.txt': 'text/plain',
+        '.webp': 'image/webp',
+    };
+
+    return mimeTypes[extension] || 'application/octet-stream';
+}

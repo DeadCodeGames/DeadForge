@@ -37,11 +37,20 @@ declare global {
             exportBackup: () => Promise<string | { canceled: true }>,
             importBackup: () => Promise<[string, Preferences] | { canceled: true }>,
             validateBackup: (backupPath: string) => Promise<[true, Preferences] | [false, {}]>,
-            onboardingFinished: (data: any) => void
+            onboardingFinished: (data: any) => void,
+            fetchGames: () => Promise<[NormalizedGame[], NormalizedDLC[], NormalizedGameJoin[]]>,
+            onGamesUpdate: (callback: (event: IpcRendererEvent, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[]) => void) => void,
+            removeGamesUpdateListener: (callback: (event: IpcRendererEvent, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[]) => void) => void
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
             username: string;
+            versions: {
+                chrome: string;
+                node: string;
+                electron: string;
+                deadforge: string;
+            }
         },
         App: {
             isPackaged: boolean;
@@ -81,4 +90,93 @@ export type SteamLauncherData = {
     magic: string,
     e_universe: string,
     datasets: object[]
+}
+
+export type LaunchOption = {
+    name: string;
+    executable: string;
+    arguments: string | string[];
+}
+
+interface Media {
+    headerUrl?: string | Record<string, Record<string, string>>
+    capsuleUrl?: string | Record<string, Record<string, string>>;
+}
+
+interface GameMedia extends Media {
+    iconUrl?: string;
+    logoUrl?: string | Record<string, Record<string, string>>;
+    heroUrl?: string | Record<string, Record<string, string>>;
+}
+
+export interface NormalizedSoftware {
+    id: string | Record<string, string>;
+    source: 'steam' | 'epic' | 'itch' | 'osu' | 'deadforge';
+    name: string | Record<string, string>;
+    sizeBytes?: number;
+    media?: Media;
+    raw?: any;
+    type: string
+}
+
+export interface NormalizedGame extends NormalizedSoftware {
+    installPath?: string;
+    launchOptions?: LaunchOption[];
+    media?: GameMedia;
+}
+
+export interface NormalizedDLC extends NormalizedSoftware {
+    parentGameId: string;
+}
+
+export interface NormalizedGameJoin {
+    id: number;
+    clients: Record<string, NormalizedGame>;
+    defaultClient: string;
+    preferences: Record<string, any>;
+}
+
+export interface NormalizedPseudoGameJoin {
+    id: string;
+    source: Record<string, NormalizedGame>
+    defaultClient: string;
+    preferences: Record<string, any>;
+    type: "GameJoin";
+}
+
+export const steamLanguageMap: Record<string, string> = {
+    "ar": "arabic",
+    "bg": "bulgarian",
+    "zh-CN": "schinese",
+    "zh-TW": "tchinese",
+    "cs": "czech",
+    "da": "danish",
+    "nl": "dutch",
+    "en": "english",
+    "fi": "finnish",
+    "fr": "french",
+    "de": "german",
+    "el": "greek",
+    "hu": "hungarian",
+    "id": "indonesian",
+    "it": "italian",
+    "ja": "japanese",
+    "ko": "koreana",
+    "no": "norwegian",
+    "pl": "polish",
+    "pt": "portuguese",
+    "pt-BR": "brazilian",
+    "ro": "romanian",
+    "ru": "russian",
+    "es": "spanish",
+    "es-419": "latam",
+    "sv": "swedish",
+    "th": "thai",
+    "tr": "turkish",
+    "uk": "ukrainian",
+    "vi": "vietnamese"
+}
+
+export const steamLanguageMapFallbacks: Record<string, string[]> = {
+    "sk": ["cs", "en"],
 }

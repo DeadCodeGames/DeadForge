@@ -29,12 +29,36 @@ module.exports = {
                 "fullMoon": "#E9E9E9"
             },
             screens: {
-                "settingsShrink": {max: "999px"}
+                "settingsShrink": { max: "999px" }
             }
         },
     },
     plugins: [
         tailwindUtils,
         fOffBorderBox,
+        function ({ addUtilities }) {
+            const newUtilities = {
+                '.user-drag': {
+                    '-webkit-user-drag': 'element',
+                },
+                '.no-user-drag': {
+                    '-webkit-user-drag': 'none',
+                },
+                '.scrollbar-gutter-none': {
+                    'scrollbar-gutter': 'none',
+                },
+                '.scrollbar-gutter-stable': {
+                    'scrollbar-gutter': 'stable',
+                },
+                '.scrollbar-gutter-both-edges': {
+                    'scrollbar-gutter': 'stable both-edges',
+                },
+                '.scrollbar-gutter-auto': {
+                    'scrollbar-gutter': 'auto',
+                },
+                
+            }
+            addUtilities(newUtilities, ['responsive'])
+        }
     ],
 }

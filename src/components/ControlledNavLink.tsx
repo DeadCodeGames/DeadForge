@@ -40,7 +40,7 @@ export const ControlledNavLink = ({
     }
 
     return (
-        <NavLink to={to} className={className}>
+        <NavLink draggable={false} to={to} className={className}>
             {children}
         </NavLink>
     );

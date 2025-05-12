@@ -59,8 +59,30 @@ export async function getInstalledSteamGames(appInfoVdfPath: string, libraryFold
             .map(app => Number(app));
 
         parsedBinaryJson.datasets = parsedBinaryJson.datasets.filter((set: any) =>
-            installedGameIDs.includes(set.id)
+            {
+                if (set.id === 1905750) console.log(set.data.appinfo.common);
+                return installedGameIDs.includes(set.id)
+            }
         );
+
+        return parsedBinaryJson as SteamLauncherData;
+    } catch (err: any) {
+        console.error('Error reading Steam data:', err.message);
+        return null;
+    }
+}
+
+export async function getInstalledSteamDLCs(appInfoVdfPath: string, libraryFoldersVdfPath: string): Promise<SteamLauncherData | null> {
+    try {
+        const parsedBinaryJson: any = await parseBinaryVDF(appInfoVdfPath);
+
+        const installedGames = await getInstalledSteamGames(appInfoVdfPath, libraryFoldersVdfPath).then((data) => data?.datasets);
+
+        const installedDLCs = parsedBinaryJson.datasets.filter((set: any) =>{
+            return set?.data?.appinfo?.common?.type === "DLC" && set?.data?.appinfo?.extended && set?.data?.appinfo?.extended?.dlcforappid && installedGames?.some((game: any) => game.id === set?.data?.appinfo?.extended?.dlcforappid)
+        });
+
+        parsedBinaryJson.datasets = installedDLCs;
 
         return parsedBinaryJson as SteamLauncherData;
     } catch (err: any) {

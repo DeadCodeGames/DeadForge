@@ -25,6 +25,7 @@ export interface Appinfo {
 
 export interface Common {
     name: string;
+    name_localized: Record<string, string>;
     type: string;
     oslist: string;
     logo: string;
@@ -202,6 +203,7 @@ export interface Branch {
 }
 
 export interface Extended {
+    dlcforappid?: number;
     checkpkgstate: number;
     developer: string;
     gamedir: string;
@@ -214,7 +216,7 @@ export interface Extended {
     visibleonlywhensubscribed: number;
     publisher: string;
     listofdlc: string;
-    DLCAvailableOnStore: number;
+    DLCAvailableOnStore?: number;
 }
 
 export interface Ufs {

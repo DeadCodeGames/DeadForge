@@ -103,7 +103,7 @@ export default function WinControls() {
 
     const LocationTitle = () => {
         if (!context.preferences.showCurrentPageTitleInFrame) return "";
-        switch (window.location.hash.substring(2)) {
+        switch (window.location.hash.substring(2).split("/")[0]) {
             case "library":
                 return <span className='whitespace-pre-wrap'> — {t("sidebar.library")}</span>;
             case "arcade":

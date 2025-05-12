@@ -2757,9 +2757,9 @@ acorn@^7.1.1:
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
 acorn@^8.2.4, acorn@^8.7.1, acorn@^8.8.2, acorn@^8.9.0:
-  version "8.12.1"
-  resolved "https://registry.npmjs.org/acorn/-/acorn-8.12.1.tgz"
-  integrity sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==
+  version "8.14.1"
+  resolved "https://registry.npmjs.org/acorn/-/acorn-8.14.1.tgz"
+  integrity sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==
 
 address@^1.0.1, address@^1.1.2:
   version "1.2.2"
