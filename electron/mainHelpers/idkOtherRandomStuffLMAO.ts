@@ -16,7 +16,7 @@ export function maybeConvertArray(obj: any): any {
         const keys = Object.keys(obj);
         if (keys.every(k => String(Number(k)) === k)) {
             const arr: any = [];
-            for (let k of keys.sort((a, b) => Number(a) - Number(b))) {
+            for (const k of keys.sort((a, b) => Number(a) - Number(b))) {
                 arr.push(maybeConvertArray(obj[k]));
             }
             return arr;

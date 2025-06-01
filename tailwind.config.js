@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require("tailwindcss/defaultTheme");
 const tailwindUtils = require('@dead404code/tailwind-utilities');
@@ -30,7 +31,22 @@ module.exports = {
             },
             screens: {
                 "settingsShrink": { max: "999px" }
-            }
+            },
+            animation: {
+                'fade-slide-in': 'fadeSlideIn 0.3s ease-out',
+            },
+            keyframes: {
+                fadeSlideIn: {
+                    '0%': { 
+                        opacity: '0',
+                        transform: 'translateX(-10px)'
+                    },
+                    '100%': { 
+                        opacity: '1',
+                        transform: 'translateX(0)'
+                    },
+                },
+            },
         },
     },
     plugins: [

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '@/App';
 import { ControlledNavLink } from '../ControlledNavLink';
@@ -7,10 +7,11 @@ type NavItem = {
     name: string | React.JSX.Element;
     path: string;
     icon: string;
+    // eslint-disable-next-line no-unused-vars
     onClick?: (e?: any) => void;
 };
 
-export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) {
+const Navigation = ({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) => {
     const { t } = useTranslation();
     const { context, setContext } = useContext(AppContext);
     const collapsed = context.preferences.sidebarCollapsed;
@@ -98,3 +99,5 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
         </div>
     );
 }
+
+export default Navigation;

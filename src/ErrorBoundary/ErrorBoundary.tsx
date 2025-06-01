@@ -1,7 +1,6 @@
-"use client"
 
-import { Component, ErrorInfo, ReactNode } from "react";
-import { AlertTriangle, X } from "lucide-react";
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ErrorBoundaryProps {
@@ -31,8 +30,8 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-        this.setState({ error, errorInfo });
-        console.error("Error caught by ErrorBoundary:", error, errorInfo);
+        this.setState({ error, errorInfo, hasError: true });
+        console.error("Error caught by ErrorBoundary:", error, errorInfo.componentStack, errorInfo.digest);
     }
 
     dismissError = (): void => {
@@ -77,14 +76,14 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
                                         {error?.name || "Error"}
                                     </div>
 
-                                    <div className="font-montserrat line-clamp-1">
+                                    <div className="font-montserrat line-clamp-1 select-all">
                                         {error?.message || "An unknown error occurred."}
                                     </div>
 
                                     {errorInfo && (
                                         <div className="mt-2">
                                             <h4 className="font-uniSansCAPS text-sm text-notQuiteWhite/80 mb-2">Component Stack</h4>
-                                            <pre className="bg-night p-4 rounded min-w-fit max-w-full max-h-fit text-xs font-consolas text-notQuiteWhite/70">
+                                            <pre className="bg-night p-4 rounded min-w-fit max-w-full max-h-fit text-xs font-consolas text-notQuiteWhite/70 select-all">
                                                 {errorInfo.componentStack?.trim()}
                                             </pre>
                                         </div>

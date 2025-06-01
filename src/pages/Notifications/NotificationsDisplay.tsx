@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNotifications } from "./NotificationsProvider";
 import NotificationItem from "./NotificationItem";
 
-export default function NotificationDisplay() {
+const NotificationDisplay = () => {
     const { queue, removeCurrent } = useNotifications();
     const [visible, setVisible] = useState(true);
 
@@ -31,3 +31,5 @@ export default function NotificationDisplay() {
         </div>
     );
 }
+
+export default NotificationDisplay;

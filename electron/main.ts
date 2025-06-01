@@ -1,17 +1,36 @@
-import path from 'path'; /* import url from 'url'; */ import fs from 'fs';
+import path from 'path'; /* import url from 'url'; */ import fs from 'fs'; import { spawn, ChildProcess, exec } from 'child_process';
 import { app, BrowserWindow, dialog, Extension, ipcMain, nativeTheme, Tray, protocol } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
 import { Preferences, OldPreferences, defaultPreferences } from './preferences';
 import * as SteamStuff from './mainHelpers/SteamStuff'; import * as EpicStuff from './mainHelpers/EpicStuff'; import * as ItchStuff from './mainHelpers/ItchStuff';
 import { importBackup, exportBackup, validateBackup } from './mainHelpers/BackupStuff';
-import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB } from './mainHelpers/DataDB';
+import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB, updateGameLastPlayed, getPathsFromDB, updateGamePlaytime, getAllCuratedAssetsFromDB, getAllCustomAssetsFromDB } from './mainHelpers/DataDB';
 import { initWatchers } from './mainHelpers/WatchManager';
+import { Collection, CollectionGame, Collections, GameWarning, OldCollections } from './types';
+import { waitForGameProcess, monitorExternalProcess } from './mainHelpers/ProcessWatcher';
+import https from 'https';
+import { selectCustomAsset, saveCustomAsset, updateLogoPosition } from './mainHelpers/CustomAssets';
 let gotInstanceLock = app.requestSingleInstanceLock();
 const windowStateKeeper = require('electron-window-state');
+// eslint-disable-next-line no-unused-vars
 let installExtension: (extensionReference: ExtensionReference | string | Array<ExtensionReference | string>, options?: InstallExtensionOptions) => Promise<Extension[]>, REACT_DEVELOPER_TOOLS: ExtensionReference;
 if (!app.isPackaged) {
     ({ default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer'));
 }
+
+if (process.argv.find((s) => s === "resetCleanup")) {
+    fs.rmSync(path.join(app.getPath('userData'), 'db.sqlite'), { force: true });
+    fs.rmSync(path.join(app.getPath('userData'), 'preferences.json'), { force: true });
+    fs.rmSync(path.join(app.getPath('userData'), 'collections.json'), { force: true });
+    app.relaunch({ args: [...process.argv.slice(1).filter((s) => s !== "resetCleanup")] });
+    app.exit();
+}
+
+// Track running game processes
+const gameProcesses = new Map<string, ChildProcess | { pid: number, stopMonitoring: () => void, kill: () => void, isHelperWindow?: boolean }>();
+
+// Track game launch timestamps for playtime calculation
+const gameLaunchTimestamps = new Map<string, number>();
 
 export function getResourcePath(...parts: string[]) {
     const basePath = app.isPackaged
@@ -30,6 +49,8 @@ export function getResourcePath(...parts: string[]) {
 let mainWindow: BrowserWindow | null = null;
 let trayWindow: BrowserWindow | null = null;
 let settingsWindow: BrowserWindow | null = null;
+// eslint-disable-next-line prefer-const
+let notificationsWindow: BrowserWindow | null = null;
 let tray: Tray;
 let initialLoad = true;
 
@@ -37,7 +58,9 @@ const FIRST_DEV_RUN = !app.isPackaged && Boolean(process.argv.find((s) => s === 
 
 let legacyPreferencesAvailable = false, legacyPreferences: OldPreferences;
 
+// eslint-disable-next-line no-unused-vars
 function migratePreferences(v1Prefs: OldPreferences, options?: { dryRun?: true }): undefined;
+// eslint-disable-next-line no-unused-vars
 function migratePreferences(v1Prefs: OldPreferences, options?: { dryRun?: false }): Preferences;
 function migratePreferences(v1Prefs: OldPreferences, options?: { dryRun?: boolean }): Preferences | undefined {
     const newPrefs: Preferences = { ...defaultPreferences };
@@ -76,12 +99,27 @@ function isOldPreferences(obj: OldPreferences | Preferences): obj is OldPreferen
     );
 }
 
+function isOldCollections(obj: OldCollections | Collections): obj is OldCollections {
+    return (
+        typeof obj === 'object' &&
+        'favourites' in obj &&
+        obj.favourites.every((f) => typeof f === 'string') &&
+        'collections' in obj &&
+        Object.values(obj.collections).every((c) => c.every((g: unknown) => typeof g === 'string'))
+    );
+}
+
 let initialPrefs: Preferences | OldPreferences;
+let initialCollections: Collections | OldCollections;
 try {
     initialPrefs = JSON.parse(fs.readFileSync(path.join(app.getPath("userData"), "preferences.json"), { encoding: "utf-8" }));
     if (isOldPreferences(initialPrefs)) {
         migratePreferences(initialPrefs, { dryRun: true });
         initialPrefs = defaultPreferences;
+    }
+    initialCollections = JSON.parse(fs.readFileSync(path.join(app.getPath("userData"), "collections.json"), { encoding: "utf-8" }));
+    if (isOldCollections(initialCollections)) {
+        fs.renameSync(path.join(app.getPath("userData"), "collections.json"), path.join(app.getPath("userData"), "collections.v1.json"));
     }
 } catch (e) {
     console.log(e);
@@ -92,7 +130,7 @@ try {
 const createTray = () => {
     tray = new Tray(path.join(__dirname, 'trayIcon.png'));
     let trayTimer: null | NodeJS.Timeout = null;
-    let trayClickEvent = async () => {
+    const trayClickEvent = async () => {
         if (trayTimer) { clearTimeout(trayTimer); trayTimer = null; return; } else {
             await new Promise((resolve) => { trayTimer = setTimeout(() => { if (trayTimer === null) return; trayTimer = null; resolve(null) }, 500) });
         }
@@ -112,7 +150,11 @@ const createTray = () => {
 
         // Simple tray positioner
         trayWindow.setPosition(x - 4, y - height - 8);
-        trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
+        if (trayWindow.isVisible()) {
+            trayWindow.hide();
+        } else {
+            trayWindow.show();
+        }
     }
 
     tray.on('click', trayClickEvent);
@@ -127,7 +169,7 @@ const createTray = () => {
 }
 
 const createWindow = () => {
-    let mainWindowState = windowStateKeeper({
+    const mainWindowState = windowStateKeeper({
         defaultHeight: 600,
         defaultWidth: 900,
         maximize: true,
@@ -156,9 +198,8 @@ const createWindow = () => {
     });
 
     mainWindowState.manage(mainWindow)
-
-    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/${initialPrefs.defaultPage || "library"}` : `http://localhost:3000#/${initialPrefs.defaultPage || "library"}`);
     if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
+    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/${initialPrefs.defaultPage || "library"}` : `http://localhost:3000#/${initialPrefs.defaultPage || "library"}`);
 
     mainWindow.on('closed', () => {
         mainWindow = null;
@@ -173,15 +214,15 @@ const createWindow = () => {
 };
 
 protocol.registerSchemesAsPrivileged([
-    { 
-        scheme: 'local', 
-        privileges: { 
-            standard: true, 
+    {
+        scheme: 'local',
+        privileges: {
+            standard: true,
             supportFetchAPI: true,
             secure: true,
             corsEnabled: true,
             bypassCSP: true
-        } 
+        }
     }
 ]);
 
@@ -190,19 +231,19 @@ function getFallbackFilePath(fallback: string, filePath: string, delocalized?: s
         defaultIcon: path.join(__dirname, 'windowIcon.png'),
         delocalized: (() => {
             if (!filePath) return '';
-            
+
             const parsedPath = path.parse(filePath);
             const fileName = parsedPath.name + parsedPath.ext;
-            
+
             const languageSuffixes = Object.values(SteamStuff.steamLanguageMap);
-            
+
             for (const suffix of languageSuffixes) {
                 const suffixPattern = `_${suffix}`;
-                if (fileName.includes(suffixPattern) && 
-                    (fileName.endsWith(suffixPattern) || 
-                     fileName.indexOf(suffixPattern) + suffixPattern.length < fileName.length)) {
+                if (fileName.includes(suffixPattern) &&
+                    (fileName.endsWith(suffixPattern) ||
+                        fileName.indexOf(suffixPattern) + suffixPattern.length < fileName.length)) {
                     const baseFileName = fileName.replace(suffixPattern, '');
-                    if (fs.existsSync(path.join(parsedPath.dir, baseFileName))) {return path.join(parsedPath.dir, baseFileName)};
+                    if (fs.existsSync(path.join(parsedPath.dir, baseFileName))) { return path.join(parsedPath.dir, baseFileName) };
                 }
             }
 
@@ -218,11 +259,11 @@ function getFallbackFilePath(fallback: string, filePath: string, delocalized?: s
                 } else {
                     delocalizedFilePath = delocalized;
                 }
-    
+
                 delocalizedFilePath = decodeURIComponent(delocalizedFilePath);
                 return delocalizedFilePath;
             }
-            
+
             return filePath;
         })()
     };
@@ -234,8 +275,7 @@ function getFallbackFilePath(fallback: string, filePath: string, delocalized?: s
 // Add this helper function for registering the local protocol
 function registerLocalProtocol() {
     protocol.handle('local', (request) => {
-        const url = new URL(request.url);
-
+        const url = new URL(request.url.replace("local://const_userdata", "local://" + app.getPath("userData")).replace("\\", "/"));
         try {
             let filePath: string;
             if (process.platform === 'win32') {
@@ -251,7 +291,7 @@ function registerLocalProtocol() {
 
             filePath = decodeURIComponent(filePath);
 
-            if (!fs.existsSync(filePath)) {
+            if (!(fs.existsSync(filePath) && fs.lstatSync(filePath).isFile())) {
                 console.error(`File not found: ${filePath}`);
 
                 const fallback = url.searchParams.get('fallback');
@@ -260,6 +300,7 @@ function registerLocalProtocol() {
                     const fallbackPath = getFallbackFilePath(fallback, filePath, delocalized);
 
                     if (fs.existsSync(fallbackPath)) {
+                        console.log("fallback exists", fallbackPath)
                         console.log(`Serving fallback: ${fallbackPath}`);
                         const data = fs.readFileSync(fallbackPath);
                         const mimeType = getMimeType(fallbackPath);
@@ -277,7 +318,6 @@ function registerLocalProtocol() {
 
                 return new Response(null, { status: 404 });
             }
-
             const data = fs.readFileSync(filePath);
             const mimeType = getMimeType(filePath);
 
@@ -288,7 +328,7 @@ function registerLocalProtocol() {
                 }
             });
         } catch (error) {
-            console.error('Error serving file from local protocol:', error);
+            console.error('Error serving file from local protocol:', error, url.href);
             return new Response(null, { status: 500 });
         }
     });
@@ -303,10 +343,12 @@ app.whenReady().then(async () => {
     initUserDB();
     initWatchers();
     await new Promise((resolve) => setTimeout(() => {
-        FIRST_DEV_RUN && console.warn("Sometimes, during development, the development server starts way too late, and the window page is an error instead.");
-        FIRST_DEV_RUN && console.warn("This ̶s̶h̶o̶u̶l̶d̶ ̶n̶o̶t̶ ̶b̶e̶ is not an issue in prod, but is annoying in dev.");
-        FIRST_DEV_RUN && console.warn("While refreshing the main window fixes it, you cannot really refresh the tray window because of how the IPC flow was designed.");
-        FIRST_DEV_RUN && console.warn("For this reason, there is a 2.5s delay before creating the windows on the first launch during dev. Any further refreshes caused by editing files in the electron/ folder have a delay of 0.");
+        if (FIRST_DEV_RUN) {
+            console.warn("Sometimes, during development, the development server starts way too late, and the window page is an error instead.");
+            console.warn("This ̶s̶h̶o̶u̶l̶d̶ ̶n̶o̶t̶ ̶b̶e̶ is not an issue in prod, but is annoying in dev.");
+            console.warn("While refreshing the main window fixes it, you cannot really refresh the tray window because of how the IPC flow was designed.");
+            console.warn("For this reason, there is a 2.5s delay before creating the windows on the first launch during dev. Any further refreshes caused by editing files in the electron/ folder have a delay of 0.");
+        }
         createWindow();
         createTrayWindow();
         resolve(null);
@@ -352,7 +394,11 @@ ipcMain.handle('window:isMaximized', () => {
 });
 
 ipcMain.handle('window:close', () => {
-    trayWindow ? mainWindow?.hide() : mainWindow?.close();
+    if (trayWindow) {
+        mainWindow?.hide();
+    } else {
+        mainWindow?.close();
+    }
 });
 
 // Theme mode
@@ -387,6 +433,7 @@ const createTrayWindow = () => {
         : "http://localhost:3000#/tray";
 
     trayWindow.loadURL(trayURL);
+    trayWindow.webContents.openDevTools();
 
     trayWindow.on('blur', () => trayWindow?.hide());
     trayWindow.on('closed', () => (trayWindow = null));
@@ -478,7 +525,7 @@ ipcMain.handle('preferences:get', () => {
             migratePreferences(preferences, { dryRun: true });
             preferences = defaultPreferences;
         }
-    } catch (err) {
+    } catch {
         preferences = defaultPreferences;
     }
     return { preferences, v1PrefsAvailable: legacyPreferencesAvailable || fs.existsSync(path.join(app.getPath('userData'), 'preferences.v1.json')), v1Prefs: legacyPreferences };
@@ -566,7 +613,7 @@ ipcMain.handle('backup:import', async (): Promise<[string, Preferences] | { canc
     return await importBackup(selectResult.filePaths[0]);
 })
 
-ipcMain.handle('backup:validate', async (_, path: string): Promise<[true, Preferences] | [false, {}]> => {
+ipcMain.handle('backup:validate', async (_, path: string): Promise<[true, Preferences] | [false, Record<never, never>]> => {
     const data = await validateBackup(path);
     return data;
 })
@@ -581,28 +628,408 @@ ipcMain.handle('onboarding:finished', async (_, data) => {
                 { dryRun: false }
             );
         };
+
+        // Steam
         if (data.steam.enabled && await SteamStuff.getInstalledSteamGames(path.join(data.steam.path, 'appcache', 'appinfo.vdf'), path.join(data.steam.path, 'steamapps', 'libraryfolders.vdf'))) {
             insertPathIntoDB('steam', data.steam.path);
         } else {
             removePathFromDB('steam');
         }
-        if (data.epic.enabled && EpicStuff.getInstalledEpicGames(data.epic.path)) {
-            insertPathIntoDB('epic', data.epic.path);
+
+        // Epic Games
+        if (data.epic.enabled) {
+            const hasValidData = EpicStuff.getInstalledEpicGames(data.epic.dataPath);
+            const hasValidExe = validateEpicExecutable(data.epic.executablePath);
+
+            if (hasValidData && hasValidExe) {
+                insertPathIntoDB('epic_data', data.epic.dataPath);
+                insertPathIntoDB('epic_exe', data.epic.executablePath);
+            } else {
+                removePathFromDB('epic_data');
+                removePathFromDB('epic_exe');
+            }
         } else {
-            removePathFromDB('epic');
+            removePathFromDB('epic_data');
+            removePathFromDB('epic_exe');
         }
-        if (data.itchio.enabled && await ItchStuff.readItchDB(path.join(data.itchio.path, "db", "butler.db"))) {
-            insertPathIntoDB('itchio', data.itchio.path);
+
+        // itch.io
+        if (data.itchio.enabled) {
+            const hasValidData = await ItchStuff.readItchDB(path.join(data.itchio.dataPath, "db", "butler.db"));
+            const resolvedExePath = findItchExecutable(data.itchio.executablePath);
+
+            if (hasValidData && resolvedExePath) {
+                insertPathIntoDB('itchio_data', data.itchio.dataPath);
+                insertPathIntoDB('itchio_exe', data.itchio.executablePath);
+            } else {
+                removePathFromDB('itchio_data');
+                removePathFromDB('itchio_exe');
+            }
         } else {
-            removePathFromDB('itchio')
+            removePathFromDB('itchio_data');
+            removePathFromDB('itchio_exe');
         }
     }
 })
 
-app.on('before-quit', closeDB);
+app.on('before-quit', () => {
+    // Save playtime for any running games before quitting
+    gameLaunchTimestamps.forEach((launchTime, key) => {
+        const [client, gameId] = key.split('-');
+        updatePlaytimeOnGameExit(client, gameId);
+    });
+
+    closeDB();
+});
 
 ipcMain.handle('games:fetch', () => {
-    return [getAllGamesFromDB(), getAllDLCsFromDB(), getAllGameJoinsFromDB()];
+    return [getAllGamesFromDB(), getAllDLCsFromDB(), getAllGameJoinsFromDB(), getAllCuratedAssetsFromDB(), getAllCustomAssetsFromDB()];
+});
+
+/**
+ * Launches a game and updates its lastPlayed timestamp
+ */
+ipcMain.handle('game:launch', async (_, client: string, gameId: string | number, executable: string, args: string | string[], pollInterval = 1000) => {
+    try {
+        console.log(`Launching game ${gameId} from ${client}`);
+        console.log(`Executable: ${executable}`);
+        console.log(`Arguments: ${Array.isArray(args) ? args.join(' ') : args}`);
+
+        let resolvedExecutable = executable;
+
+        // Handle HTML files
+        if (executable.toLowerCase().endsWith('.html')) {
+            const resolveLocalURL = (url?: string) => {
+                if (!url) return undefined;
+                console.log(url);
+                if (url.startsWith("%USERDATA%")) {
+                    return url.replace("%USERDATA%", app.getPath('userData'));
+                }
+                return url;
+            }
+            const gameWindow = new BrowserWindow({
+                width: 1280,
+                height: 720,
+                icon: resolveLocalURL(getAllGamesFromDB().find(g => g.source === client && String(g.id) === String(gameId))?.media?.iconUrl),
+                webPreferences: {
+                    nodeIntegration: false,
+                    contextIsolation: true,
+                    webSecurity: true
+                }
+            });
+            gameWindow.setAutoHideMenuBar(false);
+            gameWindow.setMenuBarVisibility(false);
+
+            // Load the HTML file
+            await gameWindow.loadFile(executable);
+
+            const key = `${client}-${gameId}`;
+            gameProcesses.set(key, {
+                pid: gameWindow.webContents.getOSProcessId(),
+                stopMonitoring: () => { },
+                kill: () => gameWindow.close(),
+                isHelperWindow: true
+            });
+            gameLaunchTimestamps.set(key, Math.floor(Date.now() / 1000));
+
+            // Handle window close
+            gameWindow.on('closed', () => {
+                updatePlaytimeOnGameExit(client, gameId);
+                gameProcesses.delete(key);
+                mainWindow?.webContents.send('game:processTerminated', client, gameId);
+            });
+
+            updateGameLastPlayed(client, gameId);
+            notifyGamesUpdate();
+            return { success: true };
+        }
+
+        if (client === 'itch' && String(gameId) === '-1' && executable.endsWith('CONST_ITCHEXEC')) {
+            const basePath = path.dirname(executable);
+            const resolvedPath = findItchExecutable(basePath);
+            if (!resolvedPath) {
+                throw new Error('Could not resolve itch.io executable path');
+            }
+            resolvedExecutable = resolvedPath;
+        } else if (client === 'steam' && String(gameId) !== '-1') {
+            const steamPath = getPathsFromDB('steam');
+            if (!steamPath) {
+                throw new Error('Steam path not found');
+            }
+            resolvedExecutable = path.join(steamPath, 'steam.exe');
+            args = Array.isArray(args) ? [`steam://run/${gameId}//'${args.join(" ")}'`] : [`steam://run/${gameId}//'${args}'`];
+        }
+
+        const child = spawn(resolvedExecutable, Array.isArray(args) ? args : [args], {
+            detached: true,
+            stdio: 'ignore'
+        });
+
+        child.unref();
+
+        const key = `${client}-${gameId}`;
+        gameProcesses.set(key, child);
+
+        // Store launch timestamp for playtime tracking
+        gameLaunchTimestamps.set(key, Math.floor(Date.now() / 1000));
+
+        // Only wait for real game process for Steam
+        if (client === 'steam' && String(gameId) !== '-1') {
+            const found = await waitForGameProcess(executable, pollInterval);
+
+            if (found) {
+                console.log(`Tracking actual game process: ${found.name} (pid ${found.pid})`);
+
+                try {
+                    const monitor = monitorExternalProcess(found.pid, () => {
+                        console.log(`Game process ${found.name} (pid ${found.pid}) exited`);
+
+                        // Calculate and update playtime when game exits
+                        updatePlaytimeOnGameExit(client, gameId);
+
+                        gameProcesses.delete(key);
+                        mainWindow?.webContents.send('game:processTerminated', client, gameId);
+                    });
+
+                    // Store the monitor reference to be able to stop monitoring later if needed
+                    gameProcesses.set(key, {
+                        pid: found.pid, stopMonitoring: monitor.stop, kill: () => {
+                            monitor.stop();
+                            process.kill(found.pid);
+                        }
+                    });
+                } catch (err) {
+                    console.warn('Could not track real game process:', err);
+                }
+            }
+        } else {
+            child.on('exit', (code, signal) => {
+                console.log(`Game ${gameId} from ${client} process exited with code ${code} and signal ${signal}`);
+
+                // Calculate and update playtime when game exits
+                updatePlaytimeOnGameExit(client, gameId);
+
+                gameProcesses.delete(key);
+                mainWindow?.webContents.send('game:processTerminated', client, gameId);
+            });
+        }
+
+        updateGameLastPlayed(client, gameId);
+        notifyGamesUpdate();
+        return { success: true };
+    } catch (error: unknown) {
+        console.error('Error launching game:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+});
+
+/**
+ * Updates the playtime of a game when it exits
+ */
+function updatePlaytimeOnGameExit(client: string, gameId: string | number) {
+    const key = `${client}-${gameId}`;
+    const launchTimestamp = gameLaunchTimestamps.get(key);
+
+    if (launchTimestamp) {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const playedSeconds = Math.max(0, currentTime - launchTimestamp);
+
+        if (playedSeconds > 5) { // Only count sessions longer than 5 seconds
+            console.log(`Game ${gameId} from ${client} played for ${playedSeconds} seconds`);
+            updateGameLastPlayed(client, gameId);
+            updateGamePlaytime(client, gameId, playedSeconds);
+        }
+
+        gameLaunchTimestamps.delete(key);
+    }
+}
+
+/**
+ * Kills a process by its executable name
+ */
+async function killProcess(client: string, gameId: string | number, executablePath: string): Promise<{ success: boolean, error?: string }> {
+    const executableName = path.basename(executablePath);
+
+    return new Promise((resolve) => {
+        if (process.platform === 'win32') {
+            // On Windows, use taskkill to kill the process by image name
+            exec(`taskkill /IM "${executableName}" /F /T`, (error) => {
+                if (error) {
+                    console.error('Error killing process:', error);
+                    resolve({ success: false, error: error.message });
+                    return;
+                }
+            });
+            console.log('Process killed successfully');
+            mainWindow?.webContents.send('game:processTerminated', client, gameId);
+            resolve({ success: true });
+        } else {
+            // On Unix-like systems, find the PID using ps and kill it
+            exec(`pkill -9 "${executableName}"`, (error) => {
+                if (error && error.code !== 1) {
+                    console.error('Error killing process:', error);
+                    resolve({ success: false, error: error.message });
+                    return;
+                }
+            });
+            console.log('Process killed successfully');
+            resolve({ success: true });
+        }
+    });
+}
+
+/**
+ * Stops a running game process
+ */
+ipcMain.handle('game:stop', async (_, client: string, gameId: string | number) => {
+    try {
+        const key = `${client}-${gameId}`;
+
+        // Calculate and update playtime when game is stopped manually
+        updatePlaytimeOnGameExit(client, gameId);
+
+        // First try to stop the process if we're tracking it
+        const childProcess = gameProcesses.get(key);
+        if (childProcess) {
+            if (!(childProcess instanceof ChildProcess) && childProcess.isHelperWindow) {
+                childProcess.kill();
+            }
+            if (process.platform === 'win32') {
+                if (childProcess.pid) {
+                    spawn('taskkill', ['/pid', childProcess.pid.toString(), '/f', '/t']);
+                }
+            } else {
+                childProcess.kill();
+            }
+            return { success: true };
+        }
+
+        // If we're not tracking it, try to find and kill it by executable name
+        const games = getAllGamesFromDB();
+        const gameData = games.find(g => g.source === client && String(g.id) === String(gameId));
+
+        if (gameData?.launchOptions) {
+            try {
+                const launchOptions = JSON.parse(gameData.launchOptions as any as string);
+                if (launchOptions[0]?.executable) {
+                    const killed = await killProcess(client, gameId, launchOptions[0].executable);
+                    return { success: killed };
+                }
+            } catch (error) {
+                console.error('Error parsing launch options:', error);
+                return { success: false, error: 'Failed to parse launch options' };
+            }
+        }
+
+        return { success: false, error: 'Game process not found' };
+    } catch (error: unknown) {
+        console.error('Error stopping game:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+});
+
+/**
+ * Checks if a process with the given executable name is running
+ */
+async function isProcessRunning(executablePath: string): Promise<boolean> {
+    const executableName = path.basename(executablePath);
+
+    return new Promise((resolve, reject) => {
+        if (process.platform === 'win32') {
+            const process = spawn('tasklist', ['/FI', `IMAGENAME eq ${executableName}`, '/NH']);
+            let stdout = '';
+            let stderr = '';
+
+            process.stdout.on('data', (data) => {
+                stdout += data.toString();
+            });
+
+            process.stderr.on('data', (data) => {
+                stderr += data.toString();
+            });
+
+            process.on('close', (code) => {
+                if (code === 0) {
+                    resolve(stdout.toLowerCase().includes(executableName.toLowerCase()));
+                } else {
+                    console.error('Error checking process (tasklist):', stderr.trim());
+                    resolve(false); // Resolve with false on error, or you could reject
+                }
+            });
+
+            process.on('error', (err) => {
+                console.error('Failed to run tasklist:', err);
+                reject(false);
+            });
+        } else {
+            // On Unix-like systems, use ps and grep with separate arguments
+            const process = spawn('pgrep', ['-x', executableName]); // '-x' matches the exact name
+            // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+            let stdout = '';
+            // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+            let stderr = '';
+
+            process.stdout.on('data', (data) => {
+                stdout += data.toString();
+            });
+
+            process.stderr.on('data', (data) => {
+                stderr += data.toString();
+            });
+
+            process.on('close', (code) => {
+                resolve(code === 0); // pgrep returns 0 if found, 1 if not
+            });
+
+            process.on('error', (err) => {
+                console.error('Failed to run pgrep:', err);
+                reject(false);
+            });
+        }
+    });
+}
+
+/**
+ * Checks which games from the provided list are currently running
+ */
+ipcMain.handle('games:checkRunning', async (_, gameChecks: Array<{ source: string, id: string }>) => {
+    const games = getAllGamesFromDB();
+
+    // Create an array of promises for each game check
+    const checks = gameChecks.map(async (game) => {
+        const key = `${game.source}|${game.id}`;
+        const processKey = `${game.source}-${game.id}`;
+
+        // First check our internal tracking
+        if (gameProcesses.has(processKey)) {
+            console.log(`Game ${game.id} from ${game.source} is running`);
+            return [key, true];
+        }
+
+        // If not in our tracking, check if the process is actually running
+        const gameData = games.find(g => g.source === game.source && String(g.id) === String(game.id));
+
+        if (gameData?.launchOptions && gameData.launchOptions.length > 0) {
+            try {
+                const launchOptions = JSON.parse(gameData.launchOptions as any as string);
+                if (launchOptions[0]?.executable) {
+                    const isRunning = await isProcessRunning(launchOptions[0].executable);
+                    if (isRunning) console.log(`Game ${game.id} from ${game.source} is running`);
+                    return [key, isRunning];
+                }
+            } catch (error) {
+                console.error('Error parsing launch options:', error);
+            }
+        }
+        console.log(`Game ${game.id} from ${game.source} is not running`);
+        return [key, false];
+    });
+
+    // Run all checks in parallel
+    const results = await Promise.all(checks);
+
+    // Convert results array to object
+    return Object.fromEntries(results);
 });
 
 export function notifyGamesUpdate() {
@@ -610,7 +1037,8 @@ export function notifyGamesUpdate() {
         const games = getAllGamesFromDB();
         const dlcs = getAllDLCsFromDB();
         const gameJoins = getAllGameJoinsFromDB();
-        mainWindow.webContents.send('games:update', games, dlcs, gameJoins);
+        const curatedAssets = getAllCuratedAssetsFromDB(), customAssets = getAllCustomAssetsFromDB();
+        mainWindow.webContents.send('games:update', games, dlcs, gameJoins, curatedAssets, customAssets);
     }
 }
 
@@ -637,3 +1065,202 @@ function getMimeType(filePath: string): string {
 
     return mimeTypes[extension] || 'application/octet-stream';
 }
+
+ipcMain.handle('collections:fetch', () => {
+    const collections = JSON.parse(fs.readFileSync(path.join(app.getPath("userData"), "collections.json"), { encoding: "utf-8" }));
+    return { favourites: collections.favourites, collections: collections.collections };
+});
+
+ipcMain.handle('collections:send', (_, favourites: CollectionGame[], collections: Collection[]) => {
+    fs.writeFileSync(path.join(app.getPath("userData"), "collections.json"), JSON.stringify({ favourites, collections }));
+});
+
+// Add these new functions after the imports and before the first function
+function validateEpicExecutable(executablePath: string): boolean {
+    try {
+        if (!fs.existsSync(executablePath)) return false;
+        const stats = fs.statSync(executablePath);
+        return stats.isFile() && executablePath.toLowerCase().endsWith('.exe');
+    } catch (error) {
+        console.error('Error validating Epic executable:', error);
+        return false;
+    }
+}
+
+function findItchExecutable(basePath: string): string | null {
+    try {
+        // First check if this is actually a directory
+        if (!fs.existsSync(basePath) || !fs.statSync(basePath).isDirectory()) {
+            return null;
+        }
+
+        // Get all directories in the base path
+        const dirs = fs.readdirSync(basePath);
+
+        // Look for app-* directory
+        const appDir = dirs.find(dir => dir.startsWith('app-'));
+        if (!appDir) return null;
+
+        // Check for itch.exe in the app directory
+        const executablePath = path.join(basePath, appDir, 'itch.exe');
+        if (fs.existsSync(executablePath) && fs.statSync(executablePath).isFile()) {
+            return executablePath;
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Error finding itch executable:', error);
+        return null;
+    }
+}
+
+// Add these new IPC handlers before app.on('before-quit', closeDB);
+ipcMain.handle('validate:epicExecutable', (_, executablePath: string) => {
+    return validateEpicExecutable(executablePath);
+});
+
+ipcMain.handle('validate:itchExecutable', (_, basePath: string) => {
+    return findItchExecutable(basePath);
+});
+
+// Add handler to resolve display paths for special constants
+ipcMain.handle('path:resolveDisplayPath', (_, _path: string) => {
+    // Handle special constants based on the path itself
+    if (_path.endsWith('CONST_ITCHEXEC')) {
+        const basePath = path.dirname(_path);
+        const resolvedPath = findItchExecutable(basePath);
+        return resolvedPath || _path;
+    }
+
+    return _path;
+});
+
+// Add new handlers for app reset and restart
+ipcMain.handle('app:resetAllData', async () => {
+    try {
+        // Close all windows except main window
+        if (settingsWindow) {
+            settingsWindow.close();
+        }
+        if (trayWindow) {
+            trayWindow.close();
+        }
+        if (notificationsWindow) {
+            (notificationsWindow as any).close();
+        }
+
+        closeDB()
+
+        app.relaunch({ args: [...process.argv.slice(1), "resetCleanup"] });
+        app.exit();
+
+        return true;
+    } catch (error) {
+        console.error('Failed to reset app data:', error);
+        return false;
+    }
+});
+
+ipcMain.handle('app:restart', () => {
+    app.relaunch();
+    app.exit();
+});
+
+/**
+ * Downloads and updates game warnings from the external source with a timeout
+ */
+async function downloadWarnings(timeout = 500): Promise<boolean> {
+    return new Promise((resolve) => {
+        const warningsPath = path.join(app.getPath("userData"), "warnings.json");
+        const warningsUrl = 'https://deadcode.is-a.dev/DeadForgeExternalData/notes/list.json';
+
+        // Set timeout
+        const timeoutId = setTimeout(() => {
+            console.log('Warning download timed out');
+            resolve(false);
+        }, timeout);
+
+        const request = https.get(warningsUrl, (response) => {
+            if (response.statusCode !== 200) {
+                console.error(`Failed to download warnings: ${response.statusCode}`);
+                clearTimeout(timeoutId);
+                resolve(false);
+                return;
+            }
+
+            let data = '';
+            response.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            response.on('end', () => {
+                clearTimeout(timeoutId);
+                try {
+                    // Parse the data to validate it's proper JSON
+                    const warnings = JSON.parse(data);
+
+                    // Write to file
+                    fs.writeFileSync(warningsPath, JSON.stringify(warnings));
+                    console.log('Successfully updated warnings');
+                    resolve(true);
+                } catch (error) {
+                    console.error('Error parsing warnings:', error);
+                    resolve(false);
+                }
+            });
+        });
+
+        request.on('error', (error) => {
+            clearTimeout(timeoutId);
+            console.error('Error downloading warnings:', error);
+            resolve(false);
+        });
+
+        request.end();
+    });
+}
+
+// Ensure warnings.json exists when reading
+ipcMain.handle('fetch-game-warnings', async (_, { source, id }: { source: string, id: string }) => {
+    try {
+        const warningsPath = path.join(app.getPath("userData"), "warnings.json");
+
+        // Always try to download latest warnings first
+        await downloadWarnings();
+
+        // Read warnings from file (either updated or existing)
+        if (fs.existsSync(warningsPath)) {
+            const warnings = JSON.parse(fs.readFileSync(warningsPath, { encoding: "utf-8" }));
+            const warning = warnings.find((warning: GameWarning) => warning.matches.some((match: { source: string, id: string }) => match.source === source && String(match.id) === String(id)));
+            if (!warning) return { success: true, data: "" };
+            return { success: true, data: warning };
+        }
+
+        return { success: true, data: "" };
+    } catch (error) {
+        console.error('Error fetching game warnings:', error);
+        return { success: false, error: 'Failed to fetch game warnings' };
+    }
+});
+
+ipcMain.handle('selectCustomAsset', async () => {
+    return await selectCustomAsset();
+});
+
+ipcMain.handle('saveCustomAsset', async (_, params) => {
+    return await saveCustomAsset(params);
+});
+
+ipcMain.handle('updateLogoPosition', async (_, params) => {
+    return await updateLogoPosition(params);
+});
+
+ipcMain.handle('saveMissingAssetsReport', async (_, report: string) => {
+    fs.readdirSync(app.getPath("userData")).filter(file => file.startsWith("missingAssetsReport")).forEach(file => {
+        if (fs.statSync(path.join(app.getPath("userData"), file)).isFile() && fs.readFileSync(path.join(app.getPath("userData"), file), { encoding: "utf-8" }) === report) {
+            fs.unlinkSync(path.join(app.getPath("userData"), file));
+        }
+    });
+    const reportPath = path.join(app.getPath("userData"), `missingAssetsReport${Date.now()}.txt`);
+    fs.writeFileSync(reportPath, report);
+});

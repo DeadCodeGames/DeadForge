@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
-export default function FlipSwitch({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
+const FlipSwitch = ({ className, ref, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { ref?: React.RefObject<HTMLInputElement | null> }) => {
 
     props.id = props.id || `flip-switch-${Math.random().toString(36).substring(2, 9)}`
 
@@ -10,6 +11,7 @@ export default function FlipSwitch({ className, ...props }: React.InputHTMLAttri
                 type="checkbox"
                 className="sr-only peer disabled:opacity-50"
                 id={props.id}
+                ref={ref}
                 {...props}
             />
             <label
@@ -24,3 +26,5 @@ export default function FlipSwitch({ className, ...props }: React.InputHTMLAttri
         </div>
     );
 };
+
+export default FlipSwitch;

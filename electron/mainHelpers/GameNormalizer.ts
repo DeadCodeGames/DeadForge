@@ -4,19 +4,36 @@ import { join } from "path";
 import { getInstalledSteamGamePath } from "./SteamStuff";
 import { getFriendlyOSName } from "./idkOtherRandomStuffLMAO";
 
-export async function normalizeCaveToGame(cave: any): Promise<NormalizedGame> {
+export async function normalizeCaveToGame(cave: any, games: any[]): Promise<NormalizedGame> {
     const candidates = cave.verdict?.candidates ?? [];
 
     const launchOptions: LaunchOption[] = candidates.map((candidate: any, index: number) => ({
         name: `Launch Option ${index + 1}`,
-        executable: candidate.path,
+        executable: join(cave.verdict?.basePath, candidate.path),
         arguments: [],
+        flavor: candidate.path.toLowerCase().endsWith('.html') ? 'html' : undefined
     }));
+
+    // Map itch.io classifications to our internal types
+    const classificationToType: { [key: string]: string } = {
+        'game': 'Game',
+        'tool': 'Tool',
+        'game_mod': 'Mod',
+        'assets': 'Dev',
+        'book': 'Book',
+        'soundtrack': 'Soundtrack',
+        'physical_game': 'Game',
+        'comic': 'Book',
+        'other': 'Other'
+    };
+
+    // Find the corresponding game data
+    const gameData = games.find(g => g.id === cave.game_id);
 
     return {
         id: cave.game_id,
         source: 'itch',
-        name: cave.title,
+        name: gameData?.title,
         installPath: cave.verdict?.basePath,
         launchOptions,
         sizeBytes: cave.verdict?.totalSize,
@@ -28,7 +45,7 @@ export async function normalizeCaveToGame(cave: any): Promise<NormalizedGame> {
             capsuleUrl: undefined,
         },
         raw: null,
-        type: "Game"
+        type: classificationToType[gameData?.classification] || 'Game'
     };
 }
 
@@ -104,13 +121,13 @@ export function normalizeEpicManifestToGame(manifest: any): NormalizedGame | und
         const launchOptions: LaunchOption[] = [];
         if (manifest.LaunchExecutable) {
             const executable = manifest.LaunchExecutable;
-            let args: string[] = [];
+            const args: string[] = [];
 
             if (manifest.LaunchCommand) args.push(manifest.LaunchCommand);
 
             launchOptions.push({
                 name: 'Default',
-                executable,
+                executable: join(manifest.InstallLocation, executable),
                 arguments: args
             });
         }
@@ -147,11 +164,11 @@ export function prepareGameForSQL(game: NormalizedGame) {
         name: typeof game.name === 'string' ? game.name : JSON.stringify(game.name),
         installPath: game.installPath ?? null,
         launchOptions: JSON.stringify(game.launchOptions ?? []),
-        icon: game.media?.iconUrl ?? `%USERDATA%/game_assets/${game.id}.icon.png`,
-        logo: game.media?.logoUrl ?? `%USERDATA%/game_assets/${game.id}.logo.png`,
-        header: game.media?.headerUrl ?? `%USERDATA%/game_assets/${game.id}.header.png`,
-        hero: game.media?.heroUrl ?? `%USERDATA%/game_assets/${game.id}.hero.png`,
-        capsule: game.media?.capsuleUrl ?? `%USERDATA%/game_assets/${game.id}.capsule.png`,
+        icon: game.media?.iconUrl ?? null,
+        logo: game.media?.logoUrl ?? null,
+        header: game.media?.headerUrl ?? null,
+        hero: game.media?.heroUrl ?? null,
+        capsule: game.media?.capsuleUrl ?? null,
         raw: null,
         type: game.type
     };
@@ -162,8 +179,8 @@ export function prepareDLCForSQL(dlc: NormalizedDLC) {
         id: dlc.id,
         parentGameId: dlc.parentGameId,
         name: typeof dlc.name === 'string' ? dlc.name : JSON.stringify(dlc.name),
-        header: dlc.media?.headerUrl ?? `%USERDATA%/game_assets/${dlc.id}.header.png`,
-        capsule: dlc.media?.capsuleUrl ?? `%USERDATA%/game_assets/${dlc.id}.capsule.png`,
+        header: dlc.media?.headerUrl ?? null,
+        capsule: dlc.media?.capsuleUrl ?? null,
         raw: null,
         type: dlc.type
     };

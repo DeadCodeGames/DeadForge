@@ -1,3 +1,5 @@
+import React from "react";
+
 type Props = {
     notification: {
         id: number;
@@ -8,7 +10,7 @@ type Props = {
     active: boolean;
 };
 
-export default function NotificationItem({ notification, index, active }: Props) {
+const NotificationItem = ({ notification, index, active }: Props) => {
     const base = "pointer-events-none transition-all duration-300 rounded-xl shadow-xl text-notQuiteWhite font-montserrat px-4 py-3 w-full max-w-sm";
     const layer = [
         "z-30",
@@ -22,10 +24,10 @@ export default function NotificationItem({ notification, index, active }: Props)
         ${base}
         ${layer}
         ${index === 0
-                    ? active
-                        ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 -translate-y-6 scale-95"
-                    : ""}
+            ? active
+                ? "opacity-100 translate-y-0 scale-100"
+                : "opacity-0 -translate-y-6 scale-95"
+            : ""}
         bg-night backdrop-blur-md border border-white/10
       `}
         >
@@ -34,3 +36,5 @@ export default function NotificationItem({ notification, index, active }: Props)
         </div>
     );
 }
+
+export default NotificationItem;

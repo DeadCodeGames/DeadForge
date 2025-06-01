@@ -26,6 +26,8 @@ declare global {
             getSteamGamesData: (path: string) => Promise<SteamLauncherData | null>;
             getEpicGamesData: (path: string) => Promise<any | null>,
             getItchGamesData: (path: string) => Promise<any | null>,
+            validateEpicExecutable: (executablePath: string) => Promise<boolean>,
+            validateItchExecutable: (basePath: string) => Promise<string | null>,
             showOpenDialog: (options: {
                 defaultPath?: string
                 properties: Array<"openFile" | "openDirectory" | "multiSelections" | "showHiddenFiles" | "createDirectory" | "promptToCreate" | "noResolveAliases" | "treatPackageAsDirectory" | "dontAddToRecent">,
@@ -36,11 +38,23 @@ declare global {
             }>,
             exportBackup: () => Promise<string | { canceled: true }>,
             importBackup: () => Promise<[string, Preferences] | { canceled: true }>,
-            validateBackup: (backupPath: string) => Promise<[true, Preferences] | [false, {}]>,
+            validateBackup: (path: string) => Promise<[true, Preferences] | [false, Record<never, never>]>,
             onboardingFinished: (data: any) => void,
-            fetchGames: () => Promise<[NormalizedGame[], NormalizedDLC[], NormalizedGameJoin[]]>,
-            onGamesUpdate: (callback: (event: IpcRendererEvent, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[]) => void) => void,
-            removeGamesUpdateListener: (callback: (event: IpcRendererEvent, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[]) => void) => void
+            resetAllData: () => Promise<boolean>,
+            restartApp: () => void,
+            fetchGames: () => Promise<[NormalizedGame[], NormalizedDLC[], NormalizedGameJoin[], any[], any[]]>,
+            onGamesUpdate: (callback: (event: IpcRendererEvent, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[], curatedAssets: any[], customAssets: any[]) => void) => void,
+            removeGamesUpdateListener: (callback: (event: IpcRendererEvent, games: NormalizedGame[], dlcs: NormalizedDLC[], gameJoins: NormalizedGameJoin[], curatedAssets: any[], customAssets: any[]) => void) => void,
+            onGameProcessTerminated: (callback: (event: IpcRendererEvent, source: string, gameId: string) => void) => void,
+            removeGameProcessTerminatedListener: (callback: (event: IpcRendererEvent, source: string, gameId: string) => void) => void,
+            launchGame: (client: string, gameId: string | number, executable: string, args: string | string[]) => Promise<{success: boolean, error?: string}>,
+            stopGame: (client: string, gameId: string | number) => Promise<{success: boolean, error?: string}>,
+            checkRunningGames: (gameChecks: Array<{source: string, id: string}>) => Promise<Record<string, boolean>>,
+            fetchCollections: () => Promise<{favourites: CollectionGame[], collections: Collection[]}>,
+            sendCollections: (favourites: CollectionGame[], collections: Collection[]) => void,
+            resolveDisplayPath: (path: string) => Promise<string>,
+            fetchGameWarnings: (source: string, id: string) => Promise<{ success: boolean, data: GameWarning }>,
+            saveMissingAssetsReport: (report: string) => void,
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
@@ -71,7 +85,8 @@ export type Preferences = {
     autoStart: boolean,
     autoUpdate: boolean,
     betaUpdates: boolean,
-    langUpdates: boolean
+    langUpdates: boolean,
+    gameState: GameState
 }
 
 export type OldPreferences = {
@@ -98,12 +113,12 @@ export type LaunchOption = {
     arguments: string | string[];
 }
 
-interface Media {
+export interface Media {
     headerUrl?: string | Record<string, Record<string, string>>
     capsuleUrl?: string | Record<string, Record<string, string>>;
 }
 
-interface GameMedia extends Media {
+export interface GameMedia extends Media {
     iconUrl?: string;
     logoUrl?: string | Record<string, Record<string, string>>;
     heroUrl?: string | Record<string, Record<string, string>>;
@@ -123,6 +138,8 @@ export interface NormalizedGame extends NormalizedSoftware {
     installPath?: string;
     launchOptions?: LaunchOption[];
     media?: GameMedia;
+    lastPlayed?: number;
+    totalPlayedFor?: number;
 }
 
 export interface NormalizedDLC extends NormalizedSoftware {
@@ -177,6 +194,87 @@ export const steamLanguageMap: Record<string, string> = {
     "vi": "vietnamese"
 }
 
+export const languageDisplayNames: Record<keyof typeof steamLanguageMap, string> = {
+    ar: "العربية (Arabic)",
+    bg: "Български (Bulgarian)",
+    "zh-CN": "简体中文 (Simplified Chinese)",
+    "zh-TW": "繁體中文 (Traditional Chinese)",
+    cs: "Čeština (Czech)",
+    da: "Dansk (Danish)",
+    nl: "Nederlands (Dutch)",
+    en: "English",
+    fi: "Suomi (Finnish)",
+    fr: "Français (French)",
+    de: "Deutsch (German)",
+    el: "Ελληνικά (Greek)",
+    hu: "Magyar (Hungarian)",
+    id: "Bahasa Indonesia (Indonesian)",
+    it: "Italiano (Italian)",
+    ja: "日本語 (Japanese)",
+    ko: "한국어 (Korean)",
+    no: "Norsk (Norwegian)",
+    pl: "Polski (Polish)",
+    pt: "Português (Portuguese)",
+    "pt-BR": "Português (Brasil)",
+    ro: "Română (Romanian)",
+    ru: "Русский (Russian)",
+    es: "Español (Spanish)",
+    "es-419": "Español (Latin America)",
+    sv: "Svenska (Swedish)",
+    th: "ไทย (Thai)",
+    tr: "Türkçe (Turkish)",
+    uk: "Українська (Ukrainian)",
+    vi: "Tiếng Việt (Vietnamese)",
+}
+
 export const steamLanguageMapFallbacks: Record<string, string[]> = {
     "sk": ["cs", "en"],
+}
+
+export type Filters = {
+    search: string;
+    launchable: boolean;
+    favourite: boolean;
+}
+
+export type Sorting = {
+    sort: "name" | "recent";
+    direction: "asc" | "desc";
+}
+
+export type Collection = {
+    id: string;
+    name: string;
+    games: CollectionGame[];
+}
+
+export type CollectionGame = {
+    source: string;
+    id: string;
+}
+
+export type GameState = {
+    state: 'launching' | 'running' | 'stopping' | 'idle';
+    gameId: string;
+    source: string;
+}
+
+export type GameStates = Record<string, GameState>;
+
+export interface GameMatch {
+    source: string;
+    id: string;
+}
+
+export interface GameNote {
+    type: 'security_warning' | 'compatibility_warning' | 'content_warning';
+    severity: 'low' | 'medium' | 'high' | 'none';
+    title: string;
+    description: string;
+    recommendation?: string;
+}
+
+export interface GameWarning {
+    matches: GameMatch[];
+    notes: GameNote[];
 }

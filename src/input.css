@@ -27,7 +27,21 @@ html:not([updateStatus="appnotloaded"])y {
 }
   
 ::-webkit-scrollbar-track {
-    @apply dark:bg-notQuiteBlack bg-notQuiteWhite rounded-lg
+    @apply dark:bg-notQuiteBlack bg-notQuiteWhite
+}
+
+.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+.ltr {
+    direction: ltr;
+    text-align: left;
+}
+
+* {
+    @apply ring-0 outline-none;
 }
 
 /* Transitions */
@@ -38,7 +52,7 @@ html {
 
 /* Body reset & base style */
 html, body {
-    @apply m-0 bg-notQuiteWhite text-notQuiteBlack dark:bg-notQuiteBlack dark:text-notQuiteWhite;
+    @apply m-0 bg-notQuiteWhite text-notQuiteBlack dark:bg-notQuiteBlack dark:text-notQuiteWhite overflow-hidden;
 }
 
 /* Links */
@@ -106,3 +120,24 @@ img.osuLogoOutlines {
     animation: osuLogoOutlines var(--osuLogoAnimationSpeed) linear infinite forwards;
 }
 
+@keyframes hourglassAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(180deg);
+    }
+    50% {
+        transform: rotate(180deg); /* Hold position for pause */
+    }
+    75% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg); /* Hold position for pause */
+    }
+}
+
+.animate-hourglass {
+    animation: hourglassAnimation 2s cubic-bezier(0.5,0,0,0.5) infinite;
+}

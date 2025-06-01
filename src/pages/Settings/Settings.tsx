@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { AppContext } from "@/App.tsx";
 import i18n, { resources } from "@/locales/i18n.ts";
 import { Trans, useTranslation } from "react-i18next";
@@ -7,10 +7,16 @@ import { flatten } from "flat";
 import { Select, SelectOption } from "@/components/CustomElements/Select.tsx";
 import FlipSwitch from "@/components/CustomElements/FlipSwitch";
 import SettingsOption from "./SettingsOption";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
-export default function Settings() {
+const Settings = () => {
     const { context, setContext } = useContext(AppContext);
     const { t } = useTranslation();
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const autoUpdateRef = useRef<HTMLInputElement | null>(null)
+    const autoUpdatesForceDisable = true
+
+    console.log(autoUpdateRef.current)
 
     useEffect(() => {
         if (!window.Electron.isSettingsWindow && context.preferences.useSettingsWindow) {
@@ -169,8 +175,14 @@ export default function Settings() {
         console.log(await window.Electron.importBackup())
     };
 
-    const resetData = () => {
-        console.log("Resetting all user data");
+    const resetData = async () => {
+        try {
+            await window.Electron.resetAllData();
+            // After reset, we should probably restart the app
+            window.Electron.restartApp();
+        } catch (error) {
+            console.error("Failed to reset app data:", error);
+        }
     };
 
     const calculateTranslationPercentage = (lang: string) => {
@@ -213,14 +225,14 @@ export default function Settings() {
                                     className={`text-nowrap min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "system"
                                         ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}`
                                         : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`
-                                        }`}
+                                    }`}
                                 >
                                     <span className="material-symbols">settings</span>
                                     <span
                                         className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-1000 ease-in-out ${context.preferences.theme === "system"
                                             ? themePickExpanded
                                             : themePickCollapsed
-                                            }`}
+                                        }`}
                                     >
                                         {t("settings.theming.systemTheme")}
                                     </span>
@@ -230,14 +242,14 @@ export default function Settings() {
                                     className={`text-nowrap min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "dark"
                                         ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}`
                                         : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`
-                                        }`}
+                                    }`}
                                 >
                                     <span className="material-symbols">dark_mode</span>
                                     <span
                                         className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-1000 ease-in-out ${context.preferences.theme === "dark"
                                             ? themePickExpanded
                                             : themePickCollapsed
-                                            }`}
+                                        }`}
                                     >
                                         {t("settings.theming.darkTheme")}
                                     </span>
@@ -247,14 +259,14 @@ export default function Settings() {
                                     className={`text-nowrap min-w-6 flex items-center justify-start gap-x-2 p-2 rounded-lg w-auto transition-[background-color,color,width,max-width] duration-[300ms,300ms,1s,1s] ease-in-out ${context.preferences.theme === "light"
                                         ? `bg-notQuiteBlack dark:bg-notQuiteWhite text-notQuiteWhite dark:text-notQuiteBlack ${themePickBaseExpanded}`
                                         : `bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite ${themePickBaseCollapsed}`
-                                        }`}
+                                    }`}
                                 >
                                     <span className="material-symbols">light_mode</span>
                                     <span
                                         className={`font-medium overflow-hidden transition-[max-width,width,margin-left] duration-1000 ease-in-out ${context.preferences.theme === "light"
                                             ? themePickExpanded
                                             : themePickCollapsed
-                                            }`}
+                                        }`}
                                     >
                                         {t("settings.theming.lightTheme")}
                                     </span>
@@ -347,7 +359,7 @@ export default function Settings() {
                         }
                     />
 
-                    <SettingsOption title={t('settings.theming.languageShowIncomplete')} description={<Trans i18nKey='settings.theming.languageShowIncompleteDescription' components={[(<a href="https://crowdin.com/project/deadforge" target="_blank" rel="noopener noreferrer">Crowdin</a>)]} />}
+                    <SettingsOption title={t('settings.theming.languageShowIncomplete')} description={<Trans i18nKey='settings.theming.languageShowIncompleteDescription' components={[(<a href="https://crowdin.com/project/deadforge" target="_blank" rel="noopener noreferrer" key="crowdin">Crowdin</a>)]} />}
                         controls={
                             <FlipSwitch
                                 checked={context.preferences.showIncompleteLanguages}
@@ -443,9 +455,8 @@ export default function Settings() {
                                     {t("settings.appData.importData")}
                                 </button>
                                 <button
-                                    onClick={resetData}
-                                    className="px-4 py-2 rounded-lg bg-danger text-white font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                                    disabled
+                                    onClick={() => setIsResetModalOpen(true)}
+                                    className="px-4 py-2 rounded-lg bg-danger text-white font-bold"
                                 >
                                     {t("settings.appData.resetData")}
                                 </button>
@@ -455,26 +466,28 @@ export default function Settings() {
 
                     {/* Auto-updates */}
                     <SettingsOption title={t("settings.appData.autoUpdate")} description={t("settings.appData.autoUpdateDescription")}
-                        controls={<FlipSwitch checked={context.preferences.autoUpdate}
+                        controls={<FlipSwitch checked={autoUpdatesForceDisable ? false : context.preferences.autoUpdate}
                             onChange={(e) => handleAutoUpdateChange(e.target.checked)}
+                            disabled={autoUpdatesForceDisable}
+                            ref={autoUpdateRef}
                         />
                         }
                     />
 
                     {/* Beta Updates */}
                     <SettingsOption title={t("settings.appData.betaUpdates")} description={t("settings.appData.betaUpdatesDescription")}
-                        controls={<FlipSwitch checked={context.preferences.betaUpdates}
+                        controls={<FlipSwitch checked={autoUpdatesForceDisable ? false : context.preferences.betaUpdates}
                             onChange={(e) => handleBetaUpdatesChange(e.target.checked)}
-                            disabled={!context.preferences.autoUpdate}
+                            disabled={!context.preferences.autoUpdate || autoUpdateRef.current?.disabled || autoUpdatesForceDisable}
                         />
                         }
                     />
 
                     {/* Language Updates */}
                     <SettingsOption title={t("settings.appData.languageUpdates")} description={t("settings.appData.languageUpdatesDescription")}
-                        controls={<FlipSwitch checked={context.preferences.langUpdates}
+                        controls={<FlipSwitch checked={autoUpdatesForceDisable ? false : context.preferences.langUpdates}
                             onChange={(e) => handleLanguageUpdatesChange(e.target.checked)}
-                            disabled={!context.preferences.autoUpdate}
+                            disabled={!context.preferences.autoUpdate || autoUpdateRef.current?.disabled || autoUpdatesForceDisable}
                         />
                         }
                     />
@@ -487,6 +500,20 @@ export default function Settings() {
                     </div>
                 </span>
             </div>
+
+            {/* Reset Data Modal */}
+            <ConfirmationModal
+                isOpen={isResetModalOpen}
+                onClose={() => setIsResetModalOpen(false)}
+                onConfirm={resetData}
+                title={t("settings.appData.resetDataTitle")}
+                message={t("settings.appData.resetDataConfirmation")}
+                confirmText={t("settings.appData.resetDataConfirm")}
+                cancelText={t("settings.appData.resetDataCancel")}
+                isDangerous={true}
+            />
         </div>
     );
 }
+
+export default Settings;

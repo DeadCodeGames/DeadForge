@@ -1,6 +1,4 @@
-"use client"
-
-import { useEffect, useRef, useState, useContext } from "react"; import { AppContext } from "@/App";
+import React, { useEffect, useRef, useState, useContext } from "react"; import { AppContext } from "@/App";
 import { Check, ChevronLeft, ChevronRight, Goal, Minus, X } from "lucide-react";
 import { SiSteam, SiEpicgames, SiItchdotio } from '@icons-pack/react-simple-icons';
 import { cn } from "@/lib/utils"
@@ -8,7 +6,7 @@ import DEADCODELogo from "@/components/CustomElements/DEADCODELogo";
 import { SteamLauncherData } from "@/types";
 import { useScrollTimerCheck } from "@/hooks/scrollTimerCheck";
 
-export default function FirstLaunchModal() {
+const FirstLaunchModal = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const { setupModalActive, v1PrefsAvailable, v1Prefs, preferences: {initialSetupComplete} } = useContext(AppContext).context;
     const { setContext } = useContext(AppContext);
@@ -25,19 +23,26 @@ export default function FirstLaunchModal() {
         },
         epic: {
             enabled: true,
-            path: "C:\\ProgramData\\Epic\\EpicGamesLauncher\\Data\\Manifests",
+            dataPath: "C:\\ProgramData\\Epic\\EpicGamesLauncher\\Data\\Manifests",
+            executablePath: "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win64\\EpicGamesLauncher.exe",
         },
         itchio: {
             enabled: true,
-            path: `C:\\Users\\${window.Process.username}\\AppData\\Roaming\\itch`,
+            dataPath: `C:\\Users\\${window.Process.username}\\AppData\\Roaming\\itch`,
+            executablePath: `C:\\Users\\${window.Process.username}\\AppData\\Local\\itch`,
         },
     });
 
     const [launcherData, setLauncherData] = useState({
-        steam: { raw: null as SteamLauncherData | null | {}, gamesCount: 0 as number | null },
-        epic: { raw: null as SteamLauncherData | null | {}, gamesCount: 0 as number | null },
-        itchio: { raw: null as SteamLauncherData | null | {}, gamesCount: 0 as number | null },
+        steam: { raw: null as SteamLauncherData | null | Record<never, never>, gamesCount: 0 as number | null },
+        epic: { raw: null as SteamLauncherData | null | Record<never, never>, gamesCount: 0 as number | null },
+        itchio: { raw: null as SteamLauncherData | null | Record<never, never>, gamesCount: 0 as number | null },
     })
+
+    const [executableValidation, setExecutableValidation] = useState({
+        epic: { isValid: false, message: "" },
+        itchio: { isValid: false, message: "", resolvedPath: "" }
+    });
 
     const totalSteps = 4
 
@@ -86,7 +91,7 @@ export default function FirstLaunchModal() {
     };
 
 
-    const handlePathChange = async (platform: "steam" | "epic" | "itchio" | "deadforgeBackup", path: string) => {
+    const handlePathChange = async (platform: "steam" | "epicData" | "itchioData" | "deadforgeBackup", path: string) => {
         if (platform === "deadforgeBackup") {
             setImportData({
                 ...importData,
@@ -95,7 +100,7 @@ export default function FirstLaunchModal() {
                     backupPath: path,
                 },
             })
-        } else {
+        } else if (platform === "steam") {
             setImportData({
                 ...importData,
                 [platform]: {
@@ -103,82 +108,129 @@ export default function FirstLaunchModal() {
                     path,
                 },
             });
+        } else if (platform === "epicData" || platform === "itchioData") {
+            setImportData({
+                ...importData,
+                [platform.split("Data")[0]]: {
+                    ...importData[platform.split("Data")[0] as keyof typeof importData],
+                    dataPath: path,
+                },
+            });
         }
         switch (platform) {
-            case "steam": {
-                const data: SteamLauncherData | null = await window.Electron.getSteamGamesData(path);
-                console.log(data);
-                setLauncherData(prev => {
-                    return {
-                        ...prev,
-                        steam: {
-                            raw: data,
-                            gamesCount: data ? Object.keys(data.datasets).length : null
-                        },
-                    }
-                });
-                break;
-            }
+        case "steam": {
+            const data: SteamLauncherData | null = await window.Electron.getSteamGamesData(path);
+            setLauncherData(prev => {
+                return {
+                    ...prev,
+                    steam: {
+                        raw: data,
+                        gamesCount: data ? Object.keys(data.datasets).length : null
+                    },
+                }
+            });
+            break;
+        }
 
-            case "epic": {
-                const data: any | null = await window.Electron.getEpicGamesData(path);
-                setLauncherData(prev => {
-                    return {
-                        ...prev,
-                        epic: {
-                            raw: data,
-                            gamesCount: data ? Object.keys(data).length : null,
-                        },
-                    }
-                });
-                break;
-            }
+        case "epicData": {
+            const data: any | null = await window.Electron.getEpicGamesData(path);
+            setLauncherData(prev => {
+                return {
+                    ...prev,
+                    epic: {
+                        raw: data,
+                        gamesCount: data ? Object.keys(data).length : null,
+                    },
+                }
+            });
+            break;
+        }
 
-            case "itchio": {
-                const data: any | null = await window.Electron.getItchGamesData(path);
-                console.log(data);
-                setLauncherData(prev => {
-                    return {
-                        ...prev,
-                        itchio: {
-                            raw: data,
-                            gamesCount: data ? data.caves.length : null,
-                        },
-                    }
-                });
-                break;
-            }
+        case "itchioData": {
+            const data: any | null = await window.Electron.getItchGamesData(path);
+            setLauncherData(prev => {
+                return {
+                    ...prev,
+                    itchio: {
+                        raw: data,
+                        gamesCount: data ? data.caves.length : null,
+                    },
+                }
+            });
+            break;
+        }
 
-            case "deadforgeBackup": {
-                const data = await window.Electron.validateBackup(path);
-                console.log(data);
-                setImportData(prev => {
-                    return {
-                        ...prev,
-                        deadforgeBackup: {
-                            ...prev.deadforgeBackup,
-                            isBackupValid: data[0],
-                        },
-                    }
-                });
-                return (data[0])
-            }
+        case "deadforgeBackup": {
+            const data = await window.Electron.validateBackup(path);
+            setImportData(prev => {
+                return {
+                    ...prev,
+                    deadforgeBackup: {
+                        ...prev.deadforgeBackup,
+                        isBackupValid: data[0],
+                    },
+                }
+            });
+            return (data[0])
+        }
         }
     }
 
+    const validateExecutablePath = async (platform: "epic" | "itchio", path: string) => {
+        if (!path) {
+            setExecutableValidation(prev => ({
+                ...prev,
+                [platform]: { isValid: false, message: "", resolvedPath: "" }
+            }));
+            return;
+        }
+
+        if (platform === "epic") {
+            const isValid = await window.Electron.validateEpicExecutable(path);
+            setExecutableValidation(prev => ({
+                ...prev,
+                epic: {
+                    isValid,
+                    message: isValid ? "Valid Epic Games Launcher executable." : "Invalid executable path.",
+                    resolvedPath: ""
+                }
+            }));
+        } else {
+            const resolvedPath = await window.Electron.validateItchExecutable(path);
+            setExecutableValidation(prev => ({
+                ...prev,
+                itchio: {
+                    isValid: !!resolvedPath,
+                    message: resolvedPath ? `Found itch executable at: ${resolvedPath}.` : "Could not find itch executable in the specified directory.",
+                    resolvedPath: resolvedPath || ""
+                }
+            }));
+        }
+    };
+
     useEffect(() => {
         handlePathChange("steam", importData.steam.path);
-        handlePathChange("epic", importData.epic.path);
-        handlePathChange("itchio", importData.itchio.path);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        handlePathChange("epicData", importData.epic.dataPath);
+        handlePathChange("itchioData", importData.itchio.dataPath);
     }, [])
 
     useEffect(() => {
         if (setupModalActive) {
             setCurrentStep(0); reset();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [setupModalActive])
+
+    useEffect(() => {
+        if (importData.epic.enabled && importData.epic.executablePath) {
+            validateExecutablePath("epic", importData.epic.executablePath);
+        }
+    }, [importData.epic.executablePath, importData.epic.enabled]);
+
+    useEffect(() => {
+        if (importData.itchio.enabled && importData.itchio.executablePath) {
+            validateExecutablePath("itchio", importData.itchio.executablePath);
+        }
+    }, [importData.itchio.executablePath, importData.itchio.enabled]);
 
     const handleNext = () => {
         if (currentStep < totalSteps && !importData.deadforgeBackup.backupImported) {
@@ -213,7 +265,7 @@ export default function FirstLaunchModal() {
             <div className={`bg-notQuiteBlack text-fullMoon rounded-lg w-full max-w-2xl shadow-xl transition-transform duration-300 ease-in-out ${setupModalActive ? activeClasses : inactiveClasses}`}>
                 <div className="p-6 pb-0 border-b border-night">
                     <h2 className="text-2xl font-uniSansCAPS">Welcome to <span className="font-bold">DEADFORGE</span></h2>
-                    <p className="text-notQuiteWhite/80 font-montserrat mt-2">Let's import your data to get started</p>
+                    <p className="text-notQuiteWhite/80 font-montserrat mt-2">Let&apos;s import your data to get started</p>
                 </div>
 
                 <div className="p-6">
@@ -251,7 +303,7 @@ export default function FirstLaunchModal() {
 
 
                                 <div className="flex flex-col flex-1 items-center justify-center min-h-full w-full">
-                                <input type="radio" name="deadforgeImportData" checked={!(importData.deadforgeBackup.backupImported || importData.deadforgeBackup.prefsTransfered)} onChange={() => handleCheckboxChange("deadforgeImportDisable")} hidden />
+                                    <input type="radio" name="deadforgeImportData" checked={!(importData.deadforgeBackup.backupImported || importData.deadforgeBackup.prefsTransfered)} onChange={() => handleCheckboxChange("deadforgeImportDisable")} hidden />
                                     <div className="flex flex-col w-full items-center space-y-2 group">
                                         {v1PrefsAvailable ? (
                                             <><label className="flex items-center space-x-2 cursor-pointer">
@@ -267,13 +319,13 @@ export default function FirstLaunchModal() {
                                                 </span>
                                             </label><p className="text-xs font-montserrat text-zinc-400 *:text-zinc-400 whitespace-pre-wrap [&>span:has(code)]:before:content-['_']">
                                                     This includes your
-                                                    <span><code className={preferencesCodeBlock}>{v1Prefs.colorScheme === "light" ? "Light" : "Dark"} Mode</code></span> preference,
-                                                    <span><code className={preferencesCodeBlock}>{v1Prefs.startup ? "" : "No "}Launch at Startup</code></span> preference,
-                                                    <span><code className={preferencesCodeBlock}>{v1Prefs.betaEnabled ? "" : "No "}Beta Updates</code></span> preference,
-                                                    <span><code className={preferencesCodeBlock}>{v1Prefs.menubarCollapsed ? "Collapsed" : "Expanded"}</code></span> Sidebar state,
-                                                    <span><code className={preferencesCodeBlock}>{v1Prefs.betaEnabled ? "" : "Don't "}Close to Tray</code></span> preference, and
-                                                    <span><code className={preferencesCodeBlock}>{v1Prefs.betaEnabled ? "Use " : "Don't use "}Discord Rich Presence</code></span> preference.
-                                                </p></>
+                                                <span><code className={preferencesCodeBlock}>{v1Prefs?.colorScheme === "light" ? "Light" : "Dark"} Mode</code></span> preference,
+                                                <span><code className={preferencesCodeBlock}>{v1Prefs?.startup ? "" : "No "}Launch at Startup</code></span> preference,
+                                                <span><code className={preferencesCodeBlock}>{v1Prefs?.betaEnabled ? "" : "No "}Beta Updates</code></span> preference,
+                                                <span><code className={preferencesCodeBlock}>{v1Prefs?.menubarCollapsed ? "Collapsed" : "Expanded"}</code></span> Sidebar state,
+                                                <span><code className={preferencesCodeBlock}>{v1Prefs?.betaEnabled ? "" : "Don't "}Close to Tray</code></span> preference, and
+                                                <span><code className={preferencesCodeBlock}>{v1Prefs?.betaEnabled ? "Use " : "Don't use "}Discord Rich Presence</code></span> preference.
+                                            </p></>
                                         ) : (
                                             <span className="font-montserrat text-sm">No v1 preferences found</span>
                                         )}
@@ -298,26 +350,26 @@ export default function FirstLaunchModal() {
                                             className="flex-1 bg-night border border-night/60 group-has-[input[type=radio]:not(:checked)]:opacity-50 rounded px-3 py-2 font-consolas text-sm focus:outline-none focus:border-cornflowerBlue disabled:cursor-not-allowed"
                                             placeholder="Enter DeadForge Backup Archive file path"
                                         />
-                                            <button
-                                                className="bg-progress hover:bg-progress/80 text-fullMoon px-4 py-2 rounded font-montserrat disabled:opacity-50 disabled:cursor-not-allowed"
-                                                disabled={!importData.deadforgeBackup.backupImported}
-                                                onClick={async () => {
-                                                    const { canceled, filePaths } = await window.Electron.showOpenDialog({
-                                                        properties: ["openFile"],
-                                                        filters: [
-                                                            { name: "DeadForge Backup Archive", extensions: ["bak", "zip"] }
-                                                        ]
-                                                    });
-                                                    if (!canceled) handlePathChange("deadforgeBackup", filePaths[0]);
-                                                }}
-                                            >
+                                        <button
+                                            className="bg-progress hover:bg-progress/80 text-fullMoon px-4 py-2 rounded font-montserrat disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled={!importData.deadforgeBackup.backupImported}
+                                            onClick={async () => {
+                                                const { canceled, filePaths } = await window.Electron.showOpenDialog({
+                                                    properties: ["openFile"],
+                                                    filters: [
+                                                        { name: "DeadForge Backup Archive", extensions: ["bak", "zip"] }
+                                                    ]
+                                                });
+                                                if (!canceled) handlePathChange("deadforgeBackup", filePaths[0]);
+                                            }}
+                                        >
                                                 Browse
-                                            </button>
+                                        </button>
                                         </div>
                                         {(importData.deadforgeBackup.backupImported && importData.deadforgeBackup.backupPath.length ? (importData.deadforgeBackup.isBackupValid) ? (
                                             <span className="font-montserrat text-sm text-emerald-500">Yup, that backup looks good!</span>
                                         ) : (
-                                            <span className="font-montserrat text-sm text-red-500">Uh oh! That doesn't look like a valid backup file.<br />You might have the wrong file path, or the file might be corrupted.</span>
+                                            <span className="font-montserrat text-sm text-red-500">Uh oh! That doesn&apos;t look like a valid backup file.<br />You might have the wrong file path, or the file might be corrupted.</span>
                                         ) : <></>)}
                                     </div>
                                 </div>
@@ -393,8 +445,8 @@ export default function FirstLaunchModal() {
                                         <div className="flex gap-2">
                                             <input
                                                 type="text"
-                                                value={importData.epic.path}
-                                                onChange={(e) => handlePathChange("epic", e.target.value)}
+                                                value={importData.epic.dataPath}
+                                                onChange={(e) => handlePathChange("epicData", e.target.value)}
                                                 disabled={!importData.epic.enabled}
                                                 className="flex-1 bg-night border border-night/60 rounded px-3 py-2 font-consolas text-sm focus:outline-none focus:border-cornflowerBlue disabled:cursor-not-allowed"
                                                 placeholder="Enter Epic Games directory path"
@@ -404,9 +456,9 @@ export default function FirstLaunchModal() {
                                                 disabled={!importData.epic.enabled}
                                                 onClick={async () => {
                                                     const { canceled, filePaths } = await window.Electron.showOpenDialog(
-                                                        { defaultPath: importData.epic.path, properties: ["openDirectory"] }
+                                                        { defaultPath: importData.epic.dataPath, properties: ["openDirectory"] }
                                                     );
-                                                    if (!canceled) handlePathChange("epic", filePaths[0]);
+                                                    if (!canceled) handlePathChange("epicData", filePaths[0]);
                                                 }}
                                             >
                                                 Browse
@@ -431,6 +483,59 @@ export default function FirstLaunchModal() {
                                                         </ol>
                                                     </span>
                                                 </>
+                                            )}
+                                        </div>
+
+                                        <hr className="border-0 border-t border-solid border-neutral-500 !my-4" />
+
+                                        <label className="block font-montserrat text-sm">Epic Games Launcher executable path</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={importData.epic.executablePath}
+                                                onChange={(e) => setImportData(prev => ({
+                                                    ...prev,
+                                                    epic: {
+                                                        ...prev.epic,
+                                                        executablePath: e.target.value
+                                                    }
+                                                }))}
+                                                disabled={!importData.epic.enabled}
+                                                className="flex-1 bg-night border border-night/60 rounded px-3 py-2 font-consolas text-sm focus:outline-none focus:border-cornflowerBlue disabled:cursor-not-allowed"
+                                                placeholder="Enter Epic Games Launcher executable path"
+                                            />
+                                            <button
+                                                className="bg-progress hover:bg-progress/80 text-fullMoon px-4 py-2 rounded font-montserrat disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={!importData.epic.enabled}
+                                                onClick={async () => {
+                                                    const { canceled, filePaths } = await window.Electron.showOpenDialog({
+                                                        defaultPath: importData.epic.executablePath,
+                                                        properties: ["openFile"],
+                                                        filters: [{ name: "Epic Games Launcher Executable", extensions: ["exe"] }]
+                                                    });
+                                                    if (!canceled) setImportData(prev => ({
+                                                        ...prev,
+                                                        epic: {
+                                                            ...prev.epic,
+                                                            executablePath: filePaths[0]
+                                                        }
+                                                    }));
+                                                }}
+                                            >
+                                                Browse
+                                            </button>
+                                        </div>
+                                        <div className="">
+                                            {importData.epic.executablePath && (
+                                                executableValidation.epic.isValid ? (
+                                                    <span className="text-emerald-500">{executableValidation.epic.message}</span>
+                                                ) : (
+                                                    <>
+                                                        <span className="text-red-500">{executableValidation.epic.message}</span>
+                                                        <br />
+                                                        <span>Please ensure you select the Epic Games Launcher executable file.</span>
+                                                    </>
+                                                )
                                             )}
                                         </div>
                                     </div>
@@ -462,8 +567,8 @@ export default function FirstLaunchModal() {
                                         <div className="flex gap-2">
                                             <input
                                                 type="text"
-                                                value={importData.itchio.path}
-                                                onChange={(e) => handlePathChange("itchio", e.target.value)}
+                                                value={importData.itchio.dataPath}
+                                                onChange={(e) => handlePathChange("itchioData", e.target.value)}
                                                 disabled={!importData.itchio.enabled}
                                                 className="flex-1 bg-night border border-night/60 rounded px-3 py-2 font-consolas text-sm focus:outline-none focus:border-cornflowerBlue disabled:cursor-not-allowed"
                                                 placeholder="Enter itch.io directory path"
@@ -471,13 +576,65 @@ export default function FirstLaunchModal() {
                                             <button
                                                 className="bg-progress hover:bg-progress/80 text-fullMoon px-4 py-2 rounded font-montserrat disabled:opacity-50 disabled:cursor-not-allowed"
                                                 disabled={!importData.itchio.enabled}
-                                                onClick={async () => { const { canceled, filePaths } = await window.Electron.showOpenDialog({ defaultPath: importData.itchio.path, properties: ["openDirectory"] }); if (!canceled) handlePathChange("itchio", filePaths[0]) }}
+                                                onClick={async () => { const { canceled, filePaths } = await window.Electron.showOpenDialog({ defaultPath: importData.itchio.dataPath, properties: ["openDirectory"] }); if (!canceled) handlePathChange("itchioData", filePaths[0]) }}
                                             >
                                                 Browse
                                             </button>
                                         </div>
                                         <div className="">
                                             {launcherData.itchio.raw ? `Found ${launcherData.itchio.gamesCount}${launcherData.itchio.gamesCount === 1 ? " game" : " games"}` : (<><span className="text-red-500">Could not locate itch installation data. Please ensure the path selected is correct.</span><br /><span>The correct path should have the itch executable directly inside.</span></>)}
+                                        </div>
+
+                                        <hr className="border-0 border-t border-solid border-neutral-500 !my-4" />
+
+                                        <label className="block font-montserrat text-sm">itch.io app executable path</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={importData.itchio.executablePath}
+                                                onChange={(e) => setImportData(prev => ({
+                                                    ...prev,
+                                                    itchio: {
+                                                        ...prev.itchio,
+                                                        executablePath: e.target.value
+                                                    }
+                                                }))}
+                                                disabled={!importData.itchio.enabled}
+                                                className="flex-1 bg-night border border-night/60 rounded px-3 py-2 font-consolas text-sm focus:outline-none focus:border-cornflowerBlue disabled:cursor-not-allowed"
+                                                placeholder="Enter itch.io executable path"
+                                            />
+                                            <button
+                                                className="bg-progress hover:bg-progress/80 text-fullMoon px-4 py-2 rounded font-montserrat disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={!importData.itchio.enabled}
+                                                onClick={async () => {
+                                                    const { canceled, filePaths } = await window.Electron.showOpenDialog({
+                                                        defaultPath: importData.itchio.executablePath,
+                                                        properties: ["openDirectory"]
+                                                    });
+                                                    if (!canceled) setImportData(prev => ({
+                                                        ...prev,
+                                                        itchio: {
+                                                            ...prev.itchio,
+                                                            executablePath: filePaths[0]
+                                                        }
+                                                    }));
+                                                }}
+                                            >
+                                                Browse
+                                            </button>
+                                        </div>
+                                        <div className="">
+                                            {importData.itchio.executablePath && (
+                                                executableValidation.itchio.isValid ? (
+                                                    <span className="text-emerald-500">{executableValidation.itchio.message}</span>
+                                                ) : (
+                                                    <>
+                                                        <span className="text-red-500">{executableValidation.itchio.message}</span>
+                                                        <br />
+                                                        <span> This path should directly contain the itch-setup executable, and app-[version] folder.</span>
+                                                    </>
+                                                )
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -492,7 +649,7 @@ export default function FirstLaunchModal() {
                                 </h3>
 
                                 <div className="space-y-4">
-                                    <p className="font-montserrat">We'll import your data from the following platforms:</p>
+                                    <p className="font-montserrat">We&apos;ll import your data from the following platforms:</p>
 
                                     <ul className="space-y-2 font-montserrat" ref={finalConfirmationScrollRef as any}>
                                         {importData.deadforgeBackup.prefsTransfered && (
@@ -524,25 +681,43 @@ export default function FirstLaunchModal() {
                                                         </span>
                                                     </li>
                                                 )}
-                                                {importData.epic.enabled && launcherData.epic.raw && (
-                                                    <li className="flex items-center gap-2">
-                                                        <SiEpicgames size={18} className="text-notQuiteBlack dark:text-notQuiteWhite w-[21.58px]" />
-                                                        <span>
-                                                            Epic Games: {launcherData.epic.gamesCount + " game" + (launcherData.epic.gamesCount === 1 ? "" : "s")} from <code className="font-consolas text-xs singleLine">{importData.epic.path}</code>
-                                                        </span>
+                                                {importData.epic.enabled && launcherData.epic.raw && executableValidation.epic.isValid && (
+                                                    <li className="flex gap-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <SiEpicgames size={18} className="text-notQuiteBlack dark:text-notQuiteWhite w-[21.58px]" />
+                                                            <span className="font-medium whitespace-nowrap">Epic Games:</span>
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span>
+                                                                <code className="font-consolas text-xs singleLine">{importData.epic.executablePath}</code>
+                                                            </span>
+                                                            <span>
+                                                                {launcherData.epic.gamesCount + " game" + (launcherData.epic.gamesCount === 1 ? "" : "s")} from <code className="font-consolas text-xs singleLine">{importData.epic.dataPath}</code>
+                                                            </span>
+                                                        </div>
                                                     </li>
                                                 )}
-                                                {importData.itchio.enabled && launcherData.itchio.raw && (
-                                                    <li className="flex items-center gap-2">
-                                                        <SiItchdotio size={18} className="text-notQuiteBlack dark:text-notQuiteWhite w-[21.58px]" />
-                                                        <span>
-                                                            itch.io: {launcherData.itchio.gamesCount + " game" + (launcherData.itchio.gamesCount === 1 ? "" : "s")} from <code className="font-consolas text-xs singleLine">{importData.itchio.path}</code>
-                                                        </span>
+                                                {importData.itchio.enabled && launcherData.itchio.raw && executableValidation.itchio.isValid && (
+                                                    <li className="flex gap-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <SiItchdotio size={18} className="text-notQuiteBlack dark:text-notQuiteWhite w-[21.58px]" />
+                                                            <span className="font-medium whitespace-nowrap">itch.io:</span>
+                                                        </div>
+                                                        <div className="flex flex-col gap-1">
+                                                            <span>
+                                                                <code className="font-consolas text-xs singleLine">{executableValidation.itchio.resolvedPath}</code>
+                                                            </span>
+                                                            <span>
+                                                                {launcherData.itchio.gamesCount + " game" + (launcherData.itchio.gamesCount === 1 ? "" : "s")} from <code className="font-consolas text-xs singleLine">{importData.itchio.dataPath}</code>
+                                                            </span>
+                                                        </div>
                                                     </li>
                                                 )}
                                             </>)
                                         }
-                                        {!importData.steam.enabled && !importData.epic.enabled && !importData.itchio.enabled && (
+                                        {!importData.steam.enabled && 
+                                          !(importData.epic.enabled && launcherData.epic.raw && executableValidation.epic.isValid) && 
+                                          !(importData.itchio.enabled && launcherData.itchio.raw && executableValidation.itchio.isValid) && (
                                             <li className="text-warning">No platforms selected for import</li>
                                         )}
                                     </ul>
@@ -601,3 +776,5 @@ export default function FirstLaunchModal() {
         </div>
     )
 }
+
+export default FirstLaunchModal;

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-export default function InitialLoader() {
+const InitialLoader = () => {
     const [stage, setStage] = useState('initial');
 
     useEffect(() => {
-        const timers: NodeJS.Timeout[] = [];
+        const timers: ReturnType<typeof setTimeout>[] = [];
         timers.push(setTimeout(() => setStage('textResize'), 3000));
         timers.push(setTimeout(() => setStage('fadeOut'), 4500));
         timers.push(setTimeout(() => setStage('unrender'), 5000));
@@ -37,3 +37,5 @@ export default function InitialLoader() {
         </div>
     );
 }
+
+export default InitialLoader;

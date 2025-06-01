@@ -1,9 +1,9 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { IpcRendererEvent } from "electron";
 import { HashRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import WinControls from './components/WinControls/WinControls.tsx';
 import Navigation from './components/Nav/Nav.tsx';
-import LibraryProvider, { LibraryLayout, LibraryHome, LibraryGame, LibraryCollections, LibraryCollection, LibraryContext } from './pages/Library/Library.tsx';
+import LibraryProvider, { LibraryLayout, LibraryHome, LibraryGame, LibraryCollections, LibraryCollection, LibraryFavourites, LibraryRecent, LibraryAll, LibraryContext } from './pages/Library/Library.tsx';
 import Store from './pages/Store/Store.tsx';
 import Settings from './pages/Settings/Settings.tsx';
 import Tray from './pages/Tray/Tray.tsx';
@@ -52,7 +52,7 @@ function AppContextsProvider({ children }: { children: React.ReactNode }) {
         const fetchPreferences = async () => {
             try {
                 const { preferences: prefs, v1PrefsAvailable, v1Prefs } = await window.Electron.getPreferences();
-                console.log(prefs, v1PrefsAvailable);
+                console.log(prefs);
                 setContext((prev: any) => ({ ...prev, preferences: prefs, setupModalActive: !prefs.initialSetupComplete, v1PrefsAvailable, v1Prefs }));
                 i18n.changeLanguage(prefs.language);
                 setShouldSetContext(true);
@@ -85,7 +85,6 @@ function AppContextsProvider({ children }: { children: React.ReactNode }) {
         }
         if (shouldSetContext && !window.Electron.isTray) window.Electron.setPreferences(context.preferences, window.location.pathname === "#/settings", window.Electron.isSettingsWindow);
         // using JSON.stringify here, because... useEffect deps arrays do not fuck with objects, yk?
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(context), shouldSetContext]);
 
     return (
@@ -99,17 +98,16 @@ function AppContextsProvider({ children }: { children: React.ReactNode }) {
     ) as React.JSX.Element;
 }
 
-function AppContents() {
+const AppContents = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { useSettingsWindow } = useContext(AppContext).context.preferences;
     const { lastVisitedLibraryLocation } = useContext(LibraryContext);
 
     useEffect(() => {
         const handleTrayNavigate = (event: IpcRendererEvent, location: string) => {
-            console.log(event, location);
-            if (location === "/settings") {
+            if (location === "/settings" && useSettingsWindow) {
                 window.Electron.openSettingsWindow();
-                console.log("opening");
                 return;
             } else {
                 navigate(location);
@@ -142,13 +140,16 @@ function AppContents() {
                         { name: t('sidebar.arcade'), path: '/arcade', icon: 'joystick' },
                         { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
                     ]} navItemsBottom={[
-                        { name: t('sidebar.settings'), path: '/settings', icon: 'settings', onClick: (e) => { window.Electron.openSettingsWindow() } }
+                        { name: t('sidebar.settings'), path: '/settings', icon: 'settings', onClick: () => { window.Electron.openSettingsWindow() } }
                     ]} />
                     <div id="contents" className="left-[var(--sidebarWidth)] right-0 h-[calc(100vh-36px)] absolute dark:bg-notQuiteBlack bg-notQuiteWhite transition-[color,background-color,border-color,text-decoration-color,fill,stroke,left] duration-300 overflow-hidden">
                         <Routes>
                             <Route path="/" element={<Navigate to="/library" />} />
                             <Route path="/library" element={<LibraryLayout />}>
                                 <Route index element={<LibraryHome />} />
+                                <Route path="all" element={<LibraryAll />} />
+                                <Route path="favourites" element={<LibraryFavourites />} />
+                                <Route path="recent" element={<LibraryRecent />} />
                                 <Route path="game/:id" element={<LibraryGame />} />
                                 <Route path="collections" element={<LibraryCollections />} />
                                 <Route path="collection/:id" element={<LibraryCollection />} />

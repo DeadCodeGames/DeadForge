@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 
 type Notification = {
     id: number;
@@ -9,6 +9,7 @@ type Notification = {
 
 type Context = {
     queue: Notification[];
+    // eslint-disable-next-line no-unused-vars
     addNotification: (n: Notification) => void;
     removeCurrent: () => void;
 };

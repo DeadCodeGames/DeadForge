@@ -1,38 +1,145 @@
 import i18n from '@/locales/i18n';
-import { NormalizedGame, LaunchOption, steamLanguageMap, NormalizedDLC, NormalizedGameJoin } from '@/types';
+import { NormalizedGame, LaunchOption, steamLanguageMap, NormalizedDLC, NormalizedGameJoin, Sorting, Filters, Collection, CollectionGame, GameMedia, Media, GameState, GameStates } from '@/types';
 import React, { createContext, useState, useLayoutEffect, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { checkMissingAssets, formatReportForGitHub } from './utils/assetChecker';
 
 export const LibraryContext = createContext<{
     games: NormalizedGame[];
     dlcs: NormalizedDLC[];
     gameJoins: NormalizedGameJoin[];
-    collections: any[];
+    curatedAssets: any[];
+    customAssets: any[];
+    collections: Collection[];
+    favourites: CollectionGame[];
     lastVisitedLibraryLocation: string;
+    gameStates: GameStates;
+    launchTimestamps: Record<string, number>;
     setGames: React.Dispatch<React.SetStateAction<NormalizedGame[]>>;
     setDLCs: React.Dispatch<React.SetStateAction<NormalizedDLC[]>>;
     setGameJoins: React.Dispatch<React.SetStateAction<NormalizedGameJoin[]>>;
-    setCollections: React.Dispatch<React.SetStateAction<any[]>>;
-}>({
-    games: [],
-    dlcs: [],
-    gameJoins: [],
-    collections: [],
-    lastVisitedLibraryLocation: '/library',
-    setGames: () => { },
-    setDLCs: () => { },
-    setGameJoins: () => { },
-    setCollections: () => { },
-});
+    setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
+    setFavourites: React.Dispatch<React.SetStateAction<CollectionGame[]>>;
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    setGameState: (gameId: string, source: string, state: GameState['state']) => void;
+        }>({
+            games: [],
+            dlcs: [],
+            gameJoins: [],
+            curatedAssets: [],
+            customAssets: [],
+            collections: [],
+            favourites: [],
+            lastVisitedLibraryLocation: '/library',
+            gameStates: {},
+            launchTimestamps: {},
+            setGames: () => { },
+            setDLCs: () => { },
+            setGameJoins: () => { },
+            setCollections: () => { },
+            setFavourites: () => { },
+            setGameState: () => { },
+        });
+
+export const LibrarySidebarContext = createContext<{
+    filters: Filters;
+    sorting: Sorting;
+    showFilters: boolean;
+    sortingExpanded: boolean;
+    filterExpanded: boolean;
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    setShowFilters: (showFilters: boolean | ((prev: boolean) => boolean)) => void;
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    setSortingExpanded: (sortingExpanded: boolean | ((prev: boolean) => boolean)) => void;
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    setFilterExpanded: (filterExpanded: boolean | ((prev: boolean) => boolean)) => void;
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    setFilters: (filters: Filters | ((prev: Filters) => Filters)) => void;
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    setSorting: (sorting: Sorting | ((prev: Sorting) => Sorting)) => void;
+        }>({
+            filters: {
+                search: "",
+                launchable: true,
+                favourite: false,
+            },
+            sorting: {
+                sort: "name",
+                direction: "asc",
+            },
+            showFilters: false,
+            sortingExpanded: false,
+            filterExpanded: false,
+            setShowFilters: () => { },
+            setSortingExpanded: () => { },
+            setFilterExpanded: () => { },
+            setFilters: () => { },
+            setSorting: () => { },
+        });
+
+const LibrarySidebarContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [showFilters, setShowFilters] = useState<boolean>(false);
+    const [sortingExpanded, setSortingExpanded] = useState<boolean>(false);
+    const [filterExpanded, setFilterExpanded] = useState<boolean>(false);
+    const [filters, setFilters] = useState<Filters>({
+        search: "",
+        launchable: true,
+        favourite: false,
+    });
+    const [sorting, setSorting] = useState<Sorting>({
+        sort: "name",
+        direction: "asc",
+    });
+    
+    return (
+        <LibrarySidebarContext.Provider value={{ showFilters, setShowFilters, sortingExpanded, setSortingExpanded, filterExpanded, setFilterExpanded, filters, setFilters, sorting, setSorting }}>
+            {children}
+        </LibrarySidebarContext.Provider>
+    );
+}
 
 const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [games, setGames] = useState<NormalizedGame[]>([]);
     const [dlcs, setDLCs] = useState<NormalizedDLC[]>([]);
     const [gameJoins, setGameJoins] = useState<NormalizedGameJoin[]>([]);
-    const [collections, setCollections] = useState<any[]>([]);
+    const [curatedAssets, setCuratedAssets] = useState<any[]>([]);
+    const [customAssets, setCustomAssets] = useState<any[]>([]);
+    const [canSendCollections, setCanSendCollections] = useState<boolean>(false);
+    const [favourites, setFavourites] = useState<CollectionGame[]>([]);
+    const [collections, setCollections] = useState<Collection[]>([]);
+    const [gameStates, setGameStates] = useState<GameStates>({});
+    const [launchTimestamps, setLaunchTimestamps] = useState<Record<string, number>>({});
     const location = useLocation();
     // hack for persisting the library location when switching tabs
     const [lastVisitedLibraryLocation, setLastVisitedLibraryLocation] = useState<string>('/library');
+
+    const setGameState = (gameId: string, source: string, state: GameState['state']) => {
+        setGameStates(prev => {
+            const key = `${source}-${gameId}`;
+            if (state === 'idle') {
+                // Remove launch timestamp when game goes idle
+                setLaunchTimestamps(prev => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+                    const { [key]: _, ...rest } = prev;
+                    return rest;
+                });
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+                const { [key]: _, ...rest } = prev;
+                return rest;
+            }
+            if (state === 'launching') {
+                // Add launch timestamp when game starts launching
+                setLaunchTimestamps(prev => ({
+                    ...prev,
+                    [key]: Date.now()
+                }));
+            }
+            return {
+                ...prev,
+                [key]: { state, gameId, source }
+            };
+        });
+    };
 
     useLayoutEffect(() => {
         document.documentElement.setAttribute('data-location', location.pathname.replace(/(?<!^)\/$/, ''));
@@ -43,15 +150,22 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
     }, [location]);
 
     useEffect(() => {
+        if (window.Electron.isSettingsWindow || window.Electron.isNotificationsWindow) return;
         const fetchInitialGames = async () => {
             try {
-                let [fetchedGames, fetchedDLCs, fetchedGameJoins] = await window.Electron.fetchGames();
+                // eslint-disable-next-line prefer-const
+                let [fetchedGames, fetchedDLCs, fetchedGameJoins, fetchedCuratedAssets, fetchedCustomAssets] = await window.Electron.fetchGames();
                 fetchedGames = fetchedGames.map(game => {
                     let name;
                     try {
                         name = JSON.parse(game.name as any as string);
-                    } catch (error) {
+                    } catch {
                         name = game.name;
+                    }
+                    try {
+                        game.media = JSON.parse(game.media as any as string);
+                    } catch {
+                        game.media = game.media as GameMedia;
                     }
                     return {
                         ...game,
@@ -63,29 +177,47 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
                     let name;
                     try {
                         name = JSON.parse(dlc.name as any as string);
-                    } catch (error) {
+                    } catch {
                         name = dlc.name;
+                    }
+                    try {
+                        dlc.media = JSON.parse(dlc.media as any as string);
+                    } catch {
+                        dlc.media = dlc.media as Media;
                     }
                     return { ...dlc, name };
                 });
-                /*fetchedGames.push({
-                    id: 'stable',
-                    name: 'osu!',
-                    source: 'osu',
-                    installPath: 'C:\\Users\\kanskje\\AppData\\Local\\osu!',
-                    media: {
-                        logoUrl: `${process.env.PUBLIC_URL}/assets/osu!wordmark.svg`
-                    },
-                    launchOptions: [{
-                        name: 'Test Option',
-                        executable: 'test.exe',
-                        arguments: 'test_arg'
-                    }],
-                    type: 'Game'
-                });*/
+                console.log(fetchedGames, fetchedDLCs, fetchedGameJoins, fetchedCuratedAssets, fetchedCustomAssets);
                 setGames(fetchedGames);
                 setDLCs(fetchedDLCs);
                 setGameJoins(fetchedGameJoins);
+                setCuratedAssets(fetchedCuratedAssets);
+                setCustomAssets(fetchedCustomAssets);
+
+                // Check which games are currently running
+                const gameChecks = fetchedGames
+                    .filter(game => game.launchOptions && game.launchOptions.length > 0)
+                    .map(game => ({ source: game.source, id: game.id as string }));
+                
+                const runningStates = await window.Electron.checkRunningGames(gameChecks);
+                
+                // Update game states based on running processes
+                Object.entries(runningStates).forEach(([key, isRunning]) => {
+                    // Use a different separator (|) that won't conflict with negative numbers
+                    const [source, gameId] = key.split('|');
+                    if (isRunning) {
+                        setGameState(gameId, source, 'running');
+                    }
+                });
+
+                // Check for missing assets
+                const missingAssetReports = await checkMissingAssets(fetchedGames, fetchedCuratedAssets);
+                if (missingAssetReports.length > 0) {
+                    const report = formatReportForGitHub(missingAssetReports);
+                    const reportString = `---MISSING_ASSETS_REPORT_BEGIN---\n${report}\n---MISSING_ASSETS_REPORT_END---`;
+                    console.warn(reportString);
+                    window.Electron.saveMissingAssetsReport(reportString);
+                }
             } catch (error) {
                 console.error('Failed to fetch games:', error);
             }
@@ -93,13 +225,18 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
         fetchInitialGames();
 
-        const handleGamesUpdate = (_event: any, updatedGames: NormalizedGame[], updatedDLCs: NormalizedDLC[], updatedGameJoins: NormalizedGameJoin[]) => {
+        const handleGamesUpdate = (_event: any, updatedGames: NormalizedGame[], updatedDLCs: NormalizedDLC[], updatedGameJoins: NormalizedGameJoin[], updatedCuratedAssets: any[], updatedCustomAssets: any[]) => {
             updatedGames = updatedGames.map(game => {
                 let name;
                 try {
                     name = JSON.parse(game.name as any as string);
-                } catch (error) {
+                } catch {
                     name = game.name;
+                }
+                try {
+                    game.media = JSON.parse(game.media as any as string);
+                } catch {
+                    game.media = game.media as GameMedia;
                 }
                 return {
                     ...game,
@@ -111,49 +248,87 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
                 let name;
                 try {
                     name = JSON.parse(dlc.name as any as string);
-                } catch (error) {
+                } catch {
                     name = dlc.name;
+                }
+                try {
+                    dlc.media = JSON.parse(dlc.media as any as string);
+                } catch {
+                    dlc.media = dlc.media as Media;
                 }
                 return { ...dlc, name };
             });
-            /*updatedGames.push({
-                id: 'osu-stable',
-                name: 'osu!',
-                source: 'osu',
-                installPath: 'C:\\Users\\kanskje\\AppData\\Local\\osu!',
-                media: {
-                    logoUrl: `${process.env.PUBLIC_URL}/assets/osu!wordmark.svg`,
-                    heroUrl: `${process.env.PUBLIC_URL}/assets/osu!hero.jpg`
-                },
-                launchOptions: [{
-                    name: 'Test Option',
-                    executable: 'test.exe',
-                    arguments: 'test_arg'
-                }],
-                type: 'Game'
-            });*/
-            console.log(updatedGames, updatedDLCs, updatedGameJoins);
+            console.log(updatedGames, updatedDLCs, updatedGameJoins, updatedCuratedAssets, updatedCustomAssets);
             setGames(updatedGames);
             setDLCs(updatedDLCs);
             setGameJoins(updatedGameJoins);
+            setCuratedAssets(updatedCuratedAssets);
+            setCustomAssets(updatedCustomAssets);
+        };
+
+        // Add process termination listener
+        const handleGameProcessTerminated = (_event: any, source: string, gameId: string) => {
+            console.log(`Game process terminated: ${source}-${gameId}`);
+            setGameState(gameId, source, 'idle');
         };
 
         window.Electron.onGamesUpdate(handleGamesUpdate);
+        window.Electron.onGameProcessTerminated(handleGameProcessTerminated);
+
+        const fetchCollections = async () => {
+            try {
+                const collections = await window.Electron.fetchCollections();
+                setCollections(collections.collections);
+                setFavourites(collections.favourites);
+                setCanSendCollections(true);
+            } catch (error) {
+                console.error('Failed to fetch collections:', error);
+                setCanSendCollections(true);
+            }
+        };
+
+        fetchCollections();
 
         return () => {
             window.Electron.removeGamesUpdateListener(handleGamesUpdate);
+            window.Electron.removeGameProcessTerminatedListener(handleGameProcessTerminated);
         };
     }, []);
 
+    useEffect(() => {
+        if (canSendCollections) {
+            window.Electron.sendCollections(favourites, collections);
+        }
+    }, [collections, favourites, canSendCollections]);
+
     return (
-        <LibraryContext.Provider value={{ games, dlcs, gameJoins, collections, lastVisitedLibraryLocation, setGames, setDLCs, setGameJoins, setCollections }}>
-            {children}
+        <LibraryContext.Provider value={{ 
+            games, 
+            dlcs, 
+            gameJoins,
+            curatedAssets,
+            customAssets,
+            collections, 
+            favourites, 
+            lastVisitedLibraryLocation, 
+            gameStates,
+            launchTimestamps,
+            setGames, 
+            setDLCs, 
+            setGameJoins, 
+            setCollections, 
+            setFavourites,
+            setGameState
+        }}>
+            <LibrarySidebarContextProvider>
+                {children}
+            </LibrarySidebarContextProvider>
         </LibraryContext.Provider>
     );
 };
 
 export function getLocalizedGameSuffix(defaultSuffix: string = "default") {
-    return steamLanguageMap[Object.entries(steamLanguageMap).find(([key, value]) => i18n.language.startsWith(key.replace('-', '_')))?.[0] as string] || defaultSuffix;
+    return steamLanguageMap[Object.entries(steamLanguageMap).find(([key]) => i18n.language.startsWith(key.replace('-', '_')))?.[0] as string] || defaultSuffix;
 }
 
 export function getLocalizedGameName(game: NormalizedGame | NormalizedDLC, extraOptions?: "deprefix", games: NormalizedGame[] | NormalizedDLC[] = [], deprefixerGame?: NormalizedGame) {
@@ -162,34 +337,34 @@ export function getLocalizedGameName(game: NormalizedGame | NormalizedDLC, extra
     if (extraOptions === "deprefix") {
         const removeCommonPrefix = (list: string[], test: string): string => {
             if (deprefixerGame) {
-            const gameName = getLocalizedGameName(deprefixerGame), defaultGameName = (typeof deprefixerGame.name === 'string' ? deprefixerGame.name : deprefixerGame.name["default"]);
+                const gameName = getLocalizedGameName(deprefixerGame), defaultGameName = (typeof deprefixerGame.name === 'string' ? deprefixerGame.name : deprefixerGame.name["default"]);
         
-            if (gameName) {
-                const cleanedPrefix = gameName.trim();
+                if (gameName) {
+                    const cleanedPrefix = gameName.trim();
 
-                const prefixMatch = test.startsWith(cleanedPrefix)
-                    ? test.slice(cleanedPrefix.length).match(/^[:\-–—|>~\s]+/)
-                    : null;
+                    const prefixMatch = test.startsWith(cleanedPrefix)
+                        ? test.slice(cleanedPrefix.length).match(/^[:\-–—|>~\s]+/)
+                        : null;
         
-                const totalPrefixLength = cleanedPrefix.length + (prefixMatch?.[0].length ?? 0);
+                    const totalPrefixLength = cleanedPrefix.length + (prefixMatch?.[0].length ?? 0);
         
-                return test.startsWith(cleanedPrefix)
-                    ? test.slice(totalPrefixLength)
-                    : test;
-            }
+                    return test.startsWith(cleanedPrefix)
+                        ? test.slice(totalPrefixLength)
+                        : test;
+                }
 
-            if (defaultGameName) {
-                const cleanedPrefix = defaultGameName.trim();
+                if (defaultGameName) {
+                    const cleanedPrefix = defaultGameName.trim();
 
-                const prefixMatch = test.startsWith(cleanedPrefix)
-                    ? test.slice(cleanedPrefix.length).match(/^[:\-–—|>~\s]+/)
-                    : null;
+                    const prefixMatch = test.startsWith(cleanedPrefix)
+                        ? test.slice(cleanedPrefix.length).match(/^[:\-–—|>~\s]+/)
+                        : null;
                 
-                const totalPrefixLength = cleanedPrefix.length + (prefixMatch?.[0].length ?? 0);
+                    const totalPrefixLength = cleanedPrefix.length + (prefixMatch?.[0].length ?? 0);
         
-                return test.startsWith(cleanedPrefix)
-                    ? test.slice(totalPrefixLength)
-                    : test;
+                    return test.startsWith(cleanedPrefix)
+                        ? test.slice(totalPrefixLength)
+                        : test;
                 }
             }
         
@@ -237,6 +412,9 @@ export { default as LibraryHome } from './views/LibraryHome';
 export { default as LibraryGame } from './views/LibraryGame';
 export { default as LibraryCollections } from './views/LibraryCollections';
 export { default as LibraryCollection } from './views/LibraryCollection';
+export { default as LibraryAll } from './views/LibraryAll';
+export { default as LibraryFavourites } from './views/LibraryFavourites';
+export { default as LibraryRecent } from './views/LibraryRecent';
 
 // Export LibraryProvider as default
 export default LibraryProvider;

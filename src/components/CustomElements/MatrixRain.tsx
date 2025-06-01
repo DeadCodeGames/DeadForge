@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export interface MatrixRainProps {
     fontSize?: number;
@@ -6,18 +6,18 @@ export interface MatrixRainProps {
     className?: string;
 }
 
-export default function MatrixRain({
+const MatrixRain = ({
     fontSize = 16,
     speed = 66,
     className = '',
-}: MatrixRainProps) {
+}: MatrixRainProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const requestIdRef = useRef<number | undefined>(undefined);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     // Add a ref to track if window is being resized
     const isResizingRef = useRef<boolean>(false);
     // Add a ref for resize timeout to clear it when needed
-    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Store drops and columns in refs to maintain state between renders
     const dropsRef = useRef<number[]>([]);
@@ -194,3 +194,5 @@ export default function MatrixRain({
         </div>
     );
 }
+
+export default MatrixRain;

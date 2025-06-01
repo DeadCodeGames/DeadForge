@@ -21,6 +21,9 @@ contextBridge.exposeInMainWorld('Electron', {
     fetchGames: (): Promise<NormalizedGame[]> => ipcRenderer.invoke('games:fetch'),
     onGamesUpdate: (callback: (event: any, games: NormalizedGame[]) => void) => ipcRenderer.on('games:update', callback),
     removeGamesUpdateListener: (callback: (event: any, games: NormalizedGame[]) => void) => ipcRenderer.removeListener('games:update', callback),
+
+    resetAllData: () => ipcRenderer.invoke('app:resetAllData'),
+    restartApp: () => ipcRenderer.invoke('app:restart'),
 })
 
 contextBridge.exposeInMainWorld('Process', {

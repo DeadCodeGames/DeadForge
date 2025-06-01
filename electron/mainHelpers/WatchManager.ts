@@ -1,5 +1,7 @@
+//
 import { EventEmitter } from "events";
 import chokidar, { FSWatcher } from "chokidar";
+import path from 'path';
 import { getPathsFromDB } from "./DataDB";
 import { readItchDB } from "./ItchStuff";
 import { default as db } from "./DataDB";
@@ -9,6 +11,7 @@ import { getInstalledSteamDLCs, getInstalledSteamGames } from "./SteamStuff";
 import { getInstalledEpicGames } from "./EpicStuff";
 import { NormalizedDLC, NormalizedGame } from "../types";
 import { notifyGamesUpdate } from "../main";
+import { DownloadCuratedAssets } from "./AssetsDownloader";
 
 type Watchers = {
     steamInfo?: FSWatcher;
@@ -19,6 +22,70 @@ type Watchers = {
 
 const watchers: Watchers = {};
 const emitter = new EventEmitter();
+
+const processing = {
+    steam: false,
+    itch: false,
+    epic: false
+}
+
+function getLauncherEntry(source: 'steam' | 'epic' | 'itch'): NormalizedGame {
+    const paths = getPathsFromDB();
+
+    let launchOptions: { name: string; executable: string; arguments: string[] }[] = [], installPath: string | undefined;
+
+    switch (source) {
+        case 'steam': {
+            const steamPath = paths.steam;
+            if (steamPath) {
+                launchOptions = [{
+                    name: "Launch",
+                    executable: path.join(steamPath, 'Steam.exe'),
+                    arguments: []
+                }];
+                installPath = steamPath;
+            }
+            break;
+        }
+        case 'epic': {
+            const epicExe = paths.epic_exe;
+            if (epicExe) {
+                launchOptions = [{
+                    name: "Launch",
+                    executable: epicExe,
+                    arguments: []
+                }];
+                installPath = epicExe.split("\\Launcher")[0];
+            }
+            break;
+        }
+        case 'itch': {
+            const itchBasePath = paths.itchio_exe;
+            if (itchBasePath) {
+                launchOptions = [{
+                    name: "Launch",
+                    executable: path.join(itchBasePath, 'CONST_ITCHEXEC'),
+                    arguments: []
+                }];
+                installPath = itchBasePath;
+            }
+            break;
+        }
+    }
+
+    return {
+        id: '-1',
+        source,
+        name: {
+            steam: "Steam",
+            epic: "Epic Games Launcher",
+            itch: "itch",
+        }[source],
+        type: "Launcher",
+        installPath,
+        launchOptions,
+    };
+}
 
 function insertGamesTransaction(
     table: string,
@@ -35,13 +102,11 @@ function insertGamesTransaction(
         for (const game of games) {
             const sqlData = prepareGameForSQL(game);
             insertRow(db(), table, sqlData, 'replace');
+            DownloadCuratedAssets({ source: game.source, id: game.id });
         }
     });
 
     runTransaction(normalizedGames);
-    
-    // Emit an event to notify that games have been updated
-    emitter.emit("gamesUpdated");
 }
 
 function insertDLCsTransaction(
@@ -63,19 +128,17 @@ function insertDLCsTransaction(
     });
 
     runTransaction(normalizedDLCs);
-
-    // Emit an event to notify that games have been updated
-    emitter.emit("gamesUpdated");
 }
 
 async function watchSteam(path: string | undefined) {
+    processing.steam = true
     watchers.steamInfo?.close();
     watchers.steamFolders?.close();
     if (!path) return;
 
     const watchSteamHelper = async () => {
-        let gamesData = await getInstalledSteamGames(`${path}/appcache/appinfo.vdf`, `${path}/steamapps/libraryfolders.vdf`);
-        let dlcsData = await getInstalledSteamDLCs(`${path}/appcache/appinfo.vdf`, `${path}/steamapps/libraryfolders.vdf`);
+        const gamesData = await getInstalledSteamGames(`${path}/appcache/appinfo.vdf`, `${path}/steamapps/libraryfolders.vdf`);
+        const dlcsData = await getInstalledSteamDLCs(`${path}/appcache/appinfo.vdf`, `${path}/steamapps/libraryfolders.vdf`);
         if (!gamesData || !dlcsData) return;
 
         const currentSteamGamesDB = selectRows(db(), 'steamGames');
@@ -98,9 +161,24 @@ async function watchSteam(path: string | undefined) {
                 normalizedDLCs.push(normalizedDLC);
             }
         }
+
+        normalizedGames.push(getLauncherEntry('steam'));
+        newGameIds.add('-1');
         
         insertGamesTransaction('steamGames', currentSteamGamesIds, newGameIds, normalizedGames);
         insertDLCsTransaction('steamDLCs', currentSteamDLCsIds, newDLCIds, normalizedDLCs);
+        const allGames = new Set<{ source: "steam", id: string }>();
+        for (const id of currentSteamGamesIds) {
+            allGames.add({ source: "steam", id });
+        }
+        for (const id of newGameIds) {
+            allGames.add({ source: "steam", id });
+        }
+        
+        processing.steam = false;
+        await DownloadCuratedAssets({source: "steam", id: "-1"});
+        if (Object.values(processing).every(p => p === true))
+            emitter.emit("gamesUpdated");
     }
     await watchSteamHelper();
 
@@ -111,6 +189,7 @@ async function watchSteam(path: string | undefined) {
 }
 
 async function watchEpic(path: string | undefined) {
+    processing.epic = true;
     watchers.epic?.close();
     if (!path) return;
     
@@ -130,10 +209,29 @@ async function watchEpic(path: string | undefined) {
             }
         }
 
-        const games = Object.values(data);
-        const normalizedGames = games.map(normalizeEpicManifestToGame).filter((game): game is NormalizedGame => game !== undefined);
+        // First normalize the actual game manifests
+        const normalizedGames = Object.values(data)
+            .map(normalizeEpicManifestToGame)
+            .filter((game): game is NormalizedGame => game !== undefined);
+        
+        // Add the launcher entry
+        const launcherEntry = getLauncherEntry('epic');
+        normalizedGames.push(launcherEntry);
+        newIds.add('-1');
         
         insertGamesTransaction('epicGames', currentIds, newIds, normalizedGames);
+        const allGames = new Set<{ source: "epic", id: string }>();
+        for (const id of currentIds) {
+            allGames.add({ source: "epic", id });
+        }
+        for (const id of newIds) {
+            allGames.add({ source: "epic", id });
+        }
+        
+        processing.epic = false;
+        await DownloadCuratedAssets({source: "epic", id: "-1"});
+        if (Object.values(processing).every(p => p === true))
+            emitter.emit("gamesUpdated");
     }
     
     await watchEpicHelper();
@@ -142,18 +240,19 @@ async function watchEpic(path: string | undefined) {
 }
 
 async function watchItchio(path: string | undefined) {
+    processing.itch = true;
     watchers.itchio?.close();
     if (!path) return;
     
     watchers.itchio = chokidar.watch(`${path}/db/butler.db`, { persistent: true });
 
     const watchItchioHelper = async () => {
-        const cavesData = (await readItchDB(`${path}/db/butler.db`))?.caves;
-        if (!cavesData) return;
+        const dbData = await readItchDB(`${path}/db/butler.db`);
+        if (!dbData?.caves || !dbData?.games) return;
 
         const currentItchDB = selectRows(db(), 'itchGames');
         const currentIds = new Set(currentItchDB.map((row: any) => row.id));
-        const newIds = new Set(cavesData.map(cave => cave.id));
+        const newIds = new Set(dbData.caves.map(cave => cave.id));
 
         for (const id of currentIds) {
             if (!newIds.has(id)) {
@@ -161,15 +260,33 @@ async function watchItchio(path: string | undefined) {
             }
         }
 
-        cavesData.forEach(async (cave) => {
-            const normalizedGame = await normalizeCaveToGame(cave);
+        const launcher = getLauncherEntry('itch');
+        insertRow(db(), 'itchGames', prepareGameForSQL(launcher), 'replace');
+        newIds.add('-1');
+
+        dbData.caves.forEach(async (cave) => {
+            const normalizedGame = await normalizeCaveToGame(cave, dbData.games);
             const sqlData = prepareGameForSQL(normalizedGame);
             
             insertRow(db(), 'itchGames', sqlData, 'replace');
         });
+
+        const allGames = new Set<{ source: "itch", id: string }>();
+        for (const id of currentIds) {
+            allGames.add({ source: "itch", id });
+        }
+        for (const id of newIds) {
+            allGames.add({ source: "itch", id });
+        }
+
+        await DownloadCuratedAssets(...allGames);
+        
+        processing.itch = false;
+        if (Object.values(processing).every(p => p === true))
+            emitter.emit("gamesUpdated");
     }
 
-    watchers.itchio.on("change", async () => {
+    watchers.itchio.on("all", async () => {
         console.log("itch.io butler.db changed");
         await watchItchioHelper();
     });
@@ -181,8 +298,10 @@ function updateWatcher(key: string, val: string | undefined) {
     //console.log(key, val)
     switch (key) {
         case "steam": return watchSteam(val);
-        case "epic": return watchEpic(val);
-        case "itchio": return watchItchio(val);
+        case "epic_data": return watchEpic(val);
+        case "epic_exe": return watchEpic(getPathsFromDB().epic_data);  // Re-trigger watcher with data path when exe changes
+        case "itchio_data": return watchItchio(val);
+        case "itchio_exe": return watchItchio(getPathsFromDB().itchio_data);  // Re-trigger watcher with data path when exe changes
     }
 }
 
@@ -190,7 +309,10 @@ export function initWatchers() {
     const paths = getPathsFromDB();
     //console.log(paths);
     for (const [key, val] of Object.entries(paths)) {
-        updateWatcher(key, val);
+        // Only initialize watchers for data paths, exe paths will be handled by the launcher entries
+        if (!key.endsWith('_exe')) {
+            updateWatcher(key, val);
+        }
     }
     
     // Listen for games updates and notify the main process
