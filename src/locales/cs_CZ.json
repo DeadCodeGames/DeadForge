@@ -62,12 +62,55 @@
             "exportData": "Exportovat",
             "importData": "Importovat",
             "resetData": "Resetovat",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
             "autoUpdate": "Automatické aktualizace",
             "autoUpdateDescription": "Automaticky stáhnout a nainštalovat aktualizace aplikace",
             "betaUpdates": "Předběžné (Beta) aktualizace",
             "betaUpdatesDescription": "Instalovat předběžné beta verzie s novými funkcemi dříve (vyžaduje Automatické aktualizace)",
             "languageUpdates": "Aktualizace jazykových balíčků",
             "languageUpdatesDescription": "Někdy se nám nepovede úplně přeložit aplikaci do všech jazyků prěd vydáním nové aktualizace\nMůžete se přihlásit na odběr těchto malých aktualizací, které obsahují jenom změny lokalizace (vyžaduje Automatické aktualizace)"
+        }
+    },
+    "library": {
+        "shared": {
+            "collections": "",
+            "launch": "",
+            "launchLauncher": "",
+            "play": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "noCollections": "",
+            "createCollection": ""
+        },
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            }
         }
     }
 }

@@ -62,12 +62,55 @@
             "exportData": "エクスポート",
             "importData": "インポート",
             "resetData": "リセット",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
             "autoUpdate": "自動アップデート",
             "autoUpdateDescription": "アプリアップデートを自動的にダウンロードしてインストールします",
             "betaUpdates": "ベータアップデート",
             "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
             "languageUpdates": "言語パックのアップデート",
             "languageUpdatesDescription": ""
+        }
+    },
+    "library": {
+        "shared": {
+            "collections": "",
+            "launch": "",
+            "launchLauncher": "",
+            "play": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "noCollections": "",
+            "createCollection": ""
+        },
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            }
         }
     }
 }

@@ -62,12 +62,55 @@
             "exportData": "Export",
             "importData": "Import",
             "resetData": "Reset",
+            "resetDataTitle": "Reset App Data",
+            "resetDataConfirmation": "Are you sure you want to reset all app data? This will delete all your settings, game data, and preferences. This action cannot be undone.",
+            "resetDataConfirm": "Yes, Reset Everything",
+            "resetDataCancel": "No, Keep My Data",
             "autoUpdate": "Automatic Updates",
             "autoUpdateDescription": "Automatically download and install application updates",
             "betaUpdates": "Beta Updates",
             "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires Automatic Updates)",
             "languageUpdates": "Language Pack Updates",
             "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receiving these small updates, containing only localization changes (requires Automatic Updates)"
+        }
+    },
+    "library": {
+        "shared": {
+            "collections": "Collections",
+            "launch": "Launch",
+            "launchLauncher": "Launch {{launcher}}",
+            "play": "Play",
+            "addFavourite": "Add to Favourites",
+            "removeFavourite": "Remove from Favourites",
+            "noCollections": "No collections found",
+            "createCollection": "Create New Collection"
+        },
+        "sidebar": {
+            "homeButton": "Home",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "Filter by favourite status",
+                    "unfiltered": "Show all games",
+                    "favourites": "Show only favourite games"
+                },
+                "launchability": {
+                    "description": "Filter by launchability",
+                    "unfiltered": "Show all games",
+                    "launchable": "Show only launchable games"
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "Sorting options",
+                    "title": "Title",
+                    "recent": "Last launch time"
+                },
+                "direction": {
+                    "description": "Sorting direction",
+                    "asc": "Ascending",
+                    "desc": "Descending"
+                }
+            }
         }
     }
 }

@@ -62,12 +62,55 @@
             "exportData": "",
             "importData": "",
             "resetData": "",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
             "autoUpdate": "",
             "autoUpdateDescription": "",
             "betaUpdates": "",
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": ""
+        }
+    },
+    "library": {
+        "shared": {
+            "collections": "",
+            "launch": "",
+            "launchLauncher": "",
+            "play": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "noCollections": "",
+            "createCollection": ""
+        },
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            }
         }
     }
 }
