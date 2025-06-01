@@ -4,7 +4,7 @@ export function createTable(db: Database.Database, tableName: string, columns: R
   const colDefs = Object.entries(columns)
     .map(([name, type]) => `${name} ${type}`)
     .join(",\n")
-    .replace(",\nPRIMARY KEY (", ",\nPRIMARY KEY (");
+    // Removed redundant replace call as it has no effect.
   const createSql = `CREATE TABLE IF NOT EXISTS ${tableName} (\n${colDefs}\n);`;
   try {
     db.prepare(createSql).run();
