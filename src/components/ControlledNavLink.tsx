@@ -1,11 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { AppContext } from '@/App'; // adjust the import to your actual context path
 
 interface ControlledNavLinkProps {
     to: string;
+    // eslint-disable-next-line no-unused-vars
     className: string | ((props: { isActive: boolean }) => string);
     shouldIntercept?: boolean;
+    // eslint-disable-next-line no-unused-vars
     onClick?: (e: React.MouseEvent) => void;
     children?: React.ReactNode;
 }
@@ -14,7 +16,7 @@ export const ControlledNavLink = ({
     to,
     className,
     shouldIntercept = false,
-    onClick = (e) => {},
+    onClick = () => {},
     children
 }: ControlledNavLinkProps) => {
     const { useSettingsWindow } = useContext(AppContext).context.preferences;
@@ -40,7 +42,7 @@ export const ControlledNavLink = ({
     }
 
     return (
-        <NavLink to={to} className={className}>
+        <NavLink draggable={false} to={to} className={className}>
             {children}
         </NavLink>
     );

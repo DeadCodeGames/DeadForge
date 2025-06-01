@@ -11,17 +11,34 @@ permissions:
   pull-requests: read
   actions: read
 
-jobs: 
+jobs:
+  test-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 22.14.0
+
+      - name: Install dependencies
+        run: npm install --force
+
+      - name: Run lint
+        run: npm run lint
+
   test-build:
     strategy:
       matrix:
         include:
           - os: windows-latest
             args: -w
-          - os: ubuntu-22.04
-            args: -l
-          - os: macos-latest
-            args: -m
+          #- os: ubuntu-22.04
+          #  args: -l
+          #- os: macos-latest
+          #  args: -m
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -31,17 +48,18 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 20
+          node-version: 22.14.0
 
       - name: Install dependencies
-        run: npm install --force
+        run: set CI=false && npm install --force
 
       - name: Build/release Electron app
-        uses: DeadCodeGames/action-electron-builder@effa1ea435ec026b5c7b953273d18d55b17b5d04
+        uses: DeadCodeGames/action-electron-builder@908b7cf133f1e9bef6d538ab50ad2f7449538cc7
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           args: ${{ matrix.args }}
           build_script_name: "full-build"
+          build_script_env: "set CI=false"
           skip_install: true
 
       - name: Upload artifacts

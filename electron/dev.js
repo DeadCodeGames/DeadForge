@@ -1,5 +1,6 @@
 const nodemon = require("nodemon");
 const { exec, spawn } = require("child_process");
+const path = require("path");
 
 let firstRun = true;
 let electronProcess = null;
@@ -19,10 +20,11 @@ function launchElectron(isFirstRun) {
     electronProcess.kill();
   }
 
-  const args = ["."];
+  const electronPath = path.join(__dirname, '..', 'node_modules', 'electron', 'dist', 'electron.exe');
+  const args = ["--trace-warnings", "."];
   if (isFirstRun) args.push("--first-run");
 
-  electronProcess = spawn("electron", args, {
+  electronProcess = spawn(electronPath, args, {
     stdio: "inherit",
     env: { ...process.env }
   });

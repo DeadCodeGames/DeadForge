@@ -22,26 +22,37 @@ html:not([updateStatus="appnotloaded"])y {
     @apply w-2
 }
   
-  ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     @apply dark:bg-fullMoon bg-night rounded-lg
 }
   
-  ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     @apply dark:bg-notQuiteBlack bg-notQuiteWhite
+}
+
+.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+.ltr {
+    direction: ltr;
+    text-align: left;
+}
+
+* {
+    @apply ring-0 outline-none;
 }
 
 /* Transitions */
 html {
     @apply transition-opacity duration-500 ease-in-out;
+    --osuLogoAnimationSpeed: calc(1s);
 }
 
 /* Body reset & base style */
 html, body {
-    @apply m-0 bg-notQuiteWhite text-notQuiteBlack;
-}
-
-html.dark, body:is(.dark *) {
-    @apply bg-notQuiteBlack text-notQuiteWhite;
+    @apply m-0 bg-notQuiteWhite text-notQuiteBlack dark:bg-notQuiteBlack dark:text-notQuiteWhite overflow-hidden;
 }
 
 /* Links */
@@ -50,11 +61,83 @@ a {
     @apply cursor-pointer underline m-[2.5px];
 }
 
-/* Checklist code blocks */
-div.checklist pre.code {
-    @apply border w-fit p-2 rounded-lg border-solid border-[#1F1F1F] bg-[#0F0F0F] my-4;
-}
-
 .inverse-quarter {
     clip-path: path('M0,0 H25 V25 H0 Z M25,0 A25,25 0 0 0 0,25 Z');
+}
+
+code.singleLine {
+    @apply p-1 dark:bg-night bg-notQuiteWhite rounded-md border border-solid border-night/25 dark:border-fullMoon/25 leading-8 box-decoration-clone
+}
+
+html[data-location^="/library"] div#app {
+    --sidebarWidth: 48px !important;
+}
+
+html[data-location^="/library"] div#app>div:has(nav:hover>div>button>span[class*="-scale-x-100"]) {
+    --sidebarWidth: 192px !important;
+}
+
+html[data-location^="/library"] div#app>div#contents {
+    @apply transition-[filter] duration-200 ease-in-out;
+}
+
+html[data-location^="/library"] div#app:has(div>nav:hover>div>button>span[class*="-scale-x-100"])>div#contents {
+    @apply brightness-75;
+}
+
+@keyframes osuLogoBase {
+    0% {
+        transform: scale(1);
+    }
+    99% {
+        transform: scale(0.80);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes osuLogoOutlines {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    40% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+img.osuLogoBase {
+    animation: osuLogoBase var(--osuLogoAnimationSpeed) linear infinite forwards;
+}
+
+img.osuLogoOutlines {
+    animation: osuLogoOutlines var(--osuLogoAnimationSpeed) linear infinite forwards;
+}
+
+@keyframes hourglassAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(180deg);
+    }
+    50% {
+        transform: rotate(180deg); /* Hold position for pause */
+    }
+    75% {
+        transform: rotate(360deg);
+    }
+    100% {
+        transform: rotate(360deg); /* Hold position for pause */
+    }
+}
+
+.animate-hourglass {
+    animation: hourglassAnimation 2s cubic-bezier(0.5,0,0,0.5) infinite;
 }

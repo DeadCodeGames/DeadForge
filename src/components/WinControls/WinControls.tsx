@@ -1,8 +1,9 @@
-import { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { AppContext } from '@/App.tsx';
 import { useTranslation } from "react-i18next";
+import DEADCODELogo from '../CustomElements/DEADCODELogo';
 
-export default function WinControls() {
+const WinControls = () => {
     const { t } = useTranslation();
     const { context, setContext } = useContext(AppContext);
     const { showThemeButton, windowFrame: type } = context.preferences;
@@ -102,23 +103,27 @@ export default function WinControls() {
 
     const LocationTitle = () => {
         if (!context.preferences.showCurrentPageTitleInFrame) return "";
-        switch (window.location.hash.substring(2)) {
-            case "library":
-                return <span className='whitespace-pre-wrap'> — {t("sidebar.library")}</span>;
-            case "arcade":
-                return <span className='whitespace-pre-wrap'> — {t("sidebar.arcade")}</span>;
-            case "store":
-                return <span className='whitespace-pre-wrap'> — {t("sidebar.store")}</span>;
-            case "settings":
-                return <span className='whitespace-pre-wrap'> — {t("sidebar.settings")}</span>;
-            default:
-                return "";
+        switch (window.location.hash.substring(2).split("/")[0]) {
+        case "library":
+            // eslint-disable-next-line no-irregular-whitespace
+            return <span className='whitespace-pre-wrap'> — {t("sidebar.library")}</span>;
+        case "arcade":
+            // eslint-disable-next-line no-irregular-whitespace
+            return <span className='whitespace-pre-wrap'> — {t("sidebar.arcade")}</span>;
+        case "store":
+            // eslint-disable-next-line no-irregular-whitespace
+            return <span className='whitespace-pre-wrap'> — {t("sidebar.store")}</span>;
+        case "settings":
+            // eslint-disable-next-line no-irregular-whitespace
+            return <span className='whitespace-pre-wrap'> — {t("sidebar.settings")}</span>;
+        default:
+            return "";
         }
     }
 
     const title = (
         <>
-            <div id="logo" className="text-lg px-1 text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300 font-montserrat font-bold">××</div>
+            <DEADCODELogo id="logo" className='px-1' />
             <div id="windowtitle" className="text-sm font-bold select-none px-1 font-uniSansCAPS text-notQuiteBlack dark:text-notQuiteWhite transition-colors duration-300">
                 DeadForge<LocationTitle />
             </div>
@@ -189,3 +194,5 @@ export default function WinControls() {
         </div>
     );
 }
+
+export default WinControls;

@@ -170,6 +170,16 @@
     -khtml-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    transition: font-variations-settings 2s ease-in-out;
+}
+
+.ms-filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.filled-when-checked:has(:checked) {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 @font-face {

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '@/App';
 import { ControlledNavLink } from '../ControlledNavLink';
@@ -7,10 +7,11 @@ type NavItem = {
     name: string | React.JSX.Element;
     path: string;
     icon: string;
+    // eslint-disable-next-line no-unused-vars
     onClick?: (e?: any) => void;
 };
 
-export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) {
+const Navigation = ({ navItemsTop, navItemsBottom }: { navItemsTop: NavItem[], navItemsBottom: NavItem[] }) => {
     const { t } = useTranslation();
     const { context, setContext } = useContext(AppContext);
     const collapsed = context.preferences.sidebarCollapsed;
@@ -48,7 +49,7 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
         });
     };
 
-    const baseItemClass = "text-nowrap flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start text-left";
+    const baseItemClass = "no-user-drag text-nowrap flex items-center transition-colors duration-200 ease-in-out rounded-md py-2 px-1 no-underline m-0 justify-start text-left";
     const activeClass = "text-blue-500";
     const inactiveClass = "text-notQuiteBlack dark:text-notQuiteWhite hover:text-black dark:hover:text-white";
     const expandedPointerClass = "-scale-x-100";
@@ -98,3 +99,5 @@ export default function Navigation({ navItemsTop, navItemsBottom }: { navItemsTo
         </div>
     );
 }
+
+export default Navigation;
