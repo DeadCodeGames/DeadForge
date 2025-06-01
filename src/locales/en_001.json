@@ -4,6 +4,7 @@
         "emoji": "🇬🇧"
     },
     "sidebar": {
+        "home": "Home",
         "library": "Library",
         "arcade": "Arcade",
         "store": "Store",
