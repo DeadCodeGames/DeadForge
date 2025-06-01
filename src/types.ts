@@ -55,6 +55,8 @@ declare global {
             resolveDisplayPath: (path: string) => Promise<string>,
             fetchGameWarnings: (source: string, id: string) => Promise<{ success: boolean, data: GameWarning }>,
             saveMissingAssetsReport: (report: string) => void,
+            updateArticles: () => Promise<{ success: boolean, error?: string }>,
+            getArticles: () => Promise<ArticleList>,
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
@@ -277,4 +279,25 @@ export interface GameNote {
 export interface GameWarning {
     matches: GameMatch[];
     notes: GameNote[];
+}
+
+export interface ArticleAuthor {
+    name: string;
+    link: string;
+    profilePicture: string;
+}
+
+export interface Article {
+    title: string;
+    authors: ArticleAuthor[];
+    bannerImage: string;
+    content: string;
+    publishDate: string;
+    lastModified: string;
+    tags: string[];
+    slug: string;
+}
+
+export interface ArticleList {
+    articles: Article[];
 }

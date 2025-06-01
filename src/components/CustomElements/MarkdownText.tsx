@@ -6,12 +6,13 @@ interface MarkdownTextProps {
     className?: string;
 }
 
-type TokenType = 'text' | 'bold' | 'italic' | 'strikethrough' | 'underline' | 'link';
+type TokenType = 'text' | 'bold' | 'italic' | 'strikethrough' | 'underline' | 'link' | 'image';
 
 interface Token {
     type: TokenType;
     content: string | Token[];
     url?: string;
+    alt?: string;
 }
 
 const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className }) => {
@@ -46,8 +47,29 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className }) => {
         };
 
         while (i < text.length) {
+            // Check for image pattern ![alt](url)
+            if (text.startsWith('![', i)) {
+                const closeBracket = text.indexOf(']', i);
+                if (closeBracket !== -1 && text[closeBracket + 1] === '(') {
+                    const closeParens = text.indexOf(')', closeBracket);
+                    if (closeParens !== -1) {
+                        pushText();
+                        const altText = text.slice(i + 2, closeBracket);
+                        const url = text.slice(closeBracket + 2, closeParens);
+                        tokens.push({
+                            type: 'image',
+                            content: '',
+                            url,
+                            alt: altText
+                        });
+                        i = closeParens + 1;
+                        continue;
+                    }
+                }
+            }
+
             // Check for link pattern [text](url)
-            if (text[i] === '[') {
+            if (text[i] === '[' && text[i - 1] !== '!') {  // Make sure it's not an image
                 const closeBracket = text.indexOf(']', i);
                 if (closeBracket !== -1 && text[closeBracket + 1] === '(') {
                     const closeParens = text.indexOf(')', closeBracket);
@@ -135,6 +157,15 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className }) => {
                             >
                                 {renderContent(token.content)}
                             </a>
+                        );
+                    case 'image':
+                        return (
+                            <img
+                                key={index}
+                                src={token.url?.startsWith('http') ? token.url : `local://${token.url}`}
+                                alt={token.alt || ''}
+                                className="max-w-full h-auto my-4 rounded-lg shadow-lg"
+                            />
                         );
                     default:
                         return null;

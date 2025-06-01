@@ -385,6 +385,7 @@ const Settings = () => {
                                 onChange={handleDefaultPageChange}
                                 className="p-2 rounded-lg dark:bg-night bg-fullMoon border border-notQuiteBlack dark:border-notQuiteWhite"
                             >
+                                <SelectOption value="">{t("sidebar.home")}</SelectOption>
                                 <SelectOption value="library">{t("sidebar.library")}</SelectOption>
                                 <SelectOption value="store">{t("sidebar.store")}</SelectOption>
                                 <SelectOption value="arcade">{t("sidebar.arcade")}</SelectOption>

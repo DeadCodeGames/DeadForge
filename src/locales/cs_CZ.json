@@ -4,6 +4,7 @@
         "emoji": "🇨🇿"
     },
     "sidebar": {
+        "home": "Domov",
         "library": "Knihovna",
         "arcade": "Arcade",
         "store": "Obchod",

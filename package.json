@@ -1,6 +1,6 @@
 {
   "name": "deadforge",
-  "version": "v2.0.0-Dev",
+  "version": "v2.0.0-Beta-1",
   "description": "An Electron Launcher for DeadCode Projects (AND OTHER STUFF TOO NOW :3).",
   "author": "DeadCodeGames <404@mail.deadcode.is-a.dev> (https://deadcode.is-a.dev)",
   "contributors": [
@@ -34,6 +34,7 @@
     "@icons-pack/react-simple-icons": "^12.7.0",
     "@types/adm-zip": "^0.5.7",
     "@types/better-sqlite3": "^7.6.13",
+    "@types/date-fns": "^2.5.3",
     "@types/flat": "^5.0.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.2",
@@ -44,6 +45,7 @@
     "concurrently": "^9.1.2",
     "cpx": "^1.5.0",
     "cross-env": "^7.0.3",
+    "date-fns": "^4.1.0",
     "electron": "^35.1.5",
     "electron-builder": "^26.0.12",
     "electron-devtools-installer": "^4.0.0",

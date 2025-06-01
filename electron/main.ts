@@ -10,6 +10,7 @@ import { Collection, CollectionGame, Collections, GameWarning, OldCollections } 
 import { waitForGameProcess, monitorExternalProcess } from './mainHelpers/ProcessWatcher';
 import https from 'https';
 import { selectCustomAsset, saveCustomAsset, updateLogoPosition } from './mainHelpers/CustomAssets';
+import { updateArticles, getArticles } from './mainHelpers/ArticleManager';
 let gotInstanceLock = app.requestSingleInstanceLock();
 const windowStateKeeper = require('electron-window-state');
 // eslint-disable-next-line no-unused-vars
@@ -199,13 +200,20 @@ const createWindow = () => {
 
     mainWindowState.manage(mainWindow)
     if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
-    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/${initialPrefs.defaultPage || "library"}` : `http://localhost:3000#/${initialPrefs.defaultPage || "library"}`);
+    mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/${initialPrefs.defaultPage || ""}` : `http://localhost:3000#/${initialPrefs.defaultPage || ""}`);
 
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
     mainWindow.webContents.openDevTools();
-    mainWindow.webContents.on("did-navigate", () => { if (!initialLoad) { app.relaunch(); app.quit() } else initialLoad = false; });
+    mainWindow.webContents.on("did-navigate", () => { 
+        if (!initialLoad) { 
+            app.relaunch(); 
+            app.quit() 
+        } else {
+            initialLoad = false;
+        }
+    });
 
     mainWindow!.webContents.setWindowOpenHandler(({ url }) => {
         require('electron').shell.openExternal(url);
@@ -1263,4 +1271,13 @@ ipcMain.handle('saveMissingAssetsReport', async (_, report: string) => {
     });
     const reportPath = path.join(app.getPath("userData"), `missingAssetsReport${Date.now()}.txt`);
     fs.writeFileSync(reportPath, report);
+});
+
+// Add these IPC handlers before app.on('before-quit', closeDB);
+ipcMain.handle('articles:update', async () => {
+    return await updateArticles();
+});
+
+ipcMain.handle('articles:get', () => {
+    return getArticles();
 });

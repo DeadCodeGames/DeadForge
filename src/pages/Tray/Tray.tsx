@@ -30,6 +30,7 @@ const Tray = () => {
     }, [context.preferences.theme]);
     return (
         <div className="app-region-drag w-[calc(100vw-16px)] h-full dark:bg-notQuiteBlack bg-notQuiteWhite dark:text-notQuiteWhite text-notQuiteBlack font-notoSans flex flex-col p-2">
+            <TrayItem name={t('sidebar.home')} icon="home" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/' }) }} />
             <TrayItem name={t('sidebar.library')} icon="apps" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/library' }) }} />
             <TrayItem name={<Trans i18nKey="tray.arcade" components={[<span className="font-uniSansCAPS font-bold" key="DEADFORGE">DEADFORGE</span>,<span className="font-uniSansCAPS" key="ARCADE">ARCADE</span>]} />} onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/arcade' })}} />
             <TrayItem name={t('sidebar.store')} icon="store" onClick={() => { window.Electron.sendTrayChoice({ type: 'navigate', destination: '/store' }) }} />

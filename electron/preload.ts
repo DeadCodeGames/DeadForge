@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { OldPreferences, Preferences } from './preferences';
 import { SteamGameObject } from './steamTypes';
-import { Collection, CollectionGame, NormalizedDLC, NormalizedGame, NormalizedGameJoin } from './types';
+import { Collection, CollectionGame, NormalizedDLC, NormalizedGame, NormalizedGameJoin, ArticleList, Article } from './types';
 const path = require('path');
 const { pathToFileURL } = require('url');
 
@@ -83,6 +83,50 @@ contextBridge.exposeInMainWorld('Electron', {
     // Add new handlers
     resetAllData: () => ipcRenderer.invoke('app:resetAllData'),
     restartApp: () => ipcRenderer.invoke('app:restart'),
+
+    // Add article methods
+    updateArticles: () => ipcRenderer.invoke('articles:update'),
+    getArticles: async () => {
+        interface RawArticle {
+            title: string;
+            authors: Array<{
+                name: string;
+                link: string;
+                profilePicture: {
+                    filePath: string;
+                    remoteUrl: string;
+                };
+            }>;
+            bannerImage: {
+                filePath: string;
+                remoteUrl: string;
+            };
+            content: string;
+            publishDate: string;
+            lastModified: string;
+            tags: string[];
+            slug: string;
+        }
+
+        const rawArticles = await ipcRenderer.invoke('articles:get') as { articles: RawArticle[] };
+
+        return {
+            articles: rawArticles.articles.map(article => ({
+                title: article.title,
+                authors: article.authors.map(author => ({
+                    name: author.name,
+                    link: author.link,
+                    profilePicture: author.profilePicture.filePath
+                })),
+                bannerImage: article.bannerImage.filePath,
+                content: article.content,
+                publishDate: article.publishDate,
+                lastModified: article.lastModified,
+                tags: article.tags,
+                slug: article.slug
+            }))
+        };
+    },
 });
 
 contextBridge.exposeInMainWorld('Process', {

@@ -15,6 +15,7 @@ import FirstLaunchModal from "./SetupModal/SetupModal.tsx";
 import { NotificationProvider } from "./pages/Notifications/NotificationsProvider.tsx";
 import NotificationDisplay from "./pages/Notifications/NotificationsDisplay.tsx";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary.tsx";
+import Home from "./pages/Home/Home.tsx";
 
 const defaultPreferences = {
     initialSetupComplete: false,
@@ -25,7 +26,7 @@ const defaultPreferences = {
     showThemeButton: false,
     language: "en_001",
     showIncompleteLanguages: false,
-    defaultPage: "library",
+    defaultPage: "",
     useSettingsWindow: false,
     useTray: false,
     autoStart: false,
@@ -136,6 +137,7 @@ const AppContents = () => {
             <div className="flex">
                 <div id="app" style={{ '--sidebarWidth': '192px' } as any} className="flex flex-row h-[calc(100vh-36px)] absolute w-full dark:bg-night bg-fullMoon transition-colors duration-300 top-9 overflow-hidden">
                     <Navigation navItemsTop={[
+                        { name: t('sidebar.home'), path: '/', icon: 'home' },
                         { name: t('sidebar.library'), path: lastVisitedLibraryLocation, icon: 'apps' },
                         { name: t('sidebar.arcade'), path: '/arcade', icon: 'joystick' },
                         { name: t('sidebar.store'), path: '/store', icon: 'shopping_bag' }
@@ -144,7 +146,7 @@ const AppContents = () => {
                     ]} />
                     <div id="contents" className="left-[var(--sidebarWidth)] right-0 h-[calc(100vh-36px)] absolute dark:bg-notQuiteBlack bg-notQuiteWhite transition-[color,background-color,border-color,text-decoration-color,fill,stroke,left] duration-300 overflow-hidden">
                         <Routes>
-                            <Route path="/" element={<Navigate to="/library" />} />
+                            <Route path="/" element={<Home />} />
                             <Route path="/library" element={<LibraryLayout />}>
                                 <Route index element={<LibraryHome />} />
                                 <Route path="all" element={<LibraryAll />} />

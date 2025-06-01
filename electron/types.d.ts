@@ -127,3 +127,24 @@ export interface GameWarning extends ExternalData {
     severity: string;
     url: string;
 }
+
+export interface ArticleAuthor {
+    name: string;
+    link: string;
+    profilePicture: string;
+}
+
+export interface Article {
+    title: string;
+    authors: ArticleAuthor[];
+    bannerImage: string;
+    content: string;
+    publishDate: string;
+    lastModified: string;
+    tags: string[];
+    slug: string;
+}
+
+export interface ArticleList {
+    articles: Article[];
+}

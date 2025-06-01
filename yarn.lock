@@ -2248,6 +2248,11 @@
   resolved "https://registry.npmjs.org/@types/cookie/-/cookie-0.6.0.tgz"
   integrity sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==
 
+"@types/date-fns@^2.5.3":
+  version "2.5.3"
+  resolved "https://registry.npmjs.org/@types/date-fns/-/date-fns-2.5.3.tgz"
+  integrity sha512-4KVPD3g5RjSgZtdOjvI/TDFkLNUHhdoWxmierdQbDeEg17Rov0hbBYtIzNaQA67ORpteOhvR9YEMTb6xeDCang==
+
 "@types/debug@^4.1.6":
   version "4.1.12"
   resolved "https://registry.npmjs.org/@types/debug/-/debug-4.1.12.tgz"
@@ -4784,6 +4789,11 @@ data-view-byte-offset@^1.0.1:
     call-bound "^1.0.2"
     es-errors "^1.3.0"
     is-data-view "^1.0.1"
+
+date-fns@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/date-fns/-/date-fns-4.1.0.tgz"
+  integrity sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==
 
 debug@^2.2.0:
   version "2.6.9"
