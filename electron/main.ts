@@ -275,7 +275,7 @@ function getFallbackFilePath(fallback: string, filePath: string, delocalized?: s
 // Add this helper function for registering the local protocol
 function registerLocalProtocol() {
     protocol.handle('local', (request) => {
-        const url = new URL(request.url.replace("local://const_userdata", "local://" + app.getPath("userData")).replace("\\", "/"));
+        const url = new URL(request.url.replace("local://const_userdata", "local://" + app.getPath("userData")).replace(/\\/g, "/"));
         try {
             let filePath: string;
             if (process.platform === 'win32') {
