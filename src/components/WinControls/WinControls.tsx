@@ -104,6 +104,9 @@ const WinControls = () => {
     const LocationTitle = () => {
         if (!context.preferences.showCurrentPageTitleInFrame) return "";
         switch (window.location.hash.substring(2).split("/")[0]) {
+        case "":
+            // eslint-disable-next-line no-irregular-whitespace
+            return <span className='whitespace-pre-wrap'> — {t("sidebar.home")}</span>;
         case "library":
             // eslint-disable-next-line no-irregular-whitespace
             return <span className='whitespace-pre-wrap'> — {t("sidebar.library")}</span>;
