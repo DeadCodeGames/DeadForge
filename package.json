@@ -81,9 +81,8 @@
     "productName": "DeadForge",
     "compression": "maximum",
     "directories": {
-      "buildResources": "buildResources/**/*"
+      "buildResources": "buildResources"
     },
-    "icon": "./electron-dist/windowIcon.png",
     "files": [
       "build/**/*",
       "electron-dist/**/*",
@@ -111,7 +110,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "DeadForge"
+      "shortcutName": "DeadForge",
+      "include": "buildResources/install-dotnet.nsh"
     },
     "mac": {
       "target": "dmg",
