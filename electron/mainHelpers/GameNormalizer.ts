@@ -50,7 +50,7 @@ export async function normalizeCaveToGame(cave: any, games: any[]): Promise<Norm
 }
 
 export async function normalizeSteamEntryToGame(SteamPath: string, entry: SteamLauncherData["datasets"][number]): Promise<NormalizedGame | undefined> {
-    if (!(entry.data.appinfo?.config?.launch)) return undefined;
+    if (!(entry.data.appinfo?.config?.launch && SteamPath !== undefined)) return undefined;
     const launchOptions: LaunchOption[] = await Promise.all(entry.data.appinfo.config.launch
         .filter(option => (option.config?.oslist?.includes(getFriendlyOSName(process.platform)) || option.executable.endsWith(".exe")))
         .map(async (option, index) => ({
@@ -85,7 +85,7 @@ export async function normalizeSteamEntryToGame(SteamPath: string, entry: SteamL
             capsuleUrl: JSON.stringify(entry.data.appinfo.common?.library_assets_full?.library_capsule) || JSON.stringify(entry.data.appinfo.common?.small_capsule),
         },
         raw: null,
-        type: entry.data.appinfo.common.type
+        type: entry.data.appinfo.common.type === "Game" ? (entry?.data?.appinfo.extended.requiredappid ? "Mod" : "Game") : entry.data.appinfo.common.type
     })
 }
 

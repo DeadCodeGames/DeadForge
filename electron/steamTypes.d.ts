@@ -203,6 +203,7 @@ export interface Branch {
 }
 
 export interface Extended {
+    requiredappid?: number | string;
     dlcforappid?: number;
     checkpkgstate: number;
     developer: string;

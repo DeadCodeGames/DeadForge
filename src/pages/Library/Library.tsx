@@ -225,7 +225,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
         fetchInitialGames();
 
-        const handleGamesUpdate = (_event: any, updatedGames: NormalizedGame[], updatedDLCs: NormalizedDLC[], updatedGameJoins: NormalizedGameJoin[], updatedCuratedAssets: any[], updatedCustomAssets: any[]) => {
+        const handleGamesUpdate = async (_event: any, updatedGames: NormalizedGame[], updatedDLCs: NormalizedDLC[], updatedGameJoins: NormalizedGameJoin[], updatedCuratedAssets: any[], updatedCustomAssets: any[]) => {
             updatedGames = updatedGames.map(game => {
                 let name;
                 try {
@@ -264,6 +264,31 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
             setGameJoins(updatedGameJoins);
             setCuratedAssets(updatedCuratedAssets);
             setCustomAssets(updatedCustomAssets);
+
+            // Check which games are currently running
+            const gameChecks = updatedGames
+                .filter(game => game.launchOptions && game.launchOptions.length > 0)
+                .map(game => ({ source: game.source, id: game.id as string }));
+            
+            const runningStates = await window.Electron.checkRunningGames(gameChecks);
+            
+            // Update game states based on running processes
+            Object.entries(runningStates).forEach(([key, isRunning]) => {
+                // Use a different separator (|) that won't conflict with negative numbers
+                const [source, gameId] = key.split('|');
+                if (isRunning) {
+                    setGameState(gameId, source, 'running');
+                }
+            });
+
+            // Check for missing assets
+            const missingAssetReports = await checkMissingAssets(updatedGames, updatedCuratedAssets);
+            if (missingAssetReports.length > 0) {
+                const report = formatReportForGitHub(missingAssetReports);
+                const reportString = `---MISSING_ASSETS_REPORT_BEGIN---\n${report}\n---MISSING_ASSETS_REPORT_END---`;
+                console.warn(reportString);
+                window.Electron.saveMissingAssetsReport(reportString);
+            }
         };
 
         // Add process termination listener
