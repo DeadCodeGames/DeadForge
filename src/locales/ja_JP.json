@@ -19,9 +19,7 @@
     },
     "home": {
         "articles": {
-            "writtenBy": {
-                "other": ""
-            },
+            "writtenBy_other": "",
             "publishedOn": "{{date}}に公開",
             "lastEditedOn": "{{date}}に最終更新"
         }
@@ -199,10 +197,8 @@
             "noCollections": "",
             "noCollectionsDescription": "",
             "noCollectionsCTA": "",
-            "gameCount": {
-                "one": "",
-                "other": ""
-            },
+            "gameCount_one": "",
+            "gameCount_other": "",
             "header": {
                 "name": "",
                 "gameCount": "",
