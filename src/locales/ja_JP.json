@@ -1,92 +1,92 @@
 {
     "meta": {
-        "name": "日本語",
-        "emoji": "🇯🇵"
+        "name": "",
+        "emoji": ""
     },
-    "commaSeparator": "、",
-    "ampersandSeparator": "と",
+    "commaSeparator": "",
+    "ampersandSeparator": "",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
     "loading": "",
     "sidebar": {
         "home": "",
-        "library": "ライブラリー",
-        "arcade": "アーケード",
-        "store": "ストア",
-        "settings": "設定",
-        "collapse": "折りたたむ"
+        "library": "",
+        "arcade": "",
+        "store": "",
+        "settings": "",
+        "collapse": ""
     },
     "home": {
         "articles": {
-            "writtenBy_other": "",
-            "publishedOn": "{{date}}に公開",
-            "lastEditedOn": "{{date}}に最終更新"
+            "publishedOn": "",
+            "lastEditedOn": "",
+            "writtenBy_other": ""
         }
     },
     "store": {
-        "urlCopied": "URLは正常にコピーされました"
+        "urlCopied": ""
     },
     "tray": {
-        "exit": "<0>DEADFORGE</0>を終了",
-        "arcade": "<0>DEADFORGE</0> <1>アーケード</1>"
+        "exit": "",
+        "arcade": ""
     },
     "settings": {
         "theming": {
-            "title": "外観",
-            "theme": "テーマ",
-            "themeDescription": "ライト、ダーク、自動（システム）テーマから選択",
-            "systemTheme": "システム",
-            "darkTheme": "ダーク",
-            "lightTheme": "ライト",
-            "windowFrame": "ウィンドウ枠のスタイル",
+            "title": "",
+            "theme": "",
+            "themeDescription": "",
+            "systemTheme": "",
+            "darkTheme": "",
+            "lightTheme": "",
+            "windowFrame": "",
             "windowFrameDescription": "",
-            "windowFrameAuto": "自動（OSに基づいて）",
-            "windowFrameWindows": "Windows",
-            "windowFrameMac": "macOS",
-            "windowFrameLinux": "Linux",
+            "windowFrameAuto": "",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
             "currentPageTitleInFrame": "",
             "currentPageTitleInFrameDescription": "",
-            "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
+            "themeButtonInFrame": "",
             "themeButtonInFrameDescription": "",
-            "language": "言語",
+            "language": "",
             "languageDescription": "",
-            "languageShowIncomplete": "未完了の翻訳を表示",
-            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。"
+            "languageShowIncomplete": "",
+            "languageShowIncompleteDescription": ""
         },
         "behavior": {
-            "title": "行動",
-            "defaultPage": "デフォルトページ",
+            "title": "",
+            "defaultPage": "",
             "defaultPageDescription": "",
-            "settingsWindow": "設定を別ウィンドウで開く",
+            "settingsWindow": "",
             "settingsWindowDescription": "",
-            "useTray": "システムトレイに表示",
+            "useTray": "",
             "useTrayDescription": "",
-            "autoStart": "システム起動時に実行",
+            "autoStart": "",
             "autoStartDescription": "",
-            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません"
+            "unavailableOnLinux": ""
         },
         "appData": {
-            "title": "アプリデータとアップデート",
-            "initialSetup": "初期設定",
+            "title": "",
+            "initialSetup": "",
             "initialSetupDescription": "",
-            "replaySetup": "初期設定を再度開始",
-            "dataManagement": "データ管理",
-            "dataManagementDescription": "全てのアプリデータをエクスポート、インポート、リセットする",
-            "exportData": "エクスポート",
-            "importData": "インポート",
-            "resetData": "リセット",
+            "replaySetup": "",
+            "dataManagement": "",
+            "dataManagementDescription": "",
+            "exportData": "",
+            "importData": "",
+            "resetData": "",
             "resetDataTitle": "",
             "resetDataConfirmation": "",
             "resetDataConfirm": "",
             "resetDataCancel": "",
-            "autoUpdate": "自動アップデート",
-            "autoUpdateDescription": "アプリアップデートを自動的にダウンロードしてインストールします",
-            "betaUpdates": "ベータアップデート",
-            "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
-            "languageUpdates": "言語パックのアップデート",
+            "autoUpdate": "",
+            "autoUpdateDescription": "",
+            "betaUpdates": "",
+            "betaUpdatesDescription": "",
+            "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": "プライバシー・ポリシー"
+            "privacyPolicy": ""
         }
     },
     "library": {
@@ -181,9 +181,9 @@
             "installDir": ""
         },
         "recentView": {
-            "today": "今日",
-            "thisWeek": "今週",
-            "thisMonth": "今月",
+            "today": "",
+            "thisWeek": "",
+            "thisMonth": "",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },
@@ -197,13 +197,12 @@
             "noCollections": "",
             "noCollectionsDescription": "",
             "noCollectionsCTA": "",
-            "gameCount_one": "",
-            "gameCount_other": "",
             "header": {
                 "name": "",
                 "gameCount": "",
                 "actions": ""
-            }
+            },
+            "gameCount_other": ""
         },
         "collectionView": {
             "noGamesInCollection": "",

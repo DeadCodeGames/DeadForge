@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "Pirate English",
-        "emoji": "🏴‍☠️"
+        "name": "",
+        "emoji": ""
     },
     "commaSeparator": "",
     "ampersandSeparator": "",
@@ -11,17 +11,18 @@
     "loading": "",
     "sidebar": {
         "home": "",
-        "library": "Logbook Hold",
+        "library": "",
         "arcade": "",
-        "store": "Market",
+        "store": "",
         "settings": "",
         "collapse": ""
     },
     "home": {
         "articles": {
-            "writtenBy_other": "",
             "publishedOn": "",
-            "lastEditedOn": ""
+            "lastEditedOn": "",
+            "writtenBy_one": "",
+            "writtenBy_other": ""
         }
     },
     "store": {
@@ -197,13 +198,13 @@
             "noCollections": "",
             "noCollectionsDescription": "",
             "noCollectionsCTA": "",
-            "gameCount_one": "",
-            "gameCount_other": "",
             "header": {
                 "name": "",
                 "gameCount": "",
                 "actions": ""
-            }
+            },
+            "gameCount_one": "",
+            "gameCount_other": ""
         },
         "collectionView": {
             "noGamesInCollection": "",

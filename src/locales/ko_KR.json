@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "한국어",
-        "emoji": "🇰🇷"
+        "name": "",
+        "emoji": ""
     },
     "commaSeparator": "",
     "ampersandSeparator": "",
@@ -19,9 +19,9 @@
     },
     "home": {
         "articles": {
-            "writtenBy_other": "",
             "publishedOn": "",
-            "lastEditedOn": ""
+            "lastEditedOn": "",
+            "writtenBy_other": ""
         }
     },
     "store": {
@@ -197,13 +197,12 @@
             "noCollections": "",
             "noCollectionsDescription": "",
             "noCollectionsCTA": "",
-            "gameCount_one": "",
-            "gameCount_other": "",
             "header": {
                 "name": "",
                 "gameCount": "",
                 "actions": ""
-            }
+            },
+            "gameCount_other": ""
         },
         "collectionView": {
             "noGamesInCollection": "",

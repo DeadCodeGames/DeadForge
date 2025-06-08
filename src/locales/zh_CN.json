@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "简体中文",
-        "emoji": "🇨🇳"
+        "name": "",
+        "emoji": ""
     },
     "commaSeparator": "",
     "ampersandSeparator": "",
@@ -11,24 +11,24 @@
     "loading": "",
     "sidebar": {
         "home": "",
-        "library": "图书馆",
+        "library": "",
         "arcade": "",
-        "store": "商店",
-        "settings": "设置",
-        "collapse": "折叠"
+        "store": "",
+        "settings": "",
+        "collapse": ""
     },
     "home": {
         "articles": {
-            "writtenBy_other": "",
             "publishedOn": "",
-            "lastEditedOn": ""
+            "lastEditedOn": "",
+            "writtenBy_other": ""
         }
     },
     "store": {
-        "urlCopied": "URL 已成功复制"
+        "urlCopied": ""
     },
     "tray": {
-        "exit": "退出<0>DEADFORGE</0>",
+        "exit": "",
         "arcade": ""
     },
     "settings": {
@@ -197,13 +197,12 @@
             "noCollections": "",
             "noCollectionsDescription": "",
             "noCollectionsCTA": "",
-            "gameCount_one": "",
-            "gameCount_other": "",
             "header": {
                 "name": "",
                 "gameCount": "",
                 "actions": ""
-            }
+            },
+            "gameCount_other": ""
         },
         "collectionView": {
             "noGamesInCollection": "",
