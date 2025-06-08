@@ -19,7 +19,7 @@
     },
     "home": {
         "articles": {
-            "writtenBy_other": "Written by <0></0>",
+            "writtenBy.other": "Written by <0></0>",
             "publishedOn": "Published on {{date}}",
             "lastEditedOn": "Last edited on {{date}}"
         }
@@ -194,8 +194,11 @@
         "collectionsView": {
             "description": "Organize your games into custom collections",
             "new": "New Collection",
-            "gameCount_one": "{{count}} Game",
-            "gameCount_other": "{{count}} Games",
+            "noCollections": "No collections yet",
+            "noCollectionsDescription": "Create your first collection to organize your games",
+            "noCollectionsCTA": "Create Collection",
+            "gameCount.one": "{{count}} Game",
+            "gameCount.other": "{{count}} Games",
             "header": {
                 "name": "Name",
                 "gameCount": "Game Count",

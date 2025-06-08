@@ -3,8 +3,8 @@
         "name": "日本語",
         "emoji": "🇯🇵"
     },
-    "commaSeparator": "",
-    "ampersandSeparator": "",
+    "commaSeparator": "、",
+    "ampersandSeparator": "と",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
@@ -19,9 +19,9 @@
     },
     "home": {
         "articles": {
-            "writtenBy_other": "",
-            "publishedOn": "",
-            "lastEditedOn": ""
+            "writtenBy.other": "",
+            "publishedOn": "{{date}}に公開",
+            "lastEditedOn": "{{date}}に最終更新"
         }
     },
     "store": {
@@ -86,7 +86,7 @@
             "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
             "languageUpdates": "言語パックのアップデート",
             "languageUpdatesDescription": "",
-            "privacyPolicy": ""
+            "privacyPolicy": "プライバシー・ポリシー"
         }
     },
     "library": {
@@ -181,9 +181,9 @@
             "installDir": ""
         },
         "recentView": {
-            "today": "",
-            "thisWeek": "",
-            "thisMonth": "",
+            "today": "今日",
+            "thisWeek": "今週",
+            "thisMonth": "今月",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },
@@ -194,8 +194,11 @@
         "collectionsView": {
             "description": "",
             "new": "",
-            "gameCount_one": "",
-            "gameCount_other": "",
+            "noCollections": "",
+            "noCollectionsDescription": "",
+            "noCollectionsCTA": "",
+            "gameCount.one": "",
+            "gameCount.other": "",
             "header": {
                 "name": "",
                 "gameCount": "",

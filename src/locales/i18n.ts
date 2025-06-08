@@ -39,7 +39,7 @@ i18n
         lng: 'en_001',
         fallbackLng: 'en_001',
         returnEmptyString: false,
-        pluralSeparator: "_",
+        pluralSeparator: ".",
         interpolation: {
             escapeValue: false
         },

@@ -19,7 +19,7 @@
     },
     "home": {
         "articles": {
-            "writtenBy_other": "",
+            "writtenBy.other": "",
             "publishedOn": "",
             "lastEditedOn": ""
         }
@@ -194,8 +194,11 @@
         "collectionsView": {
             "description": "",
             "new": "",
-            "gameCount_one": "",
-            "gameCount_other": "",
+            "noCollections": "",
+            "noCollectionsDescription": "",
+            "noCollectionsCTA": "",
+            "gameCount.one": "",
+            "gameCount.other": "",
             "header": {
                 "name": "",
                 "gameCount": "",
