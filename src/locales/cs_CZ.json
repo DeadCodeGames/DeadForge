@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "",
-        "emoji": ""
+        "name": "Čeština",
+        "emoji": "🇨🇿"
     },
     "commaSeparator": "",
     "ampersandSeparator": "",
@@ -10,12 +10,12 @@
     "viewAll": "",
     "loading": "",
     "sidebar": {
-        "home": "",
-        "library": "",
+        "home": "Domov",
+        "library": "Knihovna",
         "arcade": "",
-        "store": "",
-        "settings": "",
-        "collapse": ""
+        "store": "Obchod",
+        "settings": "Nastavení",
+        "collapse": "Sbalit"
     },
     "home": {
         "articles": {
@@ -28,68 +28,68 @@
         }
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "Adresa byla úspěšně zkopírovaná"
     },
     "tray": {
-        "exit": "",
+        "exit": "Ukončit <0>DEADFORGE</0>",
         "arcade": ""
     },
     "settings": {
         "theming": {
-            "title": "",
-            "theme": "",
-            "themeDescription": "",
-            "systemTheme": "",
-            "darkTheme": "",
-            "lightTheme": "",
-            "windowFrame": "",
-            "windowFrameDescription": "",
-            "windowFrameAuto": "",
+            "title": "Vzhled",
+            "theme": "Motiv",
+            "themeDescription": "Vyberte si mezi světlým, tmavým a automatickým (systémovým) motivem",
+            "systemTheme": "Dle systému",
+            "darkTheme": "Tmavý",
+            "lightTheme": "Světlý",
+            "windowFrame": "Záhlaví okna",
+            "windowFrameDescription": "Vyberte si záhlaví okna, které sedí vašemu operačnímu systému, nebo které vám vyhovuje",
+            "windowFrameAuto": "Auto (podle OS)",
             "windowFrameWindows": "",
             "windowFrameMac": "",
             "windowFrameLinux": "",
-            "currentPageTitleInFrame": "",
-            "currentPageTitleInFrameDescription": "",
-            "themeButtonInFrame": "",
-            "themeButtonInFrameDescription": "",
-            "language": "",
-            "languageDescription": "",
-            "languageShowIncomplete": "",
-            "languageShowIncompleteDescription": ""
+            "currentPageTitleInFrame": "Zobrazit aktuální název stránky v záhlaví okna",
+            "currentPageTitleInFrameDescription": "Zobrazovat aktuální název stránky v záhlaví okna",
+            "themeButtonInFrame": "Zobrazit přepínač motivů v záhlaví okna",
+            "themeButtonInFrameDescription": "Zvolte, zda zahrnout tlačítko přepínače motivů do hlavičky okna pro rychlý přístup\nLevým tlačítkem přepnete mezi tmavým a světlem, klikněte pravým tlačítkem myši pro přepnutí na automatický (systémový) motiv",
+            "language": "Jazyk",
+            "languageDescription": "Vyberte si váš preferovaný jazyk aplikace",
+            "languageShowIncomplete": "Zobrazovat neúplné překlady",
+            "languageShowIncompleteDescription": "Zobrazit překlady, které nejsou kompletné. Můžete nám pomoci s překladem DEADFORGE na našem <0>Crowdinu</0>."
         },
         "behavior": {
-            "title": "",
-            "defaultPage": "",
-            "defaultPageDescription": "",
-            "settingsWindow": "",
-            "settingsWindowDescription": "",
-            "useTray": "",
-            "useTrayDescription": "",
-            "autoStart": "",
-            "autoStartDescription": "",
-            "unavailableOnLinux": ""
+            "title": "Chování",
+            "defaultPage": "Výchozí stránka",
+            "defaultPageDescription": "Vyberte stránku, která se zobrazí při spuštění aplikace",
+            "settingsWindow": "Otevírat nastavení ve samostatném okně",
+            "settingsWindowDescription": "Otevírat nastavení ve samostatném okně namísto sekce ve hlavním okně",
+            "useTray": "Zobrazit v oblasti oznámení",
+            "useTrayDescription": "Ponechat aplikaci na pozadí po uzavření okna, skrytou v oblasti oznámení",
+            "autoStart": "Spustit při startu",
+            "autoStartDescription": "Spustit aplikaci automaticky po spustení počítače",
+            "unavailableOnLinux": "Toto nastavení není dostupné na Linuxových systémech"
         },
         "appData": {
-            "title": "",
-            "initialSetup": "",
-            "initialSetupDescription": "",
-            "replaySetup": "",
-            "dataManagement": "",
-            "dataManagementDescription": "",
-            "exportData": "",
-            "importData": "",
-            "resetData": "",
+            "title": "Data a aktualizace aplikace",
+            "initialSetup": "Prvotní nastavení",
+            "initialSetupDescription": "Restartovat počáteční sekvence nastavení, která se zobrazí při prvním spuštění",
+            "replaySetup": "Spustit prvotní nastavení",
+            "dataManagement": "Správa dat",
+            "dataManagementDescription": "Export, import a resetování všech dat aplikace",
+            "exportData": "Exportovat",
+            "importData": "Importovat",
+            "resetData": "Resetovat",
             "resetDataTitle": "",
             "resetDataConfirmation": "",
             "resetDataConfirm": "",
             "resetDataCancel": "",
-            "autoUpdate": "",
-            "autoUpdateDescription": "",
-            "betaUpdates": "",
-            "betaUpdatesDescription": "",
-            "languageUpdates": "",
-            "languageUpdatesDescription": "",
-            "privacyPolicy": ""
+            "autoUpdate": "Automatické aktualizace",
+            "autoUpdateDescription": "Automaticky stáhnout a nainštalovat aktualizace aplikace",
+            "betaUpdates": "Předběžné (Beta) aktualizace",
+            "betaUpdatesDescription": "Instalovat předběžné beta verzie s novými funkcemi dříve (vyžaduje Automatické aktualizace)",
+            "languageUpdates": "Aktualizace jazykových balíčků",
+            "languageUpdatesDescription": "Někdy se nám nepovede úplně přeložit aplikaci do všech jazyků prěd vydáním nové aktualizace\nMůžete se přihlásit na odběr těchto malých aktualizací, které obsahují jenom změny lokalizace (vyžaduje Automatické aktualizace)",
+            "privacyPolicy": "Zásady ochrany osobních údajů"
         }
     },
     "library": {
@@ -184,9 +184,9 @@
             "installDir": ""
         },
         "recentView": {
-            "today": "",
-            "thisWeek": "",
-            "thisMonth": "",
+            "today": "Dnes",
+            "thisWeek": "Tento Týden",
+            "thisMonth": "Tento Měsíc",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },

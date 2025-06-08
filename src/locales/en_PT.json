@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "",
-        "emoji": ""
+        "name": "Pirate English",
+        "emoji": "🏴‍☠️"
     },
     "commaSeparator": "",
     "ampersandSeparator": "",
@@ -11,9 +11,9 @@
     "loading": "",
     "sidebar": {
         "home": "",
-        "library": "",
+        "library": "Logbook Hold",
         "arcade": "",
-        "store": "",
+        "store": "Market",
         "settings": "",
         "collapse": ""
     },
