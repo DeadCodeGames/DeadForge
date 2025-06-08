@@ -8,7 +8,7 @@
   {
     "source": "src/locales/en_001.json",
     "translation": "src/locales/%locale_with_underscore%.json",
-    "type": i18next_json,
+    "type": "i18next_json",
     "scheme": nested
   }
 ]
