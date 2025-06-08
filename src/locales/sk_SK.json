@@ -3,6 +3,12 @@
         "name": "Slovenčina",
         "emoji": "🇸🇰"
     },
+    "commaSeparator": "",
+    "ampersandSeparator": "",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
     "sidebar": {
         "home": "",
         "library": "Knižnica",
@@ -10,6 +16,13 @@
         "store": "Obchod",
         "settings": "Nastavenia",
         "collapse": "Zbaliť"
+    },
+    "home": {
+        "articles": {
+            "writtenBy_other": "",
+            "publishedOn": "",
+            "lastEditedOn": ""
+        }
     },
     "store": {
         "urlCopied": "Adresa bola úspešne skopírovaná"
@@ -72,19 +85,39 @@
             "betaUpdates": "Predbežné (Beta) aktualizácie",
             "betaUpdatesDescription": "Inštalovať predbežné beta verzie s novými funkciami skôr (vyžaduje Automatické aktualizácie)",
             "languageUpdates": "Aktualizácie jazykových balíčkov",
-            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)"
+            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)",
+            "privacyPolicy": ""
         }
     },
     "library": {
+        "yourLibrary": "",
+        "yourLibraryDescription": "",
         "shared": {
             "collections": "",
-            "launch": "",
-            "launchLauncher": "",
-            "play": "",
+            "noCollections": "",
+            "collectionNamePlaceholder": "",
+            "createCollectionConfirm": "",
+            "createCollectionCancel": "",
+            "gameState": {
+                "launch": "",
+                "launchLauncher": "",
+                "play": "",
+                "stop": "",
+                "running": "",
+                "launching": "",
+                "stopping": ""
+            },
+            "favourites": "",
+            "favouritesDescription": "",
             "addFavourite": "",
             "removeFavourite": "",
-            "noCollections": "",
-            "createCollection": ""
+            "createCollection": "",
+            "recentlyPlayed": "",
+            "recentlyPlayedDescription": "",
+            "allGames": "",
+            "yourGames": "",
+            "allGamesDescription": "",
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
             "homeButton": "",
@@ -111,7 +144,70 @@
                     "asc": "",
                     "desc": ""
                 }
+            },
+            "empty": {
+                "emptyLibrary": "",
+                "emptyAfterFilters": ""
+            },
+            "wtflolhow": "",
+            "recent": "",
+            "neverPlayed": "",
+            "uncategorized": ""
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "",
+                "expand": "",
+                "rename": "",
+                "delete": "",
+                "clearFavorites": ""
+            },
+            "games": {
+                "viewDetails": ""
             }
+        },
+        "homeView": {
+            "noGamesFound": "",
+            "noGamesFoundDescription": "",
+            "connect": ""
+        },
+        "gameView": {
+            "loading": "",
+            "checkStatus": "",
+            "checkStatusDescription": "",
+            "gameNotes": "",
+            "gameNotesTooltip": "",
+            "noGameNotes": "",
+            "installDir": ""
+        },
+        "recentView": {
+            "today": "",
+            "thisWeek": "",
+            "thisMonth": "",
+            "noRecentGames": "",
+            "noRecentGamesDescription": ""
+        },
+        "favouritesView": {
+            "noFavourites": "",
+            "noFavouritesDescription": ""
+        },
+        "collectionsView": {
+            "description": "",
+            "new": "",
+            "gameCount_one": "",
+            "gameCount_other": "",
+            "header": {
+                "name": "",
+                "gameCount": "",
+                "actions": ""
+            }
+        },
+        "collectionView": {
+            "noGamesInCollection": "",
+            "noGamesInCollectionDescription": "",
+            "collectionNotFound": "",
+            "collectionNotFoundDescription": "",
+            "collectionNotFoundCTA": ""
         }
     }
 }

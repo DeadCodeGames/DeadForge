@@ -3,6 +3,12 @@
         "name": "English (International)",
         "emoji": "🇬🇧"
     },
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
+    "showLess": "Show Less",
+    "showMore": "Show More",
+    "viewAll": "View All",
+    "loading": "Loading",
     "sidebar": {
         "home": "Home",
         "library": "Library",
@@ -10,6 +16,13 @@
         "store": "Store",
         "settings": "Settings",
         "collapse": "Collapse"
+    },
+    "home": {
+        "articles": {
+            "writtenBy_other": "Written by <0></0>",
+            "publishedOn": "Published on {{date}}",
+            "lastEditedOn": "Last edited on {{date}}"
+        }
     },
     "store": {
         "urlCopied": "URL has been successfully copied"
@@ -72,19 +85,39 @@
             "betaUpdates": "Beta Updates",
             "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires Automatic Updates)",
             "languageUpdates": "Language Pack Updates",
-            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receiving these small updates, containing only localization changes (requires Automatic Updates)"
+            "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receiving these small updates, containing only localization changes (requires Automatic Updates)",
+            "privacyPolicy": "Privacy Policy"
         }
     },
     "library": {
+        "yourLibrary": "Your Library",
+        "yourLibraryDescription": "Manage and explore your game collection",
         "shared": {
             "collections": "Collections",
-            "launch": "Launch",
-            "launchLauncher": "Launch {{launcher}}",
-            "play": "Play",
+            "noCollections": "No collections found",
+            "collectionNamePlaceholder": "Collection name",
+            "createCollectionConfirm": "Create",
+            "createCollectionCancel": "Cancel",
+            "gameState": {
+                "launch": "Launch",
+                "launchLauncher": "Launch {{launcher}}",
+                "play": "Play",
+                "stop": "Stop",
+                "running": "Running",
+                "launching": "Launching...",
+                "stopping": "Stopping..."
+            },
+            "favourites": "Favourites",
+            "favouritesDescription": "Your most loved games",
             "addFavourite": "Add to Favourites",
             "removeFavourite": "Remove from Favourites",
-            "noCollections": "No collections found",
-            "createCollection": "Create New Collection"
+            "createCollection": "Create New Collection",
+            "recentlyPlayed": "Recently Played",
+            "recentlyPlayedDescription": "Jump back into your recent adventures",
+            "allGames": "All Games",
+            "yourGames": "Your Games",
+            "allGamesDescription": "Browse your complete collection",
+            "allGamesDescriptionAlternate": "Your complete game library"
         },
         "sidebar": {
             "homeButton": "Home",
@@ -111,7 +144,70 @@
                     "asc": "Ascending",
                     "desc": "Descending"
                 }
+            },
+            "empty": {
+                "emptyLibrary": "No games found in the library.",
+                "emptyAfterFilters": "No games match your filters."
+            },
+            "wtflolhow": "what the actual fuck how lol",
+            "recent": "Recent",
+            "neverPlayed": "Never Played",
+            "uncategorized": "Uncategorized"
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "Collapse",
+                "expand": "Expand",
+                "rename": "Rename Collection",
+                "delete": "Delete Collection",
+                "clearFavorites": "Clear Favorites"
+            },
+            "games": {
+                "viewDetails": "View Details"
             }
+        },
+        "homeView": {
+            "noGamesFound": "No games found",
+            "noGamesFoundDescription": "Your game library is waiting to be filled! Connect your gaming platforms to get started.",
+            "connect": "Connect Platforms"
+        },
+        "gameView": {
+            "loading": "Loading game...",
+            "checkStatus": "Check Status",
+            "checkStatusDescription": "Check if the game process is running already",
+            "gameNotes": "Game Notes",
+            "gameNotesTooltip": "Game notes are maintained by the <1>DeadForge</1> developers and community.\nYou can contribute to them, as well as curated <3>DeadForge</3> Assets for external software, and other cool stuff on <5>the GitHub page of DeadCodeGames/DeadForgeExternalData</5>.",
+            "noGameNotes": "No notes available for this game.",
+            "installDir": "Installation Directory"
+        },
+        "recentView": {
+            "today": "Today",
+            "thisWeek": "This Week",
+            "thisMonth": "This Month",
+            "noRecentGames": "No recent games",
+            "noRecentGamesDescription": "Games you play will appear here"
+        },
+        "favouritesView": {
+            "noFavourites": "No favourites yet",
+            "noFavouritesDescription": "Add games to your favourites to see them here"
+        },
+        "collectionsView": {
+            "description": "Organize your games into custom collections",
+            "new": "New Collection",
+            "gameCount_one": "{{count}} Game",
+            "gameCount_other": "{{count}} Games",
+            "header": {
+                "name": "Name",
+                "gameCount": "Game Count",
+                "actions": "Actions"
+            }
+        },
+        "collectionView": {
+            "noGamesInCollection": "No games in this collection",
+            "noGamesInCollectionDescription": "Add games to this collection from your library or individual game pages.",
+            "collectionNotFound": "Collection not found",
+            "collectionNotFoundDescription": "The collection you're looking for doesn't exist.",
+            "collectionNotFoundCTA": "Back to Collections"
         }
     }
 }

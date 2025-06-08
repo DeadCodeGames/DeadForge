@@ -3,6 +3,12 @@
         "name": "Français",
         "emoji": "🇫🇷"
     },
+    "commaSeparator": "",
+    "ampersandSeparator": "",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
     "sidebar": {
         "home": "",
         "library": "Bibliothèque",
@@ -10,6 +16,13 @@
         "store": "Magasin",
         "settings": "Paramètres",
         "collapse": "Réduire"
+    },
+    "home": {
+        "articles": {
+            "writtenBy_other": "",
+            "publishedOn": "",
+            "lastEditedOn": ""
+        }
     },
     "store": {
         "urlCopied": "L'URL a été copiée avec succès"
@@ -72,19 +85,39 @@
             "betaUpdates": "",
             "betaUpdatesDescription": "",
             "languageUpdates": "",
-            "languageUpdatesDescription": ""
+            "languageUpdatesDescription": "",
+            "privacyPolicy": ""
         }
     },
     "library": {
+        "yourLibrary": "",
+        "yourLibraryDescription": "",
         "shared": {
             "collections": "",
-            "launch": "",
-            "launchLauncher": "",
-            "play": "",
+            "noCollections": "",
+            "collectionNamePlaceholder": "",
+            "createCollectionConfirm": "",
+            "createCollectionCancel": "",
+            "gameState": {
+                "launch": "",
+                "launchLauncher": "",
+                "play": "",
+                "stop": "",
+                "running": "",
+                "launching": "",
+                "stopping": ""
+            },
+            "favourites": "",
+            "favouritesDescription": "",
             "addFavourite": "",
             "removeFavourite": "",
-            "noCollections": "",
-            "createCollection": ""
+            "createCollection": "",
+            "recentlyPlayed": "",
+            "recentlyPlayedDescription": "",
+            "allGames": "",
+            "yourGames": "",
+            "allGamesDescription": "",
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
             "homeButton": "",
@@ -111,7 +144,70 @@
                     "asc": "",
                     "desc": ""
                 }
+            },
+            "empty": {
+                "emptyLibrary": "",
+                "emptyAfterFilters": ""
+            },
+            "wtflolhow": "",
+            "recent": "",
+            "neverPlayed": "",
+            "uncategorized": ""
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "",
+                "expand": "",
+                "rename": "",
+                "delete": "",
+                "clearFavorites": ""
+            },
+            "games": {
+                "viewDetails": ""
             }
+        },
+        "homeView": {
+            "noGamesFound": "",
+            "noGamesFoundDescription": "",
+            "connect": ""
+        },
+        "gameView": {
+            "loading": "",
+            "checkStatus": "",
+            "checkStatusDescription": "",
+            "gameNotes": "",
+            "gameNotesTooltip": "",
+            "noGameNotes": "",
+            "installDir": ""
+        },
+        "recentView": {
+            "today": "",
+            "thisWeek": "",
+            "thisMonth": "",
+            "noRecentGames": "",
+            "noRecentGamesDescription": ""
+        },
+        "favouritesView": {
+            "noFavourites": "",
+            "noFavouritesDescription": ""
+        },
+        "collectionsView": {
+            "description": "",
+            "new": "",
+            "gameCount_one": "",
+            "gameCount_other": "",
+            "header": {
+                "name": "",
+                "gameCount": "",
+                "actions": ""
+            }
+        },
+        "collectionView": {
+            "noGamesInCollection": "",
+            "noGamesInCollectionDescription": "",
+            "collectionNotFound": "",
+            "collectionNotFoundDescription": "",
+            "collectionNotFoundCTA": ""
         }
     }
 }
