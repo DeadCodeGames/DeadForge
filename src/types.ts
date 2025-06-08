@@ -8,6 +8,7 @@ declare global {
             isNotificationsWindow: boolean;
             storePreload: string;
             onTrayGetContentsHeight: (callback: (event: IpcRendererEvent) => void) => void;
+            sendTrayResize: (width: number, height: number) => void;
             sendTrayChoice: (choice: string | object) => void;
             sendNotificationChoice: (choice: string | object) => void;
             onTrayNavigate: (callback: (event: IpcRendererEvent, location: string) => void) => void;
@@ -48,7 +49,9 @@ declare global {
             onGameProcessTerminated: (callback: (event: IpcRendererEvent, source: string, gameId: string) => void) => void,
             removeGameProcessTerminatedListener: (callback: (event: IpcRendererEvent, source: string, gameId: string) => void) => void,
             launchGame: (client: string, gameId: string | number, executable: string, args: string | string[]) => Promise<{success: boolean, error?: string}>,
-            stopGame: (client: string, gameId: string | number) => Promise<{success: boolean, error?: string}>,
+            stopGame: (client: string, gameId: string | number) => Promise<{ success: boolean, error?: string }>,
+            onTrayGameLaunch: (callback: (event: IpcRendererEvent, source: string, gameId: string, executable: string, args: string | string[]) => void) => void,
+            onTrayGameStop: (callback: (event: IpcRendererEvent, source: string, gameId: string) => void) => void,
             checkRunningGames: (gameChecks: Array<{source: string, id: string}>) => Promise<Record<string, boolean>>,
             fetchCollections: () => Promise<{favourites: CollectionGame[], collections: Collection[]}>,
             sendCollections: (favourites: CollectionGame[], collections: Collection[]) => void,
@@ -291,6 +294,7 @@ export interface Article {
     title: string;
     authors: ArticleAuthor[];
     bannerImage: string;
+    assetsMap: Record<string, string>;
     content: string;
     publishDate: string;
     lastModified: string;

@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { OldPreferences, Preferences } from './preferences';
 import { SteamGameObject } from './steamTypes';
-import { Collection, CollectionGame, NormalizedDLC, NormalizedGame, NormalizedGameJoin, ArticleList, Article } from './types';
+import { Collection, CollectionGame, NormalizedDLC, NormalizedGame, NormalizedGameJoin } from './types';
 const path = require('path');
 const { pathToFileURL } = require('url');
 
@@ -55,6 +55,11 @@ contextBridge.exposeInMainWorld('Electron', {
     stopGame: (client: string, gameId: string | number): Promise<{success: boolean, error?: string}> =>
         ipcRenderer.invoke('game:stop', client, gameId),
 
+    // eslint-disable-next-line no-unused-vars
+    onTrayGameLaunch: (callback: (event: any, source: string, gameId: string, executable: string, args: string | string[]) => void) => ipcRenderer.on('game:trayLaunch', callback),
+    // eslint-disable-next-line no-unused-vars
+    onTrayGameStop: (callback: (event: any, source: string, gameId: string) => void) => ipcRenderer.on('game:trayStop', callback),  
+
     // Check which games are currently running
     checkRunningGames: (gameChecks: Array<{source: string, id: string}>): Promise<Record<string, boolean>> =>
         ipcRenderer.invoke('games:checkRunning', gameChecks),
@@ -97,6 +102,7 @@ contextBridge.exposeInMainWorld('Electron', {
                     remoteUrl: string;
                 };
             }>;
+            assetsMap: Record<string, string>;
             bannerImage: {
                 filePath: string;
                 remoteUrl: string;
@@ -118,6 +124,7 @@ contextBridge.exposeInMainWorld('Electron', {
                     link: author.link,
                     profilePicture: author.profilePicture.filePath
                 })),
+                assetsMap: article.assetsMap,
                 bannerImage: article.bannerImage.filePath,
                 content: article.content,
                 publishDate: article.publishDate,

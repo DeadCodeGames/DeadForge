@@ -540,8 +540,6 @@ export function updateGamePlaytime(client: string, gameId: string | number, addi
         lastPlayed: Math.floor(Date.now() / 1000),
         totalPlayedFor: updatedPlaytime
     };
-
-    console.log(metrics, currentPlaytime, updatedPlaytime);
     
     insertRow(db, "metrics", metricsData, "replace");
     

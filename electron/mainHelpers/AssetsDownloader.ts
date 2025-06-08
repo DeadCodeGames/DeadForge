@@ -225,7 +225,7 @@ export async function DownloadCuratedAssets(...targets: { source: string, id: st
                 const hashesData: Record<string, string> = {};
 
                 // Check if we have a single entry
-                const isSingleEntry = remoteEntries.length === 1;
+                const isSingleEntry = remoteEntries.length === 1 && remoteEntries[0][0] === "";
 
                 // Download files and update paths
                 for (const [locale, remoteUrl] of remoteEntries) {

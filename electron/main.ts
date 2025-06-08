@@ -1,5 +1,5 @@
 import path from 'path'; /* import url from 'url'; */ import fs from 'fs'; import { spawn, ChildProcess, exec } from 'child_process';
-import { app, BrowserWindow, dialog, Extension, ipcMain, nativeTheme, Tray, protocol } from 'electron';
+import { app, BrowserWindow, dialog, Extension, ipcMain, nativeTheme, shell, Tray, protocol } from 'electron';
 import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-installer';
 import { Preferences, OldPreferences, defaultPreferences } from './preferences';
 import * as SteamStuff from './mainHelpers/SteamStuff'; import * as EpicStuff from './mainHelpers/EpicStuff'; import * as ItchStuff from './mainHelpers/ItchStuff';
@@ -20,7 +20,7 @@ if (!app.isPackaged) {
 }
 
 if (process.argv.find((s) => s === "resetCleanup")) {
-    fs.rmSync(path.join(app.getPath('userData'), 'db.sqlite'), { force: true });
+    fs.rmSync(path.join(app.getPath('userData'), 'db', 'user.sqlite3'), { force: true });
     fs.rmSync(path.join(app.getPath('userData'), 'preferences.json'), { force: true });
     fs.rmSync(path.join(app.getPath('userData'), 'collections.json'), { force: true });
     app.relaunch({ args: [...process.argv.slice(1).filter((s) => s !== "resetCleanup")] });
@@ -192,7 +192,7 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             contextIsolation: true,
-            devTools: app.isPackaged ? true : true,
+            devTools: app.isPackaged ? false : true,
             webviewTag: true,
             additionalArguments: [`--isPackaged=${app.isPackaged}`, `--deadforgeVersion=${require('../package.json').version}`]
         }
@@ -205,7 +205,7 @@ const createWindow = () => {
     mainWindow.on('closed', () => {
         mainWindow = null;
     });
-    mainWindow.webContents.openDevTools();
+
     mainWindow.webContents.on("did-navigate", () => { 
         if (!initialLoad) { 
             app.relaunch(); 
@@ -216,8 +216,9 @@ const createWindow = () => {
     });
 
     mainWindow!.webContents.setWindowOpenHandler(({ url }) => {
-        require('electron').shell.openExternal(url);
-        return { action: 'deny' };
+        console.log("window open handler", url)
+        shell.openExternal(`https://deadcode.is-a.dev/DeadForgeRedirect?url=${encodeURIComponent(url)}`);
+        return { action: 'deny' as const };
     });
 };
 
@@ -440,8 +441,9 @@ const createTrayWindow = () => {
         ? `file://${path.join(__dirname, "../build/index.html")}#/tray`
         : "http://localhost:3000#/tray";
 
-    trayWindow.loadURL(trayURL);
     trayWindow.webContents.openDevTools();
+
+    setTimeout(() => trayWindow!.loadURL(trayURL), 1000);
 
     trayWindow.on('blur', () => trayWindow?.hide());
     trayWindow.on('closed', () => (trayWindow = null));
@@ -451,6 +453,16 @@ const createTrayWindow = () => {
     } | {
         type: 'navigate',
         destination: string
+    } | {
+        type: 'launch',
+        source: string,
+        gameId: string,
+        executable: string,
+        arguments: string | string[]
+    } | {
+        type: 'stop',
+        source: string,
+        gameId: string
     }
 
     ipcMain.on("tray:choice", (event: Electron.IpcMainEvent, choice: trayChoice) => {
@@ -461,7 +473,17 @@ const createTrayWindow = () => {
             mainWindow?.show();
             mainWindow?.focus();
         }
+        else if (choice.type === 'launch') {
+            mainWindow?.webContents.send("game:trayLaunch", choice.source, choice.gameId, choice.executable, choice.arguments);
+        }
+        else if (choice.type === 'stop') {
+            mainWindow?.webContents.send("game:trayStop", choice.source, choice.gameId);
+        }
     })
+
+    ipcMain.on("tray:resize", (event: Electron.IpcMainEvent, width: number, height: number) => {
+        trayWindow?.setBounds({ width, height });
+    });
 };
 
 /* <------------------------- Settings ------------------------------> */
@@ -939,7 +961,7 @@ ipcMain.handle('game:stop', async (_, client: string, gameId: string | number) =
 /**
  * Checks if a process with the given executable name is running
  */
-async function isProcessRunning(executablePath: string): Promise<boolean> {
+/* async function isProcessRunning(executablePath: string): Promise<boolean> {
     const executableName = path.basename(executablePath);
 
     return new Promise((resolve, reject) => {
@@ -995,49 +1017,51 @@ async function isProcessRunning(executablePath: string): Promise<boolean> {
             });
         }
     });
-}
+} */
 
 /**
  * Checks which games from the provided list are currently running
  */
 ipcMain.handle('games:checkRunning', async (_, gameChecks: Array<{ source: string, id: string }>) => {
     const games = getAllGamesFromDB();
+    const processKeys = gameChecks.map(game => `${game.source}-${game.id}`);
+    const tracked = new Set(processKeys.filter(key => gameProcesses.has(key)));
 
-    // Create an array of promises for each game check
-    const checks = gameChecks.map(async (game) => {
+    // For untracked, collect all executable paths
+    const toCheck: { key: string, executable: string }[] = [];
+    for (const game of gameChecks) {
         const key = `${game.source}|${game.id}`;
         const processKey = `${game.source}-${game.id}`;
-
-        // First check our internal tracking
-        if (gameProcesses.has(processKey)) {
-            console.log(`Game ${game.id} from ${game.source} is running`);
-            return [key, true];
-        }
-
-        // If not in our tracking, check if the process is actually running
+        if (tracked.has(processKey)) continue;
         const gameData = games.find(g => g.source === game.source && String(g.id) === String(game.id));
-
-        if (gameData?.launchOptions && gameData.launchOptions.length > 0) {
+        if (gameData?.launchOptions) {
             try {
                 const launchOptions = JSON.parse(gameData.launchOptions as any as string);
                 if (launchOptions[0]?.executable) {
-                    const isRunning = await isProcessRunning(launchOptions[0].executable);
-                    if (isRunning) console.log(`Game ${game.id} from ${game.source} is running`);
-                    return [key, isRunning];
+                    toCheck.push({ key, executable: launchOptions[0].executable });
                 }
-            } catch (error) {
-                console.error('Error parsing launch options:', error);
-            }
+            } catch { }
         }
-        console.log(`Game ${game.id} from ${game.source} is not running`);
-        return [key, false];
-    });
+    }
 
-    // Run all checks in parallel
-    const results = await Promise.all(checks);
+    let running: Record<string, boolean> = {};
+    if (process.platform === 'win32' && toCheck.length > 0) {
+        running = await areProcessesRunningWindows(toCheck.map(x => x.executable));
+    }
 
-    // Convert results array to object
-    return Object.fromEntries(results);
+    // Build result
+    const result: Record<string, boolean> = {};
+    for (const game of gameChecks) {
+        const key = `${game.source}|${game.id}`;
+        const processKey = `${game.source}-${game.id}`;
+        if (tracked.has(processKey)) {
+            result[key] = true;
+        } else {
+            const check = toCheck.find(x => x.key === key);
+            result[key] = check ? running[check.executable] : false;
+        }
+    }
+    return result;
 });
 
 export function notifyGamesUpdate() {
@@ -1281,3 +1305,37 @@ ipcMain.handle('articles:update', async () => {
 ipcMain.handle('articles:get', () => {
     return getArticles();
 });
+
+async function areProcessesRunningWindows(targetPaths: string[]): Promise<Record<string, boolean>> {
+    return new Promise((resolve) => {
+        // PowerShell command to get all running processes with their executable paths
+        const ps = spawn('powershell.exe', [
+            '-NoProfile', '-Command',
+            'Get-CimInstance Win32_Process | Select-Object -Property ProcessId,ExecutablePath | ConvertTo-Json'
+        ]);
+
+        let stdout = '';
+        ps.stdout.on('data', (data) => { stdout += data.toString(); });
+
+        ps.on('close', () => {
+            let processes: { ProcessId: number, ExecutablePath: string }[] = [];
+            try {
+                processes = JSON.parse(stdout);
+            } catch {
+                resolve(Object.fromEntries(targetPaths.map(p => [p, false])));
+                return;
+            }
+            // Normalize paths for comparison
+            const runningPaths = new Set(
+                processes
+                    .filter(p => p.ExecutablePath)
+                    .map(p => p.ExecutablePath.toLowerCase())
+            );
+            const result: Record<string, boolean> = {};
+            for (const path of targetPaths) {
+                result[path] = runningPaths.has(path.toLowerCase());
+            }
+            resolve(result);
+        });
+    });
+}

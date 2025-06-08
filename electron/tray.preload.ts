@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('Electron', {
         });
     },
     sendTrayChoice: (choice: string | object) => ipcRenderer.send('tray:choice', choice),
+    sendTrayResize: (width: number, height: number) => ipcRenderer.send('tray:resize', width, height),
     getPreferences: (): Promise<object | ""> => ipcRenderer.invoke('preferences:get'),
     // eslint-disable-next-line no-unused-vars
     onPreferencesUpdate: (callback: (newPrefs: object) => void) => ipcRenderer.on('preferences:update', callback),

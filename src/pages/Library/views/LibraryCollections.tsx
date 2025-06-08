@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { LibraryContext } from "../Library"
 import type { Collection } from "@/types"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 type SortField = "name" | "gameCount" | "dateCreated"
 type SortDirection = "asc" | "desc"
@@ -16,7 +17,8 @@ const LibraryCollections: React.FC = () => {
     const [sortField, setSortField] = useState<SortField>("name")
     const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
     const [editingId, setEditingId] = useState<string | null>(null)
-    const [editingName, setEditingName] = useState("")
+    const [editingName, setEditingName] = useState("");
+    const { t } = useTranslation()
 
     const handleCreateCollection = () => {
         if (newCollectionName.trim() === "") return
@@ -83,7 +85,7 @@ const LibraryCollections: React.FC = () => {
     const allCollections = useMemo(() => {
         const favoritesCollection = {
             id: "favorites",
-            name: "Favourites",
+            name: t('library.shared.favourites'),
             games: favourites,
             isFavorites: true
         }
@@ -183,7 +185,7 @@ const LibraryCollections: React.FC = () => {
             </div>
 
             <div className="flex items-center">
-                <span className="text-neutral-600 dark:text-neutral-400">{collection.games.length} {collection.games.length === 1 ? "Game" : "Games"}</span>
+                <span className="text-neutral-600 dark:text-neutral-400">{t('library.collectionsView.gameCount', {count: collection.games.length})}</span>
             </div>
 
             <div className="flex items-center justify-start gap-1">
@@ -254,8 +256,8 @@ const LibraryCollections: React.FC = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">Collections</h1>
-                        <p className="text-neutral-600 dark:text-neutral-400">Organize your games into custom collections</p>
+                        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">{t('library.shared.collections')}</h1>
+                        <p className="text-neutral-600 dark:text-neutral-400">{t('library.collectionsView.description')}</p>
                     </div>
 
                     <button
@@ -263,21 +265,21 @@ const LibraryCollections: React.FC = () => {
                         className="flex items-center gap-2 px-4 py-2 bg-progress/80 hover:bg-progress/100 text-white rounded-lg transition-colors text-sm font-medium"
                     >
                         <span className="material-symbols text-2xl w-fit h-fit">add</span>
-                        New Collection
+                        {t('library.collectionsView.new')}
                     </button>
                 </div>
 
                 {/* Create new collection form */}
                 {isCreating && (
                     <div className="mb-6 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700">
-                        <h3 className="text-2xl font-medium mb-3 text-neutral-900 dark:text-neutral-100">Create New Collection</h3>
+                        <h3 className="text-2xl font-medium mb-3 text-neutral-900 dark:text-neutral-100">{t('library.shared.createCollection')}</h3>
                         <div className="flex gap-2">
                             <input
                                 type="text"
                                 value={newCollectionName}
                                 onChange={(e) => setNewCollectionName(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Collection name"
+                                placeholder={t('library.shared.collectionNamePlaceholder')}
                                 className="flex-1 px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-600 rounded-md outline-none focus:ring-2 focus:ring-progress focus:border-transparent text-sm"
                                 maxLength={32}
                                 autoFocus
@@ -293,7 +295,7 @@ const LibraryCollections: React.FC = () => {
                                 )}
                             >
                                 <span className="material-symbols text-2xl w-fit h-fit">check</span>
-                                Create
+                                {t('library.shared.createCollectionConfirm')}
                             </button>
                             <button
                                 onClick={() => {
@@ -303,7 +305,7 @@ const LibraryCollections: React.FC = () => {
                                 className="px-3 py-2 bg-neutral-300 dark:bg-neutral-600 hover:bg-neutral-400 dark:hover:bg-neutral-500 text-neutral-700 dark:text-neutral-300 rounded-md transition-colors flex items-center gap-1.5 text-sm font-medium"
                             >
                                 <span className="material-symbols text-2xl w-fit h-fit">close</span>
-                                Cancel
+                                {t('library.shared.createCollectionCancel')}
                             </button>
                         </div>
                     </div>
@@ -317,16 +319,18 @@ const LibraryCollections: React.FC = () => {
                             <div />
                             <div className="flex items-center">
                                 <SortButton field="name">
-                                    Name
+                                    {t('library.collectionsView.header.name')}
                                 </SortButton>
                             </div>
                             <div className="flex items-center">
                                 <SortButton field="gameCount">
-                                    Game Count
+                                    {t('library.collectionsView.header.gameCount')}
                                 </SortButton>
                             </div>
                             <div>
-                                <span className="font-semibold text-neutral-500 dark:text-neutral-400">Actions</span>
+                                <span className="font-semibold text-neutral-500 dark:text-neutral-400">
+                                    {t('library.collectionsView.header.actions')}
+                                </span>
                             </div>
                         </div>
 
@@ -342,14 +346,14 @@ const LibraryCollections: React.FC = () => {
                         <div className="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-4">
                             <span className="material-symbols text-2xl w-8 h-8 text-neutral-400">folder</span>
                         </div>
-                        <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">No collections yet</h3>
-                        <p className="text-neutral-600 dark:text-neutral-400 mb-4">Create your first collection to organize your games</p>
+                        <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">{t('library.collectionsView.noCollections')}</h3>
+                        <p className="text-neutral-600 dark:text-neutral-400 mb-4">{t('library.collectionsView.noCollectionsDescription')}</p>
                         <button
                             onClick={() => setIsCreating(true)}
                             className="flex items-center gap-2 px-4 py-2 bg-progress/80 hover:bg-progress/100 text-white rounded-lg transition-colors text-sm font-medium"
                         >
                             <span className="material-symbols text-2xl w-fit h-fit">add</span>
-                            Create Collection
+                            {t('library.collectionsView.noCollectionsCTA')}
                         </button>
                     </div>
                 )}

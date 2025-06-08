@@ -7,6 +7,7 @@ import ContextMenu, { MenuItemType, MenuItem } from "@/components/CustomElements
 import { cn } from "@/lib/utils"
 import { SiSteam, SiEpicgames } from '@icons-pack/react-simple-icons'
 import { LibraryContext } from "@/pages/Library/Library"
+import { useTranslation } from "react-i18next";
 
 // Extend the MenuItem type to include our custom properties
 interface MenuItemWithPrefix extends Omit<MenuItem, 'type'> {
@@ -40,14 +41,14 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     setFavourites,
     gameStates,
     setGameState,
-    games,
+    games
 }) => {
     const [newCollectionName, setNewCollectionName] = useState("")
     const [isCreatingCollection, setIsCreatingCollection] = useState(false)
     const newCollectionInputRef = useRef<HTMLInputElement>(null)
     const navigate = useNavigate()
     const { customAssets, curatedAssets } = useContext(LibraryContext)
-
+    const { t } = useTranslation();
     // Focus input when creating a collection
     useEffect(() => {
         if (isCreatingCollection && newCollectionInputRef.current) {
@@ -118,13 +119,28 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
 
     // Handle saving a new collection
     const handleSaveNewCollection = () => {
+        const gameId = getGameIdAsString()
+        const gameSource = typeof game.source === "object" ? "join" : game.source
+
         if (newCollectionName.trim() === "") {
             setIsCreatingCollection(false);
             return;
+        } else if (newCollectionName.trim().toLowerCase() === "favourites") {
+            setIsCreatingCollection(false);
+            setFavourites((prev) => [...prev.filter((fav) => fav.id !== gameId || fav.source !== gameSource), { id: gameId, source: gameSource }]);
+            setNewCollectionName("");
+            onClose();
+            return;
+        } else if (newCollectionName.trim().toLowerCase() === "uncategorized") {
+            setIsCreatingCollection(false);
+            setCollections((prev) => prev.map((collection) => ({
+                ...collection,
+                games: collection.games.filter((g) => !(g.id === gameId && g.source === gameSource))
+            })));
+            setNewCollectionName("");
+            onClose();
+            return;
         }
-
-        const gameId = getGameIdAsString()
-        const gameSource = typeof game.source === "object" ? "join" : game.source
 
         const newCollection: Collection = {
             id: Date.now().toString(),
@@ -299,7 +315,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             }))
             : [{
                 id: "no-collections",
-                label: "No collections found",
+                label: t("library.shared.noCollections"),
                 className: "px-4 py-2 text-white/50 italic cursor-default",
                 disabled: true
             }];
@@ -323,12 +339,12 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                                 value={newCollectionName}
                                 onChange={(e) => setNewCollectionName(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Collection name"
+                                placeholder={t("library.shared.collectionNamePlaceholder")}
                                 className="w-[calc(100%-1.5rem)] bg-white/10 px-3 py-1.5 outline-none rounded ring-0"
                                 maxLength={32}
                                 autoFocus
                             />
-                            <div className="flex flex-row gap-2 mt-2 w-full">
+                            <div className="flex flex-row gap-2 flex-wrap mt-2 w-full">
                                 <button
                                     onClick={handleSaveNewCollection}
                                     disabled={!newCollectionName.trim()}
@@ -340,7 +356,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                                     type="submit"
                                 >
                                     <span className="material-symbols text-base">check</span>
-                                    Create
+                                    {t("library.shared.createCollectionConfirm")}
                                 </button>
                                 <button
                                     onClick={handleCancelNewCollection}
@@ -348,7 +364,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                                     type="button"
                                 >
                                     <span className="material-symbols text-base">close</span>
-                                    Cancel
+                                    {t("library.shared.createCollectionCancel")}
                                 </button>
                             </div>
                         </form>
@@ -358,7 +374,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             : {
                 id: "create-collection",
                 icon: "add",
-                label: "Create New Collection",
+                label: t("library.shared.createCollection"),
                 onClick: () => setIsCreatingCollection(true),
                 keepOpen: true
             };
@@ -426,19 +442,16 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                 hover: 'stop_circle'
             } : getStateIcon(currentState),
             label: isRunning ? {
-                default: 'Running',
-                hover: 'Stop'
+                default: t("library.shared.gameState.running"),
+                hover: t("library.shared.gameState.stop")
             } : (() => {
                 const gameId = getGameIdAsString();
-                if (String(gameId) === '-1') {
-                    return `Launch ${getLauncherName(game)}`;
+                if (String(gameId) === '-1' || (needsLauncher && !isLauncherRunning)) {
+                    return t("library.shared.gameState.launchLauncher", { launcher: getLauncherName(game) });
                 }
-                if (needsLauncher && !isLauncherRunning) {
-                    return `Launch ${getLauncherName(game)}`;
-                }
-                if (isLaunching) return 'Launching...';
-                if (isStopping) return 'Stopping...';
-                return ['Tool', 'Application'].includes(gameType || '') ? 'Launch' : 'Play';
+                if (isLaunching) return t("library.shared.gameState.launching");
+                if (isStopping) return t("library.shared.gameState.stopping");
+                return ['Tool', 'Application'].includes(gameType || '') ? t("library.shared.gameState.launch") : t("library.shared.gameState.play");
             })(),
             onClick: async () => {
                 if (isRunning) {
@@ -476,7 +489,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         {
             id: "view",
             icon: "visibility",
-            label: "View Details",
+            label: t("library.contextMenu.games.viewDetails"),
             onClick: viewGame
         },
         // Divider
@@ -488,14 +501,14 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         {
             id: "favorite",
             icon: isGameInFavorites() ? "heart_broken" : "favorite",
-            label: isGameInFavorites() ? "Remove from Favorites" : "Add to Favorites",
+            label: isGameInFavorites() ? t("library.shared.removeFavourite") : t("library.shared.addFavourite"),
             onClick: toggleFavorite
         },
         // Collections submenu
         {
             id: "collections",
             icon: "folder",
-            label: "Collections",
+            label: t("library.shared.collections"),
             type: "submenu",
             items: collectionsItems
         }

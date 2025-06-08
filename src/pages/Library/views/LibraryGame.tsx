@@ -14,9 +14,11 @@ import type {
 import { cn } from "@/lib/utils"
 // import { SiSteam, SiEpicgames, SiItchdotio } from '@icons-pack/react-simple-icons';
 import Tooltip from "@/components/CustomElements/Tooltip"
-import { getSourceIcon } from "../components/LibrarySidebar"
+import { GetSourceIcon } from "../components/LibrarySidebar"
 import ContextMenu, { type MenuItemType } from "@/components/CustomElements/ContextMenu"
 import { getLauncherName } from "../utils/LibraryHelpers"
+import { useTranslation } from "react-i18next"
+import { Trans } from "react-i18next"
 const GameWarningComponent = lazy(() => import("@/pages/Library/components/GameWarning"))
 // const GameSettingsModal = lazy(() => import("@/pages/Library/components/GameSettingsModal"))
 const MatrixRain = lazy(() => import("@/components/CustomElements/MatrixRain"))
@@ -288,6 +290,8 @@ function getLogoUrlFromData(
         if (obj[lang]) return obj[lang];
         return null;
     };
+
+    console.log(customLogoObj, curatedLogoObj, officialLogoObj)
 
     // Try current language across all sources
     const customCurrentLang = getLanguageUrl(customLogoObj, suffix);
@@ -607,8 +611,7 @@ const LibraryGame: React.FC = () => {
     const [isLoadingWarnings, setIsLoadingWarnings] = useState(false)
     const [warningsError, setWarningsError] = useState<string | null>(null)
     // const [showGameSettingsModal, setShowGameSettingsModal] = useState(false)
-
-    console.log(JSON.stringify(currentGame, null, 4))
+    const { t } = useTranslation();
 
     // Get the current game state
     const gameStateKey = currentGame
@@ -712,14 +715,14 @@ const LibraryGame: React.FC = () => {
                 Object.entries(join.clients).map(([key, value]) => {
                     return [key, games.find((game) => String(game.id) === String(value) && game.source === key)]
                 }),
-            ) as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            ) as unknown as Record<NormalizedGame["source"], NormalizedGame>,
         } as unknown as NormalizedGameJoin
     })
 
     function transformGameJoinIntoUsableFormat(join: NormalizedGameJoin): NormalizedPseudoGameJoin {
         return {
             id: String(join.id),
-            source: join.clients as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            source: join.clients as unknown as Record<NormalizedGame["source"], NormalizedGame>,
             type: "GameJoin",
             defaultClient: join.defaultClient,
             preferences: join.preferences,
@@ -736,7 +739,7 @@ const LibraryGame: React.FC = () => {
     const resolveAllGameVendors = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin): NormalizedGame => {
         if (((game): game is NormalizedPseudoGameJoin => game?.type === "GameJoin")(game)) {
             const sourceKeys = Object.keys(game.source)
-            const sourceString = sourceKeys.join(",") as unknown as "steam" | "epic" | "itch" | "osu" | "deadforge"
+            const sourceString = sourceKeys.join(",") as unknown as NormalizedGame["source"]
             const defaultClient = game.source[game.defaultClient]
 
             return {
@@ -1101,13 +1104,20 @@ const LibraryGame: React.FC = () => {
 
     // Handle saving a new collection
     const handleSaveNewCollection = () => {
+        if (!currentGame) return
+        const gameId = typeof currentGame.id === "object" ? JSON.stringify(currentGame.id) : currentGame.id
+        const gameSource = typeof currentGame.source === "object" ? "join" : currentGame.source
+
         if (!currentGame || newCollectionName.trim() === "") {
             setIsCreatingCollection(false)
             return
+        } else if (newCollectionName.trim() === "Favourites") {
+            setIsCreatingCollection(false)
+            setFavourites((prev) => [...prev, { id: gameId, source: gameSource }])
+            setNewCollectionName("")
+            setShowCollectionMenu(false)
+            return
         }
-
-        const gameId = typeof currentGame.id === "object" ? JSON.stringify(currentGame.id) : currentGame.id
-        const gameSource = typeof currentGame.source === "object" ? "join" : currentGame.source
 
         const newCollection: Collection = {
             id: Date.now().toString(),
@@ -1167,7 +1177,7 @@ const LibraryGame: React.FC = () => {
                 : [
                     {
                         id: "no-collections",
-                        label: "No collections found",
+                        label: t("library.shared.noCollections"),
                         className: "px-4 py-2 text-white/50 italic cursor-default",
                         disabled: true,
                     },
@@ -1194,12 +1204,12 @@ const LibraryGame: React.FC = () => {
                                 value={newCollectionName}
                                 onChange={(e) => setNewCollectionName(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Collection name"
+                                placeholder={t("library.shared.collectionNamePlaceholder")}
                                 className="w-[calc(100%-1.5rem)] bg-white/10 px-3 py-1.5 outline-none rounded ring-0"
                                 maxLength={32}
                                 autoFocus
                             />
-                            <div className="flex flex-row gap-2 mt-2 w-full">
+                            <div className="flex flex-row flex-wrap gap-2 mt-2 w-full">
                                 <button
                                     onClick={handleSaveNewCollection}
                                     disabled={!newCollectionName.trim()}
@@ -1210,7 +1220,7 @@ const LibraryGame: React.FC = () => {
                                     type="submit"
                                 >
                                     <span className="material-symbols text-base">check</span>
-                                    Create
+                                    {t("library.shared.createCollectionConfirm")}
                                 </button>
                                 <button
                                     onClick={handleCancelNewCollection}
@@ -1218,7 +1228,7 @@ const LibraryGame: React.FC = () => {
                                     type="button"
                                 >
                                     <span className="material-symbols text-base">close</span>
-                                    Cancel
+                                    {t("library.shared.createCollectionCancel")}
                                 </button>
                             </div>
                         </form>
@@ -1228,7 +1238,7 @@ const LibraryGame: React.FC = () => {
             : {
                 id: "create-collection",
                 icon: "add",
-                label: "Create New Collection",
+                label: t("library.shared.createCollection"),
                 onClick: () => setIsCreatingCollection(true),
                 keepOpen: true,
             }
@@ -1316,7 +1326,7 @@ const LibraryGame: React.FC = () => {
     if (!currentGame) {
         return (
             <div className="flex items-center justify-center h-full">
-                <p className="text-2xl dark:text-gray-200 text-gray-800">Loading game...</p>
+                <p className="text-2xl dark:text-gray-200 text-gray-800">{t("library.gameView.loading")}</p>
             </div>
         )
     }
@@ -1362,7 +1372,7 @@ const LibraryGame: React.FC = () => {
                     {(resolvedVendors?.source.split(",") as NormalizedGame["source"][]).map((source) => (
                         <Tooltip content={getLauncherName(source)} position="bottom" key={source}>
                             <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/40 dark:bg-black/40 backdrop-blur-sm hover:bg-white/60 dark:hover:bg-black/60 transition-colors">
-                                {getSourceIcon(source, null, 20)}
+                                <GetSourceIcon source={source} keyProp={null} size={20} />
                             </div>
                         </Tooltip>
                     ))}
@@ -1459,9 +1469,9 @@ const LibraryGame: React.FC = () => {
                                         {!(isRunning || isStopping || isLaunching) &&
                                             ((needsLauncher && !isLauncherRunning) || String(currentGame?.id) === "-1") ? (
                                                 <div className="flex items-center flex-row space-x-2">
-                                                    {getSourceIcon(selectedOptionSource, null, 20)}
+                                                    <GetSourceIcon source={selectedOptionSource} keyProp={null} size={20} />
                                                     <span>
-                                                    Launch {selectedOptionSource.charAt(0).toUpperCase() + selectedOptionSource.slice(1)}
+                                                        {t("library.shared.gameState.launchLauncher", { launcher: selectedOptionSource })}
                                                     </span>
                                                 </div>
                                             ) : (
@@ -1484,14 +1494,14 @@ const LibraryGame: React.FC = () => {
                                                     </span>
                                                     <span>
                                                         {isLaunching
-                                                            ? "Launching..."
+                                                            ? t("library.shared.gameState.launching")
                                                             : isRunning
-                                                                ? "Stop"
+                                                                ? t("library.shared.gameState.stop")
                                                                 : isStopping
-                                                                    ? "Stopping..."
+                                                                    ? t("library.shared.gameState.stopping")
                                                                     : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                        ? "Launch"
-                                                                        : "Play"}
+                                                                        ? t("library.shared.gameState.launch")
+                                                                        : t("library.shared.gameState.play")}
                                                     </span>
                                                 </div>
                                             )}
@@ -1503,17 +1513,16 @@ const LibraryGame: React.FC = () => {
                                             !isLaunching &&
                                             !isStopping && (
                                             <span className="text-xs opacity-0 flex flex-row items-center gap-x-1 -mt-4 group-hover:opacity-70 group-hover:mt-0 transition-[opacity,margin-top] duration-200">
-                                                {getSourceIcon(
-                                                    selectedLaunchOption.executable.toLowerCase().includes("steam")
-                                                        ? "steam"
-                                                        : selectedLaunchOption.executable.toLowerCase().includes("epic")
-                                                            ? "epic"
-                                                            : selectedLaunchOption.executable.toLowerCase().includes("itch")
-                                                                ? "itch"
-                                                                : resolveDefaultGameVendor(currentGame).source,
-                                                    undefined,
-                                                    12,
-                                                )}
+                                                <GetSourceIcon source={selectedLaunchOption.executable.toLowerCase().includes("steam")
+                                                    ? "steam"
+                                                    : selectedLaunchOption.executable.toLowerCase().includes("epic")
+                                                        ? "epic"
+                                                        : selectedLaunchOption.executable.toLowerCase().includes("itch")
+                                                            ? "itch"
+                                                            : resolveDefaultGameVendor(currentGame).source}
+                                                keyProp={null}
+                                                size={12}
+                                                />
                                                 {selectedLaunchOption.name}
                                             </span>
                                         )}
@@ -1583,7 +1592,7 @@ const LibraryGame: React.FC = () => {
                                                         }}
                                                     >
                                                         <div className="font-medium truncate flex items-center gap-x-2">
-                                                            {getSourceIcon(source)}
+                                                            {<GetSourceIcon source={source} />}
                                                             <span className="truncate">{option.name}</span>
                                                         </div>
                                                         <div className="text-xs dark:text-gray-400 text-gray-600 truncate w-full flex flex-col">
@@ -1602,36 +1611,36 @@ const LibraryGame: React.FC = () => {
 
                             {/* Manual check button */}
                             <Tooltip
-                                content="Check if the game process is running already"
+                                content={t("library.gameView.checkStatusDescription")}
                                 position="top"
                                 showDelay={200}
                                 containerClassName={cn(
-                                    "absolute -z-10 -mt-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out",
-                                    hasBeenLaunchingLong && "z-10 !opacity-100 -mt-12",
+                                    "absolute -z-10 -mt-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
+                                    hasBeenLaunchingLong && "z-10 !opacity-100 -mt-12 pointer-events-auto",
                                 )}
                             >
                                 <button
                                     onClick={checkGameStatus}
-                                    disabled={isCheckingStatus}
+                                    disabled={isCheckingStatus || !hasBeenLaunchingLong}
                                     className={cn(
                                         "font-bold py-2 rounded-md flex items-center space-x-2 transition-all duration-300 w-72",
                                         "bg-yellow-600/25 hover:bg-yellow-600 text-yellow-600 hover:text-white",
                                         "justify-center",
                                         "disabled:opacity-50 disabled:cursor-not-allowed",
-                                        "opacity-0",
-                                        hasBeenLaunchingLong && "!opacity-100",
+                                        "opacity-0 pointer-events-none",
+                                        hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
                                     )}
                                 >
                                     <span className={cn("material-symbols", isCheckingStatus && "animate-hourglass")}>
                                         {isCheckingStatus ? "hourglass_top" : "refresh"}
                                     </span>
-                                    <span>Check Status</span>
+                                    <span>{t("library.gameView.checkStatus")}</span>
                                 </button>
                             </Tooltip>
                         </div>
                     </div>
                     <div className="flex flex-row gap-x-2 p-2">
-                        <Tooltip content="Add to Collection" position="top">
+                        <Tooltip content={t("library.shared.addToCollection")} position="top">
                             <label
                                 className={cn(
                                     "flex items-center justify-center size-10 rounded-lg bg-fullMoon/50 dark:bg-night/50 backdrop-blur-sm hover:bg-fullMoon/75 dark:hover:bg-night/75 border border-notQuiteBlack/10 hover:border-notQuiteBlack/20 dark:border-notQuiteWhite/10 hover:dark:border-notQuiteWhite/20 border-solid transition-colors duration-500 cursor-pointer",
@@ -1659,7 +1668,7 @@ const LibraryGame: React.FC = () => {
                                 </span>
                             </label>
                         </Tooltip>
-                        <Tooltip content={isGameInFavorites() ? "Remove from Favorites" : "Add to Favorites"} position="top">
+                        <Tooltip content={isGameInFavorites() ? t("library.shared.removeFromFavorites") : t("library.shared.addToFavorites")} position="top">
                             <label
                                 className={cn(
                                     "flex items-center justify-center size-10 rounded-lg bg-fullMoon/50 dark:bg-night/50 backdrop-blur-sm hover:bg-fullMoon/75 dark:hover:bg-night/75 border border-notQuiteBlack/10 hover:border-notQuiteBlack/20 dark:border-notQuiteWhite/10 hover:dark:border-notQuiteWhite/20 border-solid transition-colors cursor-pointer",
@@ -1691,7 +1700,7 @@ const LibraryGame: React.FC = () => {
                         {/* Installation info */}
                         {resolveDefaultGameVendor(currentGame).installPath && (
                             <div>
-                                <h3 className="text-lg font-medium dark:text-gray-200 text-gray-800">Installation Directory</h3>
+                                <h3 className="text-lg font-medium dark:text-gray-200 text-gray-800">{t("library.gameView.installDir")}</h3>
                                 <p className="text-sm dark:text-gray-400 text-gray-600 mt-1 whitespace-pre-wrap">
                                     {(() => {
                                         const installPath = resolveAllGameVendors(currentGame)?.installPath
@@ -1720,24 +1729,22 @@ const LibraryGame: React.FC = () => {
                         {(isLoadingWarnings || warnings || warningsError) && (
                             <div className="mt-4">
                                 <h3 className="text-lg font-medium dark:text-neutral-200 text-neutral-800 mb-4 flex flex-row items-center gap-x-2">
-                                    Game Notes
+                                    {t("library.gameView.gameNotes")}
                                     <Tooltip
                                         className="whitespace-pre-wrap"
                                         content={
-                                            <>
-                                                Game notes are maintained by the <span className="font-bold font-uniSansCAPS">DeadForge</span>{" "}
-                                        developers and community.{"\n"}You can contribute to them, as well as curated{" "}
-                                                <span className="font-bold font-uniSansCAPS">DeadForge</span> Assets for external software, and
-                                                other cool stuff on{" "}
-                                                <a
-                                                    href="https://github.com/DeadCodeGames/DeadForgeExternalData"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-blue-500 hover:text-blue-600 m-0"
-                                                >
-                                                    the GitHub page of DeadCodeGames/DeadForgeExternalData
-                                                </a>
-                                            </>
+                                            <Trans i18nKey="library.gameView.gameNotesTooltip"
+                                                components={{
+                                                    1: <span className="font-bold font-uniSansCAPS" />,
+                                                    3: <span className="font-bold font-uniSansCAPS" />,
+                                                    5: <a
+                                                        href="https://github.com/DeadCodeGames/DeadForgeExternalData"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-500 hover:text-blue-600 m-0"
+                                                    />
+                                                }}
+                                            />
                                         }
                                         containerClassName="material-symbols"
                                         position="top"
@@ -1760,7 +1767,7 @@ const LibraryGame: React.FC = () => {
                                 ) : (
                                     !isLoadingWarnings && (
                                         <div className="text-sm dark:text-neutral-400 text-neutral-600">
-                                            No notes available for this game.
+                                            {t("library.gameView.noGameNotes")}
                                         </div>
                                     )
                                 )}
@@ -1803,7 +1810,7 @@ const LibraryGame: React.FC = () => {
                                                 onClick={() => setShowAllDLCs(!showAllDLCs)}
                                                 className="w-fit h-fit my-4 px-2 py-1.5 rounded-lg text-center text-sm font-medium text-night dark:text-fullMoon hover:text-black dark:hover:text-white bg-transparent hover:bg-fullMoon/50 dark:hover:bg-night/50 transition-colors pointer-events-auto"
                                             >
-                                                {showAllDLCs ? "Show Less" : "Show More"}
+                                                {showAllDLCs ? t("showLess") : t("showMore")}
                                             </button>
                                         </div>
                                     )}
@@ -1816,7 +1823,7 @@ const LibraryGame: React.FC = () => {
 
             {/* Loading state */}
             <div className="flex items-center justify-center h-full" style={{ display: isReady ? "none" : "flex" }}>
-                <div className="text-4xl dark:text-gray-200 text-gray-800 font-uniSansCAPS font-bold">Loading</div>
+                <div className="text-4xl dark:text-gray-200 text-gray-800 font-uniSansCAPS font-bold">{t("loading")}</div>
             </div>
 
             {/* Collection Menu */}
@@ -1827,7 +1834,7 @@ const LibraryGame: React.FC = () => {
                     onClose={() => setShowCollectionMenu(false)}
                     items={getCollectionsItems()}
                     header={{
-                        title: "Collections",
+                        title: t("library.shared.collections"),
                     }}
                     extraFocusRefs={[collectionsButtonRef]}
                 />

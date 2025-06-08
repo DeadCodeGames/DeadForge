@@ -3,6 +3,8 @@
         "name": "日本語",
         "emoji": "🇯🇵"
     },
+    "commaSeparator": "、",
+    "ampersandSeparator": "と",
     "sidebar": {
         "home": "ホーム",
         "library": "ライブラリー",
@@ -10,6 +12,15 @@
         "store": "ストア",
         "settings": "設定",
         "collapse": "折りたたむ"
+    },
+    "home": {
+        "articles": {
+            "writtenBy": {
+                "other": "<0></0>によって書かれました"
+            },
+            "publishedOn": "{{date}}に公開",
+            "lastEditedOn": "{{date}}に最終更新"
+        }
     },
     "store": {
         "urlCopied": "URLは正常にコピーされました"
@@ -68,7 +79,8 @@
             "betaUpdates": "ベータアップデート",
             "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
             "languageUpdates": "言語パックのアップデート",
-            "languageUpdatesDescription": ""
+            "languageUpdatesDescription": "",
+            "privacyPolicy": "プライバシー・ポリシー"
         }
     }
 }

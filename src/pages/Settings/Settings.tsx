@@ -381,7 +381,7 @@ const Settings = () => {
                     <SettingsOption title={t("settings.behavior.defaultPage")} description={t("settings.behavior.defaultPageDescription")}
                         controls={
                             <Select
-                                value={context.preferences.defaultPage || "library"}
+                                value={context.preferences.defaultPage}
                                 onChange={handleDefaultPageChange}
                                 className="p-2 rounded-lg dark:bg-night bg-fullMoon border border-notQuiteBlack dark:border-notQuiteWhite"
                             >
@@ -500,6 +500,12 @@ const Settings = () => {
                         {'ᠸ^ ^  <'}
                     </div>
                 </span>
+
+                <div className="flex flex-row gap-4 flex-wrap justify-center settingsShrink:justify-center opacity-70">
+                    <a href="https://github.com/DeadCodeGames/DeadForge/blob/2024/2025/PRIVACY.md" target="_blank" rel="noopener noreferrer" className="flex flex-row items-center gap-2 text-sm">
+                        <span>{t("settings.appData.privacyPolicy")}</span>
+                    </a>
+                </div>
             </div>
 
             {/* Reset Data Modal */}

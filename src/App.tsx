@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { IpcRendererEvent } from "electron";
-import { HashRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import WinControls from './components/WinControls/WinControls.tsx';
 import Navigation from './components/Nav/Nav.tsx';
 import LibraryProvider, { LibraryLayout, LibraryHome, LibraryGame, LibraryCollections, LibraryCollection, LibraryFavourites, LibraryRecent, LibraryAll, LibraryContext } from './pages/Library/Library.tsx';

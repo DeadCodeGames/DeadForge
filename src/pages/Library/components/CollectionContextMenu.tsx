@@ -1,5 +1,6 @@
 import React from 'react';
 import ContextMenu, { MenuItemType } from '@/components/CustomElements/ContextMenu';
+import { useTranslation } from 'react-i18next';
 
 interface CollectionContextMenuProps {
   x: number;
@@ -11,6 +12,7 @@ interface CollectionContextMenuProps {
     isExpanded: boolean;
     isFavorites?: boolean;
     isUserDefined?: boolean;
+    isTimeBasedCollection?: boolean;
   };
   // eslint-disable-next-line no-unused-vars
   onToggleExpand: (id: string) => void;
@@ -31,19 +33,20 @@ const CollectionContextMenu: React.FC<CollectionContextMenuProps> = ({
     onDelete,
     onClearFavorites
 }) => {
+    const { t } = useTranslation();
     // Prepare menu items array
     const menuItems: MenuItemType[] = [
     // Expand/Collapse - available for all collections
         {
             id: 'toggle-expand',
             icon: collection.isExpanded ? 'unfold_less' : 'unfold_more',
-            label: collection.isExpanded ? 'Collapse' : 'Expand',
+            label: collection.isExpanded ? t("library.contextMenu.collections.collapse") : t("library.contextMenu.collections.expand"),
             onClick: () => onToggleExpand(collection.id)
         }
     ];
 
     // Add Clear Favorites option for the Favorites collection
-    if (collection.isFavorites && onClearFavorites) {
+    if (collection.isFavorites && onClearFavorites && !collection.isTimeBasedCollection) {
         menuItems.push({
             id: 'divider-1',
             type: 'divider'
@@ -52,14 +55,14 @@ const CollectionContextMenu: React.FC<CollectionContextMenuProps> = ({
         menuItems.push({
             id: 'clear-favorites',
             icon: 'delete_sweep',
-            label: 'Clear Favorites',
+            label: t("library.contextMenu.collections.clearFavorites"),
             onClick: onClearFavorites,
             className: 'text-orange-400'
         });
     }
 
     // Add Rename and Delete options for user-defined collections
-    if (collection.isUserDefined && !collection.isFavorites) {
+    if (collection.isUserDefined && !collection.isFavorites && !collection.isTimeBasedCollection) {
         if (menuItems.length > 1) {
             // If we already added something after the first item, add another divider
             menuItems.push({
@@ -79,7 +82,7 @@ const CollectionContextMenu: React.FC<CollectionContextMenuProps> = ({
             menuItems.push({
                 id: 'rename',
                 icon: 'drive_file_rename_outline',
-                label: 'Rename Collection',
+                label: t("library.contextMenu.collections.rename"),
                 onClick: () => onRename(collection.id, collection.name)
             });
         }
@@ -89,7 +92,7 @@ const CollectionContextMenu: React.FC<CollectionContextMenuProps> = ({
             menuItems.push({
                 id: 'delete',
                 icon: 'delete',
-                label: 'Delete Collection',
+                label: t("library.contextMenu.collections.delete"),
                 onClick: () => {
                     if (window.confirm(`Are you sure you want to delete "${collection.name}" collection?`)) {
                         onDelete(collection.id);

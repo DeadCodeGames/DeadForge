@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated: [May 2, 2025]**
+**Last updated: [June 7, 2025]**
 
 **DEADFORGE**, developed by **DEADCODE**, respects your privacy. This app is designed with privacy in mind and does **not collect, track, or store any personal data externally**.
 
@@ -23,8 +23,7 @@
 
 While DEADFORGE itself does not collect data, it interacts with the following external services:
 
-- **GitHub API** – for checking and downloading updates.
-- **itch.io** – for fetching image assets.
+- **GitHub API** – for checking and downloading updates, and curated game assets.
 - **Discord API** (optional) – for displaying Rich Presence if the user enables it.
 
 These services may have their own privacy policies. DEADFORGE does **not** send your personal data to them.

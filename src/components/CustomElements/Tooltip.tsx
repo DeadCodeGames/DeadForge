@@ -209,7 +209,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     // Generate tooltip classes based on position
     const getTooltipClasses = () => {
         const baseClasses = `
-      transition-[opacity,transform] duration-200 ease-in-out rounded-md
+      transition-[opacity,transform,top,bottom,left,right] duration-200 ease-in-out rounded-md
       bg-fullMoon dark:bg-night text-notQuiteBlack dark:text-notQuiteWhite
       shadow-lg py-2 px-3 text-sm border border-solid border-notQuiteBlack/10 dark:border-notQuiteWhite/10
       ${className}

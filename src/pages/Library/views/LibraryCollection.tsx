@@ -7,10 +7,12 @@ import { getLocalizedGameName, LibraryContext } from "../Library"
 import GameCard from "../components/GameCard"
 import type { NormalizedGame, NormalizedPseudoGameJoin, NormalizedGameJoin } from "@/types"
 import { resolveDefaultGameVendor } from "../utils/LibraryHelpers"
+import { useTranslation } from "react-i18next"
 
 const LibraryCollection: React.FC = () => {
     const { id } = useParams<{ id: string }>()
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { t } = useTranslation();
     const { games, gameJoins, collections, setCollections, favourites } = useContext(LibraryContext)
     const [isEditing, setIsEditing] = useState(false)
     const [editName, setEditName] = useState("")
@@ -24,14 +26,14 @@ const LibraryCollection: React.FC = () => {
                 Object.entries(join.clients).map(([key, value]) => {
                     return [key, games.find((game) => String(game.id) === String(value) && game.source === key)]
                 }),
-            ) as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            ) as unknown as Record<NormalizedGame["source"], NormalizedGame>,
         } as unknown as NormalizedGameJoin
     })
 
     function transformGameJoinIntoUsableFormat(join: NormalizedGameJoin): NormalizedPseudoGameJoin {
         return {
             id: String(join.id),
-            source: join.clients as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            source: join.clients as unknown as Record<NormalizedGame["source"], NormalizedGame>,
             type: "GameJoin",
             defaultClient: join.defaultClient,
             preferences: join.preferences,
@@ -136,13 +138,13 @@ const LibraryCollection: React.FC = () => {
             <div className="h-full w-full flex items-center justify-center">
                 <div className="text-center">
                     <span className="material-symbols text-6xl opacity-30 mb-4 block">folder_off</span>
-                    <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">Collection not found</h3>
-                    <p className="dark:text-gray-400 text-gray-600 mb-4">The collection you&apos;re looking for doesn&apos;t exist.</p>
+                    <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">{t('library.collectionView.collectionNotFound')}</h3>
+                    <p className="dark:text-gray-400 text-gray-600 mb-4">{t('library.collectionView.collectionNotFoundDescription')}</p>
                     <button
                         onClick={() => navigate("/library/collections")}
                         className="px-4 py-2 bg-progress hover:bg-progress/80 text-white rounded-lg transition-colors"
                     >
-                    Back to Collections
+                        {t('library.collectionView.collectionNotFoundCTA')}
                     </button>
                 </div>
             </div>
@@ -191,7 +193,7 @@ const LibraryCollection: React.FC = () => {
                                     </h1>
                                 )}
                                 <p className="text-base dark:text-gray-400 text-gray-600 -mt-1">
-                                    {collectionGames.length} {collectionGames.length === 1 ? "game" : "games"}
+                                    {t('library.collectionsView.gameCount', {count: currentCollection.games.length})}
                                 </p>
                             </div>
                         </div>
@@ -243,9 +245,9 @@ const LibraryCollection: React.FC = () => {
                 ) : (
                     <div className="flex flex-col items-center justify-center h-64 text-center">
                         <span className="material-symbols text-6xl opacity-30 mb-4">videogame_asset_off</span>
-                        <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">No games in this collection</h3>
+                        <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">{t('library.collectionView.noGamesInCollection')}</h3>
                         <p className="dark:text-gray-400 text-gray-600">
-              Add games to this collection from your library or individual game pages.
+                            {t('library.collectionView.noGamesInCollectionDescription')}
                         </p>
                     </div>
                 )}

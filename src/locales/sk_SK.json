@@ -3,6 +3,8 @@
         "name": "Slovenčina",
         "emoji": "🇸🇰"
     },
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
     "sidebar": {
         "home": "Domov",
         "library": "Knižnica",
@@ -10,6 +12,16 @@
         "store": "Obchod",
         "settings": "Nastavenia",
         "collapse": "Zbaliť"
+    },
+    "home": {
+        "articles": {
+            "writtenBy": {
+                "one": "Napísal <0></0>",
+                "other": "Napísali <0></0>"
+            },
+            "publishedOn": "Publikované {{date}}",
+            "lastEditedOn": "Naposledy upravené {{date}}"
+        }
     },
     "store": {
         "urlCopied": "Adresa bola úspešne skopírovaná"
@@ -68,7 +80,8 @@
             "betaUpdates": "Predbežné (Beta) aktualizácie",
             "betaUpdatesDescription": "Inštalovať predbežné beta verzie s novými funkciami skôr (vyžaduje Automatické aktualizácie)",
             "languageUpdates": "Aktualizácie jazykových balíčkov",
-            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)"
+            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)",
+            "privacyPolicy": "Zásady ochrany osobných údajov"
         }
     }
 }

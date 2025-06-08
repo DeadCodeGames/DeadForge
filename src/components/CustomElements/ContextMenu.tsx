@@ -464,7 +464,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                         </div>
                     )}
 
-                    <ul className="p-2 max-h-80 overflow-y-auto overflow-x-hidden *:text-ellipsis *:whitespace-nowrap">
+                    <ul className="p-2 max-h-[345px] overflow-y-auto overflow-x-hidden *:text-ellipsis *:whitespace-nowrap">
                         {renderMenuItems(submenu.items)}
                     </ul>
                 </div>

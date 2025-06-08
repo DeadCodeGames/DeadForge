@@ -2,9 +2,11 @@ import React, { useContext, useMemo } from "react";
 import { LibraryContext } from "../Library";
 import GameCard from "../components/GameCard";
 import type { NormalizedGame, NormalizedPseudoGameJoin, NormalizedGameJoin } from "@/types";
+import { useTranslation } from "react-i18next";
 
 const LibraryRecent: React.FC = () => {
     const { games, gameJoins, favourites, launchTimestamps } = useContext(LibraryContext);
+    const { t } = useTranslation();
 
     // Transform game joins into usable format
     const gameJoinsPopulated = useMemo(() => gameJoins.map((join) => {
@@ -15,14 +17,14 @@ const LibraryRecent: React.FC = () => {
                 Object.entries(join.clients).map(([key, value]) => {
                     return [key, games.find((game) => String(game.id) === String(value) && game.source === key)]
                 }),
-            ) as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            ) as unknown as Record<NormalizedGame["source"], NormalizedGame>,
         } as unknown as NormalizedGameJoin
     }), [games, gameJoins]);
 
     function transformGameJoinIntoUsableFormat(join: NormalizedGameJoin): NormalizedPseudoGameJoin {
         return {
             id: String(join.id),
-            source: join.clients as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            source: join.clients as unknown as Record<NormalizedGame["source"], NormalizedGame>,
             type: "GameJoin",
             defaultClient: join.defaultClient,
             preferences: join.preferences,
@@ -93,9 +95,9 @@ const LibraryRecent: React.FC = () => {
                     <div>
                         <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 flex flex-row items-center">
                             <span className="material-symbols align-middle mr-2 text-blue-500">history</span>
-                            Recently Played
+                            {t("library.shared.recentlyPlayed")}
                         </h1>
-                        <p className="text-neutral-600 dark:text-neutral-400">Your recent gaming activity at a glance</p>
+                        <p className="text-neutral-600 dark:text-neutral-400">{t("library.shared.recentlyPlayedDescription")}</p>
                     </div>
                 </div>
 
@@ -103,21 +105,21 @@ const LibraryRecent: React.FC = () => {
                     <>
                         {groupedGames.today.length > 0 && (
                             <div className="mb-8">
-                                <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200 mb-4">Today</h2>
+                                <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200 mb-4">{t("library.recentView.today")}</h2>
                                 <GameGrid games={groupedGames.today} />
                             </div>
                         )}
                         
                         {groupedGames.thisWeek.length > 0 && (
                             <div className="mb-8">
-                                <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200 mb-4">This Week</h2>
+                                <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200 mb-4">{t("library.recentView.thisWeek")}</h2>
                                 <GameGrid games={groupedGames.thisWeek} />
                             </div>
                         )}
                         
                         {groupedGames.thisMonth.length > 0 && (
                             <div className="mb-8">
-                                <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200 mb-4">This Month</h2>
+                                <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-200 mb-4">{t("library.recentView.thisMonth")}</h2>
                                 <GameGrid games={groupedGames.thisMonth} />
                             </div>
                         )}
@@ -125,9 +127,9 @@ const LibraryRecent: React.FC = () => {
                 ) : (
                     <div className="flex flex-col items-center justify-center h-64 text-center">
                         <span className="material-symbols text-6xl opacity-30 mb-4">history_toggle_off</span>
-                        <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">No recent games</h3>
+                        <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">{t("library.recentView.noRecentGames")}</h3>
                         <p className="dark:text-gray-400 text-gray-600">
-                            Games you play will appear here
+                            {t("library.recentView.noRecentGamesDescription")}
                         </p>
                     </div>
                 )}

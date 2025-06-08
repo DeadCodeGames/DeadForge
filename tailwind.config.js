@@ -13,6 +13,8 @@ module.exports = {
                 "uniSansCAPS": ["Uni Sans CAPS", "Corporate Logo", ...defaultTheme.fontFamily.sans],
                 "montserrat": ["Montserrat", "Noto Sans JP", ...defaultTheme.fontFamily.sans],
                 "notoSans": ["Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Sans SC", "Noto Sans TC", "Noto Sans Hebrew", ...defaultTheme.fontFamily.sans],
+                "serif": ["Georgia", "Roboto Slab", "Sawarabi Mincho", ...defaultTheme.fontFamily.serif],
+                "heading": ["Rajdhani", "Georgia", "Roboto Slab", "Sawarabi Mincho", ...defaultTheme.fontFamily.serif],
             },
             fontSize: {
                 "0": "0px",

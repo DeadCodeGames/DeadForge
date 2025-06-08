@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useMemo, useRef, useState, memo, useCallback } from 'react';
 import { getLocalizedGameName, LibraryContext, LibrarySidebarContext } from '../Library';
 import { Link } from 'react-router-dom';
 import { SiEpicgames, SiItchdotio, SiSteam } from '@icons-pack/react-simple-icons';
@@ -10,34 +10,35 @@ import CollectionContextMenu from '@/pages/Library/components/CollectionContextM
 import CollectionNameEditor from '@/pages/Library/components/CollectionNameEditor';
 import { cn } from '@/lib/utils';
 import { chunkGamesByCategory } from '@/pages/Library/utils/LibraryHelpers';
+import { format } from 'date-fns';
+import i18n, { dateFNSResources } from '@/locales/i18n';
+import { useTranslation } from 'react-i18next';
 
-export const getSourceIcon = (source: string, key?: any, size = 16) => {
+export const GetSourceIcon = memo(function GetSourceIcon({source, keyProp, size = 16}: {source: string, keyProp?: any, size?: number}) {
     switch (source) {
     case "steam":
-        return <SiSteam size={size} key={key} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
+        return <SiSteam size={size} key={keyProp} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
     case "epic":
-        return <SiEpicgames size={size} key={key} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
+        return <SiEpicgames size={size} key={keyProp} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
     case "itch":
-        return <SiItchdotio size={size} key={key} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
+        return <SiItchdotio size={size} key={keyProp} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
     case "osu":
-        return <img src={process.env.PUBLIC_URL + "/assets/osu!wordmark.svg"} key={key} alt="osu!" className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
+        return <img src={process.env.PUBLIC_URL + "/assets/osu!wordmark.svg"} key={keyProp} alt="osu!" className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
     case "deadforge":
-        return <DEADCODELogo key={key} className="text-sm -translate-y-0.5 flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
+        return <DEADCODELogo key={keyProp} className="text-sm -translate-y-0.5 flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
     default:
-        return <div key={key} className="text-lg material-symbols flex-shrink-0 pointer-events-none" style={{ width: size, height: size }}>question_mark</div>
+        return <div key={keyProp} className="text-lg material-symbols flex-shrink-0 pointer-events-none" style={{ width: size, height: size }}>question_mark</div>
     }
-}
+})
 
 const LibrarySidebar: React.FC = () => {
     const { games, gameJoins, gameStates, setGameState, customAssets, curatedAssets } = useContext(LibraryContext);
     const { filters, sorting, showFilters, sortingExpanded, filterExpanded, setShowFilters, setSortingExpanded, setFilterExpanded, setFilters, setSorting } = useContext(LibrarySidebarContext);
     const { collections, favourites, setCollections, setFavourites } = useContext(LibraryContext);
+    const { t } = useTranslation();
 
-    // Month names for categorization
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
+    // Get the current date-fns locale for the current i18n language
+    const dateFnsLocale = dateFNSResources[i18n.language as keyof typeof dateFNSResources] || dateFNSResources['en_001'];
 
     // Game context menu state
     const [contextMenu, setContextMenu] = useState<{
@@ -63,6 +64,7 @@ const LibrarySidebar: React.FC = () => {
             isExpanded: boolean;
             isFavorites: boolean;
             isUserDefined: boolean;
+            isTimeBasedCollection: boolean;
         } | null;
     }>({
         visible: false,
@@ -77,11 +79,11 @@ const LibrarySidebar: React.FC = () => {
     // State for tracking which collection is being renamed
     const [editingCollectionId, setEditingCollectionId] = useState<string | null>(null);
 
-    const handleFilterChange = (filter: keyof Filters, value: boolean | string) => {
+    const handleFilterChange = useCallback((filter: keyof Filters, value: boolean | string) => {
         setFilters(prev => ({ ...prev, [filter]: value }));
-    }
+    }, [setFilters, filters])
 
-    const handleSortChange = (sort: keyof Sorting) => {
+    const handleSortChange = useCallback((sort: keyof Sorting) => {
         let newValue;
         switch (sort) {
         case "sort":
@@ -94,9 +96,9 @@ const LibrarySidebar: React.FC = () => {
             return;
         }
         setSorting(prev => ({ ...prev, [sort]: newValue }));
-    }
+    }, [setSorting, sorting])
 
-    const getSortingIcon = (sort: keyof Sorting) => {
+    const getSortingIcon = useCallback((sort: keyof Sorting) => {
         const icons: Record<keyof Sorting, Record<string, string>> = {
             "sort": {
                 "name": "sort_by_alpha",
@@ -108,7 +110,7 @@ const LibrarySidebar: React.FC = () => {
             }
         }
         return icons[sort][sorting[sort]];
-    }
+    }, [sorting])
 
     const gameJoinsPopulated = useMemo(() => gameJoins.map(join => {
         return {
@@ -120,17 +122,24 @@ const LibrarySidebar: React.FC = () => {
         } as unknown as NormalizedGameJoin
     }), [gameJoins, games])
 
-    const sortByName = (a: NormalizedGame | NormalizedPseudoGameJoin, b: NormalizedGame | NormalizedPseudoGameJoin) => {
+    // Helper function to remove "The" from the beginning of names
+    const removeLeadingTheAndA = useCallback((name: string) => {
+        return name.replace(/^(The|A)\s+/gmi, '').trim();
+    }, []);
+
+    const sortByName = useCallback((a: NormalizedGame | NormalizedPseudoGameJoin, b: NormalizedGame | NormalizedPseudoGameJoin) => {
         const nameA = typeof a.source === 'string' ? getLocalizedGameName(a) : getLocalizedGameName(a.source[a.defaultClient]);
         const nameB = typeof b.source === 'string' ? getLocalizedGameName(b) : getLocalizedGameName(b.source[b.defaultClient]);
-        return sorting.direction === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
-    }
+        const cleanNameA = removeLeadingTheAndA(nameA);
+        const cleanNameB = removeLeadingTheAndA(nameB);
+        return sorting.direction === "asc" ? cleanNameA.localeCompare(cleanNameB) : cleanNameB.localeCompare(cleanNameA);
+    }, [sorting, removeLeadingTheAndA])
 
-    const sortCollectionsByName = (a: Collection["name"], b: Collection["name"]) => {
+    const sortCollectionsByName = useCallback((a: Collection["name"], b: Collection["name"]) => {
         return a.localeCompare(b);
-    }
+    }, [])
 
-    const sortByRecent = (a: NormalizedGame | NormalizedPseudoGameJoin, b: NormalizedGame | NormalizedPseudoGameJoin) => {
+    const sortByRecent = useCallback((a: NormalizedGame | NormalizedPseudoGameJoin, b: NormalizedGame | NormalizedPseudoGameJoin) => {
         // Get lastPlayed values
         const lastPlayedA = typeof a.source === 'string' 
             ? a.lastPlayed || 0
@@ -154,9 +163,9 @@ const LibrarySidebar: React.FC = () => {
         } else {
             return lastPlayedB - lastPlayedA;
         }
-    }
+    }, [sorting])
 
-    const filterOutBySearch = (game: NormalizedGame | NormalizedPseudoGameJoin) => {
+    const filterOutBySearch = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin) => {
         if (typeof game.source === 'string') {
             if (typeof game.name === 'string') {
                 return game.name.toLowerCase().includes(filters.search.toLowerCase());
@@ -166,23 +175,23 @@ const LibrarySidebar: React.FC = () => {
         return Object.values(game.source).some(client =>
             typeof client.name === 'string' ? client.name.toLowerCase().includes(filters.search.toLowerCase()) : Object.values(client.name).some(name => name.toLowerCase().includes(filters.search.toLowerCase()))
         );
-    }
+    }, [filters.search])
 
-    const filterOutUnplayableGames = (game: NormalizedGame | NormalizedPseudoGameJoin) => {
+    const filterOutUnplayableGames = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin) => {
         if (((g): g is NormalizedPseudoGameJoin => g.type === "GameJoin")(game)) {
             return Object.values(game.source).some(client => (client?.launchOptions || []).length > 0);
         }
         return (game?.launchOptions || []).length > 0;
-    }
+    }, [])
 
-    const filterOutUnfavouritedGames = (game: NormalizedGame | NormalizedPseudoGameJoin) => {
+    const filterOutUnfavouritedGames = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin) => {
         if (typeof game.source === 'string') {
             return favourites.some(favourite => favourite.id === game.id && favourite.source === game.source);
         }
         return favourites.some(favourite => favourite.id === game.id && game.type === "GameJoin");
-    }
+    }, [favourites])
 
-    function transformGameJoinIntoUsableFormat(join: NormalizedGameJoin): NormalizedPseudoGameJoin {
+    const transformGameJoinIntoUsableFormat = useCallback((join: NormalizedGameJoin): NormalizedPseudoGameJoin => {
         return {
             id: String(join.id),
             source: join.clients as unknown as Record<'steam' | 'epic' | 'itch' | 'osu' | 'deadforge', NormalizedGame>,
@@ -190,9 +199,9 @@ const LibrarySidebar: React.FC = () => {
             defaultClient: join.defaultClient,
             preferences: join.preferences,
         }
-    }
+    }, [])
 
-    const handleGameContextMenu = (e: React.MouseEvent, game: NormalizedGame | NormalizedPseudoGameJoin) => {
+    const handleGameContextMenu = useCallback((e: React.MouseEvent, game: NormalizedGame | NormalizedPseudoGameJoin) => {
         e.preventDefault();
         setContextMenu({
             visible: true,
@@ -200,14 +209,14 @@ const LibrarySidebar: React.FC = () => {
             y: e.clientY,
             game
         });
-    };
+    }, [])
 
-    const closeContextMenu = () => {
+    const closeContextMenu = useCallback(() => {
         setContextMenu(prev => ({ ...prev, visible: false }));
-    };
+    }, [])
 
     // Collection context menu handlers
-    const handleCollectionContextMenu = (e: React.MouseEvent, name: string, isUserDefined: boolean = false, isFavorites: boolean = false) => {
+    const handleCollectionContextMenu = useCallback((e: React.MouseEvent, name: string, isUserDefined: boolean = false, isFavorites: boolean = false, isTimeBasedCollection: boolean = false) => {
         e.preventDefault();
         // Find the actual collection ID if it's a user-defined collection
         let collectionId = name; // Default to using name as ID
@@ -233,16 +242,17 @@ const LibrarySidebar: React.FC = () => {
                 name,
                 isExpanded,
                 isFavorites,
-                isUserDefined
+                isUserDefined,
+                isTimeBasedCollection
             }
         });
-    };
+    }, [collections])
 
-    const closeCollectionContextMenu = () => {
+    const closeCollectionContextMenu = useCallback(() => {
         setCollectionContextMenu(prev => ({ ...prev, visible: false }));
-    };
+    }, [])
 
-    const handleToggleCollectionExpand = (id: string) => {
+    const handleToggleCollectionExpand = useCallback((id: string) => {
         // For expand/collapse, we need to find the checkbox by name
         // Since collections in the UI are identified by name, not ID
         const collectionName = id === "Favourites" ? "Favourites" :
@@ -257,18 +267,15 @@ const LibrarySidebar: React.FC = () => {
             checkbox.dispatchEvent(event);
         }
         closeCollectionContextMenu();
-    };
+    }, [collections])
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    const handleRenameCollection = (id: string, currentName: string) => {
-        // Start inline editing mode
-        // Find the collection name from the ID
+    const handleRenameCollection = useCallback((id: string) => {
         const collectionName = collections.find(c => c.id === id)?.name || id;
         setEditingCollectionId(collectionName);
         closeCollectionContextMenu();
-    };
+    }, [collections])
 
-    const saveCollectionName = (id: string, newName: string) => {
+    const saveCollectionName = useCallback((id: string, newName: string) => {
         if (newName && newName.trim() !== '') {
             // Find the proper collection ID from our collections array
             const collection = collections.find(c => c.name === id);
@@ -279,20 +286,20 @@ const LibrarySidebar: React.FC = () => {
             }
         }
         setEditingCollectionId(null);
-    };
+    }, [collections, setCollections])
 
-    const handleDeleteCollection = (id: string) => {
+    const handleDeleteCollection = useCallback((id: string) => {
         // Since we now store the actual collection ID, we can directly delete by ID
         setCollections(prev => prev.filter(collection => collection.id !== id));
         closeCollectionContextMenu();
-    };
+    }, [collections, setCollections])
 
-    const handleClearFavorites = () => {
+    const handleClearFavorites = useCallback(() => {
         setFavourites([]);
         closeCollectionContextMenu();
-    };
+    }, [setFavourites, closeCollectionContextMenu])
 
-    const getGameState = (game: NormalizedGame | NormalizedPseudoGameJoin): Exclude<GameState['state'], 'idle'> | null => {
+    const getGameState = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin): Exclude<GameState['state'], 'idle'> | null => {
         // For regular games, use source-id format
         // For game joins, check all possible client states
         const gameIds = typeof game.source === 'string' 
@@ -305,9 +312,9 @@ const LibrarySidebar: React.FC = () => {
             .find(state => state && state !== 'idle') as Exclude<GameState['state'], 'idle'> | undefined;
 
         return activeState || null;
-    };
+    }, [gameStates])
 
-    const getGameStateIndicator = (game: NormalizedGame | NormalizedPseudoGameJoin) => {
+    const getGameStateIndicator = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin) => {
         const activeState = getGameState(game);
 
         if (!activeState) return null;
@@ -331,9 +338,9 @@ const LibrarySidebar: React.FC = () => {
                 {stateIcons[activeState]}
             </span>
         );
-    };
+    }, [getGameState])
 
-    const getGameStateGradient = (game: NormalizedGame | NormalizedPseudoGameJoin): string => {
+    const getGameStateGradient = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin): string => {
         const activeState = getGameState(game);
 
         const gradientColors: Record<GameState['state'], string> = {
@@ -346,9 +353,9 @@ const LibrarySidebar: React.FC = () => {
         if (!activeState) return cn('absolute inset-0 bg-gradient-to-l from-0% to-75% transition-[opacity,background-image] duration-200', gradientColors.idle);
 
         return cn('absolute inset-0 bg-gradient-to-l from-0% to-75% transition-[opacity,background-image] duration-200', gradientColors[activeState]);
-    };
+    }, [getGameState])
 
-    const getGameIcon = (game: NormalizedGame | NormalizedPseudoGameJoin): string => {
+    const getGameIcon = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin): string => {
         if (game.source === "osu") {
             return `${process.env.PUBLIC_URL}/assets/osu!logo.svg`;
         }
@@ -372,10 +379,10 @@ const LibrarySidebar: React.FC = () => {
             : game.source[game.defaultClient].media?.iconUrl;
 
         return `local://${iconUrl?.replaceAll("%USERDATA%", "CONST_USERDATA")}?fallback=defaultIcon`;
-    };
+    }, [customAssets, curatedAssets])
 
     // Add this function before the return statement to categorize games by last played time
-    const categorizeGamesByLastPlayedTime = (games: (NormalizedGame | NormalizedPseudoGameJoin)[]) => {
+    const categorizeGamesByLastPlayedTime = useCallback((games: (NormalizedGame | NormalizedPseudoGameJoin)[]) => {
         const now = Math.floor(Date.now() / 1000); // Current timestamp in seconds
         const currentYear = new Date().getFullYear();
         const oneDay = 24 * 60 * 60; // Seconds in a day
@@ -405,7 +412,9 @@ const LibrarySidebar: React.FC = () => {
             } else {
                 const lastPlayedDate = new Date(lastPlayed * 1000);
                 const lastPlayedYear = lastPlayedDate.getFullYear();
-                const lastPlayedMonth = monthNames[lastPlayedDate.getMonth()];
+                // Use date-fns to get localized month and month-year
+                const lastPlayedMonth = format(lastPlayedDate, 'LLLL', { locale: dateFnsLocale });
+                const lastPlayedMonthYear = format(lastPlayedDate, 'LLLL yyyy', { locale: dateFnsLocale });
                 
                 if (lastPlayedYear === currentYear) {
                     // Played this year but not recently
@@ -416,7 +425,7 @@ const LibrarySidebar: React.FC = () => {
                     categorized[categoryName].push(game);
                 } else {
                     // Played before this year
-                    const categoryName = `${lastPlayedMonth} ${lastPlayedYear}`;
+                    const categoryName = lastPlayedMonthYear;
                     if (!categorized[categoryName]) {
                         categorized[categoryName] = [];
                     }
@@ -426,7 +435,7 @@ const LibrarySidebar: React.FC = () => {
         });
         
         return categorized;
-    };
+    }, [dateFnsLocale])
 
     const sidebarItems = useMemo(() => {
         const gamesJoined = [...games.filter(game => !gameJoinsPopulated.some(join => (join?.clients?.[game.source as keyof typeof join.clients] as NormalizedGame)?.id === game.id)), ...gameJoinsPopulated.map(transformGameJoinIntoUsableFormat)];
@@ -451,7 +460,7 @@ const LibrarySidebar: React.FC = () => {
                     <DEADCODELogo className="text-5xl -mb-2" />
                     {gamesJoined.length > 0 ?
                         <>
-                            <span>No games match your filters.</span>
+                            <span>{t("library.sidebar.empty.emptyAfterFilters")}</span>
                             {filters.search.length > 0 && <span className="flex flex-row items-center gap-1.5 text-white max-w-72 text-sm"><span className="material-symbols">search</span><span className="text-ellipsis overflow-hidden whitespace-nowrap pr-1">{filters.search}</span></span>}
                             <span className="flex flex-row items-center gap-2 text-white">
                                 {filters.favourite && <span className="material-symbols ms-filled dark:text-red-400 text-red-500">favorite</span>}
@@ -459,7 +468,7 @@ const LibrarySidebar: React.FC = () => {
                             </span>
                         </>
                         :
-                        <span>No games found in the library.</span>
+                        <span>{t("library.sidebar.empty.emptyLibrary")}</span>
                     }
                 </li>
             );
@@ -477,49 +486,58 @@ const LibrarySidebar: React.FC = () => {
                 const neverPlayed = entries.find(([cat]) => cat === "Never Played");
                 const futureGames = entries.find(([cat]) => cat === "what the actual fuck how lol");
                 
-                // Current year months
+                // Current year months (no space, not special)
                 const currentYearMonths = entries.filter(([cat]) => 
-                    !cat.includes(" ") && // No space means it's just a month name
+                    !cat.includes(" ") && 
                     cat !== "Recent" && 
                     cat !== "Never Played" &&
                     cat !== "what the actual fuck how lol"
                 );
-                
                 // Previous years (format: "Month Year")
                 const previousYears = entries.filter(([cat]) => 
-                    cat.includes(" ") && // Has a space (Month Year format)
+                    cat.includes(" ") && 
                     cat !== "Recent" && 
                     cat !== "Never Played" &&
                     cat !== "what the actual fuck how lol"
                 );
-                
-                // Sort months by their natural order (Jan-Dec)
+                // Sort months by their order in the year using their month index
                 currentYearMonths.sort((a, b) => {
-                    const monthA = monthNames.findIndex(m => m === a[0]);
-                    const monthB = monthNames.findIndex(m => m === b[0]);
+                    // Parse month index from localized month name
+                    const getMonthIndex = (monthName: string) => {
+                        for (let i = 0; i < 12; i++) {
+                            const d = new Date(2000, i, 1);
+                            if (format(d, 'LLLL', { locale: dateFnsLocale }) === monthName) return i;
+                        }
+                        return -1;
+                    };
+                    const monthA = getMonthIndex(a[0]);
+                    const monthB = getMonthIndex(b[0]);
                     return sorting.direction === "desc" ? monthA - monthB : monthB - monthA;
                 });
-                
                 // Sort previous years by year and then by month
                 previousYears.sort((a, b) => {
                     const [monthA, yearA] = a[0].split(" ");
                     const [monthB, yearB] = b[0].split(" ");
-                    
                     if (yearA !== yearB) {
-                        // Sort by year first
                         return sorting.direction === "desc" 
                             ? parseInt(yearA) - parseInt(yearB) 
                             : parseInt(yearB) - parseInt(yearA);
                     } else {
-                        // If same year, sort by month
-                        const monthIndexA = monthNames.findIndex(m => m === monthA);
-                        const monthIndexB = monthNames.findIndex(m => m === monthB);
+                        // If same year, sort by month index
+                        const getMonthIndex = (monthName: string) => {
+                            for (let i = 0; i < 12; i++) {
+                                const d = new Date(2000, i, 1);
+                                if (format(d, 'LLLL', { locale: dateFnsLocale }) === monthName) return i;
+                            }
+                            return -1;
+                        };
+                        const monthIndexA = getMonthIndex(monthA);
+                        const monthIndexB = getMonthIndex(monthB);
                         return sorting.direction === "desc" 
                             ? monthIndexA - monthIndexB 
                             : monthIndexB - monthIndexA;
                     }
                 });
-                
                 // Assemble categories in appropriate order based on sort direction
                 if (sorting.direction === "desc") {
                     entries = [
@@ -530,7 +548,6 @@ const LibrarySidebar: React.FC = () => {
                         ...(futureGames ? [futureGames] : [])
                     ];
                 } else {
-                    // For descending (newest first): Future, Recent, Current Year (Dec-Jan), Previous Years (newest to oldest), Never Played
                     entries = [
                         ...(futureGames ? [futureGames] : []),
                         ...(recent ? [recent] : []),
@@ -553,92 +570,104 @@ const LibrarySidebar: React.FC = () => {
                     ...(uncategorized ? [uncategorized] : [])
                 ];
             }
-            
-            return entries.filter(([,games]) => games.length > 0).map(([category, categoryGames]) => (
-                <div key={category} className="flex flex-col gap-0.5 group/category last:*:mb-2">
-                    {/* Category header */}
-                    <li>
-                        <label 
-                            className="flex flex-row items-center gap-2 py-1.5 px-2.5 bg-notQuiteBlack/10 dark:bg-notQuiteWhite/10 hover:bg-notQuiteBlack/20 dark:hover:bg-notQuiteWhite/20 rounded-md mb-2 first:mt-0 cursor-pointer transition-colors duration-200 ease-in-out"
-                            onContextMenu={(e) => {
-                                // Determine if this is Favorites, a user collection, or Uncategorized
-                                const isFavorites = category === "Favourites";
-                                const isUncategorized = category === "Uncategorized";
-                                const isUserDefined = !isFavorites && !isUncategorized;
-                                
-                                handleCollectionContextMenu(
-                                    e,
-                                    category,
-                                    isUserDefined,
-                                    isFavorites
-                                );
-                            }}
-                        >
-                            <span className="font-medium">
-                                {editingCollectionId === category ? (
-                                    <CollectionNameEditor
-                                        initialName={category}
-                                        onSave={(newName) => saveCollectionName(category, newName)}
-                                        onCancel={() => setEditingCollectionId(null)}
-                                    />
-                                ) : (
-                                    category
-                                )}
-                            </span>
-                            <label className="ml-auto text-sm text-notQuiteBlack dark:text-notQuiteWhite material-symbols has-[input:checked]:after:content-['add'] has-[input:not(:checked)]:after:content-['remove']">
-                                <input 
-                                    type="checkbox" 
-                                    className="hidden" 
-                                    ref={(el: HTMLInputElement | null) => {
-                                        collectionCheckboxRefs.current[category] = el;
-                                    }}
-                                />
-                            </label>
-                        </label>
-                    </li>
 
-                    {/* Category games */}
-                    {categoryGames.map((game) => (
-                        <Link
-                            draggable={false}
-                            to={`/library/game/${typeof game.source === "object" ? "" : `${game.source}-`}${game.id}`}
-                            key={`${category}-${typeof game.source === "object" ? "join" : game.source}-${game.id}`}
-                            className="no-underline no-user-drag m-0 group-has-[input:checked]/category:hidden"
-                        >
-                            <li
-                                className="flex flex-row items-center gap-2 p-1.5 rounded-md hover:bg-white/25 transition-colors duration-200 m-0 relative overflow-hidden group/game-item"
-                                onContextMenu={(e) => handleGameContextMenu(e, game)}
+            console.log(entries);
+            
+            return entries.filter(([,games]) => games.length > 0).map(([category, categoryGames]) => {
+                const isFavourites = category === "Favourites";
+                const isUncategorized = category === "Uncategorized";
+                const isUserDefined = !isFavourites && !isUncategorized;
+                const isRecent = category === "Recent" && sorting.sort === "recent";
+                const isNeverPlayed = category === "Never Played" && sorting.sort === "recent";
+                const isImpossible = category === "what the actual fuck how lol" && sorting.sort === "recent";
+                if (isFavourites) { category = t("library.shared.favourites") }
+                else if (isUncategorized) { category = t("library.sidebar.uncategorized") }
+                else if (isRecent) { category = t("library.sidebar.recent") }
+                else if (isNeverPlayed) { category = t("library.sidebar.neverPlayed") }
+                else if (isImpossible) { category = t("library.sidebar.wtflolhow") }
+
+                return (
+                    <div key={category} className="flex flex-col gap-0.5 group/category last:*:mb-2">
+                        {/* Category header */}
+                        <li>
+                            <label
+                                className="flex flex-row items-center gap-2 py-1.5 px-2.5 bg-notQuiteBlack/10 dark:bg-notQuiteWhite/10 hover:bg-notQuiteBlack/20 dark:hover:bg-notQuiteWhite/20 rounded-md mb-2 first:mt-0 cursor-pointer transition-colors duration-200 ease-in-out"
+                                onContextMenu={(e) => {
+                                    handleCollectionContextMenu(
+                                        e,
+                                        category,
+                                        isUserDefined,
+                                        isFavourites,
+                                        sorting.sort === "recent"
+                                    );
+                                }}
                             >
-                                <div className={getGameStateGradient(game)} />
-                                <div className="flex flex-row items-center gap-2 flex-1">
-                                    <img
-                                        draggable={false}
-                                        src={getGameIcon(game)}
-                                        alt={typeof game.source === 'string' ? getLocalizedGameName(game) : getLocalizedGameName(game.source[game.defaultClient])}
-                                        className="w-6 h-6 no-user-drag rounded-[4px]"
+                                <span className="font-medium">
+                                    {editingCollectionId === category ? (
+                                        <CollectionNameEditor
+                                            initialName={category}
+                                            onSave={(newName) => saveCollectionName(category, newName)}
+                                            onCancel={() => setEditingCollectionId(null)}
+                                        />
+                                    ) : (
+                                        category
+                                    )}
+                                </span>
+                                <label className="ml-auto text-sm text-notQuiteBlack dark:text-notQuiteWhite material-symbols has-[input:checked]:after:content-['add'] has-[input:not(:checked)]:after:content-['remove']">
+                                    <input
+                                        type="checkbox"
+                                        className="hidden"
+                                        ref={(el: HTMLInputElement | null) => {
+                                            collectionCheckboxRefs.current[category] = el;
+                                        }}
                                     />
-                                    {typeof game.source === 'object' ?
-                                        Object.entries(game.source).map(([source], index) => getSourceIcon(source, index))
-                                        : getSourceIcon(game.source as string)}
-                                    <span className="truncate">
-                                        {typeof game.source === 'string' ? getLocalizedGameName(game) : getLocalizedGameName(game.source[game.defaultClient])}
-                                    </span>
-                                    {getGameStateIndicator(game)}
-                                </div>
-                            </li>
-                        </Link>
-                    ))}
-                </div>
-            ));
+                                </label>
+                            </label>
+                        </li>
+
+                        {/* Category games */}
+                        {categoryGames.map((game) => (
+                            <Link
+                                draggable={false}
+                                to={`/library/game/${typeof game.source === "object" ? "" : `${game.source}-`}${game.id}`}
+                                key={`${category}-${typeof game.source === "object" ? "join" : game.source}-${game.id}`}
+                                className="no-underline no-user-drag m-0 group-has-[input:checked]/category:hidden"
+                            >
+                                <li
+                                    className="flex flex-row items-center gap-2 p-1.5 rounded-md hover:bg-white/25 transition-colors duration-200 m-0 relative overflow-hidden group/game-item"
+                                    onContextMenu={(e) => handleGameContextMenu(e, game)}
+                                >
+                                    <div className={getGameStateGradient(game)} />
+                                    <div className="flex flex-row items-center gap-2 flex-1">
+                                        <img
+                                            draggable={false}
+                                            src={getGameIcon(game)}
+                                            alt={typeof game.source === 'string' ? getLocalizedGameName(game) : getLocalizedGameName(game.source[game.defaultClient])}
+                                            className="w-6 h-6 no-user-drag rounded-[4px]"
+                                        />
+                                        {typeof game.source === 'object' ?
+                                            Object.entries(game.source).map(([source], index) => <GetSourceIcon source={source} key={index} keyProp={index} />)
+                                            : <GetSourceIcon source={game.source as string} key={0} keyProp={0} />}
+                                        <span className="truncate">
+                                            {typeof game.source === 'string' ? getLocalizedGameName(game) : getLocalizedGameName(game.source[game.defaultClient])}
+                                        </span>
+                                        {getGameStateIndicator(game)}
+                                    </div>
+                                </li>
+                            </Link>
+                        ))}
+                    </div>
+                );
+            });
         })();
-    }, [sorting, editingCollectionId, collections, favourites, gameJoinsPopulated, gameJoins, games, filters, filterExpanded, sortingExpanded])
+    }, [sorting, editingCollectionId, collections, favourites, gameJoinsPopulated, gameJoins, games, filters, filterExpanded, sortingExpanded, categorizeGamesByLastPlayedTime, chunkGamesByCategory, sortCollectionsByName, handleCollectionContextMenu, saveCollectionName, setEditingCollectionId, transformGameJoinIntoUsableFormat, filterOutBySearch, filterOutUnplayableGames, filterOutUnfavouritedGames, sortByName, sortByRecent, getLocalizedGameName, getGameStateIndicator, getGameStateGradient, getGameIcon, GetSourceIcon, DEADCODELogo, cn, dateFnsLocale])
 
     return (
         <div className="flex flex-col w-[24rem] border-0 border-r border-notQuiteBlack/10 dark:border-notQuiteWhite/10 border-solid">
             <div className="px-4 flex flex-col justify-center mb-2 gap-2 group has-[#filter-games:checked]:mb-11 transition-[margin-bottom] duration-300 ease-in-out">
                 <div className="flex flex-row items-center gap-2 first:*:rounded-tl-xl z-[2] dark:bg-night bg-fullMoon pt-4 relative">
-                    <Link to="/library" className="text-md text-center text-notQuiteBlack bg-notQuiteBlack/10 hover:bg-notQuiteBlack/20 dark:text-notQuiteWhite dark:bg-notQuiteWhite/10 hover:dark:bg-notQuiteWhite/20 flex-1 py-1 rounded-md transition-colors duration-200 m-0 no-underline">Home</Link>
-                    <Link to="/library/collections" className="text-md text-center text-notQuiteBlack bg-notQuiteBlack/10 hover:bg-notQuiteBlack/20 dark:text-notQuiteWhite dark:bg-notQuiteWhite/10 hover:dark:bg-notQuiteWhite/20 flex-1 py-1 rounded-md transition-colors duration-200 m-0 no-underline">Collections</Link>
+                    <Link to="/library" className="text-md text-center text-notQuiteBlack bg-notQuiteBlack/10 hover:bg-notQuiteBlack/20 dark:text-notQuiteWhite dark:bg-notQuiteWhite/10 hover:dark:bg-notQuiteWhite/20 flex-1 py-1 rounded-md transition-colors duration-200 m-0 no-underline max-w-[152px] overflow-clip whitespace-nowrap">{t("library.sidebar.homeButton")}</Link>
+                    <Link to="/library/collections" className="text-md text-center text-notQuiteBlack bg-notQuiteBlack/10 hover:bg-notQuiteBlack/20 dark:text-notQuiteWhite dark:bg-notQuiteWhite/10 hover:dark:bg-notQuiteWhite/20 flex-1 py-1 rounded-md transition-colors duration-200 m-0 no-underline max-w-[152px] overflow-clip whitespace-nowrap">{t("library.shared.collections")}</Link>
                     <label htmlFor="filter-games" className="flex material-symbols text-notQuiteBlack dark:text-notQuiteWhite bg-notQuiteBlack/10 hover:bg-notQuiteBlack/20 dark:bg-notQuiteWhite/10 hover:dark:bg-notQuiteWhite/20 p-1 aspect-square rounded-md transition-colors duration-200 m-0 no-underline cursor-pointer relative z-0 group/filter-button">
                         filter_list
                         <input type="checkbox" id="filter-games" className="hidden" checked={showFilters} onChange={() => setShowFilters(!showFilters)} />
@@ -663,9 +692,9 @@ const LibrarySidebar: React.FC = () => {
                     <div className="flex flex-row items-center justify-end gap-1.5 material-symbols text-notQuiteBlack dark:text-notQuiteWhite bg-notQuiteBlack/10 hover:bg-notQuiteBlack/20 dark:bg-notQuiteWhite/10 hover:dark:bg-notQuiteWhite/20 p-1 rounded-md transition-[color,background-color,border-color,text-decoration-color,fill,stroke,max-width] duration-200 m-0 h-6 no-underline cursor-pointer max-w-6 has-[#filter-expanded:checked]:max-w-[6rem] w-fit flex-shrink-0 overflow-hidden ease-in-out">
                         <Tooltip containerClassName="flex" content={
                             <div className="flex flex-col gap-1">
-                                <strong>Filter by favourite status</strong>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">favorite</span>Show all games</span>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols dark:text-red-400 text-red-500 ms-filled">favorite</span>Show only favourite games</span>
+                                <strong>{t("library.sidebar.filters.favouriteStatus.description")}</strong>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">favorite</span>{t("library.sidebar.filters.favouriteStatus.unfiltered")}</span>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols dark:text-red-400 text-red-500 ms-filled">favorite</span>{t("library.sidebar.filters.favouriteStatus.favourites")}</span>
                             </div>
                         } position="right" alignment="start">
                             <label htmlFor="filter-favourite" className="aspect-square text-xl leading-none p-0.5 hover:bg-notQuiteBlack/20 dark:hover:bg-notQuiteWhite/20 rounded-md transition-colors duration-200 cursor-pointer dark:has-[#filter-favourite:checked]:text-red-400 has-[#filter-favourite:checked]:text-red-500 filled-when-checked">
@@ -675,9 +704,9 @@ const LibrarySidebar: React.FC = () => {
                         </Tooltip>
                         <Tooltip containerClassName="flex" content={
                             <div className="flex flex-col gap-1">
-                                <strong>Filter by launchability</strong>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">play_circle</span>Show all games</span>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols dark:text-green-400 text-green-500 ms-filled">play_circle</span>Show only launchable games</span>
+                                <strong>{t("library.sidebar.filters.launchability.description")}</strong>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">play_circle</span>{t("library.sidebar.filters.launchability.unfiltered")}</span>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols dark:text-green-400 text-green-500 ms-filled">play_circle</span>{t("library.sidebar.filters.launchability.launchable")}</span>
                             </div>
                         } position="right" alignment="start">
                             <label htmlFor="filter-launchable" className="aspect-square text-xl leading-none p-0.5 hover:bg-notQuiteBlack/20 dark:hover:bg-notQuiteWhite/20 rounded-md transition-colors duration-200 cursor-pointer dark:has-[#filter-launchable:checked]:text-green-400 has-[#filter-launchable:checked]:text-green-500 filled-when-checked">
@@ -693,9 +722,9 @@ const LibrarySidebar: React.FC = () => {
                     <div className="flex flex-row items-center justify-end gap-1.5 material-symbols text-notQuiteBlack dark:text-notQuiteWhite bg-notQuiteBlack/10 hover:bg-notQuiteBlack/20 dark:bg-notQuiteWhite/10 hover:dark:bg-notQuiteWhite/20 p-1 rounded-md transition-[color,background-color,border-color,text-decoration-color,fill,stroke,max-width] duration-200 m-0 h-6 no-underline cursor-pointer max-w-6 has-[#sort-expanded:checked]:max-w-[6rem] w-fit flex-shrink-0 overflow-hidden ease-in-out">
                         <Tooltip containerClassName="flex" content={
                             <div className="flex flex-col gap-1">
-                                <strong>Sorting options</strong>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">sort_by_alpha</span>Title</span>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">history</span>Last launch time</span>
+                                <strong>{t("library.sidebar.sorting.types.description")}</strong>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">sort_by_alpha</span>{t("library.sidebar.sorting.types.title")}</span>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">history</span>{t("library.sidebar.sorting.types.recent")}</span>
                             </div>
                         } position="right" alignment="start">
                             <button className="aspect-square text-xl leading-none p-0.5 hover:bg-notQuiteBlack/20 dark:hover:bg-notQuiteWhite/20 rounded-md transition-colors duration-200"
@@ -706,9 +735,9 @@ const LibrarySidebar: React.FC = () => {
                         </Tooltip>
                         <Tooltip containerClassName="flex" content={
                             <div className="flex flex-col gap-1">
-                                <strong>Sorting direction</strong>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">arrow_upward</span>Ascending</span>
-                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">arrow_downward</span>Descending</span>
+                                <strong>{t("library.sidebar.sorting.direction.description")}</strong>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">arrow_upward</span>{t("library.sidebar.sorting.direction.asc")}</span>
+                                <span className="flex flex-row items-center gap-1"><span className="material-symbols">arrow_downward</span>{t("library.sidebar.sorting.direction.desc")}</span>
                             </div>
                         } position="right" alignment="start">
                             <button className="aspect-square text-xl leading-none p-0.5 hover:bg-notQuiteBlack/20 dark:hover:bg-notQuiteWhite/20 rounded-md transition-colors duration-200"

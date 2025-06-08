@@ -1,154 +1,315 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React, { type JSX } from "react"
+import { cn } from "@/lib/utils"
 
 interface MarkdownTextProps {
-    children: string;
-    className?: string;
+  children: string
+    className?: string,
+    mediaMap?: Record<string, string>
 }
 
-type TokenType = 'text' | 'bold' | 'italic' | 'strikethrough' | 'underline' | 'link' | 'image';
+type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "link" | "image"
+type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList"
+type ListType = "unordered" | "ordered"
 
-interface Token {
-    type: TokenType;
-    content: string | Token[];
-    url?: string;
-    alt?: string;
+type Token =
+  | { type: Extract<TokenType, "text">; content: string }
+  | { type: Extract<TokenType, "bold" | "italic" | "strikethrough" | "underline">; content: Token[] }
+  | { type: Extract<TokenType, "link">; content: Token[]; url: string }
+  | { type: Extract<TokenType, "image">; content: string; url: string; alt: string }
+
+interface ListItem {
+  content: Token[]
+  level: number
+  type: ListType
+  children?: ListItem[]
 }
 
-const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className }) => {
-    const tokenize = (text: string): Token[] => {
-        const tokens: Token[] = [];
-        let currentText = '';
-        let i = 0;
+interface Block {
+  type: BlockType
+  content: Token[]
+  level?: number // For headings (1-6)
+  items?: ListItem[] // For lists
+}
+
+const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaMap }) => {
+    const tokenizeInline = (text: string): Token[] => {
+        const tokens: Token[] = []
+        let currentText = ""
+        let i = 0
 
         const pushText = () => {
             if (currentText) {
-                tokens.push({ type: 'text', content: currentText });
-                currentText = '';
+                tokens.push({ type: "text", content: currentText })
+                currentText = ""
             }
-        };
+        }
 
         const findClosingMarker = (marker: string, startIndex: number): number => {
-            let depth = 1;
-            let pos = startIndex;
-            
+            let depth = 1
+            let pos = startIndex
+
             while (pos < text.length) {
                 if (text.startsWith(marker, pos)) {
-                    depth--;
+                    depth--
                     if (depth === 0) {
-                        return pos;
+                        return pos
                     }
-                    pos += marker.length;
+                    pos += marker.length
                 } else {
-                    pos++;
+                    pos++
                 }
             }
-            return -1;
-        };
+            return -1
+        }
 
         while (i < text.length) {
             // Check for image pattern ![alt](url)
-            if (text.startsWith('![', i)) {
-                const closeBracket = text.indexOf(']', i);
-                if (closeBracket !== -1 && text[closeBracket + 1] === '(') {
-                    const closeParens = text.indexOf(')', closeBracket);
+            if (text.startsWith("![", i)) {
+                const closeBracket = text.indexOf("]", i)
+                if (closeBracket !== -1 && text[closeBracket + 1] === "(") {
+                    const closeParens = text.indexOf(")", closeBracket)
                     if (closeParens !== -1) {
-                        pushText();
-                        const altText = text.slice(i + 2, closeBracket);
-                        const url = text.slice(closeBracket + 2, closeParens);
+                        pushText()
+                        const altText = text.slice(i + 2, closeBracket)
+                        const url = text.slice(closeBracket + 2, closeParens)
                         tokens.push({
-                            type: 'image',
-                            content: '',
+                            type: "image",
+                            content: "",
                             url,
-                            alt: altText
-                        });
-                        i = closeParens + 1;
-                        continue;
+                            alt: altText,
+                        })
+                        i = closeParens + 1
+                        continue
                     }
                 }
             }
 
             // Check for link pattern [text](url)
-            if (text[i] === '[' && text[i - 1] !== '!') {  // Make sure it's not an image
-                const closeBracket = text.indexOf(']', i);
-                if (closeBracket !== -1 && text[closeBracket + 1] === '(') {
-                    const closeParens = text.indexOf(')', closeBracket);
+            if (text[i] === "[" && text[i - 1] !== "!") {
+                // Make sure it's not an image
+                const closeBracket = text.indexOf("]", i)
+                if (closeBracket !== -1 && text[closeBracket + 1] === "(") {
+                    const closeParens = text.indexOf(")", closeBracket)
                     if (closeParens !== -1) {
-                        pushText();
-                        const linkText = text.slice(i + 1, closeBracket);
-                        const url = text.slice(closeBracket + 2, closeParens);
+                        pushText()
+                        const linkText = text.slice(i + 1, closeBracket)
+                        const url = text.slice(closeBracket + 2, closeParens)
                         tokens.push({
-                            type: 'link',
-                            content: tokenize(linkText),
-                            url
-                        });
-                        i = closeParens + 1;
-                        continue;
+                            type: "link",
+                            content: tokenizeInline(linkText),
+                            url,
+                        })
+                        i = closeParens + 1
+                        continue
                     }
                 }
             }
 
             // Check for markdown patterns
             const patterns = [
-                { marker: '**', type: 'bold' as const },
-                { marker: '__', type: 'underline' as const },
-                { marker: '~~', type: 'strikethrough' as const },
-                { marker: '_', type: 'italic' as const }
-            ];
+                { marker: "**", type: "bold" as const },
+                { marker: "__", type: "underline" as const },
+                { marker: "~~", type: "strikethrough" as const },
+                { marker: "_", type: "italic" as const },
+            ]
 
-            let matched = false;
+            let matched = false
             for (const { marker, type } of patterns) {
                 if (text.startsWith(marker, i)) {
-                    const closeIndex = findClosingMarker(marker, i + marker.length);
+                    const closeIndex = findClosingMarker(marker, i + marker.length)
                     if (closeIndex !== -1) {
-                        pushText();
-                        const innerContent = text.slice(i + marker.length, closeIndex);
+                        pushText()
+                        const innerContent = text.slice(i + marker.length, closeIndex)
                         tokens.push({
                             type,
-                            content: tokenize(innerContent)
-                        });
-                        i = closeIndex + marker.length;
-                        matched = true;
-                        break;
+                            content: tokenizeInline(innerContent),
+                        })
+                        i = closeIndex + marker.length
+                        matched = true
+                        break
                     }
                 }
             }
 
             if (!matched) {
-                currentText += text[i];
-                i++;
+                currentText += text[i]
+                i++
             }
         }
 
-        pushText();
-        return tokens;
-    };
+        pushText()
+        return tokens
+    }
+
+    const parseBlocks = (text: string): Block[] => {
+        const lines = text.split("\n")
+        const blocks: Block[] = []
+
+        let currentListItems: Array<{ content: Token[]; level: number; type: ListType }> = []
+
+        const finishCurrentList = () => {
+            if (currentListItems.length > 0) {
+                const hierarchicalItems = buildListHierarchy(currentListItems)
+
+                // Group by top-level list type for rendering
+                let currentGroup: ListItem[] = []
+                let currentGroupType: ListType | null = null
+
+                for (const item of hierarchicalItems) {
+                    if (currentGroupType === null || currentGroupType === item.type) {
+                        currentGroupType = item.type
+                        currentGroup.push(item)
+                    } else {
+                        // Type changed, finish current group and start new one
+                        blocks.push({
+                            type: currentGroupType === "ordered" ? "orderedList" : "unorderedList",
+                            content: [],
+                            items: currentGroup,
+                        })
+                        currentGroup = [item]
+                        currentGroupType = item.type
+                    }
+                }
+
+                // Add the final group
+                if (currentGroup.length > 0 && currentGroupType) {
+                    blocks.push({
+                        type: currentGroupType === "ordered" ? "orderedList" : "unorderedList",
+                        content: [],
+                        items: currentGroup,
+                    })
+                }
+
+                currentListItems = []
+            }
+        }
+
+        const buildListHierarchy = (items: Array<{ content: Token[]; level: number; type: ListType }>): ListItem[] => {
+            const result: ListItem[] = []
+            const stack: ListItem[] = []
+
+            for (const item of items) {
+                const listItem: ListItem = {
+                    content: item.content,
+                    level: item.level,
+                    type: item.type,
+                    children: [],
+                }
+
+                // Find the correct parent based on indentation level
+                while (stack.length > 0 && stack[stack.length - 1].level >= item.level) {
+                    stack.pop()
+                }
+
+                if (stack.length === 0) {
+                    // Top-level item
+                    result.push(listItem)
+                } else {
+                    // Child item
+                    const parent = stack[stack.length - 1]
+                    if (!parent.children) parent.children = []
+                    parent.children.push(listItem)
+                }
+
+                stack.push(listItem)
+            }
+
+            return result
+        }
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i]
+
+            // Check for unordered list item (- or * followed by space, with optional indentation)
+            const unorderedMatch = line.match(/^(\s*)[-*]\s+(.+)$/)
+            if (unorderedMatch) {
+                const indentation = unorderedMatch[1]
+                const content = unorderedMatch[2]
+                const level = Math.floor(indentation.length / 2) // 2 spaces = 1 level
+
+                currentListItems.push({
+                    content: tokenizeInline(content),
+                    level,
+                    type: "unordered",
+                })
+                continue
+            }
+
+            // Check for ordered list item (number followed by . and space, with optional indentation)
+            const orderedMatch = line.match(/^(\s*)\d+\.\s+(.+)$/)
+            if (orderedMatch) {
+                const indentation = orderedMatch[1]
+                const content = orderedMatch[2]
+                const level = Math.floor(indentation.length / 2) // 2 spaces = 1 level
+
+                currentListItems.push({
+                    content: tokenizeInline(content),
+                    level,
+                    type: "ordered",
+                })
+                continue
+            }
+
+            // If we reach here, we're not in a list item
+            // Finish any current list
+            finishCurrentList()
+
+            // Check for heading
+            const headingMatch = line.match(/^(#{1,6})\s+(.*)$/)
+            if (headingMatch) {
+                const level = headingMatch[1].length
+                const content = headingMatch[2]
+                blocks.push({
+                    type: "heading",
+                    level,
+                    content: tokenizeInline(content),
+                })
+            } else if (line.trim()) {
+                // Non-empty line - treat as paragraph
+                blocks.push({
+                    type: "paragraph",
+                    content: tokenizeInline(line),
+                })
+            } else {
+                // Empty line - add empty paragraph to preserve spacing
+                blocks.push({
+                    type: "paragraph",
+                    content: [{ type: "text", content: "" }],
+                })
+            }
+        }
+
+        // Finish any remaining list
+        finishCurrentList()
+
+        return blocks
+    }
 
     const renderContent = (content: string | Token[]): React.ReactNode => {
-        if (typeof content === 'string') {
-            return content;
+        if (typeof content === "string") {
+            return content
         }
-        return renderTokens(content);
-    };
+        return renderTokens(content)
+    }
 
     const renderTokens = (tokens: Token[]): React.ReactNode => {
         return (
             <React.Fragment>
                 {tokens.map((token, index) => {
                     switch (token.type) {
-                    case 'text':
-                        return <React.Fragment key={index}>{renderContent(token.content)}</React.Fragment>;
-                    case 'bold':
-                        return <strong key={index}>{renderContent(token.content)}</strong>;
-                    case 'italic':
-                        return <em key={index}>{renderContent(token.content)}</em>;
-                    case 'strikethrough':
-                        return <del key={index}>{renderContent(token.content)}</del>;
-                    case 'underline':
-                        return <u key={index}>{renderContent(token.content)}</u>;
-                    case 'link':
+                    case "text":
+                        return <React.Fragment key={index}>{renderContent(token.content)}</React.Fragment>
+                    case "bold":
+                        return <strong key={index}>{renderContent(token.content)}</strong>
+                    case "italic":
+                        return <em key={index}>{renderContent(token.content)}</em>
+                    case "strikethrough":
+                        return <del key={index}>{renderContent(token.content)}</del>
+                    case "underline":
+                        return <u key={index}>{renderContent(token.content)}</u>
+                    case "link":
                         return (
-                            <a 
+                            <a
                                 key={index}
                                 href={token.url}
                                 target="_blank"
@@ -157,29 +318,93 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className }) => {
                             >
                                 {renderContent(token.content)}
                             </a>
-                        );
-                    case 'image':
+                        )
+                    case "image":
                         return (
                             <img
                                 key={index}
-                                src={token.url?.startsWith('http') ? token.url : `local://${token.url}`}
-                                alt={token.alt || ''}
+                                src={mediaMap?.[token.url] || token.url?.startsWith("http") ? token.url : `local://${token.url}`}
+                                alt={token.alt || ""}
                                 className="max-w-full h-auto my-4 rounded-lg shadow-lg"
                             />
-                        );
+                        )
                     default:
-                        return null;
+                        return null
                     }
                 })}
             </React.Fragment>
-        );
-    };
+        )
+    }
+
+    const renderListItems = (items: ListItem[]): React.ReactNode => {
+        return items.map((item, index) => (
+            <li key={index}>
+                {renderTokens(item.content)}
+                {item.children && item.children.length > 0 && (
+                    <div className="mt-1">
+                        {item.children.every((child) => child.type === "ordered") ? (
+                            <ol className="list-decimal pl-6 space-y-1">{renderListItems(item.children)}</ol>
+                        ) : (
+                            <ul className="list-disc pl-6 space-y-1">{renderListItems(item.children)}</ul>
+                        )}
+                    </div>
+                )}
+            </li>
+        ))
+    }
+
+    const renderBlock = (block: Block, index: number): React.ReactNode => {
+        if (block.type === "heading") {
+            const HeadingTag = `h${block.level}` as keyof JSX.IntrinsicElements
+            const headingSizes = {
+                1: cn("text-3xl font-bold mb-4 mt-6 border-0 border-solid border-b pb-2 border-neutral-500/70"),
+                2: cn("text-2xl font-bold mb-3 mt-5 border-0 border-solid border-b pb-2 border-neutral-500/70"),
+                3: cn("text-xl font-bold mb-2 mt-4"),
+                4: cn("text-lg font-bold mb-2 mt-3"),
+                5: cn("text-base font-bold mb-1 mt-2"),
+                6: cn("text-sm font-bold mb-1 mt-2"),
+            }
+
+            return (
+                <HeadingTag key={index} className={headingSizes[block.level as keyof typeof headingSizes]}>
+                    {renderTokens(block.content)}
+                </HeadingTag>
+            )
+        } else if (block.type === "unorderedList") {
+            return (
+                <ul key={index} className="list-disc pl-6 mb-4 space-y-1">
+                    {block.items && renderListItems(block.items)}
+                </ul>
+            )
+        } else if (block.type === "orderedList") {
+            return (
+                <ol key={index} className="list-decimal pl-6 mb-4 space-y-1">
+                    {block.items && renderListItems(block.items)}
+                </ol>
+            )
+        } else {
+            // Paragraph
+            const isEmpty = block.content.length === 1 && block.content[0].type === "text" && block.content[0].content === ""
+
+            if (isEmpty) {
+                return <></> /*<br key={index} />*/
+            }
+
+            return (
+                <p key={index} className="mb-2">
+                    {renderTokens(block.content)}
+                </p>
+            )
+        }
+    }
+
+    const blocks = parseBlocks(children)
 
     return (
-        <span className={cn("whitespace-pre-wrap", className)}>
-            {renderTokens(tokenize(children))}
-        </span>
-    );
-};
+        <div className={cn("whitespace-pre-wrap", className)}>
+            {blocks.map((block, index) => renderBlock(block, index))}
+        </div>
+    )
+}
 
-export default MarkdownText; 
+export default MarkdownText

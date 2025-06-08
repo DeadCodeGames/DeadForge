@@ -34,6 +34,7 @@ interface ArticleList {
 const ARTICLES_UPDATE_INTERVAL = 1000 * 60 * 60; // 1 hour
 
 async function shouldUpdateArticles(): Promise<boolean> {
+    return true;
     const articlesPath = path.join(app.getPath('userData'), 'articles.json');
     if (!fs.existsSync(articlesPath)) {
         return true;
@@ -178,8 +179,7 @@ export async function updateArticles(force = false): Promise<{ success: boolean;
                 await downloadFile(remoteUrl, assetPath);
             }
 
-            // Download and read article content
-            article.content = await downloadMarkdownContent(article.content, article.slug);
+            await downloadMarkdownContent(article.content, article.slug);
         }
 
         // Save the articles list locally
@@ -203,6 +203,7 @@ export function getArticles(): ArticleList {
 
         // For each article, ensure we have the content
         for (const article of articles.articles) {
+            console.log(article)
             const contentPath = path.join(app.getPath('userData'), 'app_assets', 'articles', article.slug, 'content.md');
             if (fs.existsSync(contentPath)) {
                 article.content = fs.readFileSync(contentPath, 'utf-8');

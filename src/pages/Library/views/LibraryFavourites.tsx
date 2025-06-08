@@ -4,9 +4,11 @@ import GameCard from "../components/GameCard";
 import type { NormalizedGame, NormalizedPseudoGameJoin, NormalizedGameJoin } from "@/types";
 import { resolveDefaultGameVendor } from "../utils/LibraryHelpers";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 const LibraryFavourites: React.FC = () => {
     const { games, gameJoins, favourites } = useContext(LibraryContext);
+    const { t } = useTranslation();
 
     // Transform game joins into usable format
     const gameJoinsPopulated = useMemo(() => gameJoins.map((join) => {
@@ -17,14 +19,14 @@ const LibraryFavourites: React.FC = () => {
                 Object.entries(join.clients).map(([key, value]) => {
                     return [key, games.find((game) => String(game.id) === String(value) && game.source === key)]
                 }),
-            ) as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            ) as unknown as Record<NormalizedGame["source"], NormalizedGame>,
         } as unknown as NormalizedGameJoin
     }), [games, gameJoins]);
 
     function transformGameJoinIntoUsableFormat(join: NormalizedGameJoin): NormalizedPseudoGameJoin {
         return {
             id: String(join.id),
-            source: join.clients as unknown as Record<"steam" | "epic" | "itch" | "osu" | "deadforge", NormalizedGame>,
+            source: join.clients as unknown as Record<NormalizedGame["source"], NormalizedGame>,
             type: "GameJoin",
             defaultClient: join.defaultClient,
             preferences: join.preferences,
@@ -63,9 +65,9 @@ const LibraryFavourites: React.FC = () => {
                     <div>
                         <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2 flex flex-row items-center">
                             <span className={cn("material-symbols align-middle mr-2 text-red-500", favoriteGames.length > 0 && "ms-filled")}>favorite</span>
-                            Favorites
+                            {t("library.shared.favourites")}
                         </h1>
-                        <p className="text-neutral-600 dark:text-neutral-400">Your most cherished games</p>
+                        <p className="text-neutral-600 dark:text-neutral-400">{t("library.shared.favouritesDescription")}</p>
                     </div>
                 </div>
 
@@ -86,9 +88,9 @@ const LibraryFavourites: React.FC = () => {
                 ) : (
                     <div className="flex flex-col items-center justify-center h-64 text-center">
                         <span className="material-symbols text-6xl opacity-30 mb-4">heart_broken</span>
-                        <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">No favorites yet</h3>
+                        <h3 className="text-xl font-medium dark:text-gray-300 text-gray-700 mb-2">{t("library.favouritesView.noFavourites")}</h3>
                         <p className="dark:text-gray-400 text-gray-600">
-                            Add games to your favorites to see them here
+                            {t("library.favouritesView.noFavouritesDescription")}
                         </p>
                     </div>
                 )}

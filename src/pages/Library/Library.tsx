@@ -326,6 +326,41 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
         }
     }, [collections, favourites, canSendCollections]);
 
+    useEffect(() => {
+        if (window.Electron.isTray) return;
+        const handleTrayGameLaunch = (_event: any, source: string, gameId: string, executable: string, args: string | string[]) => {
+            console.log(`Tray game launch: ${source}-${gameId}`);
+            setGameState(gameId, source, 'launching');
+            window.Electron.launchGame(source, gameId, executable, args).then(result => {
+                if (result.success) {
+                    setGameState(gameId, source, 'running');
+                } else {
+                    setGameState(gameId, source, 'idle');
+                }
+            });
+        };
+
+        const handleTrayGameStop = (_event: any, source: string, gameId: string) => {
+            console.log(`Tray game stop: ${source}-${gameId}`);
+            setGameState(gameId, source, 'stopping');
+            window.Electron.stopGame(source, gameId).then(result => {
+                if (result.success) {
+                    setGameState(gameId, source, 'idle');
+                } else {
+                    setGameState(gameId, source, 'running');
+                }
+            });
+        };
+
+        window.Electron.onTrayGameLaunch(handleTrayGameLaunch);
+        window.Electron.onTrayGameStop(handleTrayGameStop);
+
+        return () => {
+            window.Electron.onTrayGameLaunch(() => {});
+            window.Electron.onTrayGameStop(() => {});
+        }
+    }, []);
+
     return (
         <LibraryContext.Provider value={{ 
             games, 
