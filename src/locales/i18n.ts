@@ -52,7 +52,7 @@ i18n
         lng: 'en_001',
         fallbackLng: 'en_001',
         returnEmptyString: false,
-        pluralSeparator: ".",
+        pluralSeparator: "_",
         interpolation: {
             escapeValue: false
         },

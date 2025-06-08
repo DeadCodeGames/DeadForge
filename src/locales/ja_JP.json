@@ -15,9 +15,7 @@
     },
     "home": {
         "articles": {
-            "writtenBy": {
-                "other": "<0></0>によって書かれました"
-            },
+            "writtenBy_other": "<0></0>によって書かれました",
             "publishedOn": "{{date}}に公開",
             "lastEditedOn": "{{date}}に最終更新"
         }

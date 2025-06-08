@@ -15,10 +15,8 @@
     },
     "home": {
         "articles": {
-            "writtenBy": {
-                "one": "Napísal <0></0>",
-                "other": "Napísali <0></0>"
-            },
+            "writtenBy_one": "Napísal <0></0>",
+            "writtenBy_other": "Napísali <0></0>",
             "publishedOn": "Publikované {{date}}",
             "lastEditedOn": "Naposledy upravené {{date}}"
         }

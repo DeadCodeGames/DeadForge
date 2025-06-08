@@ -19,9 +19,7 @@
     },
     "home": {
         "articles": {
-            "writtenBy": {
-                "other": "Written by <0></0>"
-            },
+            "writtenBy_other": "Written by <0></0>",
             "publishedOn": "Published on {{date}}",
             "lastEditedOn": "Last edited on {{date}}"
         }
@@ -199,10 +197,8 @@
             "noCollections": "No collections yet",
             "noCollectionsDescription": "Create your first collection to organize your games",
             "noCollectionsCTA": "Create Collection",
-            "gameCount": {
-                "one": "{{count}} Game",
-                "other": "{{count}} Games"
-            },
+            "gameCount_one": "{{count}} Game",
+            "gameCount_other": "{{count}} Games",
             "header": {
                 "name": "Name",
                 "gameCount": "Game Count",
