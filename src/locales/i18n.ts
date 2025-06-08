@@ -13,6 +13,7 @@ import zh_CN from './zh_CN.json';
 import ko_KR from './ko_KR.json';
 import lol_US from './lol_US.json';
 import sk_SK from './sk_SK.json';
+import zh_TW from './zh_TW.json';
 const resources: Record<string, { translation: object }> = {
     cs_CZ: { translation: cs_CZ },
     de_DE: { translation: de_DE },
@@ -25,6 +26,7 @@ const resources: Record<string, { translation: object }> = {
     lol_US: { translation: lol_US },
     sk_SK: { translation: sk_SK },
     zh_CN: { translation: zh_CN },
+    zh_TW: { translation: zh_TW },
 };
 
 if (!window.App.isPackaged) resources.stringsDebug = { translation: unflatten(Object.fromEntries(Object.entries(flatten(en_001)!).map(([k]) => [k, k]))) };

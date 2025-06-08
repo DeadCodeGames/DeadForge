@@ -1,0 +1,117 @@
+{
+    "meta": {
+        "name": "繁體中文",
+        "emoji": "🇹🇼"
+    },
+    "sidebar": {
+        "home": "",
+        "library": "",
+        "arcade": "",
+        "store": "",
+        "settings": "",
+        "collapse": ""
+    },
+    "store": {
+        "urlCopied": ""
+    },
+    "tray": {
+        "exit": "",
+        "arcade": ""
+    },
+    "settings": {
+        "theming": {
+            "title": "",
+            "theme": "",
+            "themeDescription": "",
+            "systemTheme": "",
+            "darkTheme": "",
+            "lightTheme": "",
+            "windowFrame": "",
+            "windowFrameDescription": "",
+            "windowFrameAuto": "",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
+            "themeButtonInFrame": "",
+            "themeButtonInFrameDescription": "",
+            "language": "",
+            "languageDescription": "",
+            "languageShowIncomplete": "",
+            "languageShowIncompleteDescription": ""
+        },
+        "behavior": {
+            "title": "",
+            "defaultPage": "",
+            "defaultPageDescription": "",
+            "settingsWindow": "",
+            "settingsWindowDescription": "",
+            "useTray": "",
+            "useTrayDescription": "",
+            "autoStart": "",
+            "autoStartDescription": "",
+            "unavailableOnLinux": ""
+        },
+        "appData": {
+            "title": "",
+            "initialSetup": "",
+            "initialSetupDescription": "",
+            "replaySetup": "",
+            "dataManagement": "",
+            "dataManagementDescription": "",
+            "exportData": "",
+            "importData": "",
+            "resetData": "",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
+            "autoUpdate": "",
+            "autoUpdateDescription": "",
+            "betaUpdates": "",
+            "betaUpdatesDescription": "",
+            "languageUpdates": "",
+            "languageUpdatesDescription": ""
+        }
+    },
+    "library": {
+        "shared": {
+            "collections": "",
+            "launch": "",
+            "launchLauncher": "",
+            "play": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "noCollections": "",
+            "createCollection": ""
+        },
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            }
+        }
+    }
+}
