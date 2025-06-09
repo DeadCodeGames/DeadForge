@@ -22,8 +22,8 @@
             "publishedOn": "Publikované {{date}}",
             "lastEditedOn": "Naposledy upravené {{date}}",
             "writtenBy_one": "Napísal <0></0>",
-            "writtenBy_few": "",
-            "writtenBy_many": "",
+            "writtenBy_few": "Napísali <0></0>",
+            "writtenBy_many": "Napísali <0></0>",
             "writtenBy_other": "Napísali <0></0>"
         }
     },
