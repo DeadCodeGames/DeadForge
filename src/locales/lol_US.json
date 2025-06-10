@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "",
-        "emoji": ""
+        "name": "LOLCAT",
+        "emoji": "😹"
     },
     "commaSeparator": "",
     "ampersandSeparator": "",
@@ -11,10 +11,10 @@
     "loading": "",
     "sidebar": {
         "home": "",
-        "library": "",
+        "library": "story place",
         "arcade": "",
-        "store": "",
-        "settings": "",
+        "store": "stoar",
+        "settings": "settingz",
         "collapse": ""
     },
     "home": {

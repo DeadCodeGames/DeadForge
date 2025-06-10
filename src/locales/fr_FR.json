@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "",
-        "emoji": ""
+        "name": "Français",
+        "emoji": "🇫🇷"
     },
     "commaSeparator": "",
     "ampersandSeparator": "",
@@ -11,11 +11,11 @@
     "loading": "",
     "sidebar": {
         "home": "",
-        "library": "",
+        "library": "Bibliothèque",
         "arcade": "",
-        "store": "",
-        "settings": "",
-        "collapse": ""
+        "store": "Magasin",
+        "settings": "Paramètres",
+        "collapse": "Réduire"
     },
     "home": {
         "articles": {
@@ -26,10 +26,10 @@
         }
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "L'URL a été copiée avec succès"
     },
     "tray": {
-        "exit": "",
+        "exit": "Quitter <0>DEADFORGE</0>",
         "arcade": ""
     },
     "settings": {
