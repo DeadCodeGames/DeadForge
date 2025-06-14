@@ -23,7 +23,7 @@ jobs:
       - name: Checkout DeadForge
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: web
 
       - name: Clone DeadForgeStore
         uses: actions/checkout@v4
