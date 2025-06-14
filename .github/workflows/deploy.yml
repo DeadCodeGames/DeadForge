@@ -41,7 +41,8 @@ jobs:
       - name: Install & Build DeadForgeStore
         working-directory: ./store
         run: |
-          npm ci
+          CI=false
+          npm install --force
           npm run build
 
       - name: Copy DeadForgeStore build to /store
