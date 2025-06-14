@@ -30,6 +30,7 @@ jobs:
         with:
           repository: DeadCodeGames/DeadForgeStore
           ref: master
+          token: ${{secrets.DEADFORGESTORE_PULL_PAT}}
           path: store
 
       - name: Setup Node
