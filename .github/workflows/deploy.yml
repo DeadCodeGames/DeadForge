@@ -1,4 +1,3 @@
-# .github/workflows/pages-deploy.yml
 name: Build and Deploy Unified DeadForge Site
 
 on:
