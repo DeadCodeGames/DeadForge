@@ -47,7 +47,7 @@ jobs:
       - name: Copy DeadForgeStore build to /store
         run: |
           mkdir -p ./public/store
-          cp -r ./store/build/* ./public/store/
+          cp -r ./store/build/* ./store/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
