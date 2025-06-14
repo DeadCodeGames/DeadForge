@@ -29,6 +29,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: DeadCodeGames/DeadForgeStore
+          ref: master
           path: store
 
       - name: Setup Node
