@@ -1,0 +1,64 @@
+# .github/workflows/pages-deploy.yml
+name: Build and Deploy Unified DeadForge Site
+
+on:
+  push:
+    branches: [web]
+  repository_dispatch:
+    types: [store-updated]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout DeadForge
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Clone DeadForgeStore
+        uses: actions/checkout@v4
+        with:
+          repository: DeadCodeGames/DeadForgeStore
+          path: store
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "16"
+
+      - name: Install & Build DeadForgeStore
+        working-directory: ./store
+        run: |
+          npm ci
+          npm run build
+
+      - name: Copy DeadForgeStore build to /store
+        run: |
+          mkdir -p ./public/store
+          cp -r ./store/build/* ./public/store/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
