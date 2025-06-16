@@ -9,6 +9,8 @@
     "showMore": "",
     "viewAll": "",
     "loading": "",
+    "browse": "",
+    "cancel": "",
     "sidebar": {
         "home": "ホーム",
         "library": "ライブラリー",
@@ -93,19 +95,23 @@
         "yourLibrary": "",
         "yourLibraryDescription": "",
         "shared": {
+            "openInStore": "",
             "collections": "",
             "noCollections": "",
             "collectionNamePlaceholder": "",
             "createCollectionConfirm": "",
             "createCollectionCancel": "",
             "gameState": {
+                "install": "",
                 "launch": "",
                 "launchLauncher": "",
                 "play": "",
                 "stop": "",
                 "running": "",
                 "launching": "",
-                "stopping": ""
+                "stopping": "",
+                "downloading": "",
+                "installing": ""
             },
             "favourites": "",
             "favouritesDescription": "",
@@ -210,6 +216,17 @@
             "collectionNotFound": "",
             "collectionNotFoundDescription": "",
             "collectionNotFoundCTA": ""
+        },
+        "install": {
+            "title": "",
+            "install": "",
+            "installLocation": "",
+            "downloadSize": "",
+            "installSize": "",
+            "noReleaseinfo": "",
+            "copyingFiles": "",
+            "updatingDeadForgeDB": "",
+            "updatingWindowsRegistry": ""
         }
     }
 }
