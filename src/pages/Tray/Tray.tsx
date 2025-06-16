@@ -122,7 +122,8 @@ const Tray = () => {
     return (
         <div className="app-region-drag w-[calc(100vw-16px)] h-full dark:bg-notQuiteBlack bg-notQuiteWhite dark:text-notQuiteWhite text-notQuiteBlack font-notoSans flex flex-col p-2">
             {/* Last Played Section */}
-            {lastPlayedGames.length > 0 && (
+            {/* eslint-disable-next-line no-constant-binary-expression */}
+            {-1 > 0 && (
                 <>
                     <div className="flex flex-col gap-1">
                         {lastPlayedGames.map((game, idx) => {
