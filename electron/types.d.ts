@@ -148,3 +148,35 @@ export interface Article {
 export interface ArticleList {
     articles: Article[];
 }
+
+export interface Software {
+    id: string
+    title: string
+    type?: "Game" | "Demo"
+    developer: string
+    shortDescription: string
+    description: string
+    category: string
+    version: string
+    price: number
+    icon?: string
+    logo?: string
+    hero?: string
+    banner?: string
+    capsule?: string
+    screenshots: string[]
+    features?: string[]
+    size: string
+    platform: string
+    releaseDate: string
+    systemRequirements?: {
+      os: string
+      processor: string
+      memory: string
+      storage: string
+      graphics?: string
+    }
+    featured?: boolean,
+    releasesSource?: "github",
+    releasesLink?: string
+  }

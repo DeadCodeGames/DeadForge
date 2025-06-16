@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import { emitter } from "./WatchManager";
 
 export function createTable(db: Database.Database, tableName: string, columns: Record<string, string>) {
   const colDefs = Object.entries(columns)
@@ -78,13 +79,17 @@ export function updateRow(db: Database.Database, tableName: string, data: Record
     ...params,
   };
   
-  console.log("Executing SQL:", sql);
+  if (sql.includes("deadforge")) console.log("Executing SQL:", sql);
   // console.log("With params:", JSON.stringify(boundParams));
   
   // Execute the update
   const result = stmt.run(boundParams);
   console.log(`Updated ${result.changes} rows`);
   
+  if (tableName === "deadforgeGames") {
+    emitter.emit("gamesUpdated")
+  }
+
   return result;
 }
 

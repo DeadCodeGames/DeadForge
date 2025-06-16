@@ -9,6 +9,8 @@
     "showMore": "Show More",
     "viewAll": "View All",
     "loading": "Loading",
+    "browse": "Browse",
+    "cancel": "Cancel",
     "sidebar": {
         "home": "Home",
         "library": "Library",
@@ -93,19 +95,23 @@
         "yourLibrary": "Your Library",
         "yourLibraryDescription": "Manage and explore your game collection",
         "shared": {
+            "openInStore": "Open in DeadForge Store",
             "collections": "Collections",
             "noCollections": "No collections found",
             "collectionNamePlaceholder": "Collection name",
             "createCollectionConfirm": "Create",
             "createCollectionCancel": "Cancel",
             "gameState": {
+                "install": "Install",
                 "launch": "Launch",
                 "launchLauncher": "Launch {{launcher}}",
                 "play": "Play",
                 "stop": "Stop",
                 "running": "Running",
                 "launching": "Launching...",
-                "stopping": "Stopping..."
+                "stopping": "Stopping...",
+                "downloading": "Downloading",
+                "installing": "Installing"
             },
             "favourites": "Favourites",
             "favouritesDescription": "Your most loved games",
@@ -211,6 +217,17 @@
             "collectionNotFound": "Collection not found",
             "collectionNotFoundDescription": "The collection you're looking for doesn't exist.",
             "collectionNotFoundCTA": "Back to Collections"
+        },
+        "install": {
+            "title": "Install <b>{{title}}</b>",
+            "install": "Install",
+            "installLocation": "Install Location",
+            "downloadSize": "Download Size:",
+            "installSize": "Install Size:",
+            "noReleaseinfo": "Software with {{id}} is missing release information",
+            "copyingFiles": "Copying files...",
+            "updatingDeadForgeDB": "Updating DeadForge Database",
+            "updatingWindowsRegistry": "Updating Windows Registry"
         }
     }
 }

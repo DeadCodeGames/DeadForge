@@ -1,5 +1,6 @@
 import React, { type JSX } from "react"
 import { cn } from "@/lib/utils"
+import Spoiler from "@/components/CustomElements/Spoiler"
 
 interface MarkdownTextProps {
   children: string
@@ -7,8 +8,8 @@ interface MarkdownTextProps {
     mediaMap?: Record<string, string>
 }
 
-type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "link" | "image"
-type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList"
+type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "link" | "image" | "spoiler"
+type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule"
 type ListType = "unordered" | "ordered"
 
 type Token =
@@ -16,6 +17,7 @@ type Token =
   | { type: Extract<TokenType, "bold" | "italic" | "strikethrough" | "underline">; content: Token[] }
   | { type: Extract<TokenType, "link">; content: Token[]; url: string }
   | { type: Extract<TokenType, "image">; content: string; url: string; alt: string }
+  | { type: Extract<TokenType, "spoiler">; content: Token[] }
 
 interface ListItem {
   content: Token[]
@@ -63,6 +65,21 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
         }
 
         while (i < text.length) {
+            // Check for spoiler tags
+            if (text.startsWith("<spoiler>", i)) {
+                const closeTag = text.indexOf("</spoiler>", i)
+                if (closeTag !== -1) {
+                    pushText()
+                    const spoilerContent = text.slice(i + 9, closeTag) // Remove <spoiler> tag
+                    tokens.push({
+                        type: "spoiler",
+                        content: tokenizeInline(spoilerContent),
+                    })
+                    i = closeTag + 10 // Skip past </spoiler>
+                    continue
+                }
+            }
+
             // Check for image pattern ![alt](url)
             if (text.startsWith("![", i)) {
                 const closeBracket = text.indexOf("]", i)
@@ -146,6 +163,8 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
         const blocks: Block[] = []
 
         let currentListItems: Array<{ content: Token[]; level: number; type: ListType }> = []
+        let inSpoiler = false
+        let spoilerContent: string[] = []
 
         const finishCurrentList = () => {
             if (currentListItems.length > 0) {
@@ -220,6 +239,27 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i]
 
+            // Handle spoiler tags
+            if (line.trim() === "<spoiler>") {
+                inSpoiler = true
+                spoilerContent = []
+                continue
+            } else if (line.trim() === "</spoiler>") {
+                inSpoiler = false
+                // Parse the collected spoiler content as markdown
+                const spoilerText = spoilerContent.join("\n")
+                blocks.push({
+                    type: "paragraph",
+                    content: [{ type: "spoiler", content: tokenizeInline(spoilerText) }],
+                })
+                continue
+            }
+
+            if (inSpoiler) {
+                spoilerContent.push(line)
+                continue
+            }
+
             // Check for unordered list item (- or * followed by space, with optional indentation)
             const unorderedMatch = line.match(/^(\s*)[-*]\s+(.+)$/)
             if (unorderedMatch) {
@@ -264,6 +304,12 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                     level,
                     content: tokenizeInline(content),
                 })
+            } else if (line.trim() === "---") {
+                // Horizontal rule
+                blocks.push({
+                    type: "horizontalRule",
+                    content: [],
+                })
             } else if (line.trim()) {
                 // Non-empty line - treat as paragraph
                 blocks.push({
@@ -297,39 +343,52 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
             <React.Fragment>
                 {tokens.map((token, index) => {
                     switch (token.type) {
-                    case "text":
-                        return <React.Fragment key={index}>{renderContent(token.content)}</React.Fragment>
-                    case "bold":
-                        return <strong key={index}>{renderContent(token.content)}</strong>
-                    case "italic":
-                        return <em key={index}>{renderContent(token.content)}</em>
-                    case "strikethrough":
-                        return <del key={index}>{renderContent(token.content)}</del>
-                    case "underline":
-                        return <u key={index}>{renderContent(token.content)}</u>
-                    case "link":
-                        return (
-                            <a
-                                key={index}
-                                href={token.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 dark:text-blue-400 hover:underline m-0"
-                            >
-                                {renderContent(token.content)}
-                            </a>
-                        )
-                    case "image":
-                        return (
-                            <img
-                                key={index}
-                                src={mediaMap?.[token.url] || token.url?.startsWith("http") ? token.url : `local://${token.url}`}
-                                alt={token.alt || ""}
-                                className="max-w-full h-auto my-4 rounded-lg shadow-lg"
-                            />
-                        )
-                    default:
-                        return null
+                        case "text":
+                            return <React.Fragment key={index}>{renderContent(token.content)}</React.Fragment>
+                        case "bold":
+                            return <strong key={index}>{renderContent(token.content)}</strong>
+                        case "italic":
+                            return <em key={index}>{renderContent(token.content)}</em>
+                        case "strikethrough":
+                            return <del key={index}>{renderContent(token.content)}</del>
+                        case "underline":
+                            return <u key={index}>{renderContent(token.content)}</u>
+                        case "link":
+                            return (
+                                <a
+                                    key={index}
+                                    href={token.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 dark:text-blue-400 hover:underline m-0"
+                                >
+                                    {renderContent(token.content)}
+                                </a>
+                            )
+                        case "image":
+                            return (
+                                <div key={index} className="flex flex-col items-center my-4">
+                                    <img
+                                        src={mediaMap?.[token.url] || token.url?.startsWith("http") ? token.url : `local://${token.url}`}
+                                        alt={token.alt || ""}
+                                        className="max-w-full h-auto max-h-[66vh] rounded-lg shadow-lg"
+                                    />
+                                    {token.alt && (
+                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 text-center">
+                                            {token.alt}
+                                        </p>
+                                    )}
+                                </div>
+                            )
+                        case "spoiler":
+                            console.log(token);
+                            return (
+                                <Spoiler key={index} className="my-4">
+                                    {renderContent(token.content)}
+                                </Spoiler>
+                            )
+                        default:
+                            return null
                     }
                 })}
             </React.Fragment>
@@ -382,6 +441,8 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                     {block.items && renderListItems(block.items)}
                 </ol>
             )
+        } else if (block.type === "horizontalRule") {
+            return <hr key={index} className="my-4 border-0 border-b border-solid border-neutral-500/70" />
         } else {
             // Paragraph
             const isEmpty = block.content.length === 1 && block.content[0].type === "text" && block.content[0].content === ""

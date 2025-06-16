@@ -19,8 +19,10 @@ import ContextMenu, { type MenuItemType } from "@/components/CustomElements/Cont
 import { getLauncherName } from "../utils/LibraryHelpers"
 import { useTranslation } from "react-i18next"
 import { Trans } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 const GameWarningComponent = lazy(() => import("@/pages/Library/components/GameWarning"))
 // const GameSettingsModal = lazy(() => import("@/pages/Library/components/GameSettingsModal"))
+const InstallModal = lazy(() => import("@/pages/Library/components/InstallModal"))
 const MatrixRain = lazy(() => import("@/components/CustomElements/MatrixRain"))
 
 export function getLogoStyles(game: NormalizedGame, curatedAssets: any[], customAssets: any[]): React.CSSProperties {
@@ -36,7 +38,7 @@ export function getLogoStyles(game: NormalizedGame, curatedAssets: any[], custom
     // Try each asset source with priority
     const customAsset = customAssets.find(asset => asset.id === gameId && asset.source === gameSource);
     const curatedAsset = curatedAssets.find(asset => asset.id === gameId && asset.source === gameSource);
-    
+
     const customLogo = getLogoFromMediaData(customAsset?.media);
     const curatedLogo = getLogoFromMediaData(curatedAsset?.media);
     const officialLogo = getLogoFromMediaData(game.media);
@@ -44,8 +46,8 @@ export function getLogoStyles(game: NormalizedGame, curatedAssets: any[], custom
     // Use the first available logo object with priority
     const logoObj = customLogo || curatedLogo || officialLogo;
 
-    if (!logoObj) return {width: "50%", height: "50%", position: "absolute", bottom: 0, left: 0, objectPosition: "bottom left"}
-    if (!logoObj.logo_position) return {width: "50%", height: "50%", position: "absolute", bottom: 0, left: 0, objectPosition: "bottom left"}
+    if (!logoObj) return { width: "50%", height: "50%", position: "absolute", bottom: 0, left: 0, objectPosition: "bottom left" }
+    if (!logoObj.logo_position) return { width: "50%", height: "50%", position: "absolute", bottom: 0, left: 0, objectPosition: "bottom left" }
 
     const { pinned_position, width_pct, height_pct, special } = logoObj.logo_position
 
@@ -57,30 +59,30 @@ export function getLogoStyles(game: NormalizedGame, curatedAssets: any[], custom
 
     // Handle different pinned positions
     switch (pinned_position) {
-    default:
-    case "BottomLeft":
-        styles.bottom = "0"
-        styles.left = "0"
-        styles.objectPosition = "bottom left"
-        break
-    case "CenterCenter":
-        styles.top = "50%"
-        styles.left = "50%"
-        styles.transform = "translate(-50%, -50%)"
-        styles.objectPosition = "center center"
-        break
-    case "UpperCenter":
-        styles.top = "0"
-        styles.left = "50%"
-        styles.transform = "translateX(-50%)"
-        styles.objectPosition = "top center"
-        break
-    case "BottomCenter":
-        styles.bottom = "0"
-        styles.left = "50%"
-        styles.transform = "translateX(-50%)"
-        styles.objectPosition = "bottom center"
-        break
+        default:
+        case "BottomLeft":
+            styles.bottom = "0"
+            styles.left = "0"
+            styles.objectPosition = "bottom left"
+            break
+        case "CenterCenter":
+            styles.top = "50%"
+            styles.left = "50%"
+            styles.transform = "translate(-50%, -50%)"
+            styles.objectPosition = "center center"
+            break
+        case "UpperCenter":
+            styles.top = "0"
+            styles.left = "50%"
+            styles.transform = "translateX(-50%)"
+            styles.objectPosition = "top center"
+            break
+        case "BottomCenter":
+            styles.bottom = "0"
+            styles.left = "50%"
+            styles.transform = "translateX(-50%)"
+            styles.objectPosition = "bottom center"
+            break
     }
 
     if (special === "osu") {
@@ -96,9 +98,9 @@ const RenderDLCHeader = ({
     dlcs,
     curatedAssets,
     customAssets,
-}: { 
-    game: NormalizedGame; 
-    dlc: NormalizedDLC; 
+}: {
+    game: NormalizedGame;
+    dlc: NormalizedDLC;
     dlcs: NormalizedDLC[];
     curatedAssets: any[];
     customAssets: any[];
@@ -121,7 +123,7 @@ const RenderDLCHeader = ({
 
         const customAsset = customAssets.find(asset => asset.id === gameId && asset.source === gameSource);
         const curatedAsset = curatedAssets.find(asset => asset.id === gameId && asset.source === gameSource);
-        
+
         // Get all header objects
         const customHeaderObj = getUrlFromMediaData(customAsset?.media);
         const curatedHeaderObj = getUrlFromMediaData(curatedAsset?.media);
@@ -140,20 +142,20 @@ const RenderDLCHeader = ({
         // Try current language across all sources
         const customCurrentLang = getLanguageUrl(customHeaderObj, suffix);
         if (customCurrentLang) return customCurrentLang;
-        
+
         const curatedCurrentLang = getLanguageUrl(curatedHeaderObj, suffix);
         if (curatedCurrentLang) return curatedCurrentLang;
-        
+
         const officialCurrentLang = getLanguageUrl(officialHeaderObj, suffix);
         if (officialCurrentLang) return officialCurrentLang;
 
         // Try default language across all sources
         const customDefaultLang = getLanguageUrl(customHeaderObj, defaultSuffix);
         if (customDefaultLang) return customDefaultLang;
-        
+
         const curatedDefaultLang = getLanguageUrl(curatedHeaderObj, defaultSuffix);
         if (curatedDefaultLang) return curatedDefaultLang;
-        
+
         const officialDefaultLang = getLanguageUrl(officialHeaderObj, defaultSuffix);
         if (officialDefaultLang) return officialDefaultLang;
 
@@ -172,10 +174,10 @@ const RenderDLCHeader = ({
 
         const customFallback = getFallbackUrl(customHeaderObj);
         if (customFallback) return customFallback;
-        
+
         const curatedFallback = getFallbackUrl(curatedHeaderObj);
         if (curatedFallback) return curatedFallback;
-        
+
         const officialFallback = getFallbackUrl(officialHeaderObj);
         if (officialFallback) return officialFallback;
 
@@ -187,7 +189,7 @@ const RenderDLCHeader = ({
     useEffect(() => {
         const dlcHeaderUrl = getHeaderUrl(dlc);
         const gameHeaderUrl = getHeaderUrl(game);
-        
+
         if (!(dlcHeaderUrl || gameHeaderUrl)) {
             setHeaderError(true);
             setHeaderLoaded(false)
@@ -266,12 +268,13 @@ function getLogoUrlFromData(
     suffix: string,
     defaultSuffix: string = 'english'
 ): { url: string | null; logoObj: any } {
+    console.log(game);
     const gameId = String(game.id);
     const gameSource = game.source;
-    
+
     const customAsset = customAssets.find(asset => asset.id === gameId && asset.source === gameSource);
     const curatedAsset = curatedAssets.find(asset => asset.id === gameId && asset.source === gameSource);
-    
+
     const getUrlFromMediaData = (mediaData: any): string | null => {
         if (!mediaData?.logoUrl) return null;
         if (typeof mediaData.logoUrl === 'string') return mediaData.logoUrl;
@@ -296,20 +299,20 @@ function getLogoUrlFromData(
     // Try current language across all sources
     const customCurrentLang = getLanguageUrl(customLogoObj, suffix);
     if (customCurrentLang) return { url: customCurrentLang, logoObj: customLogoObj };
-    
+
     const curatedCurrentLang = getLanguageUrl(curatedLogoObj, suffix);
     if (curatedCurrentLang) return { url: curatedCurrentLang, logoObj: curatedLogoObj };
-    
+
     const officialCurrentLang = getLanguageUrl(officialLogoObj, suffix);
     if (officialCurrentLang) return { url: officialCurrentLang, logoObj: officialLogoObj };
 
     // Try default language across all sources
     const customDefaultLang = getLanguageUrl(customLogoObj, defaultSuffix);
     if (customDefaultLang) return { url: customDefaultLang, logoObj: customLogoObj };
-    
+
     const curatedDefaultLang = getLanguageUrl(curatedLogoObj, defaultSuffix);
     if (curatedDefaultLang) return { url: curatedDefaultLang, logoObj: curatedLogoObj };
-    
+
     const officialDefaultLang = getLanguageUrl(officialLogoObj, defaultSuffix);
     if (officialDefaultLang) return { url: officialDefaultLang, logoObj: officialLogoObj };
 
@@ -328,10 +331,10 @@ function getLogoUrlFromData(
 
     const customFallback = getFallbackUrl(customLogoObj);
     if (customFallback) return { url: customFallback, logoObj: customLogoObj };
-    
+
     const curatedFallback = getFallbackUrl(curatedLogoObj);
     if (curatedFallback) return { url: curatedFallback, logoObj: curatedLogoObj };
-    
+
     const officialFallback = getFallbackUrl(officialLogoObj);
     if (officialFallback) return { url: officialFallback, logoObj: officialLogoObj };
 
@@ -356,7 +359,7 @@ function getHeroUrlFromData(
 
     const customAsset = customAssets.find(asset => asset.id === gameId && asset.source === gameSource);
     const curatedAsset = curatedAssets.find(asset => asset.id === gameId && asset.source === gameSource);
-    
+
     const customHeroObj = getUrlFromMediaData(customAsset?.media);
     const curatedHeroObj = getUrlFromMediaData(curatedAsset?.media);
     const officialHeroObj = getUrlFromMediaData(game.media);
@@ -373,20 +376,20 @@ function getHeroUrlFromData(
     // Try current language across all sources
     const customCurrentLang = getLanguageUrl(customHeroObj, suffix);
     if (customCurrentLang) return customCurrentLang;
-    
+
     const curatedCurrentLang = getLanguageUrl(curatedHeroObj, suffix);
     if (curatedCurrentLang) return curatedCurrentLang;
-    
+
     const officialCurrentLang = getLanguageUrl(officialHeroObj, suffix);
     if (officialCurrentLang) return officialCurrentLang;
 
     // Try default language across all sources
     const customDefaultLang = getLanguageUrl(customHeroObj, defaultSuffix);
     if (customDefaultLang) return customDefaultLang;
-    
+
     const curatedDefaultLang = getLanguageUrl(curatedHeroObj, defaultSuffix);
     if (curatedDefaultLang) return curatedDefaultLang;
-    
+
     const officialDefaultLang = getLanguageUrl(officialHeroObj, defaultSuffix);
     if (officialDefaultLang) return officialDefaultLang;
 
@@ -405,13 +408,13 @@ function getHeroUrlFromData(
 
     const customFallback = getFallbackUrl(customHeroObj);
     if (customFallback) return customFallback;
-    
+
     const curatedFallback = getFallbackUrl(curatedHeroObj);
     if (curatedFallback) return curatedFallback;
-    
+
     const officialFallback = getFallbackUrl(officialHeroObj);
     if (officialFallback) return officialFallback;
-    
+
     return null;
 }
 
@@ -474,8 +477,8 @@ const GameLogo = ({
 
     if (logoObj && typeof logoObj === 'object') {
         const logoStyles = getLogoStyles(game, curatedAssets, customAssets);
-        const fallbackLogoImage = logoObj.image?.["english"] 
-            ? logoObj.image["english"].replaceAll("\\", "/").replaceAll("%2F", "/") 
+        const fallbackLogoImage = logoObj.image?.["english"]
+            ? logoObj.image["english"].replaceAll("\\", "/").replaceAll("%2F", "/")
             : Object.values(logoObj.image || {})[0];
 
         return (
@@ -519,15 +522,6 @@ const BannerContent = ({
     onLoad: () => void;
     onError: () => void;
 }) => {
-    if (!heroUrl) {
-        return (
-            <div className="relative w-full h-full">
-                <MatrixRain fontSize={16} />
-                <div className="absolute inset-0 bg-gradient-to-t from-0% via-[33%] to-[67%] dark:from-black/70 dark:via-night/20 dark:to-night/0 from-white/70 via-white/25 to-fullMoon/0"></div>
-            </div>
-        );
-    }
-
     let overlayUrl;
     if (game.type === "Demo") {
         overlayUrl = `${process.env.PUBLIC_URL}/assets/demo_header.png`;
@@ -537,8 +531,24 @@ const BannerContent = ({
         overlayUrl = `${process.env.PUBLIC_URL}/assets/tool_header.png`;
     }
 
-    const imageUrl = game.source === "osu" 
-        ? heroUrl 
+    if (!heroUrl) {
+        return (
+            <div className="relative w-full h-full">
+                {overlayUrl && (
+                    <img
+                        src={overlayUrl}
+                        alt={`${getLocalizedGameName(game)} banner`}
+                        className="absolute top-0 left-0 h-3/4 object-cover object-left-top z-[1]"
+                    />
+                )}
+                <MatrixRain fontSize={16} />
+                <div className="absolute inset-0 bg-gradient-to-t from-0% via-[33%] to-[67%] dark:from-black/70 dark:via-night/20 dark:to-night/0 from-white/70 via-white/25 to-fullMoon/0"></div>
+            </div>
+        );
+    }
+
+    const imageUrl = game.source === "osu"
+        ? heroUrl
         : `local://${heroUrl?.replace("%USERDATA%", "CONST_USERDATA")}`;
 
     return (
@@ -571,7 +581,7 @@ const BannerContent = ({
 }
 
 const LibraryGame: React.FC = () => {
-    const {id} = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>();
     const {
         games,
         gameJoins,
@@ -610,8 +620,9 @@ const LibraryGame: React.FC = () => {
     const [warnings, setWarnings] = useState<GameWarning | null>(null)
     const [isLoadingWarnings, setIsLoadingWarnings] = useState(false)
     const [warningsError, setWarningsError] = useState<string | null>(null)
-    // const [showGameSettingsModal, setShowGameSettingsModal] = useState(false)
+    const [showInstallModal, setShowInstallModal] = useState(false)
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     // Get the current game state
     const gameStateKey = currentGame
@@ -652,6 +663,16 @@ const LibraryGame: React.FC = () => {
     const isStopping = isGameJoin
         ? (gameJoinStates?.some((state) => state.state === "stopping") ?? false)
         : currentGameState?.state === "stopping"
+
+    const isDownloading = isGameJoin
+        ? (gameJoinStates?.some((state) => state.state === "downloading") ?? false)
+        : currentGameState?.state === "downloading"
+
+    const isInstalling = isGameJoin
+        ? (gameJoinStates?.some((state) => state.state === "installing") ?? false)
+        : currentGameState?.state === "installing"
+    
+    const downloadProgress = currentGameState?.progress;
 
     // Check if the game has been launching for more than 30 seconds
     // Use the key of the game being launched if it's a join
@@ -1285,8 +1306,8 @@ const LibraryGame: React.FC = () => {
     }, [currentGame, fetchWarnings])
 
     // Memoized asset URLs
-    const { url: logoUrl, logoObj } = useMemo(() => 
-        currentGame 
+    const { url: logoUrl, logoObj } = useMemo(() =>
+        currentGame
             ? getLogoUrlFromData(
                 resolveDefaultGameVendor(currentGame),
                 customAssets,
@@ -1322,6 +1343,26 @@ const LibraryGame: React.FC = () => {
             }
         }
     }, [currentGame, logoUrl, heroUrl]);
+
+    const handleInstall = useCallback(async (installPath: string) => {
+        if (!currentGame) return;
+
+        try {
+            const gameId = typeof currentGame.id === "object" ? JSON.stringify(currentGame.id) : currentGame.id;
+            const result = await window.Electron.installGame(gameId, installPath);
+
+            if (!result.success) {
+                console.error("Failed to install game:", result.error);
+                // You might want to show an error message to the user here
+            } else {
+                console.log(result)
+                setShowInstallModal(false);
+            }
+        } catch (error) {
+            console.error("Failed to install game:", error);
+            // You might want to show an error message to the user here
+        }
+    }, [currentGame]);
 
     if (!currentGame) {
         return (
@@ -1419,14 +1460,17 @@ const LibraryGame: React.FC = () => {
                                                     console.error("Failed to stop game:", result.error)
                                                 }
                                             }
+                                        } else if (resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath) {
+                                            // Show install modal for DeadForge games that aren't installed
+                                            setShowInstallModal(true)
                                         } else {
                                             // Launch the game with selected option
                                             launchGame(resolveDefaultGameVendor(currentGame))
                                         }
                                     }}
                                     disabled={
-                                        !resolveDefaultGameVendor(currentGame)?.launchOptions ||
-                                        resolveDefaultGameVendor(currentGame)?.launchOptions?.length === 0 ||
+                                        (!resolveDefaultGameVendor(currentGame)?.launchOptions && currentGame.source !== "deadforge") ||
+                                        (resolveDefaultGameVendor(currentGame)?.launchOptions?.length === 0 && currentGame.source !== "deadforge") ||
                                         isLaunching ||
                                         isStopping
                                     }
@@ -1440,6 +1484,15 @@ const LibraryGame: React.FC = () => {
                                         !isStopping &&
                                         !needsLauncher &&
                                         String(currentGame?.id) !== "-1" &&
+                                        resolveDefaultGameVendor(currentGame).source === "deadforge" &&
+                                        !resolveDefaultGameVendor(currentGame).installPath &&
+                                        "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
+                                        !isLaunching &&
+                                        !isRunning &&
+                                        !isStopping &&
+                                        !needsLauncher &&
+                                        String(currentGame?.id) !== "-1" &&
+                                        !(resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath) &&
                                         "bg-green-600 hover:bg-green-700 text-white shadow-lg",
                                         !isLaunching &&
                                         !isRunning &&
@@ -1488,9 +1541,15 @@ const LibraryGame: React.FC = () => {
                                                                 ? "stop_circle"
                                                                 : isStopping
                                                                     ? "hourglass_bottom"
-                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                        ? "launch"
-                                                                        : "play_circle"}
+                                                                    : isDownloading
+                                                                        ? "downloading"
+                                                                        : isInstalling
+                                                                            ? "install_desktop"
+                                                                            : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                ? "download"
+                                                                                : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                    ? "launch"
+                                                                                    : "play_circle"}
                                                     </span>
                                                     <span>
                                                         {isLaunching
@@ -1499,9 +1558,15 @@ const LibraryGame: React.FC = () => {
                                                                 ? t("library.shared.gameState.stop")
                                                                 : isStopping
                                                                     ? t("library.shared.gameState.stopping")
-                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                        ? t("library.shared.gameState.launch")
-                                                                        : t("library.shared.gameState.play")}
+                                                                    : isDownloading
+                                                                        ? t("library.shared.gameState.downloading")
+                                                                        : isInstalling
+                                                                            ? t("library.shared.gameState.installing")
+                                                                            : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                ? t("library.shared.gameState.install")
+                                                                                : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                    ? t("library.shared.gameState.launch")
+                                                                                    : t("library.shared.gameState.play")}
                                                     </span>
                                                 </div>
                                             )}
@@ -1511,7 +1576,9 @@ const LibraryGame: React.FC = () => {
                                             (resolveAllGameVendors(currentGame)?.launchOptions as LaunchOption[])?.length > 1 &&
                                             !isRunning &&
                                             !isLaunching &&
-                                            !isStopping && (
+                                            !isStopping &&
+                                            !isDownloading &&
+                                            !isInstalling && (
                                             <span className="text-xs opacity-0 flex flex-row items-center gap-x-1 -mt-4 group-hover:opacity-70 group-hover:mt-0 transition-[opacity,margin-top] duration-200">
                                                 <GetSourceIcon source={selectedLaunchOption.executable.toLowerCase().includes("steam")
                                                     ? "steam"
@@ -1526,6 +1593,13 @@ const LibraryGame: React.FC = () => {
                                                 {selectedLaunchOption.name}
                                             </span>
                                         )}
+                                        {/* If downloading or installing, show progress percentage or description */}
+                                        <span 
+                                            className="text-xs opacity-0 flex flex-row items-center gap-x-1 -mt-4 data-[active=true]:opacity-70 data-[active=true]:mt-0 data-[active=false]:absolute transition-[opacity,margin-top] duration-200" 
+                                            data-active={(isDownloading || isInstalling) && downloadProgress !== undefined}
+                                        >
+                                            {downloadProgress !== undefined ? (typeof downloadProgress === "number" ? `${downloadProgress}%` : t(downloadProgress)) : ""}
+                                        </span>
                                     </div>
 
                                     {/* Dropdown button integrated */}
@@ -1640,7 +1714,22 @@ const LibraryGame: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex flex-row gap-x-2 p-2">
-                        <Tooltip content={t("library.shared.addToCollection")} position="top">
+                        {/* DeadForge Store button */}
+                        {resolveDefaultGameVendor(currentGame).source === "deadforge" && (
+                            <Tooltip content={t("library.shared.openInStore")} position="top">
+                                <button
+                                    className={cn(
+                                        "flex items-center justify-center size-10 rounded-lg bg-fullMoon/50 dark:bg-night/50 backdrop-blur-sm hover:bg-fullMoon/75 dark:hover:bg-night/75 border border-notQuiteBlack/10 hover:border-notQuiteBlack/20 dark:border-notQuiteWhite/10 hover:dark:border-notQuiteWhite/20 border-solid transition-colors duration-500 cursor-pointer",
+                                        "aspect-square text-xl leading-none",
+                                    )}
+                                    onClick={() => navigate(`/store?path=${encodeURIComponent(`soft/${resolveDefaultGameVendor(currentGame).id}`)}`)}
+                                    style={{ marginRight: 4 }}
+                                >
+                                    <span className="material-symbols">storefront</span>
+                                </button>
+                            </Tooltip>
+                        )}
+                        <Tooltip content={t("library.shared.collections")} position="top">
                             <label
                                 className={cn(
                                     "flex items-center justify-center size-10 rounded-lg bg-fullMoon/50 dark:bg-night/50 backdrop-blur-sm hover:bg-fullMoon/75 dark:hover:bg-night/75 border border-notQuiteBlack/10 hover:border-notQuiteBlack/20 dark:border-notQuiteWhite/10 hover:dark:border-notQuiteWhite/20 border-solid transition-colors duration-500 cursor-pointer",
@@ -1668,7 +1757,7 @@ const LibraryGame: React.FC = () => {
                                 </span>
                             </label>
                         </Tooltip>
-                        <Tooltip content={isGameInFavorites() ? t("library.shared.removeFromFavorites") : t("library.shared.addToFavorites")} position="top">
+                        <Tooltip content={isGameInFavorites() ? t("library.shared.removeFavourite") : t("library.shared.addFavourite")} position="top">
                             <label
                                 className={cn(
                                     "flex items-center justify-center size-10 rounded-lg bg-fullMoon/50 dark:bg-night/50 backdrop-blur-sm hover:bg-fullMoon/75 dark:hover:bg-night/75 border border-notQuiteBlack/10 hover:border-notQuiteBlack/20 dark:border-notQuiteWhite/10 hover:dark:border-notQuiteWhite/20 border-solid transition-colors cursor-pointer",
@@ -1837,6 +1926,16 @@ const LibraryGame: React.FC = () => {
                         title: t("library.shared.collections"),
                     }}
                     extraFocusRefs={[collectionsButtonRef]}
+                />
+            )}
+
+            {/* Install Modal */}
+            {currentGame && (
+                <InstallModal
+                    isOpen={showInstallModal}
+                    onClose={() => setShowInstallModal(false)}
+                    onInstall={handleInstall}
+                    game={resolveDefaultGameVendor(currentGame)}
                 />
             )}
         </div>

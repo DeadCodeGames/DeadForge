@@ -1,6 +1,6 @@
 {
   "name": "deadforge",
-  "version": "v2.0.0-Beta-1",
+  "version": "v2.0.0-Beta-2",
   "description": "An Electron Launcher for DeadCode Projects (AND OTHER STUFF TOO NOW :3).",
   "author": "DeadCodeGames <404@mail.deadcode.is-a.dev> (https://deadcode.is-a.dev)",
   "contributors": [
@@ -21,6 +21,7 @@
     "electron-window-state": "^5.0.3",
     "json-stream-stringify": "^3.1.6",
     "ps-list": "^8.1.1",
+    "registry-js": "^1.16.1",
     "vdf": "^0.0.2"
   },
   "devDependencies": {
@@ -124,7 +125,7 @@
   "scripts": {
     "lint": "eslint \"src/**/*.{js,mjs,cjs,ts,jsx,tsx}\"",
     "lint:fix": "eslint \"src/**/*.{js,mjs,cjs,ts,jsx,tsx}\" --fix",
-    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "electron-rebuild -f -w better-sqlite3,registry-js",
     "start": "npm run electron:serve",
     "react:start": "react-app-rewired start",
     "prereact:build": "node scripts/fetchTwemoji.js",

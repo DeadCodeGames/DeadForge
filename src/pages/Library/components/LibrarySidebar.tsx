@@ -14,20 +14,20 @@ import { format } from 'date-fns';
 import i18n, { dateFNSResources } from '@/locales/i18n';
 import { useTranslation } from 'react-i18next';
 
-export const GetSourceIcon = memo(function GetSourceIcon({source, keyProp, size = 16}: {source: string, keyProp?: any, size?: number}) {
+export const GetSourceIcon = memo(function GetSourceIcon({source, keyProp, size = 16, className}: {source: string, keyProp?: any, size?: number, className?: string}) {
     switch (source) {
-    case "steam":
-        return <SiSteam size={size} key={keyProp} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
-    case "epic":
-        return <SiEpicgames size={size} key={keyProp} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
-    case "itch":
-        return <SiItchdotio size={size} key={keyProp} className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
-    case "osu":
-        return <img src={process.env.PUBLIC_URL + "/assets/osu!wordmark.svg"} key={keyProp} alt="osu!" className="flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
-    case "deadforge":
-        return <DEADCODELogo key={keyProp} className="text-sm -translate-y-0.5 flex-shrink-0 pointer-events-none" style={{ width: size, height: size }} />
-    default:
-        return <div key={keyProp} className="text-lg material-symbols flex-shrink-0 pointer-events-none" style={{ width: size, height: size }}>question_mark</div>
+        case "steam":
+            return <SiSteam size={size} key={keyProp} className={cn("flex-shrink-0 pointer-events-none", className)} style={{ width: size, height: size }} />
+        case "epic":
+            return <SiEpicgames size={size} key={keyProp} className={cn("flex-shrink-0 pointer-events-none", className)} style={{ width: size, height: size }} />
+        case "itch":
+            return <SiItchdotio size={size} key={keyProp} className={cn("flex-shrink-0 pointer-events-none", className)} style={{ width: size, height: size }} />
+        case "osu":
+            return <img src={process.env.PUBLIC_URL + "/assets/osu!wordmark.svg"} key={keyProp} alt="osu!" className={cn("flex-shrink-0 pointer-events-none", className)} style={{ width: size, height: size }} />
+        case "deadforge":
+            return <DEADCODELogo key={keyProp} className={cn("flex flex-row justify-center text-sm flex-shrink-0 pointer-events-none", className)} style={{ width: size, height: size }} />
+        default:
+            return <div key={keyProp} className={cn("text-lg material-symbols flex-shrink-0 pointer-events-none", className)} style={{ width: size, height: size }}>question_mark</div>
     }
 })
 
@@ -86,14 +86,14 @@ const LibrarySidebar: React.FC = () => {
     const handleSortChange = useCallback((sort: keyof Sorting) => {
         let newValue;
         switch (sort) {
-        case "sort":
-            newValue = sorting.sort === "name" ? "recent" : "name";
-            break;
-        case "direction":
-            newValue = sorting.direction === "asc" ? "desc" : "asc";
-            break;
-        default:
-            return;
+            case "sort":
+                newValue = sorting.sort === "name" ? "recent" : "name";
+                break;
+            case "direction":
+                newValue = sorting.direction === "asc" ? "desc" : "asc";
+                break;
+            default:
+                return;
         }
         setSorting(prev => ({ ...prev, [sort]: newValue }));
     }, [setSorting, sorting])
@@ -322,13 +322,17 @@ const LibrarySidebar: React.FC = () => {
         const stateClasses: Record<Exclude<GameState['state'], 'idle'>, string> = {
             launching: 'text-blue-400 animate-pulse',
             running: 'text-green-500',
-            stopping: 'text-blue-400 animate-pulse'
+            stopping: 'text-blue-400 animate-pulse',
+            downloading: 'text-blue-400 animate-pulse',
+            installing: 'text-blue-400 animate-pulse'
         };
 
         const stateIcons: Record<Exclude<GameState['state'], 'idle'>, string> = {
             launching: 'hourglass_top',
             running: 'check_circle',
-            stopping: 'stop_circle'
+            stopping: 'stop_circle',
+            downloading: 'downloading',
+            installing: 'install_desktop'
         };
 
         // Since we know activeState is not null and is one of the valid states,
@@ -347,6 +351,8 @@ const LibrarySidebar: React.FC = () => {
             launching: 'to-transparent from-blue-500/50',
             running: 'to-transparent from-green-500/50',
             stopping: 'to-transparent from-blue-500/50',
+            downloading: 'to-transparent from-green-500/50',
+            installing: 'to-transparent from-blue-500/50',
             idle: 'to-transparent from-transparent'
         };
         
@@ -646,8 +652,8 @@ const LibrarySidebar: React.FC = () => {
                                             className="w-6 h-6 no-user-drag rounded-[4px]"
                                         />
                                         {typeof game.source === 'object' ?
-                                            Object.entries(game.source).map(([source], index) => <GetSourceIcon source={source} key={index} keyProp={index} />)
-                                            : <GetSourceIcon source={game.source as string} key={0} keyProp={0} />}
+                                            Object.entries(game.source).map(([source], index) => <GetSourceIcon source={source} key={index} keyProp={index} className={source === "deadforge" ? "-translate-y-0.5" : ""} />)
+                                            : <GetSourceIcon source={game.source as string} key={0} keyProp={0}  className={game.source === "deadforge" ? "-translate-y-0.5" : ""} />}
                                         <span className="truncate">
                                             {typeof game.source === 'string' ? getLocalizedGameName(game) : getLocalizedGameName(game.source[game.defaultClient])}
                                         </span>

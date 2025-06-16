@@ -15,7 +15,7 @@ export async function normalizeCaveToGame(cave: any, games: any[]): Promise<Norm
     }));
 
     // Map itch.io classifications to our internal types
-    const classificationToType: { [key: string]: string } = {
+    const classificationToType: Record<string, string> = {
         'game': 'Game',
         'tool': 'Tool',
         'game_mod': 'Mod',

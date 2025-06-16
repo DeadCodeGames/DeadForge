@@ -60,6 +60,13 @@ declare global {
             saveMissingAssetsReport: (report: string) => void,
             updateArticles: () => Promise<{ success: boolean, error?: string }>,
             getArticles: () => Promise<ArticleList>,
+            onProtocolNavigation: (callback: (event: IpcRendererEvent, protocolURL: string) => void) => void,
+            navigateExternal: (url: string) => void,
+            getDefaultInstallPath: (gameId: string) => Promise<string>,
+            installGame: (gameid: string, installPath: string) => Promise<{ success: true, error: null } | {success: false, error: Error}>,
+            getDownloadSize: (gameId: string) => Promise<{ success: true, size: number, error: null } | { success: false, size: null, error: Error }>,
+            onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void
+            removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
@@ -259,9 +266,10 @@ export type CollectionGame = {
 }
 
 export type GameState = {
-    state: 'launching' | 'running' | 'stopping' | 'idle';
+    state: 'launching' | 'running' | 'stopping' | 'idle' | 'downloading' | 'installing';
     gameId: string;
     source: string;
+    progress?: number | string;
 }
 
 export type GameStates = Record<string, GameState>;

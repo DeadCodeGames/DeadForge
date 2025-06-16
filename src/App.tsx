@@ -39,6 +39,7 @@ export const AppContext = createContext<any>(
     {
         preferences: defaultPreferences,
         storePreload: null,
+        storeWebviewReady: false,
         setupModalActive: false,
         v1PrefsAvailable: false,
         v1Prefs: {}
@@ -46,7 +47,7 @@ export const AppContext = createContext<any>(
 );
 
 function AppContextsProvider({ children }: { children: React.ReactNode }) {
-    const [context, setContext] = useState<any>({ preferences: defaultPreferences, storePreload: null, setupModalActive: false, v1PrefsAvailable: false, v1Prefs: {} });
+    const [context, setContext] = useState<any>({ preferences: defaultPreferences, storePreload: null, storeWebviewReady: false, setupModalActive: false, v1PrefsAvailable: false, v1Prefs: {} });
     const [shouldSetContext, setShouldSetContext] = useState<boolean>(false);
 
     useEffect(() => {
@@ -89,13 +90,13 @@ function AppContextsProvider({ children }: { children: React.ReactNode }) {
     }, [JSON.stringify(context), shouldSetContext]);
 
     return (
-        <AppContext.Provider value={{ context, setContext }}>
-            <Router>
+        <Router>
+            <AppContext.Provider value={{ context, setContext }}>
                 <LibraryProvider>
                     {children}
                 </LibraryProvider>
-            </Router>
-        </AppContext.Provider>
+            </AppContext.Provider>
+        </Router>
     ) as React.JSX.Element;
 }
 
@@ -118,9 +119,56 @@ const AppContents = () => {
         window.Electron.onTrayNavigate(handleTrayNavigate);
 
         return () => {
-            window.Electron.onTrayNavigate(handleTrayNavigate);
+            window.Electron.onTrayNavigate(() => {});
         };
     }, [navigate]);
+
+    useEffect(() => {
+        const handleProtocolNavigation = (event: any, location: string) => {
+            console.log(event, location)
+            const regexMatch = location.match(/\/([^/]*)(?:\/(.*))?/); if (!regexMatch) return;
+            const [,target, path] = regexMatch;
+            console.log(target, path)
+            switch (target) {
+                case "settings":
+                    navigate("/settings");
+                    break;
+                
+                case "arcade":
+                    navigate("/arcade");
+                    break;
+                
+                case "store":
+                    if (!path) { navigate("/store"); }
+                    else {navigate(`/store?path=${encodeURIComponent(path)}`)}
+                    break;
+                
+                case "library":
+                    if (!path || (
+                        path !== "all" &&
+                        path !== "favourites" &&
+                        path !== "recent" &&
+                        path !== "collections" &&
+                        !path.startsWith("game/") &&
+                        !path.startsWith("collection/")
+                    )
+                    ) { navigate("/library") } else {
+                        navigate(`/library/${path}`)
+                    };
+                    break;
+                
+                case "home":
+                default:
+                    navigate("/")
+                    break;
+            }
+        }
+        window.Electron.onProtocolNavigation(handleProtocolNavigation);
+
+        return () => {
+            window.Electron.onProtocolNavigation(() => {});
+        }
+    })
 
     useEffect(() => {
         window.addEventListener("keydown", (e) => { if (e.key === 'r' && e.ctrlKey) { e.stopImmediatePropagation(); e.preventDefault(); window.addEventListener("beforeunload", e => e.preventDefault()); setTimeout(() => { window.Electron.reload() }, 0) } })

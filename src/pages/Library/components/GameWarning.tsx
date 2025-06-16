@@ -29,27 +29,27 @@ const GameWarning: React.FC<GameWarningProps> = ({ note, className }) => {
 
     const getWarningIcon = () => {
         switch (note.type) {
-        case 'security_warning':
-            return 'security';
-        case 'compatibility_warning':
-            return 'warning';
-        case 'content_warning':
-            return 'content_warning';
-        default:
-            return 'info';
+            case 'security_warning':
+                return 'security';
+            case 'compatibility_warning':
+                return 'warning';
+            case 'content_warning':
+                return 'content_warning';
+            default:
+                return 'info';
         }
     };
 
     const getSeverityColor = () => {
         switch (note.severity) {
-        case 'high':
-            return 'text-red-500 dark:text-red-400';
-        case 'medium':
-            return 'text-yellow-500 dark:text-yellow-400';
-        case 'low':
-            return 'text-blue-500 dark:text-blue-400';
-        default:
-            return 'text-neutral-500 dark:text-neutral-400';
+            case 'high':
+                return 'text-red-500 dark:text-red-400';
+            case 'medium':
+                return 'text-yellow-500 dark:text-yellow-400';
+            case 'low':
+                return 'text-blue-500 dark:text-blue-400';
+            default:
+                return 'text-neutral-500 dark:text-neutral-400';
         }
     };
 

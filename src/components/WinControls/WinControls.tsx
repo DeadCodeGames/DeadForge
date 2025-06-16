@@ -103,24 +103,23 @@ const WinControls = () => {
 
     const LocationTitle = () => {
         if (!context.preferences.showCurrentPageTitleInFrame) return "";
-        switch (window.location.hash.substring(2).split("/")[0]) {
-        case "":
+        switch (window.location.hash.substring(2).split("/")[0].split("?")[0]) {
+            case "":
             // eslint-disable-next-line no-irregular-whitespace
-            return <span className='whitespace-pre-wrap'> — {t("sidebar.home")}</span>;
-        case "library":
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.home")}</span>;
+            case "library":
             // eslint-disable-next-line no-irregular-whitespace
-            return <span className='whitespace-pre-wrap'> — {t("sidebar.library")}</span>;
-        case "arcade":
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.library")}</span>;
+            case "arcade":
             // eslint-disable-next-line no-irregular-whitespace
-            return <span className='whitespace-pre-wrap'> — {t("sidebar.arcade")}</span>;
-        case "store":
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.arcade")}</span>;
+            case "store":
+                return <span className='whitespace-pre-wrap font-thin'> STORE</span>;
+            case "settings":
             // eslint-disable-next-line no-irregular-whitespace
-            return <span className='whitespace-pre-wrap'> — {t("sidebar.store")}</span>;
-        case "settings":
-            // eslint-disable-next-line no-irregular-whitespace
-            return <span className='whitespace-pre-wrap'> — {t("sidebar.settings")}</span>;
-        default:
-            return "";
+                return <span className='whitespace-pre-wrap'> — {t("sidebar.settings")}</span>;
+            default:
+                return "";
         }
     }
 

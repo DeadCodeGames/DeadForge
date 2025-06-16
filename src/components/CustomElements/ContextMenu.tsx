@@ -95,7 +95,7 @@ const MenuItemComponent: React.FC<MenuItem & { onMouseEnter?: () => void, onMous
 
     return (
         <li
-            className={`px-2 py-1.5 flex items-center gap-2 hover:bg-white/25 rounded transition-colors duration-200 cursor-pointer ${disabled ? "opacity-50 !cursor-not-allowed hover:bg-transparent" : ""} ${className}`}
+            className={`px-2 py-1.5 flex items-center gap-2 hover:bg-black/25 dark:hover:bg-white/25 rounded transition-colors duration-200 cursor-pointer ${disabled ? "opacity-50 !cursor-not-allowed hover:bg-transparent" : ""} ${className}`}
             onClick={disabled ? undefined : onClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
@@ -113,7 +113,7 @@ const MenuItemComponent: React.FC<MenuItem & { onMouseEnter?: () => void, onMous
 }
 
 // Divider component
-const MenuDividerComponent = () => <li className="h-px bg-white/20 m-2" />
+const MenuDividerComponent = () => <li className="h-px bg-black/20 dark:bg-white/20 m-2" />
 
 // Actual Context Menu component
 const ContextMenu: React.FC<ContextMenuProps> = ({
@@ -427,7 +427,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         return createPortal(
             <div
                 id={`submenu-${submenu.id}`}
-                className={`fixed bg-night/95 dark:bg-night/95 text-white z-50 rounded-lg shadow-xl border border-solid border-white/20 min-w-48 max-w-80 backdrop-blur-md ${
+                className={`fixed bg-fullMoon/95 dark:bg-night/95 text-black dark:text-white z-50 rounded-lg shadow-xl border border-solid border-black/20 dark:border-white/20 min-w-48 max-w-80 backdrop-blur-md ${
                     activeSubmenu.placement === 'left' ? 'mr-3' : 'ml-3'
                 }`}
                 style={submenuPosition}
@@ -459,7 +459,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             >
                 <div>
                     {submenu.label && (
-                        <div className="px-3 pt-2 font-semibold border-b border-white/20">
+                        <div className="px-3 pt-2 font-semibold border-b border-black/20 dark:border-white/20">
                             <h3 className="font-semibold p-1">{submenu.label}</h3>
                         </div>
                     )}
@@ -486,7 +486,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                             ref={(el: HTMLLIElement | null) => {
                                 submenuRefs.current[submenu.id] = el;
                             }}
-                            className={`px-2 py-1.5 flex items-center gap-2 hover:bg-white/25 rounded relative transition-colors duration-200 cursor-pointer after:content-[''] after:absolute after:left-full after:top-0 after:w-4 after:h-full after:bg-transparent ${submenu.className || ''}`}
+                            className={`px-2 py-1.5 flex items-center gap-2 hover:bg-black/25 dark:hover:bg-white/25 rounded relative transition-colors duration-200 cursor-pointer after:content-[''] after:absolute after:left-full after:top-0 after:w-4 after:h-full after:bg-transparent ${submenu.className || ''}`}
                             onMouseEnter={() => handleSubmenuHover(submenu.id)}
                             onMouseLeave={() => handleSubmenuMouseLeave(submenu.id)}
                         >
@@ -526,12 +526,12 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     return createPortal(
         <div
             ref={menuRef}
-            className={`fixed bg-night/95 dark:bg-night/95 text-white z-50 rounded-lg shadow-xl border border-solid border-white/20 min-w-48 max-w-72 backdrop-blur-md ${className}`}
+            className={`fixed bg-fullMoon/95 dark:bg-night/95 text-black dark:text-white z-50 rounded-lg shadow-xl border border-solid border-black/20 dark:border-white/20 min-w-48 max-w-72 backdrop-blur-md ${className}`}
             style={{ left: position.x, top: position.y }}
         >
             <div>
                 {header && (
-                    <div className="px-3 pt-2 font-semibold border-b border-white/20 flex items-center gap-2">
+                    <div className="px-3 pt-2 font-semibold border-b border-black/20 dark:border-white/20 flex items-center gap-2">
                         {header.icon && (
                             <img src={header.icon} alt="Icon" className="w-5 h-5 object-contain" />
                         )}

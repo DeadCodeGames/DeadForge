@@ -118,61 +118,61 @@ const FirstLaunchModal = () => {
             });
         }
         switch (platform) {
-        case "steam": {
-            const data: SteamLauncherData | null = await window.Electron.getSteamGamesData(path);
-            setLauncherData(prev => {
-                return {
-                    ...prev,
-                    steam: {
-                        raw: data,
-                        gamesCount: data ? Object.keys(data.datasets).length : null
-                    },
-                }
-            });
-            break;
-        }
+            case "steam": {
+                const data: SteamLauncherData | null = await window.Electron.getSteamGamesData(path);
+                setLauncherData(prev => {
+                    return {
+                        ...prev,
+                        steam: {
+                            raw: data,
+                            gamesCount: data ? Object.keys(data.datasets).length : null
+                        },
+                    }
+                });
+                break;
+            }
 
-        case "epicData": {
-            const data: any | null = await window.Electron.getEpicGamesData(path);
-            setLauncherData(prev => {
-                return {
-                    ...prev,
-                    epic: {
-                        raw: data,
-                        gamesCount: data ? Object.keys(data).length : null,
-                    },
-                }
-            });
-            break;
-        }
+            case "epicData": {
+                const data: any | null = await window.Electron.getEpicGamesData(path);
+                setLauncherData(prev => {
+                    return {
+                        ...prev,
+                        epic: {
+                            raw: data,
+                            gamesCount: data ? Object.keys(data).length : null,
+                        },
+                    }
+                });
+                break;
+            }
 
-        case "itchioData": {
-            const data: any | null = await window.Electron.getItchGamesData(path);
-            setLauncherData(prev => {
-                return {
-                    ...prev,
-                    itchio: {
-                        raw: data,
-                        gamesCount: data ? data.caves.length : null,
-                    },
-                }
-            });
-            break;
-        }
+            case "itchioData": {
+                const data: any | null = await window.Electron.getItchGamesData(path);
+                setLauncherData(prev => {
+                    return {
+                        ...prev,
+                        itchio: {
+                            raw: data,
+                            gamesCount: data ? data.caves.length : null,
+                        },
+                    }
+                });
+                break;
+            }
 
-        case "deadforgeBackup": {
-            const data = await window.Electron.validateBackup(path);
-            setImportData(prev => {
-                return {
-                    ...prev,
-                    deadforgeBackup: {
-                        ...prev.deadforgeBackup,
-                        isBackupValid: data[0],
-                    },
-                }
-            });
-            return (data[0])
-        }
+            case "deadforgeBackup": {
+                const data = await window.Electron.validateBackup(path);
+                setImportData(prev => {
+                    return {
+                        ...prev,
+                        deadforgeBackup: {
+                            ...prev.deadforgeBackup,
+                            isBackupValid: data[0],
+                        },
+                    }
+                });
+                return (data[0])
+            }
         }
     }
 

@@ -53,7 +53,7 @@ const Home = () => {
     }
 
     return (
-        <div className="w-[calc(100%-3rem)] h-full p-6 bg-night overflow-y-auto">
+        <div className="w-[calc(100%-3rem)] h-full p-6 bg-fullMoon dark:bg-night overflow-y-auto">
             {articles.map((article) => (
                 <article 
                     key={article.slug}

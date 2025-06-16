@@ -21,7 +21,7 @@ function launchElectron(isFirstRun) {
   }
 
   const electronPath = path.join(__dirname, '..', 'node_modules', 'electron', 'dist', 'electron.exe');
-  const args = ["--trace-warnings", "."];
+  const args = [".", "--trace-warnings", "--protocol-launcher"];
   if (isFirstRun) args.push("--first-run");
 
   electronProcess = spawn(electronPath, args, {
@@ -32,6 +32,10 @@ function launchElectron(isFirstRun) {
   electronProcess.on("close", (code) => {
     console.log(`[electron] exited with code ${code}`);
     electronProcess = null;
+    if (code === 777) {
+      console.log('electron exited with code 777, restarting');
+      launchElectron(false);
+    }
   });
 }
 

@@ -5,6 +5,8 @@ import Database from "better-sqlite3";
 import { createTable, deleteRow, insertRow, selectRows, updateRow } from "./dbHelpers";
 import { notifyPathChanged } from "./WatchManager";
 import { NormalizedDLC, NormalizedGame, NormalizedGameJoin } from "../types";
+import { notifyGamesUpdate } from "../main";
+import { DownloadCuratedAssets } from "./AssetsDownloader";
 
 let db: Database.Database;
 
@@ -50,6 +52,30 @@ export function initUserDB() {
         };
     };
 
+    const DeadForgeTableSchema: Record<string, string> = {
+        id: "TEXT PRIMARY KEY",
+        name: "TEXT",
+        installPath: "TEXT",
+        launchOptions: "TEXT",
+        icon: "TEXT",
+        logo: "TEXT",
+        hero: "TEXT",
+        header: "TEXT",
+        capsule: "TEXT",
+        iconHash: "TEXT",
+        logoHash: "TEXT",
+        heroHash: "TEXT", 
+        headerHash: "TEXT",
+        capsuleHash: "TEXT",
+        type: "TEXT",
+        lastPlayed: "INTEGER",
+        installedVersion: "TEXT",
+        installed: "BOOLEAN",
+        lastUpdated: "INTEGER",
+        updateAvailable: "BOOLEAN",
+        installSize: "INTEGER"
+    }
+
     const clients = ["steamGames", "itchGames", "epicGames"] as const;
     const DLCclients = ["steamDLCs"] as const;
 
@@ -60,6 +86,7 @@ export function initUserDB() {
         },
         ...Object.fromEntries(clients.map(client => [client, makeGameSchema(client)])),
         ...Object.fromEntries(DLCclients.map(client => [client, makeDLCSchema()])),
+        deadforgeGames: DeadForgeTableSchema,
         joinedGames: {
             id: "INTEGER PRIMARY KEY AUTOINCREMENT",
             clients: "TEXT", // stringified JSON
@@ -115,6 +142,7 @@ export function initUserDB() {
     });
 
     console.log("DB initialized at", dbPath);
+    DownloadCuratedAssets(...(selectRows(db, "deadforgeGames").map(r => ({source: "deadforge", id: String(r.id)})))).then(notifyGamesUpdate)
     return db;
 }
 
@@ -204,6 +232,7 @@ export function getAllGamesFromDB() {
         "steam": "steamGames",
         "epic": "epicGames",
         "itch": "itchGames",
+        "deadforge": "deadforgeGames"
     } as const;
     
     // Get all metrics records for efficient lookup
@@ -234,10 +263,11 @@ export function getAllGamesFromDB() {
                     // Handle logoUrl (complex object)
                     if (game.media.logoUrl) {
                         try {
+                            if (game.source === "deadforge") console.log(typeof game.media.logoUrl, game.media.logoUrl)
                             const logoObj = typeof game.media.logoUrl === 'string' ? JSON.parse(game.media.logoUrl) : game.media.logoUrl;
-
+                            if (game.source === "deadforge") console.log(logoObj)
                             // Process image paths
-                            if (logoObj.image) {
+                            if (logoObj.image && typeof logoObj.image !== 'string') {
                                 Object.keys(logoObj.image).forEach(lang => {
                                     if (!logoObj.image[lang].includes("%USERDATA%"))
                                         logoObj.image[lang] = path.join(steamPath, "appcache", "librarycache", String(game.id), logoObj.image[lang]);
@@ -245,7 +275,8 @@ export function getAllGamesFromDB() {
                             }
 
                             game.media.logoUrl = logoObj;
-                        } catch {
+                        } catch (e) {
+                            console.log(e)
                         }
                     }
 
@@ -255,7 +286,7 @@ export function getAllGamesFromDB() {
                             const heroObj = typeof game.media.heroUrl === 'string' ? JSON.parse(game.media.heroUrl) : game.media.heroUrl;
 
                             // Process image paths
-                            if (heroObj.image) {
+                            if (heroObj.image && typeof heroObj.image !== 'string') {
                                 Object.keys(heroObj.image).forEach(lang => {
                                     if (!heroObj.image[lang].includes("%USERDATA%"))
                                         heroObj.image[lang] = path.join(steamPath, "appcache", "librarycache", String(game.id), heroObj.image[lang]);
@@ -272,7 +303,7 @@ export function getAllGamesFromDB() {
                         try {
                             const headerObj = typeof game.media.headerUrl === 'string' ? JSON.parse(game.media.headerUrl) : game.media.headerUrl;
 
-                            if (headerObj.image) {
+                            if (headerObj.image && typeof headerObj.image !== 'string') {
                                 Object.keys(headerObj.image).forEach(lang => {
                                     if (!headerObj.image[lang].includes("%USERDATA%"))
                                         headerObj.image[lang] = path.join(steamPath, "appcache", "librarycache", String(game.id), headerObj.image[lang]);
@@ -289,7 +320,7 @@ export function getAllGamesFromDB() {
                         try {
                             const capsuleObj = typeof game.media.capsuleUrl === 'string' ? JSON.parse(game.media.capsuleUrl) : game.media.capsuleUrl;
 
-                            if (capsuleObj.image) {
+                            if (capsuleObj.image && typeof capsuleObj.image !== 'string') {
                                 Object.keys(capsuleObj.image).forEach(lang => {
                                     if (!capsuleObj.image[lang].includes("%USERDATA%"))
                                         capsuleObj.image[lang] = path.join(steamPath, "appcache", "librarycache", String(game.id), capsuleObj.image[lang]);
@@ -558,3 +589,42 @@ export function getGamePlaytime(client: string, gameId: string | number): number
     return metrics.length > 0 ? metrics[0].totalPlayedFor || 0 : 0;
 }
 
+export function checkIsDeadForgeGameInLibrary(gameId: string): boolean {
+    const row = selectRows(db, "deadforgeGames", `id = @id`, { id: gameId })
+    console.log(row);
+    return row.length > 0;
+}
+
+export type DeadForgeGameObject = {
+    id: string,
+    name: string,
+    installPath?: string,
+    launchOptions?: string,
+    icon?: string,
+    logo?: string,
+    hero?: string,
+    header?: string,
+    capsule?: string,
+    type?: string,
+    lastPlayed?: number,
+    installedVersion?: string,
+    installed?: boolean,
+    lastUpdated?: number,
+    updateAvailable?: boolean,
+    installSize?: number
+}
+
+export function addDeadForgeGameToLocalLibrary(game: DeadForgeGameObject): Promise<boolean> {
+    return new Promise((resolve) => {
+        try {
+            const res = insertRow(db, "deadforgeGames", game, "ignore");
+            notifyGamesUpdate();
+            const rows = selectRows(db, "deadforgeGames");
+            DownloadCuratedAssets(...rows.map(r => ({source: "deadforge", id: String(r.id)})))
+            resolve(Boolean(res.changes));
+        } catch (error) {
+            console.error(error)
+            resolve(false)
+        }
+    })
+}

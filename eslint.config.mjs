@@ -20,7 +20,7 @@ export default defineConfig([
             },
         },
         rules: {
-            indent: ["warn", 4],
+            indent: ["warn", 4, {"SwitchCase": 1}],
             "react/function-component-definition": [
                 "error",
                 {

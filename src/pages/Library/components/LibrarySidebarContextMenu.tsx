@@ -269,6 +269,10 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         navigate(path)
     }
 
+    const openInStore = () => {
+        navigate(`/store?path=${encodeURIComponent(`soft/${game.id}`)}`)
+    }
+
     // Get game type for proper button label
     const gameType = typeof game.source === "object" ? game.source[game.defaultClient].type : game.type;
 
@@ -408,7 +412,9 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         const stateClasses: Record<Exclude<GameState['state'], 'idle'>, string> = {
             launching: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
             running: 'text-green-500 hover:text-blue-400 bg-gradient-to-l from-green-500/50 hover:from-blue-500/50 to-transparent',
-            stopping: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent'
+            stopping: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            downloading: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            installing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent'
         };
 
         return stateClasses[state];
@@ -420,7 +426,9 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         const stateIcons: Record<Exclude<GameState['state'], 'idle'>, string> = {
             launching: 'hourglass_top',
             running: 'check_circle',
-            stopping: 'stop_circle'
+            stopping: 'stop_circle',
+            downloading: 'downloading',
+            installing: 'install_desktop'
         };
 
         return stateIcons[state];
@@ -431,6 +439,13 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     const isRunning = currentState === 'running';
     const isLaunching = currentState === 'launching';
     const isStopping = currentState === 'stopping';
+
+    const openInStoreButton: (MenuItemType | MenuItemWithPrefix | false) = game.source === "deadforge" && {
+        id: "open-in-store",
+        icon: "storefront",
+        label: t("library.shared.openInStore"),
+        onClick: openInStore
+    };
 
     // Define menu items
     const menuItems: (MenuItemType | MenuItemWithPrefix)[] = [
@@ -492,6 +507,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             label: t("library.contextMenu.games.viewDetails"),
             onClick: viewGame
         },
+        ...[openInStoreButton].filter(i => i !== false),
         // Divider
         {
             id: "divider-1",

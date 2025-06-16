@@ -1,17 +1,22 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { AppContext } from '../../App.tsx'
-import { ArrowLeft, ArrowRight, Home, RefreshCw, Copy, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Home, RefreshCw, Copy, Check, ArrowRightLeft } from 'lucide-react';
 import { useTranslation } from "react-i18next";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 const Store = () => {
     const { t } = useTranslation();
+    const location = useLocation();
+    const [,setSearchParams] = useSearchParams();
     const [currentUrl, setCurrentUrl] = useState<string>(process.env.REACT_APP_STORE_URL!)
+    const [homeUrl, setHomeUrl] = useState<string>(process.env.REACT_APP_STORE_URL!)
     const [canGoBack, setCanGoBack] = useState(false)
     const [canGoForward, setCanGoForward] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [copied, setCopied] = useState(false)
     const webviewRef = useRef<any>(null)
-    const storePreload = useContext(AppContext).context.storePreload;
+    const { storePreload } = useContext(AppContext).context;
+    const targetPath = useRef<string | null>(null)
   
     useEffect(() => {
         const handleWebviewEvents = () => {
@@ -42,6 +47,49 @@ const Store = () => {
 
         return () => clearTimeout(timer)
     }, [])
+
+    useEffect(() => {
+        const pathParam = new URLSearchParams(location.search).get('path');
+        if (pathParam) {
+            targetPath.current = pathParam;
+            setSearchParams(searchParams => { searchParams.delete("path"); return searchParams; }, {replace: true})
+        }
+    })
+
+    useEffect(() => {
+        const tryHandlePathRequest = async () => {
+            try {
+                if (targetPath.current !== null && await webviewRef.current.executeJavaScript("document.readyState") === "complete") {
+                    setCurrentUrl(homeUrl + targetPath.current);
+                    webviewRef.current.loadURL(homeUrl + targetPath.current);
+                    targetPath.current = null;
+                }
+                console.log(homeUrl, currentUrl);
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        tryHandlePathRequest();
+    })
+
+    useEffect(() => {
+        if (!webviewRef.current) return;
+
+        const handleLinkOpen = (e: any) => {
+            e.preventDefault();
+            console.log();
+            window.Electron.navigateExternal(e.url);
+        };
+
+        webviewRef.current?.addEventListener("window-open", handleLinkOpen);
+
+        return () => {
+            webviewRef.current?.removeEventListener("window-open", handleLinkOpen);
+        }
+    })
+
+    console.log(targetPath.current)
   
     if (!storePreload) return null;
 
@@ -59,7 +107,7 @@ const Store = () => {
 
     const goHome = () => {
         if (webviewRef.current) {
-            webviewRef.current.loadURL(process.env.REACT_APP_STORE_URL!)
+            webviewRef.current.loadURL(homeUrl)
         }
     }
 
@@ -76,11 +124,24 @@ const Store = () => {
         })
     }
 
+    const flipDevProd = () => {
+        console.log(process.env.REACT_APP_STORE_URL + (currentUrl.split(process.env.REACT_APP_STORE_PROD_URL!).filter(Boolean)[0] || ""), process.env.REACT_APP_STORE_PROD_URL + (currentUrl.split(process.env.REACT_APP_STORE_URL!).filter(Boolean)[0] || ""))
+        if (!window.App.isPackaged && homeUrl === process.env.REACT_APP_STORE_PROD_URL) {
+            setCurrentUrl(process.env.REACT_APP_STORE_URL + (currentUrl.split(process.env.REACT_APP_STORE_PROD_URL).filter(Boolean)[0] || ""));
+            webviewRef.current.loadURL(process.env.REACT_APP_STORE_URL + (currentUrl.split(process.env.REACT_APP_STORE_PROD_URL).filter(Boolean)[0] || ""))
+            setHomeUrl(process.env.REACT_APP_STORE_URL!);
+        } else {
+            setCurrentUrl(process.env.REACT_APP_STORE_PROD_URL + (currentUrl.split(process.env.REACT_APP_STORE_URL!).filter(Boolean)[0] || ""));
+            webviewRef.current.loadURL(process.env.REACT_APP_STORE_PROD_URL + (currentUrl.split(process.env.REACT_APP_STORE_URL!).filter(Boolean)[0] || ""));
+            setHomeUrl(process.env.REACT_APP_STORE_PROD_URL!)
+        }
+    }
+
     return (
         <div className="flex flex-col h-full w-full bg-fullMoon text-notQuiteBlack dark:bg-night dark:text-notQuiteWhite transition-colors duration-300 ease-in-out">
             {/* URL Bar */}
             <div 
-                className="flex items-center bg-navy px-2 py-2 border-b border-gray-700"
+                className="flex items-center bg-navy px-2 py-2 border-solid border-0 border-b border-night/20 dark:border-fullMoon/20"
             >
                 <div className="flex space-x-1 mr-2">
                     <button
@@ -113,6 +174,15 @@ const Store = () => {
                     >
                         <RefreshCw size={20} className={`text-night-moon ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
+                    {!window.App.isPackaged && (
+                        <button
+                            onClick={flipDevProd}
+                            className="p-1 rounded hover:bg-neutral-300 dark:hover:bg-neutral-800"
+                            title="Switch between Dev and Prod of DeadForge Store"
+                        >
+                            <ArrowRightLeft size={20} className="text-night-moon" />
+                        </button>
+                    )}
                 </div>
                 <div 
                     onClick={copyUrl}

@@ -6,9 +6,10 @@ import http from 'http';
 import crypto from 'crypto';
 import { GameAsset } from '../types';
 import getDB from './DataDB';
-import { insertRow, updateRow } from './dbHelpers';
+import { insertRow, updateRow, selectRows } from './dbHelpers';
 
 const CURATED_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/curated/list.json';
+const OFFICIAL_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/official/list.json';
 
 // Map media type to database field
 const MEDIA_TO_DB_FIELD: Record<string, string> = {
@@ -118,9 +119,13 @@ async function isDownloadNeeded(filePath: string, expectedHash?: string): Promis
  * Downloads assets for games from the curated list based on provided targets
  */
 export async function DownloadCuratedAssets(...targets: { source: string, id: string }[]) {
+    console.log(targets)
     try {    // Fetch the curated list
-        const response = await fetch(CURATED_LIST_URL);
-        const curatedList = await response.json() as GameAsset[];
+        const responseCurated = await fetch(CURATED_LIST_URL);
+        const responseOfficial = await fetch(OFFICIAL_LIST_URL)
+        const curatedList = await responseCurated.json() as GameAsset[];
+        const officialList = await responseOfficial.json() as GameAsset[];
+        const combinedList = [...officialList, ...curatedList]
 
         // Prepare database updates for the curatedAssets table
         const dbUpdates: Set<{
@@ -136,9 +141,10 @@ export async function DownloadCuratedAssets(...targets: { source: string, id: st
 
         for (const { source, id } of targets) {
             // Find the matching asset in the curated list
-            const match = curatedList.find(entry =>
+            const match = combinedList.find(entry =>
                 entry.matches?.some(m => m.source === source && m.id === String(id))
             );
+            if (source === "deadforge") console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", match)
 
             if (!match) {
                 console.warn(`No match found for source: ${source}, id: ${id}`);
@@ -312,6 +318,8 @@ export async function DownloadCuratedAssets(...targets: { source: string, id: st
                 }
             }
 
+            if (source === "deadforge") console.log("DEADFORGE DB UPDATE", dbUpdate);
+
             if (Object.keys(dbUpdate).length > 0) {
                 // Add to the update set if not already present
                 const updateKey = JSON.stringify({ source, gameId: id });
@@ -328,18 +336,25 @@ export async function DownloadCuratedAssets(...targets: { source: string, id: st
         if (dbUpdates.size > 0) {
             for (const update of dbUpdates) {
                 try {
-                    // Check if record already exists
-                    const existing = db.prepare('SELECT * FROM curatedAssets WHERE source = ? AND gameId = ?')
-                        .get(update.source, update.gameId);
+                    if (update.source === 'deadforge') {
+                        console.log("DEADFORGE DB UPDATE", update);
+                        
+                    }
+                    const tableName = update.source === 'deadforge' ? 'deadforgeGames' : 'curatedAssets';
+                    const whereCheck = update.source === 'deadforge' ? 'id = @id' : 'source = @source AND gameId = @gameId';
+                    const whereCheckData = update.source === 'deadforge' ? { id: String(update.gameId) } : { source: update.source, gameId: String(update.gameId) }
+                    
+                    // Check if record already exists using selectRows helper
+                    const existing = selectRows(db, tableName, whereCheck, whereCheckData)[0];
                     
                     if (existing) {
                         // Update existing record
                         updateRow(
                             db,
-                            'curatedAssets',
+                            tableName,
                             update.updateData,
-                            'source = @source AND gameId = @gameId',
-                            { source: update.source, gameId: String(update.gameId) }
+                            whereCheck,
+                            whereCheckData
                         );
                     } else {
                         // Insert new record
@@ -349,12 +364,12 @@ export async function DownloadCuratedAssets(...targets: { source: string, id: st
                             ...update.updateData
                         };
                         
-                        insertRow(db, 'curatedAssets', insertData, 'replace');
+                        insertRow(db, tableName, insertData, 'replace');
                     }
                     
-                    console.log(`Updated curatedAssets for ${update.source} game ${update.gameId} with new media paths`);
+                    console.log(`Updated ${tableName} for ${update.source} game ${update.gameId} with new media paths`);
                 } catch (err: any) {
-                    console.error(`Failed to update curatedAssets for ${update.source} game ${update.gameId}: ${err.message}`);
+                    console.error(`Failed to update curated assets tables for ${update.source} game ${update.gameId}: ${err.message}`);
                 }
             }
         }

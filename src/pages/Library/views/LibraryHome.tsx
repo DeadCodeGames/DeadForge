@@ -226,7 +226,6 @@ const LibraryHome: React.FC = () => {
 
     // Get all games (excluding those that are part of joins)
     const allGamesMemo = useMemo(() => {
-        console.time('allGamesMemo');
         const gamesList = [
             ...games.filter(
                 (game) =>
@@ -247,25 +246,21 @@ const LibraryHome: React.FC = () => {
                 : removeLeadingTheAndA(getLocalizedGameName(b)) || ""
             return nameA.localeCompare(nameB)
         })
-        console.timeEnd('allGamesMemo');
         return sorted;
     }, [games, gameJoinsPopulated, removeLeadingTheAndA])
 
     // Get favourited games - memoize the filter operation
     const favouritedGamesMemo = useMemo(() => {
-        console.time('favouritedGamesMemo');
         const result = allGamesMemo.filter((game) => {
             const gameId = typeof game.id === "object" ? JSON.stringify(game.id) : game.id
             const gameSource = typeof game.source === "object" ? "join" : game.source
             return favourites.some((fav) => fav.id === gameId && fav.source === gameSource)
         })
-        console.timeEnd('favouritedGamesMemo');
         return result;
     }, [allGamesMemo, favourites])
 
     // Get last played games - memoize the timestamp sorting
     const lastPlayedGamesMemo = useMemo(() => {
-        console.time('lastPlayedGamesMemo');
         const gamesWithTimestamps = allGamesMemo
             .map((game) => {
                 let timestamp: number | undefined
@@ -283,7 +278,6 @@ const LibraryHome: React.FC = () => {
             .slice(0, 10) // Show last 10 played games
 
         const result = gamesWithTimestamps.map(({ game }) => game);
-        console.timeEnd('lastPlayedGamesMemo');
         return result;
     }, [allGamesMemo])
 

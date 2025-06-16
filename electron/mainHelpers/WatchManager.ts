@@ -21,12 +21,13 @@ type Watchers = {
 };
 
 const watchers: Watchers = {};
-const emitter = new EventEmitter();
+export const emitter = new EventEmitter();
 
 const processing = {
     steam: false,
     itch: false,
-    epic: false
+    epic: false,
+    deadforge: false
 }
 
 function getLauncherEntry(source: 'steam' | 'epic' | 'itch'): NormalizedGame {

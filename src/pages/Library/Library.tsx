@@ -21,7 +21,7 @@ export const LibraryContext = createContext<{
     setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
     setFavourites: React.Dispatch<React.SetStateAction<CollectionGame[]>>;
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    setGameState: (gameId: string, source: string, state: GameState['state']) => void;
+    setGameState: (gameId: string, source: string, state: GameState['state'], progress?: number | string) => void;
         }>({
             games: [],
             dlcs: [],
@@ -60,7 +60,7 @@ export const LibrarySidebarContext = createContext<{
         }>({
             filters: {
                 search: "",
-                launchable: true,
+                launchable: false,
                 favourite: false,
             },
             sorting: {
@@ -83,7 +83,7 @@ const LibrarySidebarContextProvider: React.FC<{ children: React.ReactNode }> = (
     const [filterExpanded, setFilterExpanded] = useState<boolean>(false);
     const [filters, setFilters] = useState<Filters>({
         search: "",
-        launchable: true,
+        launchable: false,
         favourite: false,
     });
     const [sorting, setSorting] = useState<Sorting>({
@@ -113,7 +113,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
     // hack for persisting the library location when switching tabs
     const [lastVisitedLibraryLocation, setLastVisitedLibraryLocation] = useState<string>('/library');
 
-    const setGameState = (gameId: string, source: string, state: GameState['state']) => {
+    const setGameState = (gameId: string, source: string, state: GameState['state'], progress?: number | string) => {
         setGameStates(prev => {
             const key = `${source}-${gameId}`;
             if (state === 'idle') {
@@ -136,7 +136,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
             }
             return {
                 ...prev,
-                [key]: { state, gameId, source }
+                [key]: { state, gameId, source, progress: !(progress === null || progress === undefined) ? progress : prev?.[key]?.progress }
             };
         });
     };
@@ -163,6 +163,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
                         name = game.name;
                     }
                     try {
+                        if (game.source === "deadforge") console.log(game.media)
                         game.media = JSON.parse(game.media as any as string);
                     } catch {
                         game.media = game.media as GameMedia;
@@ -328,6 +329,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
     useEffect(() => {
         if (window.Electron.isTray) return;
+
         const handleTrayGameLaunch = (_event: any, source: string, gameId: string, executable: string, args: string | string[]) => {
             console.log(`Tray game launch: ${source}-${gameId}`);
             setGameState(gameId, source, 'launching');
@@ -352,13 +354,19 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
             });
         };
 
+        const handleGameStateChange = (_event: any, source: string, gameId: string, state: GameState['state'], progress?: number) => {
+            setGameState(gameId, source, state, progress);
+        };
+
         window.Electron.onTrayGameLaunch(handleTrayGameLaunch);
         window.Electron.onTrayGameStop(handleTrayGameStop);
+        window.Electron.onGameStateChange(handleGameStateChange);
 
         return () => {
             window.Electron.onTrayGameLaunch(() => {});
             window.Electron.onTrayGameStop(() => {});
-        }
+            window.Electron.removeGameStateChangeListener(handleGameStateChange);
+        };
     }, []);
 
     return (

@@ -134,6 +134,19 @@ contextBridge.exposeInMainWorld('Electron', {
             }))
         };
     },
+    // eslint-disable-next-line no-unused-vars
+    onProtocolNavigation: (callback: (event: any, protocolURL: string) => void) => ipcRenderer.on('protocol:navigate', callback),
+    getDefaultInstallPath: (gameId: string) => ipcRenderer.invoke('library:getDefaultGameInstallPath', gameId),
+    installGame: (gameId: string, installPath: string) => ipcRenderer.invoke('library:startGameInstall', gameId, installPath),
+    getDownloadSize: (gameId: string) => ipcRenderer.invoke('game:getDownloadSize', gameId),
+
+    // Game state change handler
+    // eslint-disable-next-line no-unused-vars
+    onGameStateChange: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string) => void) => 
+        ipcRenderer.on('game:stateChange', callback),
+    // eslint-disable-next-line no-unused-vars
+    removeGameStateChangeListener: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string) => void) => 
+        ipcRenderer.removeListener('game:stateChange', callback),
 });
 
 contextBridge.exposeInMainWorld('Process', {
