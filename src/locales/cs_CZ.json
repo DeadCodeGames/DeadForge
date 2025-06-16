@@ -3,20 +3,38 @@
         "name": "Čeština",
         "emoji": "🇨🇿"
     },
+    "commaSeparator": "",
+    "ampersandSeparator": "",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
+    "browse": "",
+    "cancel": "",
     "sidebar": {
         "home": "Domov",
         "library": "Knihovna",
-        "arcade": "Arcade",
+        "arcade": "",
         "store": "Obchod",
         "settings": "Nastavení",
         "collapse": "Sbalit"
+    },
+    "home": {
+        "articles": {
+            "publishedOn": "",
+            "lastEditedOn": "",
+            "writtenBy_one": "",
+            "writtenBy_few": "",
+            "writtenBy_many": "",
+            "writtenBy_other": ""
+        }
     },
     "store": {
         "urlCopied": "Adresa byla úspěšně zkopírovaná"
     },
     "tray": {
         "exit": "Ukončit <0>DEADFORGE</0>",
-        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
+        "arcade": ""
     },
     "settings": {
         "theming": {
@@ -29,9 +47,9 @@
             "windowFrame": "Záhlaví okna",
             "windowFrameDescription": "Vyberte si záhlaví okna, které sedí vašemu operačnímu systému, nebo které vám vyhovuje",
             "windowFrameAuto": "Auto (podle OS)",
-            "windowFrameWindows": "Windows",
-            "windowFrameMac": "macOS",
-            "windowFrameLinux": "Linux",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
             "currentPageTitleInFrame": "Zobrazit aktuální název stránky v záhlaví okna",
             "currentPageTitleInFrameDescription": "Zobrazovat aktuální název stránky v záhlaví okna",
             "themeButtonInFrame": "Zobrazit přepínač motivů v záhlaví okna",
@@ -63,6 +81,10 @@
             "exportData": "Exportovat",
             "importData": "Importovat",
             "resetData": "Resetovat",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
             "autoUpdate": "Automatické aktualizace",
             "autoUpdateDescription": "Automaticky stáhnout a nainštalovat aktualizace aplikace",
             "betaUpdates": "Předběžné (Beta) aktualizace",
@@ -70,6 +92,147 @@
             "languageUpdates": "Aktualizace jazykových balíčků",
             "languageUpdatesDescription": "Někdy se nám nepovede úplně přeložit aplikaci do všech jazyků prěd vydáním nové aktualizace\nMůžete se přihlásit na odběr těchto malých aktualizací, které obsahují jenom změny lokalizace (vyžaduje Automatické aktualizace)",
             "privacyPolicy": "Zásady ochrany osobních údajů"
+        }
+    },
+    "library": {
+        "yourLibrary": "",
+        "yourLibraryDescription": "",
+        "shared": {
+            "openInStore": "",
+            "collections": "",
+            "noCollections": "",
+            "collectionNamePlaceholder": "",
+            "createCollectionConfirm": "",
+            "createCollectionCancel": "",
+            "gameState": {
+                "install": "",
+                "launch": "",
+                "launchLauncher": "",
+                "play": "",
+                "stop": "",
+                "running": "",
+                "launching": "",
+                "stopping": "",
+                "downloading": "",
+                "installing": ""
+            },
+            "favourites": "",
+            "favouritesDescription": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "createCollection": "",
+            "recentlyPlayed": "",
+            "recentlyPlayedDescription": "",
+            "allGames": "",
+            "yourGames": "",
+            "allGamesDescription": "",
+            "allGamesDescriptionAlternate": ""
+        },
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            },
+            "empty": {
+                "emptyLibrary": "",
+                "emptyAfterFilters": ""
+            },
+            "wtflolhow": "",
+            "recent": "",
+            "neverPlayed": "",
+            "uncategorized": ""
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "",
+                "expand": "",
+                "rename": "",
+                "delete": "",
+                "clearFavorites": ""
+            },
+            "games": {
+                "viewDetails": ""
+            }
+        },
+        "homeView": {
+            "noGamesFound": "",
+            "noGamesFoundDescription": "",
+            "connect": ""
+        },
+        "gameView": {
+            "loading": "",
+            "checkStatus": "",
+            "checkStatusDescription": "",
+            "gameNotes": "",
+            "gameNotesTooltip": "",
+            "noGameNotes": "",
+            "installDir": ""
+        },
+        "recentView": {
+            "today": "Dnes",
+            "thisWeek": "Tento Týden",
+            "thisMonth": "Tento Měsíc",
+            "noRecentGames": "",
+            "noRecentGamesDescription": ""
+        },
+        "favouritesView": {
+            "noFavourites": "",
+            "noFavouritesDescription": ""
+        },
+        "collectionsView": {
+            "description": "",
+            "new": "",
+            "noCollections": "",
+            "noCollectionsDescription": "",
+            "noCollectionsCTA": "",
+            "header": {
+                "name": "",
+                "gameCount": "",
+                "actions": ""
+            },
+            "gameCount_one": "",
+            "gameCount_few": "",
+            "gameCount_many": "",
+            "gameCount_other": ""
+        },
+        "collectionView": {
+            "noGamesInCollection": "",
+            "noGamesInCollectionDescription": "",
+            "collectionNotFound": "",
+            "collectionNotFoundDescription": "",
+            "collectionNotFoundCTA": ""
+        },
+        "install": {
+            "title": "",
+            "install": "",
+            "installLocation": "",
+            "downloadSize": "",
+            "installSize": "",
+            "noReleaseinfo": "",
+            "copyingFiles": "",
+            "updatingDeadForgeDB": "",
+            "updatingWindowsRegistry": ""
         }
     }
 }

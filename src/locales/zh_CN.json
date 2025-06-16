@@ -3,12 +3,28 @@
         "name": "简体中文",
         "emoji": "🇨🇳"
     },
+    "commaSeparator": "",
+    "ampersandSeparator": "",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
+    "browse": "",
+    "cancel": "",
     "sidebar": {
+        "home": "",
         "library": "图书馆",
         "arcade": "",
         "store": "商店",
         "settings": "设置",
         "collapse": "折叠"
+    },
+    "home": {
+        "articles": {
+            "publishedOn": "",
+            "lastEditedOn": "",
+            "writtenBy_other": ""
+        }
     },
     "store": {
         "urlCopied": "URL 已成功复制"
@@ -62,12 +78,155 @@
             "exportData": "",
             "importData": "",
             "resetData": "",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
             "autoUpdate": "",
             "autoUpdateDescription": "",
             "betaUpdates": "",
             "betaUpdatesDescription": "",
             "languageUpdates": "",
-            "languageUpdatesDescription": ""
+            "languageUpdatesDescription": "",
+            "privacyPolicy": ""
+        }
+    },
+    "library": {
+        "yourLibrary": "",
+        "yourLibraryDescription": "",
+        "shared": {
+            "openInStore": "",
+            "collections": "",
+            "noCollections": "",
+            "collectionNamePlaceholder": "",
+            "createCollectionConfirm": "",
+            "createCollectionCancel": "",
+            "gameState": {
+                "install": "",
+                "launch": "",
+                "launchLauncher": "",
+                "play": "",
+                "stop": "",
+                "running": "",
+                "launching": "",
+                "stopping": "",
+                "downloading": "",
+                "installing": ""
+            },
+            "favourites": "",
+            "favouritesDescription": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "createCollection": "",
+            "recentlyPlayed": "",
+            "recentlyPlayedDescription": "",
+            "allGames": "",
+            "yourGames": "",
+            "allGamesDescription": "",
+            "allGamesDescriptionAlternate": ""
+        },
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            },
+            "empty": {
+                "emptyLibrary": "",
+                "emptyAfterFilters": ""
+            },
+            "wtflolhow": "",
+            "recent": "",
+            "neverPlayed": "",
+            "uncategorized": ""
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "",
+                "expand": "",
+                "rename": "",
+                "delete": "",
+                "clearFavorites": ""
+            },
+            "games": {
+                "viewDetails": ""
+            }
+        },
+        "homeView": {
+            "noGamesFound": "",
+            "noGamesFoundDescription": "",
+            "connect": ""
+        },
+        "gameView": {
+            "loading": "",
+            "checkStatus": "",
+            "checkStatusDescription": "",
+            "gameNotes": "",
+            "gameNotesTooltip": "",
+            "noGameNotes": "",
+            "installDir": ""
+        },
+        "recentView": {
+            "today": "",
+            "thisWeek": "",
+            "thisMonth": "",
+            "noRecentGames": "",
+            "noRecentGamesDescription": ""
+        },
+        "favouritesView": {
+            "noFavourites": "",
+            "noFavouritesDescription": ""
+        },
+        "collectionsView": {
+            "description": "",
+            "new": "",
+            "noCollections": "",
+            "noCollectionsDescription": "",
+            "noCollectionsCTA": "",
+            "header": {
+                "name": "",
+                "gameCount": "",
+                "actions": ""
+            },
+            "gameCount_other": ""
+        },
+        "collectionView": {
+            "noGamesInCollection": "",
+            "noGamesInCollectionDescription": "",
+            "collectionNotFound": "",
+            "collectionNotFoundDescription": "",
+            "collectionNotFoundCTA": ""
+        },
+        "install": {
+            "title": "",
+            "install": "",
+            "installLocation": "",
+            "downloadSize": "",
+            "installSize": "",
+            "noReleaseinfo": "",
+            "copyingFiles": "",
+            "updatingDeadForgeDB": "",
+            "updatingWindowsRegistry": ""
         }
     }
 }
