@@ -221,7 +221,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
 
         mainWindowState.manage(mainWindow)
         if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
-        mainWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/${initialPrefs.defaultPage || ""}` : `http://localhost:3000#/${initialPrefs.defaultPage || ""}`);
+        mainWindow?.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/${initialPrefs.defaultPage || ""}` : `http://localhost:3000#/${initialPrefs.defaultPage || ""}`);
 
         mainWindow.on('closed', () => {
             mainWindow = null;
@@ -470,7 +470,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             ? `file://${path.join(__dirname, "../build/index.html")}#/tray`
             : "http://localhost:3000#/tray";
 
-        setTimeout(() => trayWindow!.loadURL(trayURL), 1000);
+        setTimeout(() => trayWindow?.loadURL(trayURL), 1000);
 
         trayWindow.on('blur', () => trayWindow?.hide());
         trayWindow.on('closed', () => (trayWindow = null));
@@ -540,7 +540,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             }
         });
 
-        settingsWindow.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/settings` : `http://localhost:3000#/settings`);
+        settingsWindow?.loadURL(app.isPackaged ? `file://${path.join(__dirname, "../build/index.html")}#/settings` : `http://localhost:3000#/settings`);
         if (!app.isPackaged) installExtension(REACT_DEVELOPER_TOOLS).then((ext) => Array.isArray(ext) ? ext.forEach(e => console.log(`Added Extension: ${e.name} (${e.id})`)) : console.log(`Added Extension: ${(ext as Extension).name!} (${(ext as Extension).id})`)).catch((err: Error) => console.log('An error occurred: ', err));
 
         settingsWindow.on('closed', () => {
