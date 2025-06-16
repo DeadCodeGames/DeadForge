@@ -3,22 +3,30 @@
         "name": "Slovenčina",
         "emoji": "🇸🇰"
     },
-    "commaSeparator": ", ",
-    "ampersandSeparator": " & ",
+    "commaSeparator": "",
+    "ampersandSeparator": "",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
+    "browse": "",
+    "cancel": "",
     "sidebar": {
         "home": "Domov",
         "library": "Knižnica",
-        "arcade": "Arcade",
+        "arcade": "",
         "store": "Obchod",
         "settings": "Nastavenia",
         "collapse": "Zbaliť"
     },
     "home": {
         "articles": {
-            "writtenBy_one": "Napísal <0></0>",
-            "writtenBy_other": "Napísali <0></0>",
             "publishedOn": "Publikované {{date}}",
-            "lastEditedOn": "Naposledy upravené {{date}}"
+            "lastEditedOn": "Naposledy upravené {{date}}",
+            "writtenBy_one": "Napísal <0></0>",
+            "writtenBy_few": "Napísali <0></0>",
+            "writtenBy_many": "Napísali <0></0>",
+            "writtenBy_other": "Napísali <0></0>"
         }
     },
     "store": {
@@ -26,7 +34,7 @@
     },
     "tray": {
         "exit": "Ukončiť <0>DEADFORGE</0>",
-        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
+        "arcade": ""
     },
     "settings": {
         "theming": {
@@ -39,9 +47,9 @@
             "windowFrame": "Hlavička okna",
             "windowFrameDescription": "Vyberte si hlavičku okna, ktorá sedí vášmu operačnému systému, alebo ktorá vám vyhovuje",
             "windowFrameAuto": "Auto (podľa OS)",
-            "windowFrameWindows": "Windows",
-            "windowFrameMac": "macOS",
-            "windowFrameLinux": "Linux",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
             "currentPageTitleInFrame": "Zobraziť aktuálny názov stránky v hlavičke okna",
             "currentPageTitleInFrameDescription": "Zobrazovať aktuálny názov stránky v hlavičke okna",
             "themeButtonInFrame": "Zobrazovať menič motívu v hlavičke okna",
@@ -73,6 +81,10 @@
             "exportData": "Exportovať",
             "importData": "Importovať",
             "resetData": "Resetovať",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
             "autoUpdate": "Automatické aktualizácie",
             "autoUpdateDescription": "Automaticky stiahnuť a nainštalovať aktualizácie aplikácie",
             "betaUpdates": "Predbežné (Beta) aktualizácie",
@@ -80,6 +92,147 @@
             "languageUpdates": "Aktualizácie jazykových balíčkov",
             "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)",
             "privacyPolicy": "Zásady ochrany osobných údajov"
+        }
+    },
+    "library": {
+        "yourLibrary": "",
+        "yourLibraryDescription": "",
+        "shared": {
+            "openInStore": "",
+            "collections": "",
+            "noCollections": "",
+            "collectionNamePlaceholder": "",
+            "createCollectionConfirm": "",
+            "createCollectionCancel": "",
+            "gameState": {
+                "install": "",
+                "launch": "",
+                "launchLauncher": "",
+                "play": "",
+                "stop": "",
+                "running": "",
+                "launching": "",
+                "stopping": "",
+                "downloading": "",
+                "installing": ""
+            },
+            "favourites": "",
+            "favouritesDescription": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "createCollection": "",
+            "recentlyPlayed": "",
+            "recentlyPlayedDescription": "",
+            "allGames": "",
+            "yourGames": "",
+            "allGamesDescription": "",
+            "allGamesDescriptionAlternate": ""
+        },
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            },
+            "empty": {
+                "emptyLibrary": "",
+                "emptyAfterFilters": ""
+            },
+            "wtflolhow": "",
+            "recent": "",
+            "neverPlayed": "",
+            "uncategorized": ""
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "",
+                "expand": "",
+                "rename": "",
+                "delete": "",
+                "clearFavorites": ""
+            },
+            "games": {
+                "viewDetails": ""
+            }
+        },
+        "homeView": {
+            "noGamesFound": "",
+            "noGamesFoundDescription": "",
+            "connect": ""
+        },
+        "gameView": {
+            "loading": "",
+            "checkStatus": "",
+            "checkStatusDescription": "",
+            "gameNotes": "",
+            "gameNotesTooltip": "",
+            "noGameNotes": "",
+            "installDir": ""
+        },
+        "recentView": {
+            "today": "Dnes",
+            "thisWeek": "Tento Týždeň",
+            "thisMonth": "Tento Mesiac",
+            "noRecentGames": "",
+            "noRecentGamesDescription": ""
+        },
+        "favouritesView": {
+            "noFavourites": "",
+            "noFavouritesDescription": ""
+        },
+        "collectionsView": {
+            "description": "",
+            "new": "",
+            "noCollections": "",
+            "noCollectionsDescription": "",
+            "noCollectionsCTA": "",
+            "header": {
+                "name": "",
+                "gameCount": "",
+                "actions": ""
+            },
+            "gameCount_one": "",
+            "gameCount_few": "",
+            "gameCount_many": "",
+            "gameCount_other": ""
+        },
+        "collectionView": {
+            "noGamesInCollection": "",
+            "noGamesInCollectionDescription": "",
+            "collectionNotFound": "",
+            "collectionNotFoundDescription": "",
+            "collectionNotFoundCTA": ""
+        },
+        "install": {
+            "title": "",
+            "install": "",
+            "installLocation": "",
+            "downloadSize": "",
+            "installSize": "",
+            "noReleaseinfo": "",
+            "copyingFiles": "",
+            "updatingDeadForgeDB": "",
+            "updatingWindowsRegistry": ""
         }
     }
 }
