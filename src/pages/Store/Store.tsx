@@ -16,7 +16,7 @@ const Store = () => {
     const [copied, setCopied] = useState(false)
     const webviewRef = useRef<any>(null)
     const { storePreload } = useContext(AppContext).context;
-    const targetPath = useRef<string | null>(null)
+    const [targetPath, setTargetPath] = useState<string | null>(null)
   
     useEffect(() => {
         const handleWebviewEvents = () => {
@@ -50,28 +50,33 @@ const Store = () => {
 
     useEffect(() => {
         const pathParam = new URLSearchParams(location.search).get('path');
+        console.log("extracted pathParam:", pathParam);
         if (pathParam) {
-            targetPath.current = pathParam;
-            setSearchParams(searchParams => { searchParams.delete("path"); return searchParams; }, {replace: true})
+            setTargetPath(pathParam);
+            setSearchParams(searchParams => {
+                searchParams.delete("path");
+                return searchParams;
+            }, { replace: true });
         }
-    })
-
+    }, [location.search]);
+    
     useEffect(() => {
-        const tryHandlePathRequest = async () => {
-            try {
-                if (targetPath.current !== null && await webviewRef.current.executeJavaScript("document.readyState") === "complete") {
-                    setCurrentUrl(homeUrl + targetPath.current);
-                    webviewRef.current.loadURL(homeUrl + targetPath.current);
-                    targetPath.current = null;
-                }
-                console.log(homeUrl, currentUrl);
-            } catch (error) {
-                console.error(error)
+        if (!targetPath) return;
+    
+        const interval = setInterval(async () => {
+            const isReady = await webviewRef.current?.executeJavaScript("document.readyState");
+            if (isReady === "complete") {
+                const fullUrl = homeUrl + targetPath;
+                console.log("Navigating to:", fullUrl);
+                setCurrentUrl(fullUrl);
+                webviewRef.current.loadURL(fullUrl);
+                setTargetPath(null);
+                clearInterval(interval);
             }
-        }
-
-        tryHandlePathRequest();
-    })
+        }, 50);
+    
+        return () => clearInterval(interval);
+    }, [targetPath]);
 
     useEffect(() => {
         if (!webviewRef.current) return;
@@ -89,7 +94,7 @@ const Store = () => {
         }
     })
 
-    console.log(targetPath.current)
+    console.log(targetPath)
   
     if (!storePreload) return null;
 
