@@ -19,6 +19,7 @@ permissions:
 jobs:
   synchronize-with-crowdin:
     runs-on: ubuntu-latest
+    if: github.actor != 'deadcodebot'
     outputs:
       BRANCH_EXISTS: ${{ steps.pr_branch_make.outputs.BRANCH_EXISTS }}
       SHOULD_SKIP: ${{ steps.run_crowdin.outputs.SHOULD_SKIP }}
