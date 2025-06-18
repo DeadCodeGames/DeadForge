@@ -3,35 +3,230 @@
         "name": "日本語",
         "emoji": "🇯🇵"
     },
-    "generic": {
-        "free": "無料"
+    "commaSeparator": "、",
+    "ampersandSeparator": "と",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
+    "browse": "",
+    "cancel": "",
+    "sidebar": {
+        "home": "ホーム",
+        "library": "ライブラリー",
+        "arcade": "アーケード",
+        "store": "ストア",
+        "settings": "設定",
+        "collapse": "折りたたむ"
     },
-    "catogeries": {
-        "All Categories": "全カテゴリー",
-        "Games": "ゲーム"
+    "home": {
+        "articles": {
+            "publishedOn": "{{date}}に公開",
+            "lastEditedOn": "{{date}}に最終更新",
+            "writtenBy_other": "<0></0>によって書かれました"
+        }
     },
-    "sections": {
-        "links": {
-            "links": "リンク",
-            "home": "ホーム",
-            "search": "検索"
+    "store": {
+        "urlCopied": "URLは正常にコピーされました"
+    },
+    "tray": {
+        "exit": "<0>DEADFORGE</0>を終了",
+        "arcade": "<0>DEADFORGE</0> <1>アーケード</1>"
+    },
+    "settings": {
+        "theming": {
+            "title": "外観",
+            "theme": "テーマ",
+            "themeDescription": "ライト、ダーク、自動（システム）テーマから選択",
+            "systemTheme": "システム",
+            "darkTheme": "ダーク",
+            "lightTheme": "ライト",
+            "windowFrame": "ウィンドウ枠のスタイル",
+            "windowFrameDescription": "",
+            "windowFrameAuto": "自動（OSに基づいて）",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
+            "currentPageTitleInFrame": "",
+            "currentPageTitleInFrameDescription": "",
+            "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
+            "themeButtonInFrameDescription": "",
+            "language": "言語",
+            "languageDescription": "",
+            "languageShowIncomplete": "未完了の翻訳を表示",
+            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。"
         },
-        "contact": "お問い合わせ",
-        "hero": {
-            "latestNews": "最新お知らせ",
-            "tags": {
-                "news": "お知らせ",
-                "upcomingRelease": "今後のリリース"
+        "behavior": {
+            "title": "行動",
+            "defaultPage": "デフォルトページ",
+            "defaultPageDescription": "",
+            "settingsWindow": "設定を別ウィンドウで開く",
+            "settingsWindowDescription": "",
+            "useTray": "システムトレイに表示",
+            "useTrayDescription": "",
+            "autoStart": "システム起動時に実行",
+            "autoStartDescription": "",
+            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません"
+        },
+        "appData": {
+            "title": "アプリデータとアップデート",
+            "initialSetup": "初期設定",
+            "initialSetupDescription": "",
+            "replaySetup": "初期設定を再度開始",
+            "dataManagement": "データ管理",
+            "dataManagementDescription": "全てのアプリデータをエクスポート、インポート、リセットする",
+            "exportData": "エクスポート",
+            "importData": "インポート",
+            "resetData": "リセット",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
+            "autoUpdate": "自動アップデート",
+            "autoUpdateDescription": "アプリアップデートを自動的にダウンロードしてインストールします",
+            "betaUpdates": "ベータアップデート",
+            "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
+            "languageUpdates": "言語パックのアップデート",
+            "languageUpdatesDescription": "",
+            "privacyPolicy": "プライバシー・ポリシー"
+        }
+    },
+    "library": {
+        "yourLibrary": "",
+        "yourLibraryDescription": "",
+        "shared": {
+            "openInStore": "",
+            "collections": "",
+            "noCollections": "",
+            "collectionNamePlaceholder": "",
+            "createCollectionConfirm": "",
+            "createCollectionCancel": "",
+            "gameState": {
+                "install": "",
+                "launch": "",
+                "launchLauncher": "",
+                "play": "",
+                "stop": "",
+                "running": "",
+                "launching": "",
+                "stopping": "",
+                "downloading": "",
+                "installing": ""
             },
-            "articlePublished": "{{date}}に公開",
-            "gameReleasesOn": "{{date}}でリリース"
+            "favourites": "",
+            "favouritesDescription": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "createCollection": "",
+            "recentlyPlayed": "",
+            "recentlyPlayedDescription": "",
+            "allGames": "",
+            "yourGames": "",
+            "allGamesDescription": "",
+            "allGamesDescriptionAlternate": ""
         },
-        "featured": {
-            "featured": "おすすめ"
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            },
+            "empty": {
+                "emptyLibrary": "",
+                "emptyAfterFilters": ""
+            },
+            "wtflolhow": "",
+            "recent": "",
+            "neverPlayed": "",
+            "uncategorized": ""
         },
-        "search": {
-            "searchbarPlaceholder": "ソフトを検索…",
-            "softCatalog": "ソフトカタログ"
+        "contextMenu": {
+            "collections": {
+                "collapse": "",
+                "expand": "",
+                "rename": "",
+                "delete": "",
+                "clearFavorites": ""
+            },
+            "games": {
+                "viewDetails": ""
+            }
+        },
+        "homeView": {
+            "noGamesFound": "",
+            "noGamesFoundDescription": "",
+            "connect": ""
+        },
+        "gameView": {
+            "loading": "",
+            "checkStatus": "",
+            "checkStatusDescription": "",
+            "gameNotes": "",
+            "gameNotesTooltip": "",
+            "noGameNotes": "",
+            "installDir": ""
+        },
+        "recentView": {
+            "today": "今日",
+            "thisWeek": "今週",
+            "thisMonth": "今月",
+            "noRecentGames": "",
+            "noRecentGamesDescription": ""
+        },
+        "favouritesView": {
+            "noFavourites": "",
+            "noFavouritesDescription": ""
+        },
+        "collectionsView": {
+            "description": "",
+            "new": "",
+            "noCollections": "",
+            "noCollectionsDescription": "",
+            "noCollectionsCTA": "",
+            "header": {
+                "name": "",
+                "gameCount": "",
+                "actions": ""
+            },
+            "gameCount_other": ""
+        },
+        "collectionView": {
+            "noGamesInCollection": "",
+            "noGamesInCollectionDescription": "",
+            "collectionNotFound": "",
+            "collectionNotFoundDescription": "",
+            "collectionNotFoundCTA": ""
+        },
+        "install": {
+            "title": "",
+            "install": "",
+            "installLocation": "",
+            "downloadSize": "",
+            "installSize": "",
+            "noReleaseinfo": "",
+            "copyingFiles": "",
+            "updatingDeadForgeDB": "",
+            "updatingWindowsRegistry": ""
         }
     }
 }

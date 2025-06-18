@@ -3,35 +3,236 @@
         "name": "Slovenčina",
         "emoji": "🇸🇰"
     },
-    "generic": {
-        "free": "Zadarmo"
+    "commaSeparator": "",
+    "ampersandSeparator": "",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
+    "browse": "",
+    "cancel": "",
+    "sidebar": {
+        "home": "Domov",
+        "library": "Knižnica",
+        "arcade": "",
+        "store": "Obchod",
+        "settings": "Nastavenia",
+        "collapse": "Zbaliť"
     },
-    "catogeries": {
-        "All Categories": "Všetky kategórie",
-        "Games": "Hry"
+    "home": {
+        "articles": {
+            "publishedOn": "Publikované {{date}}",
+            "lastEditedOn": "Naposledy upravené {{date}}",
+            "writtenBy_one": "Napísal <0></0>",
+            "writtenBy_few": "Napísali <0></0>",
+            "writtenBy_many": "Napísali <0></0>",
+            "writtenBy_other": "Napísali <0></0>"
+        }
     },
-    "sections": {
-        "links": {
-            "links": "Odkazy",
-            "home": "Domov",
-            "search": "Vyhľadávanie"
+    "store": {
+        "urlCopied": "Adresa bola úspešne skopírovaná"
+    },
+    "tray": {
+        "exit": "Ukončiť <0>DEADFORGE</0>",
+        "arcade": ""
+    },
+    "settings": {
+        "theming": {
+            "title": "Vzhľad",
+            "theme": "Motív",
+            "themeDescription": "Vyberte si medzi svetlým, tmavým, a automatickým (systémovým) motívom",
+            "systemTheme": "Podľa systému",
+            "darkTheme": "Tmavý",
+            "lightTheme": "Svetlý",
+            "windowFrame": "Hlavička okna",
+            "windowFrameDescription": "Vyberte si hlavičku okna, ktorá sedí vášmu operačnému systému, alebo ktorá vám vyhovuje",
+            "windowFrameAuto": "Auto (podľa OS)",
+            "windowFrameWindows": "",
+            "windowFrameMac": "",
+            "windowFrameLinux": "",
+            "currentPageTitleInFrame": "Zobraziť aktuálny názov stránky v hlavičke okna",
+            "currentPageTitleInFrameDescription": "Zobrazovať aktuálny názov stránky v hlavičke okna",
+            "themeButtonInFrame": "Zobrazovať menič motívu v hlavičke okna",
+            "themeButtonInFrameDescription": "Zobrazovať menič motívu okna v hlavičke okna pre rýchly prístup.\nKliknutím ľavým tlačidlom myši prepnete medzi tmavým a svetlým motívom, kliknutím pravým tlačidlom prepnete na automatický (systémový) motív",
+            "language": "Jazyk",
+            "languageDescription": "Vyberte si váš preferovaný jazyk pre rozhranie aplikácie",
+            "languageShowIncomplete": "Zobrazovať nekompletné preklady",
+            "languageShowIncompleteDescription": "Zobraziť preklady, ktoré nie sú kompletné. Môžete nám pomôcť DEADFORGE preložiť na našom <0>Crowdine</0>."
         },
-        "contact": "Kontakt",
-        "hero": {
-            "latestNews": "Posledné novinky",
-            "tags": {
-                "news": "Novinky",
-                "upcomingRelease": "Nadchádzajúce vydanie"
+        "behavior": {
+            "title": "Správanie",
+            "defaultPage": "Predvolená stránka",
+            "defaultPageDescription": "Vyberte si, ktorú stránku uvidíte po otvorení aplikácie",
+            "settingsWindow": "Otvárať nastavenia v samostatnom okne",
+            "settingsWindowDescription": "Otvárať nastavenia v samostatnom okne namiesto sekcie v hlavnom okne",
+            "useTray": "Zobraziť v oblasti oznámení",
+            "useTrayDescription": "Ponechať aplikáciu na pozadí po uzatvorení okna, skrytú v oblasti oznámení",
+            "autoStart": "Spustiť pri štarte",
+            "autoStartDescription": "Spustiť aplikáciu automaticky po spustení počítača",
+            "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch"
+        },
+        "appData": {
+            "title": "Dáta a aktualizácie aplikácie",
+            "initialSetup": "Prvotné nastavenie",
+            "initialSetupDescription": "Spustiť znova sekvenciu prvotného nastavenia, ktorú ste videli pri prvom otvorení aplikácie",
+            "replaySetup": "Spustiť prvotné nastavenie",
+            "dataManagement": "Správa dát",
+            "dataManagementDescription": "Export, import a resetovanie všetkých dát aplikácie",
+            "exportData": "Exportovať",
+            "importData": "Importovať",
+            "resetData": "Resetovať",
+            "resetDataTitle": "",
+            "resetDataConfirmation": "",
+            "resetDataConfirm": "",
+            "resetDataCancel": "",
+            "autoUpdate": "Automatické aktualizácie",
+            "autoUpdateDescription": "Automaticky stiahnuť a nainštalovať aktualizácie aplikácie",
+            "betaUpdates": "Predbežné (Beta) aktualizácie",
+            "betaUpdatesDescription": "Inštalovať predbežné beta verzie s novými funkciami skôr (vyžaduje Automatické aktualizácie)",
+            "languageUpdates": "Aktualizácie jazykových balíčkov",
+            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)",
+            "privacyPolicy": "Zásady ochrany osobných údajov"
+        }
+    },
+    "library": {
+        "yourLibrary": "",
+        "yourLibraryDescription": "",
+        "shared": {
+            "openInStore": "",
+            "collections": "",
+            "noCollections": "",
+            "collectionNamePlaceholder": "",
+            "createCollectionConfirm": "",
+            "createCollectionCancel": "",
+            "gameState": {
+                "install": "",
+                "launch": "",
+                "launchLauncher": "",
+                "play": "",
+                "stop": "",
+                "running": "",
+                "launching": "",
+                "stopping": "",
+                "downloading": "",
+                "installing": ""
             },
-            "articlePublished": "Zverejnené: {{date}}",
-            "gameReleasesOn": "Vychádza {{date}}"
+            "favourites": "",
+            "favouritesDescription": "",
+            "addFavourite": "",
+            "removeFavourite": "",
+            "createCollection": "",
+            "recentlyPlayed": "",
+            "recentlyPlayedDescription": "",
+            "allGames": "",
+            "yourGames": "",
+            "allGamesDescription": "",
+            "allGamesDescriptionAlternate": ""
         },
-        "featured": {
-            "featured": "Odporúčané"
+        "sidebar": {
+            "homeButton": "",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "",
+                    "unfiltered": "",
+                    "favourites": ""
+                },
+                "launchability": {
+                    "description": "",
+                    "unfiltered": "",
+                    "launchable": ""
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "",
+                    "title": "",
+                    "recent": ""
+                },
+                "direction": {
+                    "description": "",
+                    "asc": "",
+                    "desc": ""
+                }
+            },
+            "empty": {
+                "emptyLibrary": "",
+                "emptyAfterFilters": ""
+            },
+            "wtflolhow": "",
+            "recent": "",
+            "neverPlayed": "",
+            "uncategorized": ""
         },
-        "search": {
-            "searchbarPlaceholder": "Vyhľadávanie softvéru...",
-            "softCatalog": "Katalóg softvéru"
+        "contextMenu": {
+            "collections": {
+                "collapse": "",
+                "expand": "",
+                "rename": "",
+                "delete": "",
+                "clearFavorites": ""
+            },
+            "games": {
+                "viewDetails": ""
+            }
+        },
+        "homeView": {
+            "noGamesFound": "",
+            "noGamesFoundDescription": "",
+            "connect": ""
+        },
+        "gameView": {
+            "loading": "",
+            "checkStatus": "",
+            "checkStatusDescription": "",
+            "gameNotes": "",
+            "gameNotesTooltip": "",
+            "noGameNotes": "",
+            "installDir": ""
+        },
+        "recentView": {
+            "today": "Dnes",
+            "thisWeek": "Tento Týždeň",
+            "thisMonth": "Tento Mesiac",
+            "noRecentGames": "",
+            "noRecentGamesDescription": ""
+        },
+        "favouritesView": {
+            "noFavourites": "",
+            "noFavouritesDescription": ""
+        },
+        "collectionsView": {
+            "description": "",
+            "new": "",
+            "noCollections": "",
+            "noCollectionsDescription": "",
+            "noCollectionsCTA": "",
+            "header": {
+                "name": "",
+                "gameCount": "",
+                "actions": ""
+            },
+            "gameCount_one": "",
+            "gameCount_few": "",
+            "gameCount_many": "",
+            "gameCount_other": ""
+        },
+        "collectionView": {
+            "noGamesInCollection": "",
+            "noGamesInCollectionDescription": "",
+            "collectionNotFound": "",
+            "collectionNotFoundDescription": "",
+            "collectionNotFoundCTA": ""
+        },
+        "install": {
+            "title": "",
+            "install": "",
+            "installLocation": "",
+            "downloadSize": "",
+            "installSize": "",
+            "noReleaseinfo": "",
+            "copyingFiles": "",
+            "updatingDeadForgeDB": "",
+            "updatingWindowsRegistry": ""
         }
     }
 }
