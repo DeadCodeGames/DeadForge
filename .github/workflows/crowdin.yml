@@ -52,6 +52,7 @@ jobs:
           else
             echo "SHOULD_SKIP=false" >> $GITHUB_OUTPUT
           fi
+          cat src/locales/ja_JP.json
           exit $result
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
