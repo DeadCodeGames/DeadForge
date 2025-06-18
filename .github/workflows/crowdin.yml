@@ -44,7 +44,7 @@ jobs:
         run: |
           set +e
           npx @crowdin/cli upload sources --config .crowdin.yml
-          OUTPUT=$(npx @crowdin/cli download --config .crowdin.yml --skip-untranslated-strings source=src/locales/en_001.json --dest=DeadForge.json --translation=src/locales/%locale_with_underscore%.json --verbose)
+          OUTPUT=$(npx @crowdin/cli download translations --config .crowdin.yml --skip-untranslated-strings --source=src/locales/en_001.json --dest=DeadForge.json --translation=src/locales/%locale_with_underscore%.json --verbose)
           result=$?
           if echo $OUTPUT | grep -q "Couldn't find any file to download"; then
             echo "No translations downloaded. Skipping i18n update."
