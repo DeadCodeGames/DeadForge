@@ -1,0 +1,37 @@
+{
+    "meta": {
+        "name": "Pirate English",
+        "emoji": "🏴‍☠️"
+    },
+    "generic": {
+        "free": ""
+    },
+    "catogeries": {
+        "All Categories": "",
+        "Games": ""
+    },
+    "sections": {
+        "links": {
+            "links": "",
+            "home": "",
+            "search": ""
+        },
+        "contact": "",
+        "hero": {
+            "latestNews": "",
+            "tags": {
+                "news": "",
+                "upcomingRelease": ""
+            },
+            "articlePublished": "",
+            "gameReleasesOn": ""
+        },
+        "featured": {
+            "featured": ""
+        },
+        "search": {
+            "searchbarPlaceholder": "",
+            "softCatalog": ""
+        }
+    }
+}

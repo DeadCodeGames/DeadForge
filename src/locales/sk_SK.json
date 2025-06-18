@@ -1,0 +1,37 @@
+{
+    "meta": {
+        "name": "Slovenčina",
+        "emoji": "🇸🇰"
+    },
+    "generic": {
+        "free": "Zadarmo"
+    },
+    "catogeries": {
+        "All Categories": "Všetky kategórie",
+        "Games": "Hry"
+    },
+    "sections": {
+        "links": {
+            "links": "Odkazy",
+            "home": "Domov",
+            "search": "Vyhľadávanie"
+        },
+        "contact": "Kontakt",
+        "hero": {
+            "latestNews": "Posledné novinky",
+            "tags": {
+                "news": "Novinky",
+                "upcomingRelease": "Nadchádzajúce vydanie"
+            },
+            "articlePublished": "Zverejnené: {{date}}",
+            "gameReleasesOn": "Vychádza {{date}}"
+        },
+        "featured": {
+            "featured": "Odporúčané"
+        },
+        "search": {
+            "searchbarPlaceholder": "Vyhľadávanie softvéru...",
+            "softCatalog": "Katalóg softvéru"
+        }
+    }
+}
