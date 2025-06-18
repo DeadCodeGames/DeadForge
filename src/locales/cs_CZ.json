@@ -4,34 +4,34 @@
         "emoji": "🇨🇿"
     },
     "generic": {
-        "free": ""
+        "free": "Zdarma"
     },
     "catogeries": {
-        "All Categories": "",
-        "Games": ""
+        "All Categories": "Všechny kategorie",
+        "Games": "Hry"
     },
     "sections": {
         "links": {
-            "links": "",
-            "home": "",
-            "search": ""
+            "links": "Odkazy",
+            "home": "Domov",
+            "search": "Vyhledávání"
         },
-        "contact": "",
+        "contact": "Kontakt",
         "hero": {
-            "latestNews": "",
+            "latestNews": "Poslední novinky",
             "tags": {
-                "news": "",
-                "upcomingRelease": ""
+                "news": "Novinky",
+                "upcomingRelease": "Nadcházející vydání"
             },
-            "articlePublished": "",
-            "gameReleasesOn": ""
+            "articlePublished": "Zveřejněno: {{date}}",
+            "gameReleasesOn": "Vychází {{date}}"
         },
         "featured": {
-            "featured": ""
+            "featured": "Doporučené"
         },
         "search": {
-            "searchbarPlaceholder": "",
-            "softCatalog": ""
+            "searchbarPlaceholder": "Vyhledávání softvéru...",
+            "softCatalog": "Katalog softwaru"
         }
     }
 }

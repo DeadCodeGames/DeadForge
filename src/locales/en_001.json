@@ -224,7 +224,7 @@
             "installLocation": "Install Location",
             "downloadSize": "Download Size:",
             "installSize": "Install Size:",
-            "noReleaseinfo": "Software with {{id}} is missing release information",
+            "noReleaseinfo": "Software with ID {{id}} is missing release information",
             "copyingFiles": "Copying files...",
             "updatingDeadForgeDB": "Updating DeadForge Database",
             "updatingWindowsRegistry": "Updating Windows Registry"

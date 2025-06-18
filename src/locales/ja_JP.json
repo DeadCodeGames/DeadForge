@@ -4,34 +4,34 @@
         "emoji": "🇯🇵"
     },
     "generic": {
-        "free": ""
+        "free": "無料"
     },
     "catogeries": {
-        "All Categories": "",
-        "Games": ""
+        "All Categories": "全カテゴリー",
+        "Games": "ゲーム"
     },
     "sections": {
         "links": {
-            "links": "",
-            "home": "",
-            "search": ""
+            "links": "リンク",
+            "home": "ホーム",
+            "search": "検索"
         },
-        "contact": "",
+        "contact": "お問い合わせ",
         "hero": {
-            "latestNews": "",
+            "latestNews": "最新お知らせ",
             "tags": {
-                "news": "",
-                "upcomingRelease": ""
+                "news": "お知らせ",
+                "upcomingRelease": "今後のリリース"
             },
-            "articlePublished": "",
-            "gameReleasesOn": ""
+            "articlePublished": "{{date}}に公開",
+            "gameReleasesOn": "{{date}}でリリース"
         },
         "featured": {
-            "featured": ""
+            "featured": "おすすめ"
         },
         "search": {
-            "searchbarPlaceholder": "",
-            "softCatalog": ""
+            "searchbarPlaceholder": "ソフトを検索…",
+            "softCatalog": "ソフトカタログ"
         }
     }
 }
