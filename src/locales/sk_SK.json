@@ -3,35 +3,236 @@
         "name": "Slovenčina",
         "emoji": "🇸🇰"
     },
-    "generic": {
-        "free": "Zadarmo"
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
+    "showLess": "Zobraziť menej",
+    "showMore": "Zobraziť viac",
+    "viewAll": "Zobraziť všetko",
+    "loading": "Načítava sa",
+    "browse": "Prehľadávať",
+    "cancel": "Zrušiť",
+    "sidebar": {
+        "home": "Domov",
+        "library": "Knižnica",
+        "arcade": "Arcade",
+        "store": "Obchod",
+        "settings": "Nastavenia",
+        "collapse": "Zbaliť"
     },
-    "catogeries": {
-        "All Categories": "Všetky kategórie",
-        "Games": "Hry"
+    "home": {
+        "articles": {
+            "publishedOn": "Zverejnené {{date}}",
+            "lastEditedOn": "Naposledy upravené {{date}}",
+            "writtenBy_one": "Napísal <0></0>",
+            "writtenBy_few": "Napísali <0></0>",
+            "writtenBy_many": "Napísali <0></0>",
+            "writtenBy_other": "Napísali <0></0>"
+        }
     },
-    "sections": {
-        "links": {
-            "links": "Odkazy",
-            "home": "Domov",
-            "search": "Vyhľadávanie"
+    "store": {
+        "urlCopied": "Adresa bola úspešne skopírovaná"
+    },
+    "tray": {
+        "exit": "Ukončiť <0>DEADFORGE</0>",
+        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
+    },
+    "settings": {
+        "theming": {
+            "title": "Vzhľad",
+            "theme": "Motív",
+            "themeDescription": "Vyberte si medzi svetlým, tmavým, a automatickým (systémovým) motívom",
+            "systemTheme": "Podľa systému",
+            "darkTheme": "Tmavý",
+            "lightTheme": "Svetlý",
+            "windowFrame": "Hlavička okna",
+            "windowFrameDescription": "Vyberte si hlavičku okna, ktorá sedí vášmu operačnému systému, alebo ktorá vám vyhovuje",
+            "windowFrameAuto": "Auto (podľa OS)",
+            "windowFrameWindows": "Windows",
+            "windowFrameMac": "macOS",
+            "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "Zobraziť aktuálny názov stránky v hlavičke okna",
+            "currentPageTitleInFrameDescription": "Zobrazovať aktuálny názov stránky v hlavičke okna",
+            "themeButtonInFrame": "Zobrazovať menič motívu v hlavičke okna",
+            "themeButtonInFrameDescription": "Zobrazovať menič motívu okna v hlavičke okna pre rýchly prístup.\nKliknutím ľavým tlačidlom myši prepnete medzi tmavým a svetlým motívom, kliknutím pravým tlačidlom prepnete na automatický (systémový) motív",
+            "language": "Jazyk",
+            "languageDescription": "Vyberte si váš preferovaný jazyk pre rozhranie aplikácie",
+            "languageShowIncomplete": "Zobrazovať nekompletné preklady",
+            "languageShowIncompleteDescription": "Zobraziť preklady, ktoré nie sú kompletné. Môžete nám pomôcť DEADFORGE preložiť na našom <0>Crowdine</0>."
         },
-        "contact": "Kontakt",
-        "hero": {
-            "latestNews": "Posledné novinky",
-            "tags": {
-                "news": "Novinky",
-                "upcomingRelease": "Nadchádzajúce vydanie"
+        "behavior": {
+            "title": "Správanie",
+            "defaultPage": "Predvolená stránka",
+            "defaultPageDescription": "Vyberte si, ktorú stránku uvidíte po otvorení aplikácie",
+            "settingsWindow": "Otvárať nastavenia v samostatnom okne",
+            "settingsWindowDescription": "Otvárať nastavenia v samostatnom okne namiesto sekcie v hlavnom okne",
+            "useTray": "Zobraziť v oblasti oznámení",
+            "useTrayDescription": "Ponechať aplikáciu na pozadí po uzatvorení okna, skrytú v oblasti oznámení",
+            "autoStart": "Spustiť pri štarte",
+            "autoStartDescription": "Spustiť aplikáciu automaticky po spustení počítača",
+            "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch"
+        },
+        "appData": {
+            "title": "Dáta a aktualizácie aplikácie",
+            "initialSetup": "Prvotné nastavenie",
+            "initialSetupDescription": "Spustiť znova sekvenciu prvotného nastavenia, ktorú ste videli pri prvom otvorení aplikácie",
+            "replaySetup": "Spustiť prvotné nastavenie",
+            "dataManagement": "Správa dát",
+            "dataManagementDescription": "Export, import a resetovanie všetkých dát aplikácie",
+            "exportData": "Exportovať",
+            "importData": "Importovať",
+            "resetData": "Resetovať",
+            "resetDataTitle": "Resetovať dáta aplikácie",
+            "resetDataConfirmation": "Ste si istý, že chcete resetovať všetky dáta aplikácie? Tento krok vymaže všetky nastavenia, dáta o hrách a preferencie. Táto akcia je nenávratná.",
+            "resetDataConfirm": "Áno, resetovať všetko",
+            "resetDataCancel": "Nie, ponechať dáta",
+            "autoUpdate": "Automatické aktualizácie",
+            "autoUpdateDescription": "Automaticky stiahnuť a nainštalovať aktualizácie aplikácie",
+            "betaUpdates": "Predbežné (Beta) aktualizácie",
+            "betaUpdatesDescription": "Inštalovať predbežné beta verzie s novými funkciami skôr (vyžaduje Automatické aktualizácie)",
+            "languageUpdates": "Aktualizácie jazykových balíčkov",
+            "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)",
+            "privacyPolicy": "Zásady ochrany osobných údajov"
+        }
+    },
+    "library": {
+        "yourLibrary": "Vaša knižnica",
+        "yourLibraryDescription": "Spravujte a prehliadajte svoju hernú knižnicu",
+        "shared": {
+            "openInStore": "Otvoriť v Obchode DeadForge",
+            "collections": "Zbierky",
+            "noCollections": "Nenašli sa žiadne zbierky",
+            "collectionNamePlaceholder": "Názov zbierky",
+            "createCollectionConfirm": "Vytvoriť",
+            "createCollectionCancel": "Zrušiť",
+            "gameState": {
+                "install": "Nainštalovať",
+                "launch": "Spustiť",
+                "launchLauncher": "Spustiť {{launcher}}",
+                "play": "Hrať",
+                "stop": "Zastaviť",
+                "running": "Spustené",
+                "launching": "Spúšťa sa...",
+                "stopping": "Zastavuje sa...",
+                "downloading": "Sťahuje sa",
+                "installing": "Inštaluje sa"
             },
-            "articlePublished": "Zverejnené: {{date}}",
-            "gameReleasesOn": "Vychádza {{date}}"
+            "favourites": "Obľúbené",
+            "favouritesDescription": "Vaše najobľúbenejšie hry",
+            "addFavourite": "Pridať k Obľúbeným",
+            "removeFavourite": "Odobrať z Obľúbených",
+            "createCollection": "Vytvoriť novú zbierku",
+            "recentlyPlayed": "Nedávno hrané",
+            "recentlyPlayedDescription": "Vrhnite sa naspäť do vašich nedávnych dobrodružstiev",
+            "allGames": "Všetky hry",
+            "yourGames": "Vaše hry",
+            "allGamesDescription": "Prehliadajte svoju úplnú knižnicu",
+            "allGamesDescriptionAlternate": "Vaša úplná herná knižnica"
         },
-        "featured": {
-            "featured": "Odporúčané"
+        "sidebar": {
+            "homeButton": "Domov",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "Filtrovať podľa statusu obľúbenosti",
+                    "unfiltered": "Zobraziť všetky hry",
+                    "favourites": "Zobraziť iba obľúbené hry"
+                },
+                "launchability": {
+                    "description": "Filtrovať podľa spustiteľnosti",
+                    "unfiltered": "Zobraziť všetky hry",
+                    "launchable": "Zobraziť iba spustiteľné hry"
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "Možnosti zoraďovania",
+                    "title": "Názov",
+                    "recent": "Posledný čas spustenia"
+                },
+                "direction": {
+                    "description": "Smer radenia",
+                    "asc": "Vzostupne",
+                    "desc": "Zostupne"
+                }
+            },
+            "empty": {
+                "emptyLibrary": "Nenašli sa žiadne hry v knižnici.",
+                "emptyAfterFilters": "Nenašli sa žiadne hry, ktoré vyhovujú vašim filtrom."
+            },
+            "wtflolhow": "čo to kurva lmao",
+            "recent": "Nedávne",
+            "neverPlayed": "Nikdy nehrané",
+            "uncategorized": "Nezaradené"
         },
-        "search": {
-            "searchbarPlaceholder": "Vyhľadávanie softvéru...",
-            "softCatalog": "Katalóg softvéru"
+        "contextMenu": {
+            "collections": {
+                "collapse": "Zbaliť",
+                "expand": "Rozbaliť",
+                "rename": "Premenovať zbierku",
+                "delete": "Vymazať zbierku",
+                "clearFavorites": "Vyčistiť Obľúbené"
+            },
+            "games": {
+                "viewDetails": "Zobraziť detaily"
+            }
+        },
+        "homeView": {
+            "noGamesFound": "Nenašli sa žiadne hry",
+            "noGamesFoundDescription": "Vaša knižnica čaká, kým ju naplníte! Pripojte si svoje herné platformy, a začnite hrať.",
+            "connect": "Pripojiť platformy"
+        },
+        "gameView": {
+            "loading": "Hra sa načítava...",
+            "checkStatus": "Skontrolovať stav",
+            "checkStatusDescription": "Skontrolovať, či herný proces už beží",
+            "gameNotes": "Poznámky k hre",
+            "gameNotesTooltip": "Poznámky k hrám sú udržiavané vývojármi a komunitou <1>DeadForge</1>.\nMôžete prispieť k nim, a taktiež k vybraným vizuálnym materiálom <3>DeadForge</3> pre externý softvér, a iným cool veci na <5>GitHube DeadCodeGames/DeadForgeExternalData</5>.",
+            "noGameNotes": "Žiadne poznámky nie sú k dispozícií pre túto hru.",
+            "installDir": "Priečinok pre inštaláciu"
+        },
+        "recentView": {
+            "today": "Dnes",
+            "thisWeek": "Tento Týždeň",
+            "thisMonth": "Tento Mesiac",
+            "noRecentGames": "Žiadne nedávno hrané hry",
+            "noRecentGamesDescription": "Tu sa zobrazia hry ktoré spustíte"
+        },
+        "favouritesView": {
+            "noFavourites": "Ešte nemáte žiadne obľúbené hry",
+            "noFavouritesDescription": "Pridajte hry k Obľúbeným, a uvidíte ich tu"
+        },
+        "collectionsView": {
+            "description": "Zorganizujte si svoje hry do vlastných kolekcií",
+            "new": "Nová zbierka",
+            "noCollections": "Ešte nemáte žiadne zbierky",
+            "noCollectionsDescription": "Vytvorte svoju prvú zbierku, a zorganizujte si svoju hernú knižnicu",
+            "noCollectionsCTA": "Vytvoriť zbierku",
+            "header": {
+                "name": "Názov",
+                "gameCount": "Počet hier",
+                "actions": "Možnosti"
+            },
+            "gameCount_one": "{{count}} hra",
+            "gameCount_few": "{{count}} hry",
+            "gameCount_many": "{{count}} hier",
+            "gameCount_other": "{{count}} hier"
+        },
+        "collectionView": {
+            "noGamesInCollection": "Žiadne hry sa nenachádzajú v tejto zbierke",
+            "noGamesInCollectionDescription": "Hry do tejto kolekcie môžete pridať z knižnice, alebo samostatných stránok hier.",
+            "collectionNotFound": "Zbierka sa nenašla",
+            "collectionNotFoundDescription": "Zbierku ktorú hľadáte sa nepodarilo nájsť.",
+            "collectionNotFoundCTA": "Späť na zbierky"
+        },
+        "install": {
+            "title": "Inštalácia <b>{{title}}</b>",
+            "install": "Nainštalovať",
+            "installLocation": "Miesto inštalácie",
+            "downloadSize": "Veľkosť stiahnutého balíčka:",
+            "installSize": "Veľkosť nainštalovaného softvéru:",
+            "noReleaseinfo": "Softvéru s ID {{id}} nemá informácie o vydaniach",
+            "copyingFiles": "Kopírujú sa súbory...",
+            "updatingDeadForgeDB": "Aktualizuje sa databáza DeadForge",
+            "updatingWindowsRegistry": "Aktualizuje sa Windows Registry"
         }
     }
 }
