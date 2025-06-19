@@ -57,59 +57,59 @@ const Tooltip: React.FC<TooltipProps> = ({
 
         // Calculate position based on the specified position prop
         switch (position) {
-        case 'top':
-            top = triggerRect.top + scrollY - tooltipRect.height - gap;
-            originY = '100%';
-            break;
-        case 'bottom':
-            top = triggerRect.bottom + scrollY + gap;
-            originY = '0%';
-            break;
-        case 'left':
-            left = triggerRect.left + scrollX - tooltipRect.width - gap;
-            top = triggerRect.top + scrollY + (triggerRect.height / 2) - (tooltipRect.height / 2);
-            originX = '100%';
-            break;
-        case 'right':
-            left = triggerRect.right + scrollX + gap;
-            top = triggerRect.top + scrollY + (triggerRect.height / 2) - (tooltipRect.height / 2);
-            originX = '0%';
-            break;
-        default:
-            break;
+            case 'top':
+                top = triggerRect.top + scrollY - tooltipRect.height - gap;
+                originY = '100%';
+                break;
+            case 'bottom':
+                top = triggerRect.bottom + scrollY + gap;
+                originY = '0%';
+                break;
+            case 'left':
+                left = triggerRect.left + scrollX - tooltipRect.width - gap;
+                top = triggerRect.top + scrollY + (triggerRect.height / 2) - (tooltipRect.height / 2);
+                originX = '100%';
+                break;
+            case 'right':
+                left = triggerRect.right + scrollX + gap;
+                top = triggerRect.top + scrollY + (triggerRect.height / 2) - (tooltipRect.height / 2);
+                originX = '0%';
+                break;
+            default:
+                break;
         }
 
         // Calculate alignment for top and bottom positions
         if (position === 'top' || position === 'bottom') {
             switch (alignment) {
-            case 'start':
-                left = triggerRect.left + scrollX;
-                break;
-            case 'center':
-                left = triggerRect.left + scrollX + (triggerRect.width / 2) - (tooltipRect.width / 2);
-                break;
-            case 'end':
-                left = triggerRect.right + scrollX - tooltipRect.width;
-                break;
-            default:
-                break;
+                case 'start':
+                    left = triggerRect.left + scrollX;
+                    break;
+                case 'center':
+                    left = triggerRect.left + scrollX + (triggerRect.width / 2) - (tooltipRect.width / 2);
+                    break;
+                case 'end':
+                    left = triggerRect.right + scrollX - tooltipRect.width;
+                    break;
+                default:
+                    break;
             }
         }
 
         // Calculate alignment for left and right positions
         if (position === 'left' || position === 'right') {
             switch (alignment) {
-            case 'start':
-                top = triggerRect.top + scrollY;
-                break;
-            case 'center':
+                case 'start':
+                    top = triggerRect.top + scrollY;
+                    break;
+                case 'center':
                 // Already calculated above
-                break;
-            case 'end':
-                top = triggerRect.bottom + scrollY - tooltipRect.height;
-                break;
-            default:
-                break;
+                    break;
+                case 'end':
+                    top = triggerRect.bottom + scrollY - tooltipRect.height;
+                    break;
+                default:
+                    break;
             }
         }
 
