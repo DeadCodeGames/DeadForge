@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated: [June 7, 2025]**
+**Last updated: [June 19, 2025]**
 
 **DEADFORGE**, developed by **DEADCODE**, respects your privacy. This app is designed with privacy in mind and does **not collect, track, or store any personal data externally**.
 
@@ -9,7 +9,7 @@
 - **Stores user settings and data locally** on your device
   - User preferences are stored in a JSON file
   - Other user data is stored in a SQLite database
-- **Checks for updates** using the GitHub Releases API via `electron-updater`.
+- **Checks for updates** using the GitHub Releases API
 - **Downloads static image assets** for user-added software from services like [itch.io] (and potentially Steam or Epic Games).
 - **Optionally integrates with Discord Rich Presence**, if enabled in settings.
 
