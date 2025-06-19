@@ -187,9 +187,9 @@
             "installDir": ""
         },
         "recentView": {
-            "today": "",
-            "thisWeek": "",
-            "thisMonth": "",
+            "today": "本日",
+            "thisWeek": "本周",
+            "thisMonth": "本月",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },

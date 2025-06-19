@@ -13,11 +13,11 @@
     "cancel": "",
     "sidebar": {
         "home": "",
-        "library": "",
+        "library": "圖書館",
         "arcade": "",
-        "store": "",
-        "settings": "",
-        "collapse": ""
+        "store": "商店",
+        "settings": "設置",
+        "collapse": "折叠"
     },
     "home": {
         "articles": {
@@ -27,10 +27,10 @@
         }
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "URL 已成功複製"
     },
     "tray": {
-        "exit": "",
+        "exit": "退出<0>DEADFORGE</0>",
         "arcade": ""
     },
     "settings": {
