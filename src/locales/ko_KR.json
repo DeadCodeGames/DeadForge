@@ -3,8 +3,8 @@
         "name": "한국어",
         "emoji": "🇰🇷"
     },
-    "commaSeparator": "",
-    "ampersandSeparator": "",
+    "commaSeparator": "·",
+    "ampersandSeparator": " 와 ",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
@@ -13,11 +13,11 @@
     "cancel": "",
     "sidebar": {
         "home": "",
-        "library": "",
+        "library": "도서관",
         "arcade": "",
-        "store": "",
-        "settings": "",
-        "collapse": ""
+        "store": "상점",
+        "settings": "설정",
+        "collapse": "접기"
     },
     "home": {
         "articles": {
@@ -27,10 +27,10 @@
         }
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "URL이 성공적으로 복사되었습니다"
     },
     "tray": {
-        "exit": "",
+        "exit": "종료 <0>DEADFORGE</0>",
         "arcade": ""
     },
     "settings": {
@@ -187,9 +187,9 @@
             "installDir": ""
         },
         "recentView": {
-            "today": "",
-            "thisWeek": "",
-            "thisMonth": "",
+            "today": "오늘",
+            "thisWeek": "이번 주",
+            "thisMonth": "이번 달",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },
