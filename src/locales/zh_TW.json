@@ -3,8 +3,8 @@
         "name": "繁體中文",
         "emoji": "🇹🇼"
     },
-    "commaSeparator": "",
-    "ampersandSeparator": "",
+    "commaSeparator": "、",
+    "ampersandSeparator": "和",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
@@ -187,9 +187,9 @@
             "installDir": ""
         },
         "recentView": {
-            "today": "",
-            "thisWeek": "",
-            "thisMonth": "",
+            "today": "本日",
+            "thisWeek": "本周",
+            "thisMonth": "本月",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },

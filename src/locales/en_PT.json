@@ -3,18 +3,18 @@
         "name": "Pirate English",
         "emoji": "🏴‍☠️"
     },
-    "commaSeparator": "",
-    "ampersandSeparator": "",
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
     "loading": "",
     "browse": "",
-    "cancel": "",
+    "cancel": "Avast",
     "sidebar": {
-        "home": "",
+        "home": "Home Port",
         "library": "Logbook Hold",
-        "arcade": "",
+        "arcade": "Saloon-games",
         "store": "Market",
         "settings": "",
         "collapse": ""
@@ -40,8 +40,8 @@
             "theme": "",
             "themeDescription": "",
             "systemTheme": "",
-            "darkTheme": "",
-            "lightTheme": "",
+            "darkTheme": "Night",
+            "lightTheme": "Day",
             "windowFrame": "",
             "windowFrameDescription": "",
             "windowFrameAuto": "",
@@ -76,8 +76,8 @@
             "replaySetup": "",
             "dataManagement": "",
             "dataManagementDescription": "",
-            "exportData": "",
-            "importData": "",
+            "exportData": "Export",
+            "importData": "Import",
             "resetData": "",
             "resetDataTitle": "",
             "resetDataConfirmation": "",
@@ -101,13 +101,13 @@
             "noCollections": "",
             "collectionNamePlaceholder": "",
             "createCollectionConfirm": "",
-            "createCollectionCancel": "",
+            "createCollectionCancel": "Avast",
             "gameState": {
                 "install": "",
                 "launch": "",
                 "launchLauncher": "",
-                "play": "",
-                "stop": "",
+                "play": "Set Sails",
+                "stop": "Avast ye",
                 "running": "",
                 "launching": "",
                 "stopping": "",
@@ -127,7 +127,7 @@
             "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "",
+            "homeButton": "Home Port",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -188,7 +188,7 @@
             "installDir": ""
         },
         "recentView": {
-            "today": "",
+            "today": "Ter'day",
             "thisWeek": "",
             "thisMonth": "",
             "noRecentGames": "",

@@ -5,8 +5,8 @@
     },
     "commaSeparator": "、",
     "ampersandSeparator": "と",
-    "showLess": "",
-    "showMore": "",
+    "showLess": "一部表示",
+    "showMore": "もっと見る",
     "viewAll": "全て表示",
     "loading": "ロード中",
     "browse": "閲覧",
@@ -78,7 +78,7 @@
             "exportData": "エクスポート",
             "importData": "インポート",
             "resetData": "リセット",
-            "resetDataTitle": "",
+            "resetDataTitle": "アプリデータをリセット",
             "resetDataConfirmation": "",
             "resetDataConfirm": "はい、全てをリセットします",
             "resetDataCancel": "いいえ、自分のデータを保持します",
@@ -92,14 +92,14 @@
         }
     },
     "library": {
-        "yourLibrary": "",
+        "yourLibrary": "あなたのライブラリー",
         "yourLibraryDescription": "",
         "shared": {
             "openInStore": "DeadForgeストアで開く",
-            "collections": "",
+            "collections": "コレクション",
             "noCollections": "",
-            "collectionNamePlaceholder": "",
-            "createCollectionConfirm": "",
+            "collectionNamePlaceholder": "コレクション名",
+            "createCollectionConfirm": "作る",
             "createCollectionCancel": "キャンセル",
             "gameState": {
                 "install": "インストール",
@@ -110,15 +110,15 @@
                 "running": "実行中",
                 "launching": "起動中…",
                 "stopping": "停止中…",
-                "downloading": "",
+                "downloading": "ダウンロードしています",
                 "installing": "インストール中"
             },
             "favourites": "お気に入り",
             "favouritesDescription": "",
-            "addFavourite": "",
-            "removeFavourite": "",
+            "addFavourite": "お気に入りに追加",
+            "removeFavourite": "お気に入りから削除",
             "createCollection": "",
-            "recentlyPlayed": "",
+            "recentlyPlayed": "最近プレイされた",
             "recentlyPlayedDescription": "",
             "allGames": "全ゲーム",
             "yourGames": "あなたのゲーム",
@@ -130,23 +130,23 @@
             "filters": {
                 "favouriteStatus": {
                     "description": "",
-                    "unfiltered": "",
+                    "unfiltered": "全ゲームを表示",
                     "favourites": ""
                 },
                 "launchability": {
                     "description": "",
-                    "unfiltered": "",
+                    "unfiltered": "全ゲームを表示",
                     "launchable": ""
                 }
             },
             "sorting": {
                 "types": {
-                    "description": "",
+                    "description": "並べ替えのオプション",
                     "title": "タイトル",
-                    "recent": ""
+                    "recent": "前回の起動時間"
                 },
                 "direction": {
-                    "description": "",
+                    "description": "並べ替えの方向",
                     "asc": "昇順",
                     "desc": "降順"
                 }
@@ -157,34 +157,34 @@
             },
             "wtflolhow": "未来人かよｗｗｗどうしてこうなった",
             "recent": "",
-            "neverPlayed": "",
-            "uncategorized": ""
+            "neverPlayed": "未プレイ",
+            "uncategorized": "その他"
         },
         "contextMenu": {
             "collections": {
                 "collapse": "折りたたむ",
                 "expand": "",
-                "rename": "",
-                "delete": "",
-                "clearFavorites": ""
+                "rename": "コレクション名を変更",
+                "delete": "コレクションを削除",
+                "clearFavorites": "お気に入りを消去"
             },
             "games": {
-                "viewDetails": ""
+                "viewDetails": "詳細を表示"
             }
         },
         "homeView": {
             "noGamesFound": "",
             "noGamesFoundDescription": "",
-            "connect": ""
+            "connect": "プラットフォームを接続"
         },
         "gameView": {
-            "loading": "",
-            "checkStatus": "",
+            "loading": "ロード中…",
+            "checkStatus": "起動ステータスを確認",
             "checkStatusDescription": "",
             "gameNotes": "ゲーム・ノーツ",
             "gameNotesTooltip": "",
             "noGameNotes": "",
-            "installDir": ""
+            "installDir": "インストール先"
         },
         "recentView": {
             "today": "今日",
@@ -194,13 +194,13 @@
             "noRecentGamesDescription": ""
         },
         "favouritesView": {
-            "noFavourites": "",
+            "noFavourites": "お気に入りはまだありません",
             "noFavouritesDescription": ""
         },
         "collectionsView": {
             "description": "",
-            "new": "",
-            "noCollections": "",
+            "new": "新しいコレクションを作成",
+            "noCollections": "コレクションはまだありません",
             "noCollectionsDescription": "",
             "noCollectionsCTA": "",
             "header": {
@@ -213,20 +213,20 @@
         "collectionView": {
             "noGamesInCollection": "",
             "noGamesInCollectionDescription": "",
-            "collectionNotFound": "",
+            "collectionNotFound": "このコレクションが見つかりません",
             "collectionNotFoundDescription": "",
             "collectionNotFoundCTA": ""
         },
         "install": {
             "title": "<b>{{title}}</b>をインストール",
             "install": "インストール",
-            "installLocation": "",
+            "installLocation": "インストール場所",
             "downloadSize": "ダウンロード・サイズ：",
             "installSize": "インストール・サイズ：",
-            "noReleaseinfo": "",
-            "copyingFiles": "",
-            "updatingDeadForgeDB": "",
-            "updatingWindowsRegistry": ""
+            "noReleaseinfo": "ID {{id}} のソフトにリリース情報がありません",
+            "copyingFiles": "ファイルをコピーしています⋯",
+            "updatingDeadForgeDB": "DeadForge DBを更新中",
+            "updatingWindowsRegistry": "Windowsレジストリを更新中"
         }
     }
 }
