@@ -42,17 +42,17 @@
             "darkTheme": "ダーク",
             "lightTheme": "ライト",
             "windowFrame": "ウィンドウ枠のスタイル",
-            "windowFrameDescription": "",
+            "windowFrameDescription": "OSまたは個人の好みに合わせてウィンドウの枠のスタイルを選択します",
             "windowFrameAuto": "自動（OSに基づいて）",
             "windowFrameWindows": "ウィンドウズ",
             "windowFrameMac": "マックOS",
             "windowFrameLinux": "リナックス",
-            "currentPageTitleInFrame": "",
-            "currentPageTitleInFrameDescription": "",
+            "currentPageTitleInFrame": "ウィンドウ枠に現在のページタイトルを表示する",
+            "currentPageTitleInFrameDescription": "ウィンドウ枠に現在のページタイトルを含めるかどうか",
             "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
             "themeButtonInFrameDescription": "",
             "language": "言語",
-            "languageDescription": "",
+            "languageDescription": "アプリの言語を選択して",
             "languageShowIncomplete": "未完了の翻訳を表示",
             "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。"
         },
@@ -93,11 +93,11 @@
     },
     "library": {
         "yourLibrary": "あなたのライブラリー",
-        "yourLibraryDescription": "",
+        "yourLibraryDescription": "ゲームコレクションの管理と探索",
         "shared": {
             "openInStore": "DeadForgeストアで開く",
             "collections": "コレクション",
-            "noCollections": "",
+            "noCollections": "コレクションが見つかりません",
             "collectionNamePlaceholder": "コレクション名",
             "createCollectionConfirm": "作る",
             "createCollectionCancel": "キャンセル",
@@ -114,29 +114,29 @@
                 "installing": "インストール中"
             },
             "favourites": "お気に入り",
-            "favouritesDescription": "",
+            "favouritesDescription": "あなたの最も愛されているゲーム",
             "addFavourite": "お気に入りに追加",
             "removeFavourite": "お気に入りから削除",
-            "createCollection": "",
+            "createCollection": "新しいコレクションを作成",
             "recentlyPlayed": "最近プレイされた",
-            "recentlyPlayedDescription": "",
+            "recentlyPlayedDescription": "最近の冒険に飛び戻りましょう！",
             "allGames": "全ゲーム",
             "yourGames": "あなたのゲーム",
-            "allGamesDescription": "",
-            "allGamesDescriptionAlternate": ""
+            "allGamesDescription": "コレクション全体を閲覧する",
+            "allGamesDescriptionAlternate": "あなたの完全なゲームライブラリ"
         },
         "sidebar": {
             "homeButton": "ホーム",
             "filters": {
                 "favouriteStatus": {
-                    "description": "",
+                    "description": "お気に入りのステータスでフィルタ",
                     "unfiltered": "全ゲームを表示",
-                    "favourites": ""
+                    "favourites": "お気に入りのゲームのみ表示"
                 },
                 "launchability": {
-                    "description": "",
+                    "description": "起動可能性でフィルター",
                     "unfiltered": "全ゲームを表示",
-                    "launchable": ""
+                    "launchable": "起動可能なゲームのみを表示"
                 }
             },
             "sorting": {
@@ -152,18 +152,18 @@
                 }
             },
             "empty": {
-                "emptyLibrary": "",
-                "emptyAfterFilters": ""
+                "emptyLibrary": "ライブラリにゲームが見つかりません。",
+                "emptyAfterFilters": "フィルターに一致するゲームはありません。"
             },
             "wtflolhow": "未来人かよｗｗｗどうしてこうなった",
-            "recent": "",
+            "recent": "最近",
             "neverPlayed": "未プレイ",
             "uncategorized": "その他"
         },
         "contextMenu": {
             "collections": {
                 "collapse": "折りたたむ",
-                "expand": "",
+                "expand": "開く",
                 "rename": "コレクション名を変更",
                 "delete": "コレクションを削除",
                 "clearFavorites": "お気に入りを消去"
@@ -173,36 +173,36 @@
             }
         },
         "homeView": {
-            "noGamesFound": "",
-            "noGamesFoundDescription": "",
+            "noGamesFound": "ゲームが見つかりませんでした",
+            "noGamesFoundDescription": "ゲームライブラリが満たされるのを待っています! 開始するでゲームプラットフォームを接続して。",
             "connect": "プラットフォームを接続"
         },
         "gameView": {
             "loading": "ロード中…",
             "checkStatus": "起動ステータスを確認",
-            "checkStatusDescription": "",
+            "checkStatusDescription": "ゲームプロセスがすでに実行されているかどうかを確認します",
             "gameNotes": "ゲーム・ノーツ",
-            "gameNotesTooltip": "",
-            "noGameNotes": "",
+            "gameNotesTooltip": "ゲーム・ノーツは<1>DeadForge</1>の開発者とコミュニティによって管理されています。\n外部ソフト用の<3>DeadForge</3>アセットや、その他のクールなものは、<5>DeadCodeGames/DeadForgeExternalData</5>のGitHubページでコントリビュートできます。",
+            "noGameNotes": "このゲームでノーツはありません。",
             "installDir": "インストール先"
         },
         "recentView": {
             "today": "今日",
             "thisWeek": "今週",
             "thisMonth": "今月",
-            "noRecentGames": "",
-            "noRecentGamesDescription": ""
+            "noRecentGames": "最近のゲームはありません",
+            "noRecentGamesDescription": "プレイしたゲームはここに表示されます"
         },
         "favouritesView": {
             "noFavourites": "お気に入りはまだありません",
-            "noFavouritesDescription": ""
+            "noFavouritesDescription": "ゲームをお気に入りに追加して、ここで表示する"
         },
         "collectionsView": {
-            "description": "",
+            "description": "ゲームをコレクションに整理する",
             "new": "新しいコレクションを作成",
             "noCollections": "コレクションはまだありません",
-            "noCollectionsDescription": "",
-            "noCollectionsCTA": "",
+            "noCollectionsDescription": "ゲームを整理するために最初のコレクションを作成します",
+            "noCollectionsCTA": "コレクションを作成",
             "header": {
                 "name": "名前",
                 "gameCount": "ゲーム数",
@@ -211,11 +211,11 @@
             "gameCount_other": "{{count}}本ゲーム"
         },
         "collectionView": {
-            "noGamesInCollection": "",
-            "noGamesInCollectionDescription": "",
+            "noGamesInCollection": "このコレクションにはゲームがありません",
+            "noGamesInCollectionDescription": "ライブラリや個々のゲームページからこのコレクションにゲームを追加します。",
             "collectionNotFound": "このコレクションが見つかりません",
-            "collectionNotFoundDescription": "",
-            "collectionNotFoundCTA": ""
+            "collectionNotFoundDescription": "あなたが探しているコレクションは存在しません。",
+            "collectionNotFoundCTA": "コレクションに戻る"
         },
         "install": {
             "title": "<b>{{title}}</b>をインストール",
