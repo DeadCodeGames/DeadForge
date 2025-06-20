@@ -1,6 +1,7 @@
 import React, { type JSX } from "react"
 import { cn } from "@/lib/utils"
 import Spoiler from "@/components/CustomElements/Spoiler"
+import Twemoji from "react-twemoji"
 
 interface MarkdownTextProps {
   children: string
@@ -333,7 +334,7 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
 
     const renderContent = (content: string | Token[]): React.ReactNode => {
         if (typeof content === "string") {
-            return content
+            return <Twemoji noWrapper><span className="[&>.emoji]:inline [&>.emoji]:size-[calc(4em/3)] [&>.emoji]:mx-[0.125em] [&>.emoji]:mt-[-0.225em]">{content}</span></Twemoji>
         }
         return renderTokens(content)
     }
@@ -384,7 +385,7 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                             console.log(token);
                             return (
                                 <Spoiler key={index} className="my-4">
-                                    {renderContent(token.content)}
+                                    {renderTokens(token.content)}
                                 </Spoiler>
                             )
                         default:

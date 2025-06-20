@@ -100,16 +100,16 @@ const LibraryCollections: React.FC = () => {
             let bValue: string | number
 
             switch (sortField) {
-            case "name":
-                aValue = a.name.toLowerCase()
-                bValue = b.name.toLowerCase()
-                break
-            case "gameCount":
-                aValue = a.games.length
-                bValue = b.games.length
-                break
-            default:
-                return 0
+                case "name":
+                    aValue = a.name.toLowerCase()
+                    bValue = b.name.toLowerCase()
+                    break
+                case "gameCount":
+                    aValue = a.games.length
+                    bValue = b.games.length
+                    break
+                default:
+                    return 0
             }
 
             if (aValue < bValue) return sortDirection === "asc" ? -1 : 1

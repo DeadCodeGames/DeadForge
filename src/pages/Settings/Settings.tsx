@@ -188,11 +188,38 @@ const Settings = () => {
     const calculateTranslationPercentage = (lang: string) => {
         if (lang === "en_001" || lang === "stringsDebug") return 100;
 
-        const enTranslations: number = Object.entries(flatten(resources["en_001"].translation)!).filter(([key]) => !key.startsWith("meta")).length;
+        const PLURAL_SUFFIXES = ["_zero", "_one", "_two", "_few", "_many", "_other"];
+        const stripPlural = (key: string) => {
+            for (const suffix of PLURAL_SUFFIXES) {
+                if (key.endsWith(suffix)) {
+                    return key.slice(0, -suffix.length);
+                }
+            }
+            return key;
+        };
 
-        const langTranslations: number = Object.entries(flatten((resources as any)[lang].translation)!).filter(([key, value]) => !key.startsWith("meta") && value !== "").length
+        const enFlat = flatten(resources["en_001"].translation)!;
+        const langFlat: Record<string, string> = flatten((resources as any)[lang].translation)!;
 
-        return Math.round((langTranslations / enTranslations) * 100);
+        // Build set of base keys from English
+        const enBaseKeys = Array.from(
+            new Set(
+                Object.keys(enFlat)
+                    .filter((key) => !key.startsWith("meta"))
+                    .map(stripPlural)
+            )
+        );
+
+        // For each base key, check if any plural form in the target language is non-empty
+        const translatedCount = enBaseKeys.filter((baseKey) => {
+            // Find all possible plural forms for this base key in the target language
+            const pluralForms = PLURAL_SUFFIXES.map(suffix => baseKey + suffix).concat([baseKey]);
+            return pluralForms.some(formKey => langFlat[formKey] !== undefined && langFlat[formKey] !== "");
+        }).length;
+        
+        console.log(lang, enBaseKeys.length, translatedCount)
+
+        return Math.round((translatedCount / enBaseKeys.length) * 100);
     };
 
     const getPercentageColor = (percentage: number) => {

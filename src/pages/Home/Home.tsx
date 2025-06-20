@@ -124,7 +124,7 @@ const Home = () => {
                             </div>
                         </div>
                         <div className="">
-                            <MarkdownText mediaMap={article.assetsMap}>
+                            <MarkdownText mediaMap={article.assetsMap} className='font-notoSans'>
                                 {article.content}
                             </MarkdownText>
                         </div>

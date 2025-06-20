@@ -19,6 +19,7 @@ permissions:
 jobs:
   synchronize-with-crowdin:
     runs-on: ubuntu-latest
+    if: github.actor != 'deadcodebot'
     outputs:
       BRANCH_EXISTS: ${{ steps.pr_branch_make.outputs.BRANCH_EXISTS }}
       SHOULD_SKIP: ${{ steps.run_crowdin.outputs.SHOULD_SKIP }}
@@ -61,44 +62,14 @@ jobs:
       - name: Update i18n.ts
         run: node .github/workflows/l10ncheck.js
 
-      - name: Ensure l10n_crowdin_translations branch exists (if needed)
-        id: pr_branch_make
-        if: steps.run_crowdin.outputs.SHOULD_SKIP != 'true'
+      - name: Sync Crowdin translations
         run: |
-            git config user.name "GitHub Actions Bot"
-            git config user.email "actions@github.com"
-
-            git fetch origin ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
-
-            mkdir -p /tmp/locales_backup
-
-            echo "Backing up locale files..."
-            cp -R src/locales/* /tmp/locales_backup/ 2>/dev/null || true
-
-            echo "Resetting local changes..."
-            git reset --hard
-
-            if git show-ref --quiet refs/remotes/origin/l10n_crowdin_translations; then
-              echo "Branch l10n_crowdin_translations exists, checking it out..."
-              
-              git checkout --force l10n_crowdin_translations
-              
-              git pull origin l10n_crowdin_translations
-            else
-              echo "Creating new branch l10n_crowdin_translations from ${{ steps.get_target_branch.outputs.TARGET_BRANCH }}..."
-              
-              git checkout -b l10n_crowdin_translations origin/${{ steps.get_target_branch.outputs.TARGET_BRANCH }}
-            fi
-
-            echo "Restoring locale files from backup..."
-            cp -R /tmp/locales_backup/* src/locales/ 2>/dev/null || true
-
-            git add src/locales
-
-            git diff --cached --quiet || git commit -m "chore(i18n): sync Crowdin translations"
-
-            git push -u origin l10n_crowdin_translations
-            echo "BRANCH_EXISTS=true" >> $GITHUB_OUTPUT
+          npm i --no-save --force @octokit/rest @actions/core
+          node .github/workflows/commitl10nchanges.js
+        env:
+          DEADCODEBOT_PAT: ${{ secrets.DEADCODEBOT_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: sync-translations
 
       - name: Create PR (if not exists)
         env:

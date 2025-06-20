@@ -54,30 +54,30 @@ export function getLogoStyles(logoObj: any): React.CSSProperties {
 
     // Handle different pinned positions
     switch (pinned_position) {
-    default:
-    case "BottomLeft":
-        styles.bottom = "0"
-        styles.left = "0"
-        styles.objectPosition = "bottom left"
-        break
-    case "CenterCenter":
-        styles.top = "50%"
-        styles.left = "50%"
-        styles.transform = "translate(-50%, -50%)"
-        styles.objectPosition = "center center"
-        break
-    case "UpperCenter":
-        styles.top = "0"
-        styles.left = "50%"
-        styles.transform = "translateX(-50%)"
-        styles.objectPosition = "top center"
-        break
-    case "BottomCenter":
-        styles.bottom = "0"
-        styles.left = "50%"
-        styles.transform = "translateX(-50%)"
-        styles.objectPosition = "bottom center"
-        break
+        default:
+        case "BottomLeft":
+            styles.bottom = "0"
+            styles.left = "0"
+            styles.objectPosition = "bottom left"
+            break
+        case "CenterCenter":
+            styles.top = "50%"
+            styles.left = "50%"
+            styles.transform = "translate(-50%, -50%)"
+            styles.objectPosition = "center center"
+            break
+        case "UpperCenter":
+            styles.top = "0"
+            styles.left = "50%"
+            styles.transform = "translateX(-50%)"
+            styles.objectPosition = "top center"
+            break
+        case "BottomCenter":
+            styles.bottom = "0"
+            styles.left = "50%"
+            styles.transform = "translateX(-50%)"
+            styles.objectPosition = "bottom center"
+            break
     }
 
     if (special === "osu") {
@@ -451,12 +451,12 @@ const GameSettingsModal: React.FC<GameSettingsModalProps> = ({ open, onClose, ga
 
     const renderTabContent = () => {
         switch (activeTab) {
-        case "assets":
-            return renderAssetsTab()
-        case "settings":
-            return renderSettingsTab()
-        default:
-            return renderAssetsTab()
+            case "assets":
+                return renderAssetsTab()
+            case "settings":
+                return renderSettingsTab()
+            default:
+                return renderAssetsTab()
         }
     }
 

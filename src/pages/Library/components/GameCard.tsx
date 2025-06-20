@@ -155,33 +155,33 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
             return "aspect-[2/3]"
         }
         switch (size) {
-        case "small":
-            return "aspect-[92/43]"
-        case "large":
-            return "aspect-[92/43]"
-        default:
-            return "aspect-[92/43]"
+            case "small":
+                return "aspect-[92/43]"
+            case "large":
+                return "aspect-[92/43]"
+            default:
+                return "aspect-[92/43]"
         }
     }, [size, useCapsule])
 
     const getCardSize = useCallback(() => {
         if (useCapsule) {
             switch (size) {
-            case "small":
-                return "w-24"
-            case "large":
-                return "w-64"
-            default:
-                return "w-36"
+                case "small":
+                    return "w-24"
+                case "large":
+                    return "w-64"
+                default:
+                    return "w-36"
             }
         }
         switch (size) {
-        case "small":
-            return "w-32"
-        case "large":
-            return "w-80"
-        default:
-            return "w-48"
+            case "small":
+                return "w-32"
+            case "large":
+                return "w-80"
+            default:
+                return "w-48"
         }
     }, [size, useCapsule])
 

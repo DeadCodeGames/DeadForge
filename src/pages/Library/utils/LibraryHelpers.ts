@@ -87,9 +87,25 @@ export function chunkGamesByCategory(
     return sortedResult;
 }
 
-export function getLauncherName(game: NormalizedGame | NormalizedPseudoGameJoin | NormalizedGame['source']): string {
+export function getLauncherName(game: NormalizedGame | NormalizedPseudoGameJoin | NormalizedGame['source'] | ""): string {
+    if (game === "") return "";
     if (((game): game is NormalizedGame['source'] => typeof game === "string" && !game.includes(","))(game)) {
         switch (game) {
+            case 'steam':
+                return 'Steam';
+            case 'epic':
+                return 'Epic Games';
+            case 'itch':
+                return 'itch';
+            case 'deadforge':
+                return 'DEADFORGE';
+            case 'osu':
+                return 'osu!';
+            default: 
+                return getLauncherName(resolveDefaultGameVendor(game));
+        }
+    }
+    switch (game.source) {
         case 'steam':
             return 'Steam';
         case 'epic':
@@ -102,21 +118,6 @@ export function getLauncherName(game: NormalizedGame | NormalizedPseudoGameJoin 
             return 'osu!';
         default: 
             return getLauncherName(resolveDefaultGameVendor(game));
-        }
-    }
-    switch (game.source) {
-    case 'steam':
-        return 'Steam';
-    case 'epic':
-        return 'Epic Games';
-    case 'itch':
-        return 'itch';
-    case 'deadforge':
-        return 'DEADFORGE';
-    case 'osu':
-        return 'osu!';
-    default: 
-        return getLauncherName(resolveDefaultGameVendor(game));
     }
 }
 
