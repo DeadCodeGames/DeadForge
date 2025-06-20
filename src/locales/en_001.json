@@ -134,7 +134,7 @@
                 "launchAtStartup": "Launch at Startup",
                 "dontLaunchAtStartup": "Don't Launch at Startup",
                 "useRPC": "Use Discord Rich Presence",
-                "dontUseRPC": "Don't use Discord Rich Presense",
+                "dontUseRPC": "Don't use Discord Rich Presence",
                 "collapsed": "Collapsed",
                 "expanded": "Expanded",
                 "darkModeInContext": "Dark Mode",
