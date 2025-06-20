@@ -11,10 +11,10 @@
     "loading": "ロード中",
     "browse": "閲覧",
     "cancel": "キャンセル",
-    "back": "",
-    "skip": "",
-    "next": "",
-    "finish": "",
+    "back": "戻る",
+    "skip": "スキップ",
+    "next": "次へ",
+    "finish": "終える",
     "sidebar": {
         "home": "ホーム",
         "library": "ライブラリー",
@@ -78,7 +78,7 @@
             "initialSetupDescription": "最初の起動時に表示される初期設定シーケンスを再起動します",
             "initialSetupModal": {
                 "welcome": "<bold>DEADFORGE</bold>へようこそ",
-                "welcomeSubheading": "",
+                "welcomeSubheading": "始めるためにデータをインポートしましょう",
                 "deadforgeDataImport": "",
                 "importV1Preferences": "",
                 "v1PreferencesDescription": "",
