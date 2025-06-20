@@ -224,9 +224,9 @@
             "downloadSize": "ダウンロード・サイズ：",
             "installSize": "インストール・サイズ：",
             "noReleaseinfo": "ID {{id}} のソフトにリリース情報がありません",
-            "copyingFiles": "ファイルをコピーしています⋯",
-            "updatingDeadForgeDB": "DeadForge DBを更新中",
-            "updatingWindowsRegistry": "Windowsレジストリを更新中"
+            "copyingFiles": "ファイルをコピー中⋯",
+            "updatingDeadForgeDB": "DeadForge DBを更新中⋯",
+            "updatingWindowsRegistry": "Windowsレジストリを更新中⋯"
         }
     }
 }

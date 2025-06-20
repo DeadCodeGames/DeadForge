@@ -1524,7 +1524,7 @@ const LibraryGame: React.FC = () => {
                                                 <div className="flex items-center flex-row space-x-2">
                                                     <GetSourceIcon source={selectedOptionSource} keyProp={null} size={20} />
                                                     <span>
-                                                        {t("library.shared.gameState.launchLauncher", { launcher: selectedOptionSource })}
+                                                        {t("library.shared.gameState.launchLauncher", { launcher: getLauncherName(selectedOptionSource) })}
                                                     </span>
                                                 </div>
                                             ) : (
