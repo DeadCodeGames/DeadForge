@@ -391,11 +391,11 @@ const FirstLaunchModal = () => {
                                                         components={{ code: <code className={preferencesCodeBlock} /> }}
                                                         values={{
                                                             colorScheme: v1Prefs?.colorScheme === "light" ? t("settings.appData.initialSetupModal.lightModeInContext") : t("settings.appData.initialSetupModal.darkModeInContext"),
-                                                            startup: v1Prefs?.startup ? "" : t("settings.appData.initialSetupModal.noModifier"),
-                                                            betaUpdates: v1Prefs?.betaEnabled ? "" : t("settings.appData.initialSetupModal.noModifier"),
+                                                            startup: v1Prefs?.startup ? t("settings.appData.initialSetupModal.launchAtStartup") : t("settings.appData.initialSetupModal.dontLaunchAtStartup"),
+                                                            betaUpdates: v1Prefs?.betaEnabled ? t("settings.appData.initialSetupModal.betaUpdates") : t("settings.appData.initialSetupModal.noBetaUpdates"),
                                                             sidebarState: v1Prefs?.menubarCollapsed ? t("settings.appData.initialSetupModal.collapsed") : t("settings.appData.initialSetupModal.expanded"),
-                                                            closeToTray: v1Prefs?.betaEnabled ? "" : t("settings.appData.initialSetupModal.dontModifier"),
-                                                            discordRichPresence: v1Prefs?.betaEnabled ? t("settings.appData.initialSetupModal.use") : t("settings.appData.initialSetupModal.dontUse"),
+                                                            closeToTray: v1Prefs?.closeToTray ? t("settings.appData.initialSetupModal.closeToTray") : t("settings.appData.initialSetupModal.dontCloseToTray"),
+                                                            discordRichPresence: v1Prefs?.betaEnabled ? t("settings.appData.initialSetupModal.useRPC") : t("settings.appData.initialSetupModal.dontUseRPC"),
                                                         }}
                                                     />
                                                 </p>
