@@ -20,6 +20,8 @@ import { getLauncherName } from "../utils/LibraryHelpers"
 import { useTranslation } from "react-i18next"
 import { Trans } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import { formatDistanceToNowStrict, formatDistance, formatDistanceStrict } from 'date-fns';
+import i18n, { dateFNSResources } from '@/locales/i18n';
 const GameWarningComponent = lazy(() => import("@/pages/Library/components/GameWarning"))
 // const GameSettingsModal = lazy(() => import("@/pages/Library/components/GameSettingsModal"))
 const InstallModal = lazy(() => import("@/pages/Library/components/InstallModal"))
@@ -595,6 +597,7 @@ const LibraryGame: React.FC = () => {
         setCollections,
         customAssets,
         curatedAssets,
+        
     } = useContext(LibraryContext)
     const [currentGame, setCurrentGame] = useState<NormalizedGame | NormalizedPseudoGameJoin | null>(null)
     const [bannerLoaded, setBannerLoaded] = useState(false)
@@ -623,6 +626,7 @@ const LibraryGame: React.FC = () => {
     const [showInstallModal, setShowInstallModal] = useState(false)
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const [metrics, setMetrics] = useState<{ lastPlayed: number, totalPlayedFor: number }>({ lastPlayed: 0, totalPlayedFor: 0 });
 
     // Get the current game state
     const gameStateKey = currentGame
@@ -1364,6 +1368,15 @@ const LibraryGame: React.FC = () => {
         }
     }, [currentGame]);
 
+    // Fetch metrics when currentGame changes
+    useEffect(() => {
+        if (!currentGame) return;
+        const game = resolveDefaultGameVendor(currentGame);
+        window.Electron.getGameMetrics(game.source, typeof game.id === 'object' ? JSON.stringify(game.id) : game.id)
+            .then(setMetrics)
+            .catch(() => setMetrics({ lastPlayed: 0, totalPlayedFor: 0 }));
+    }, [currentGame]);
+
     if (!currentGame) {
         return (
             <div className="flex items-center justify-center h-full">
@@ -1424,62 +1437,63 @@ const LibraryGame: React.FC = () => {
             <div style={{ display: isReady ? "block" : "none" }}>
                 {/* User Actions */}
                 <div className="p-4 h-14 flex flex-row gap-x-4 items-center justify-between bg-notQuiteWhite/50 dark:bg-notQuiteBlack/50 border-0 border-b border-notQuiteBlack/10 dark:border-notQuiteWhite/10 border-solid">
-                    {/* Launch button with dropdown replacing title */}
-                    <div className="flex flex-col gap-y-3 z-10">
-                        <div className="flex flex-col relative">
-                            <div className="flex flex-col items-center gap-x-3 relative" ref={launchButtonRef}>
-                                <button
-                                    onClick={async () => {
-                                        const gameId = typeof currentGame.id === "object" ? JSON.stringify(currentGame.id) : currentGame.id
-                                        if (
-                                            (String(gameId) === "-1" && !(isRunning || isStopping || isLaunching)) ||
+                    <div className="flex flex-row gap-x-4">
+                        {/* Launch button with dropdown replacing title */}
+                        <div className="flex flex-col gap-y-3 z-10">
+                            <div className="flex flex-col relative">
+                                <div className="flex flex-col items-center gap-x-3 relative" ref={launchButtonRef}>
+                                    <button
+                                        onClick={async () => {
+                                            const gameId = typeof currentGame.id === "object" ? JSON.stringify(currentGame.id) : currentGame.id
+                                            if (
+                                                (String(gameId) === "-1" && !(isRunning || isStopping || isLaunching)) ||
                                             (needsLauncher && !isLauncherRunning)
-                                        ) {
+                                            ) {
                                             // Launch the source launcher based on selected option
-                                            await launchSourceLauncher(selectedOptionSource)
-                                        } else if (isRunning) {
+                                                await launchSourceLauncher(selectedOptionSource)
+                                            } else if (isRunning) {
                                             // Stop the game
-                                            if (isGameJoin) {
+                                                if (isGameJoin) {
                                                 // For game joins, stop any running processes
-                                                const runningGames = gameJoinStates?.filter((state) => state.state === "running")
+                                                    const runningGames = gameJoinStates?.filter((state) => state.state === "running")
 
-                                                if (runningGames && runningGames.length > 0) {
+                                                    if (runningGames && runningGames.length > 0) {
                                                     // Set all running games to stopping state
-                                                    for (const game of runningGames) {
-                                                        setGameState(game.gameId, game.source, "stopping")
-                                                        await window.Electron.stopGame(game.source, game.gameId)
+                                                        for (const game of runningGames) {
+                                                            setGameState(game.gameId, game.source, "stopping")
+                                                            await window.Electron.stopGame(game.source, game.gameId)
+                                                        }
+                                                    }
+                                                } else {
+                                                // Normal game stop
+                                                    const gameToStop = resolveDefaultGameVendor(currentGame)
+                                                    const gameId = typeof gameToStop.id === "object" ? JSON.stringify(gameToStop.id) : gameToStop.id
+                                                    setGameState(gameId, gameToStop.source, "stopping")
+                                                    const result = await window.Electron.stopGame(gameToStop.source, gameId)
+                                                    if (!result.success) {
+                                                        console.error("Failed to stop game:", result.error)
                                                     }
                                                 }
-                                            } else {
-                                                // Normal game stop
-                                                const gameToStop = resolveDefaultGameVendor(currentGame)
-                                                const gameId = typeof gameToStop.id === "object" ? JSON.stringify(gameToStop.id) : gameToStop.id
-                                                setGameState(gameId, gameToStop.source, "stopping")
-                                                const result = await window.Electron.stopGame(gameToStop.source, gameId)
-                                                if (!result.success) {
-                                                    console.error("Failed to stop game:", result.error)
-                                                }
-                                            }
-                                        } else if (resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath) {
+                                            } else if (resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath) {
                                             // Show install modal for DeadForge games that aren't installed
-                                            setShowInstallModal(true)
-                                        } else {
+                                                setShowInstallModal(true)
+                                            } else {
                                             // Launch the game with selected option
-                                            launchGame(resolveDefaultGameVendor(currentGame))
-                                        }
-                                    }}
-                                    disabled={
-                                        (!resolveDefaultGameVendor(currentGame)?.launchOptions && currentGame.source !== "deadforge") ||
+                                                launchGame(resolveDefaultGameVendor(currentGame))
+                                            }
+                                        }}
+                                        disabled={
+                                            (!resolveDefaultGameVendor(currentGame)?.launchOptions && currentGame.source !== "deadforge") ||
                                         (resolveDefaultGameVendor(currentGame)?.launchOptions?.length === 0 && currentGame.source !== "deadforge") ||
                                         isLaunching ||
                                         isStopping
-                                    }
-                                    className={cn(
-                                        "font-bold h-14 rounded-md flex items-center transition-all duration-200 justify-between group w-72",
-                                        (isLaunching || isRunning || isStopping) && "bg-progress text-white hover:bg-progress/80",
-                                        (isLaunching || isStopping) && "cursor-not-allowed",
-                                        String(currentGame?.id) === "-1" && "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
-                                        !isLaunching &&
+                                        }
+                                        className={cn(
+                                            "font-bold h-14 rounded-md flex items-center transition-all duration-200 justify-between group w-72",
+                                            (isLaunching || isRunning || isStopping) && "bg-progress text-white hover:bg-progress/80",
+                                            (isLaunching || isStopping) && "cursor-not-allowed",
+                                            String(currentGame?.id) === "-1" && "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
+                                            !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
                                         !needsLauncher &&
@@ -1487,230 +1501,266 @@ const LibraryGame: React.FC = () => {
                                         resolveDefaultGameVendor(currentGame).source === "deadforge" &&
                                         !resolveDefaultGameVendor(currentGame).installPath &&
                                         "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
-                                        !isLaunching &&
+                                            !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
                                         !needsLauncher &&
                                         String(currentGame?.id) !== "-1" &&
                                         !(resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath) &&
                                         "bg-green-600 hover:bg-green-700 text-white shadow-lg",
-                                        !isLaunching &&
+                                            !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
                                         needsLauncher &&
                                         isLauncherRunning &&
                                         "bg-green-600 hover:bg-green-700 text-white shadow-lg",
-                                        !isLaunching &&
+                                            !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
                                         needsLauncher &&
                                         !isLauncherRunning &&
                                         "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
-                                        "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
-                                    )}
-                                >
-                                    <div
-                                        className={cn(
-                                            "flex items-center justify-center flex-col space-x-2 h-full w-full",
-                                            (resolveAllGameVendors(currentGame)?.launchOptions as LaunchOption[])?.length > 1 &&
+                                            "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+                                        )}
+                                    >
+                                        <div
+                                            className={cn(
+                                                "flex items-center justify-center flex-col space-x-2 h-full w-full",
+                                                (resolveAllGameVendors(currentGame)?.launchOptions as LaunchOption[])?.length > 1 &&
                                             !isRunning &&
                                             !isStopping &&
                                             !isLaunching &&
                                             "border-0 border-r-2 pr-2 border-white/20 border-solid",
-                                        )}
-                                    >
-                                        {!(isRunning || isStopping || isLaunching) &&
-                                            ((needsLauncher && !isLauncherRunning) || String(currentGame?.id) === "-1") ? (
-                                                <div className="flex items-center flex-row space-x-2">
-                                                    <GetSourceIcon source={selectedOptionSource} keyProp={null} size={20} />
-                                                    <span>
-                                                        {t("library.shared.gameState.launchLauncher", { launcher: getLauncherName(selectedOptionSource) })}
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <div className="flex items-center flex-row gap-x-1 -mt-1">
-                                                    <span
-                                                        className={cn(
-                                                            "material-symbols text-2xl transition-transform",
-                                                            (isLaunching || isStopping) && "animate-hourglass",
-                                                        )}
-                                                    >
-                                                        {isLaunching
-                                                            ? "hourglass_top"
-                                                            : isRunning
-                                                                ? "stop_circle"
-                                                                : isStopping
-                                                                    ? "hourglass_bottom"
-                                                                    : isDownloading
-                                                                        ? "downloading"
-                                                                        : isInstalling
-                                                                            ? "install_desktop"
-                                                                            : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                ? "download"
-                                                                                : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                    ? "launch"
-                                                                                    : "play_circle"}
-                                                    </span>
-                                                    <span>
-                                                        {isLaunching
-                                                            ? t("library.shared.gameState.launching")
-                                                            : isRunning
-                                                                ? t("library.shared.gameState.stop")
-                                                                : isStopping
-                                                                    ? t("library.shared.gameState.stopping")
-                                                                    : isDownloading
-                                                                        ? t("library.shared.gameState.downloading")
-                                                                        : isInstalling
-                                                                            ? t("library.shared.gameState.installing")
-                                                                            : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                ? t("library.shared.gameState.install")
-                                                                                : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                    ? t("library.shared.gameState.launch")
-                                                                                    : t("library.shared.gameState.play")}
-                                                    </span>
-                                                </div>
                                             )}
+                                        >
+                                            {!(isRunning || isStopping || isLaunching) &&
+                                            ((needsLauncher && !isLauncherRunning) || String(currentGame?.id) === "-1") ? (
+                                                    <div className="flex items-center flex-row space-x-2">
+                                                        <GetSourceIcon source={selectedOptionSource} keyProp={null} size={20} />
+                                                        <span>
+                                                            {t("library.shared.gameState.launchLauncher", { launcher: getLauncherName(selectedOptionSource) })}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center flex-row gap-x-1 -mt-1">
+                                                        <span
+                                                            className={cn(
+                                                                "material-symbols text-2xl transition-transform",
+                                                                (isLaunching || isStopping) && "animate-hourglass",
+                                                            )}
+                                                        >
+                                                            {isLaunching
+                                                                ? "hourglass_top"
+                                                                : isRunning
+                                                                    ? "stop_circle"
+                                                                    : isStopping
+                                                                        ? "hourglass_bottom"
+                                                                        : isDownloading
+                                                                            ? "downloading"
+                                                                            : isInstalling
+                                                                                ? "install_desktop"
+                                                                                : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                    ? "download"
+                                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                        ? "launch"
+                                                                                        : "play_circle"}
+                                                        </span>
+                                                        <span>
+                                                            {isLaunching
+                                                                ? t("library.shared.gameState.launching")
+                                                                : isRunning
+                                                                    ? t("library.shared.gameState.stop")
+                                                                    : isStopping
+                                                                        ? t("library.shared.gameState.stopping")
+                                                                        : isDownloading
+                                                                            ? t("library.shared.gameState.downloading")
+                                                                            : isInstalling
+                                                                                ? t("library.shared.gameState.installing")
+                                                                                : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                    ? t("library.shared.gameState.install")
+                                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                        ? t("library.shared.gameState.launch")
+                                                                                        : t("library.shared.gameState.play")}
+                                                        </span>
+                                                    </div>
+                                                )}
 
-                                        {/* Show currently selected option if any */}
-                                        {selectedLaunchOption &&
+                                            {/* Show currently selected option if any */}
+                                            {selectedLaunchOption &&
                                             (resolveAllGameVendors(currentGame)?.launchOptions as LaunchOption[])?.length > 1 &&
                                             !isRunning &&
                                             !isLaunching &&
                                             !isStopping &&
                                             !isDownloading &&
                                             !isInstalling && (
-                                            <span className="text-xs opacity-0 flex flex-row items-center gap-x-1 -mt-4 group-hover:opacity-70 group-hover:mt-0 transition-[opacity,margin-top] duration-200">
-                                                <GetSourceIcon source={selectedLaunchOption.executable.toLowerCase().includes("steam")
-                                                    ? "steam"
-                                                    : selectedLaunchOption.executable.toLowerCase().includes("epic")
-                                                        ? "epic"
-                                                        : selectedLaunchOption.executable.toLowerCase().includes("itch")
-                                                            ? "itch"
-                                                            : resolveDefaultGameVendor(currentGame).source}
-                                                keyProp={null}
-                                                size={12}
-                                                />
-                                                {selectedLaunchOption.name}
+                                                <span className="text-xs opacity-0 flex flex-row items-center gap-x-1 -mt-4 group-hover:opacity-70 group-hover:mt-0 transition-[opacity,margin-top] duration-200">
+                                                    <GetSourceIcon source={selectedLaunchOption.executable.toLowerCase().includes("steam")
+                                                        ? "steam"
+                                                        : selectedLaunchOption.executable.toLowerCase().includes("epic")
+                                                            ? "epic"
+                                                            : selectedLaunchOption.executable.toLowerCase().includes("itch")
+                                                                ? "itch"
+                                                                : resolveDefaultGameVendor(currentGame).source}
+                                                    keyProp={null}
+                                                    size={12}
+                                                    />
+                                                    {selectedLaunchOption.name}
+                                                </span>
+                                            )}
+                                            {/* If downloading or installing, show progress percentage or description */}
+                                            <span 
+                                                className="text-xs opacity-0 flex flex-row items-center gap-x-1 -mt-4 data-[active=true]:opacity-70 data-[active=true]:mt-0 data-[active=false]:absolute transition-[opacity,margin-top] duration-200" 
+                                                data-active={(isDownloading || isInstalling) && downloadProgress !== undefined}
+                                            >
+                                                {downloadProgress !== undefined ? (typeof downloadProgress === "number" ? `${downloadProgress}%` : t(downloadProgress)) : ""}
                                             </span>
-                                        )}
-                                        {/* If downloading or installing, show progress percentage or description */}
-                                        <span 
-                                            className="text-xs opacity-0 flex flex-row items-center gap-x-1 -mt-4 data-[active=true]:opacity-70 data-[active=true]:mt-0 data-[active=false]:absolute transition-[opacity,margin-top] duration-200" 
-                                            data-active={(isDownloading || isInstalling) && downloadProgress !== undefined}
-                                        >
-                                            {downloadProgress !== undefined ? (typeof downloadProgress === "number" ? `${downloadProgress}%` : t(downloadProgress)) : ""}
-                                        </span>
-                                    </div>
+                                        </div>
 
-                                    {/* Dropdown button integrated */}
-                                    {resolveAllGameVendors(currentGame)?.launchOptions &&
+                                        {/* Dropdown button integrated */}
+                                        {resolveAllGameVendors(currentGame)?.launchOptions &&
                                         (resolveAllGameVendors(currentGame)?.launchOptions as LaunchOption[])?.length > 1 &&
                                         !isLaunching &&
                                         !isRunning &&
                                         !isStopping && (
-                                        <>
-                                            <div className="h-2/3 w-0 absolute bg-white/30 mx-1"></div>
-                                            <div
-                                                className="px-1 h-full flex items-center border-l border-white/20"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setShowLaunchOptions(!showLaunchOptions)
-                                                }}
-                                            >
-                                                <span className="material-symbols">expand_more</span>
-                                            </div>
-                                        </>
-                                    )}
-                                </button>
-
-                                {/* Launch options dropdown */}
-                                {resolveAllGameVendors(currentGame)?.launchOptions &&
-                                    (resolveAllGameVendors(currentGame)?.launchOptions as LaunchOption[])?.length > 1 && (
-                                    <div
-                                        className={cn(
-                                            "overflow-hidden absolute top-14 mt-2 w-72 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transition-all duration-200",
-                                            showLaunchOptions
-                                                ? "opacity-100 translate-y-0"
-                                                : "opacity-0 -translate-y-2 pointer-events-none",
+                                            <>
+                                                <div className="h-2/3 w-0 absolute bg-white/30 mx-1"></div>
+                                                <div
+                                                    className="px-1 h-full flex items-center border-l border-white/20"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        setShowLaunchOptions(!showLaunchOptions)
+                                                    }}
+                                                >
+                                                    <span className="material-symbols">expand_more</span>
+                                                </div>
+                                            </>
                                         )}
-                                    >
-                                        <div className="max-h-fit overflow-hidden">
-                                            {resolveAllGameVendors(currentGame)?.launchOptions?.map((option, index) => {
+                                    </button>
+
+                                    {/* Launch options dropdown */}
+                                    {resolveAllGameVendors(currentGame)?.launchOptions &&
+                                    (resolveAllGameVendors(currentGame)?.launchOptions as LaunchOption[])?.length > 1 && (
+                                        <div
+                                            className={cn(
+                                                "overflow-hidden absolute top-14 mt-2 w-72 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transition-all duration-200",
+                                                showLaunchOptions
+                                                    ? "opacity-100 translate-y-0"
+                                                    : "opacity-0 -translate-y-2 pointer-events-none",
+                                            )}
+                                        >
+                                            <div className="max-h-fit overflow-hidden">
+                                                {resolveAllGameVendors(currentGame)?.launchOptions?.map((option, index) => {
                                                 // Determine which source this option is from
                                                 // We can check if the executable contains certain patterns
-                                                let source = ""
-                                                if (option.executable.toLowerCase().includes("steam")) {
-                                                    source = "steam"
-                                                } else if (
-                                                    option.executable.toLowerCase().includes("epic") ||
+                                                    let source = ""
+                                                    if (option.executable.toLowerCase().includes("steam")) {
+                                                        source = "steam"
+                                                    } else if (
+                                                        option.executable.toLowerCase().includes("epic") ||
                                                         option.executable.toLowerCase().includes("egs")
-                                                ) {
-                                                    source = "epic"
-                                                } else if (option.executable.toLowerCase().includes("itch")) {
-                                                    source = "itch"
-                                                } else {
+                                                    ) {
+                                                        source = "epic"
+                                                    } else if (option.executable.toLowerCase().includes("itch")) {
+                                                        source = "itch"
+                                                    } else {
                                                     // If we can't determine from executable, use the game's default source
-                                                    source = resolveDefaultGameVendor(currentGame).source
-                                                }
+                                                        source = resolveDefaultGameVendor(currentGame).source
+                                                    }
 
-                                                return (
-                                                    <div
-                                                        key={index}
-                                                        className={cn(
-                                                            "block w-[calc(100%-1.5rem)] text-left px-3 py-2 text-sm dark:text-gray-200 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
-                                                            selectedLaunchOption?.name === option.name && "bg-gray-100 dark:bg-gray-700",
-                                                        )}
-                                                        onClick={() => {
-                                                            setSelectedLaunchOption(option)
-                                                            setShowLaunchOptions(false)
-                                                        }}
-                                                    >
-                                                        <div className="font-medium truncate flex items-center gap-x-2">
-                                                            {<GetSourceIcon source={source} />}
-                                                            <span className="truncate">{option.name}</span>
+                                                    return (
+                                                        <div
+                                                            key={index}
+                                                            className={cn(
+                                                                "block w-[calc(100%-1.5rem)] text-left px-3 py-2 text-sm dark:text-gray-200 text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer",
+                                                                selectedLaunchOption?.name === option.name && "bg-gray-100 dark:bg-gray-700",
+                                                            )}
+                                                            onClick={() => {
+                                                                setSelectedLaunchOption(option)
+                                                                setShowLaunchOptions(false)
+                                                            }}
+                                                        >
+                                                            <div className="font-medium truncate flex items-center gap-x-2">
+                                                                {<GetSourceIcon source={source} />}
+                                                                <span className="truncate">{option.name}</span>
+                                                            </div>
+                                                            <div className="text-xs dark:text-gray-400 text-gray-600 truncate w-full flex flex-col">
+                                                                <span className="max-w-full w-full rtl inline-block truncate">
+                                                                    <ResolvedPath executable={option.executable} />
+                                                                </span>
+                                                                <span className="w-full break-words">{option.arguments}</span>
+                                                            </div>
                                                         </div>
-                                                        <div className="text-xs dark:text-gray-400 text-gray-600 truncate w-full flex flex-col">
-                                                            <span className="max-w-full w-full rtl inline-block truncate">
-                                                                <ResolvedPath executable={option.executable} />
-                                                            </span>
-                                                            <span className="w-full break-words">{option.arguments}</span>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })}
+                                                    )
+                                                })}
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                </div>
 
-                            {/* Manual check button */}
-                            <Tooltip
-                                content={t("library.gameView.checkStatusDescription")}
-                                position="top"
-                                showDelay={200}
-                                containerClassName={cn(
-                                    "absolute -z-10 -mt-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
-                                    hasBeenLaunchingLong && "z-10 !opacity-100 -mt-12 pointer-events-auto",
-                                )}
-                            >
-                                <button
-                                    onClick={checkGameStatus}
-                                    disabled={isCheckingStatus || !hasBeenLaunchingLong}
-                                    className={cn(
-                                        "font-bold py-2 rounded-md flex items-center space-x-2 transition-all duration-300 w-72",
-                                        "bg-yellow-600/25 hover:bg-yellow-600 text-yellow-600 hover:text-white",
-                                        "justify-center",
-                                        "disabled:opacity-50 disabled:cursor-not-allowed",
-                                        "opacity-0 pointer-events-none",
-                                        hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
+                                {/* Manual check button */}
+                                <Tooltip
+                                    content={t("library.gameView.checkStatusDescription")}
+                                    position="top"
+                                    showDelay={200}
+                                    containerClassName={cn(
+                                        "absolute -z-10 -mt-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
+                                        hasBeenLaunchingLong && "z-10 !opacity-100 -mt-12 pointer-events-auto",
                                     )}
                                 >
-                                    <span className={cn("material-symbols", isCheckingStatus && "animate-hourglass")}>
-                                        {isCheckingStatus ? "hourglass_top" : "refresh"}
+                                    <button
+                                        onClick={checkGameStatus}
+                                        disabled={isCheckingStatus || !hasBeenLaunchingLong}
+                                        className={cn(
+                                            "font-bold py-2 rounded-md flex items-center space-x-2 transition-all duration-300 w-72",
+                                            "bg-yellow-600/25 hover:bg-yellow-600 text-yellow-600 hover:text-white",
+                                            "justify-center",
+                                            "disabled:opacity-50 disabled:cursor-not-allowed",
+                                            "opacity-0 pointer-events-none",
+                                            hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
+                                        )}
+                                    >
+                                        <span className={cn("material-symbols", isCheckingStatus && "animate-hourglass")}>
+                                            {isCheckingStatus ? "hourglass_top" : "refresh"}
+                                        </span>
+                                        <span>{t("library.gameView.checkStatus")}</span>
+                                    </button>
+                                </Tooltip>
+                            </div>
+                        </div>
+                        {/* Game statistics bar styled like Steam */}
+                        <div className="hidePlayTimeStats:hidden flex flex-row gap-x-12 items-center bg-gradient-to-b from-[#3b434a]/80 to-[#23282e]/80 dark:from-[#23282e]/80 dark:to-[#181c20]/80 rounded-md px-4 py-2 w-fit max-w-[420px] border border-black/10 dark:border-white/10 shadow-sm">
+                            <div className="flex flex-col items-start">
+                                <span className="uppercase text-xs font-semibold tracking-wider text-gray-400 dark:text-gray-400">{t('library.gameView.lastPlayed')}</span>
+                                <span className="text-base font-medium text-white dark:text-white">
+                                    {(() => {
+                                        const lastPlayed = metrics.lastPlayed;
+                                        if (!lastPlayed) return t('library.recentView.neverPlayed') || '-';
+                                        const locale = dateFNSResources[i18n.language as keyof typeof dateFNSResources] || dateFNSResources['en_001'];
+                                        const lastPlayedDate = new Date(lastPlayed * 1000);
+                                        const now = new Date();
+                                        if (lastPlayedDate.toDateString() === now.toDateString()) {
+                                            return t('library.recentView.today');
+                                        }
+                                        return formatDistanceToNowStrict(lastPlayedDate, { addSuffix: true, locale });
+                                    })()}
+                                </span>
+                            </div>
+                            {metrics.totalPlayedFor ? (
+                                <div className="flex flex-col items-start">
+                                    <span className="uppercase text-xs font-semibold tracking-wider text-gray-400 dark:text-gray-400">{t('library.gameView.playTime')}</span>
+                                    <span className="text-base font-medium text-white dark:text-white">
+                                        {(() => {
+                                            const playTime = metrics.totalPlayedFor || 0;
+                                            const locale = dateFNSResources[i18n.language as keyof typeof dateFNSResources] || dateFNSResources['en_001'];
+                                            if (!playTime) return t("library.recentView.neverPlayed")
+                                            else if (playTime < 60) return formatDistance(0, playTime * 1000, { locale, addSuffix: false })
+                                            // Convert seconds to a duration object
+                                            // Only show hours/minutes for brevity
+                                            return formatDistanceStrict(0, (playTime) * 1000, { locale, addSuffix: false });
+                                        })()}
                                     </span>
-                                    <span>{t("library.gameView.checkStatus")}</span>
-                                </button>
-                            </Tooltip>
+                                </div>
+                            ) : <></>}
                         </div>
                     </div>
                     <div className="flex flex-row gap-x-2 p-2">
@@ -1826,6 +1876,7 @@ const LibraryGame: React.FC = () => {
                                                 components={{
                                                     1: <span className="font-bold font-uniSansCAPS" />,
                                                     3: <span className="font-bold font-uniSansCAPS" />,
+                                                    // eslint-disable-next-line jsx-a11y/anchor-has-content
                                                     5: <a
                                                         href="https://github.com/DeadCodeGames/DeadForgeExternalData"
                                                         target="_blank"

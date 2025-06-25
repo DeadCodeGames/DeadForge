@@ -2,6 +2,7 @@ import { app } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import https from 'https';
+import crypto from 'crypto';
 
 interface ArticleAuthor {
     name: string;
@@ -9,6 +10,7 @@ interface ArticleAuthor {
     profilePicture: {
         filePath: string;
         remoteUrl: string;
+        hash?: string;
     };
 }
 
@@ -18,13 +20,16 @@ interface Article {
     bannerImage: {
         filePath: string;
         remoteUrl: string;
+        hash?: string;
     };
     assetsMap: Record<string, string>;
+    assetsMapHashes?: Record<string, string>;
     content: string;
     publishDate: string;
     lastModified: string;
     tags: string[];
     slug: string;
+    contentHash?: string;
 }
 
 interface ArticleList {
@@ -52,7 +57,22 @@ async function shouldUpdateArticles(): Promise<boolean> {
     }
 }
 
-async function downloadFile(url: string, destPath: string, maxRedirects = 5): Promise<boolean> {
+function computeFileHash(filePath: string, algorithm = 'md5'): string | null {
+    if (!fs.existsSync(filePath)) return null;
+    const fileBuffer = fs.readFileSync(filePath);
+    const hashSum = crypto.createHash(algorithm);
+    hashSum.update(fileBuffer);
+    return hashSum.digest('hex');
+}
+
+async function downloadFile(url: string, destPath: string, expectedHash?: string, maxRedirects = 5): Promise<boolean> {
+    if (expectedHash && fs.existsSync(destPath)) {
+        const currentHash = computeFileHash(destPath);
+        if (currentHash === expectedHash) {
+            // File is up-to-date
+            return true;
+        }
+    }
     return new Promise((resolve) => {
         const dir = path.dirname(destPath);
         if (!fs.existsSync(dir)) {
@@ -91,6 +111,16 @@ async function downloadFile(url: string, destPath: string, maxRedirects = 5): Pr
 
             file.on('finish', () => {
                 file.close();
+                // After download, check hash if expectedHash is provided
+                if (expectedHash) {
+                    const currentHash = computeFileHash(destPath);
+                    if (currentHash !== expectedHash) {
+                        console.error(`Hash mismatch for ${destPath}: expected ${expectedHash}, got ${currentHash}`);
+                        fs.unlinkSync(destPath);
+                        resolve(false);
+                        return;
+                    }
+                }
                 resolve(true);
             });
 
@@ -111,12 +141,19 @@ async function downloadFile(url: string, destPath: string, maxRedirects = 5): Pr
     });
 }
 
-async function downloadMarkdownContent(contentPath: string, slug: string): Promise<string> {
+async function downloadMarkdownContent(contentPath: string, slug: string, expectedHash?: string): Promise<string> {
     const contentUrl = `https://deadcode.is-a.dev/DeadForgeExternalData/articles/${contentPath}`;
     const userDataPath = app.getPath('userData');
     const localPath = path.join(userDataPath, 'app_assets', 'articles', slug, 'content.md');
 
-    const success = await downloadFile(contentUrl, localPath);
+    if (expectedHash && fs.existsSync(localPath)) {
+        const currentHash = computeFileHash(localPath);
+        if (currentHash === expectedHash) {
+            return fs.readFileSync(localPath, 'utf-8');
+        }
+    }
+
+    const success = await downloadFile(contentUrl, localPath, expectedHash);
     if (!success) {
         throw new Error(`Failed to download content for article: ${slug}`);
     }
@@ -162,24 +199,25 @@ export async function updateArticles(force = false): Promise<{ success: boolean;
             // Download banner image
             if (article.bannerImage) {
                 const bannerPath = article.bannerImage.filePath.replace('%USERDATA%', userDataPath);
-                await downloadFile(article.bannerImage.remoteUrl, bannerPath);
+                await downloadFile(article.bannerImage.remoteUrl, bannerPath, article.bannerImage.hash);
             }
 
             // Download author profile pictures
             for (const author of article.authors) {
                 if (author.profilePicture) {
                     const picturePath = author.profilePicture.filePath.replace('%USERDATA%', userDataPath);
-                    await downloadFile(author.profilePicture.remoteUrl, picturePath);
+                    await downloadFile(author.profilePicture.remoteUrl, picturePath, author.profilePicture.hash);
                 }
             }
 
             // Download assets from assetsMap
             for (const [remoteUrl, localPath] of Object.entries(article.assetsMap || {})) {
                 const assetPath = localPath.replace('%USERDATA%', userDataPath);
-                await downloadFile(remoteUrl, assetPath);
+                const assetHash = article.assetsMapHashes?.[remoteUrl];
+                await downloadFile(remoteUrl, assetPath, assetHash);
             }
 
-            await downloadMarkdownContent(article.content, article.slug);
+            await downloadMarkdownContent(article.content, article.slug, article.contentHash);
         }
 
         // Save the articles list locally

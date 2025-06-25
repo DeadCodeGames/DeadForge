@@ -67,6 +67,7 @@ declare global {
             getDownloadSize: (gameId: string) => Promise<{ success: true, size: number, error: null } | { success: false, size: null, error: Error }>,
             onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void
             removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void
+            getGameMetrics: (source: string, gameId: string) => Promise<{ lastPlayed: number, totalPlayedFor: number }>;
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';

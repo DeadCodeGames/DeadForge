@@ -4,7 +4,7 @@ import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-i
 import { Preferences, OldPreferences, defaultPreferences } from './preferences';
 import * as SteamStuff from './mainHelpers/SteamStuff'; import * as EpicStuff from './mainHelpers/EpicStuff'; import * as ItchStuff from './mainHelpers/ItchStuff';
 import { importBackup, exportBackup, validateBackup } from './mainHelpers/BackupStuff';
-import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB, updateGameLastPlayed, getPathsFromDB, updateGamePlaytime, getAllCuratedAssetsFromDB, getAllCustomAssetsFromDB, checkIsDeadForgeGameInLibrary, DeadForgeGameObject, addDeadForgeGameToLocalLibrary } from './mainHelpers/DataDB';
+import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB, updateGameLastPlayed, getPathsFromDB, updateGamePlaytime, getAllCuratedAssetsFromDB, getAllCustomAssetsFromDB, checkIsDeadForgeGameInLibrary, DeadForgeGameObject, addDeadForgeGameToLocalLibrary, getGameMetrics } from './mainHelpers/DataDB';
 import { initWatchers } from './mainHelpers/WatchManager';
 import { Collection, CollectionGame, Collections, GameWarning, OldCollections } from './types';
 import { waitForGameProcess, monitorExternalProcess } from './mainHelpers/ProcessWatcher';
@@ -201,6 +201,8 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
         mainWindow = new BrowserWindow({
             minWidth: 1010,
             minHeight: 725,
+            maxWidth: 3840,
+            maxHeight: 2160,
             x: mainWindowState.x || undefined,
             y: mainWindowState.y || undefined,
             height: mainWindowState.height,
@@ -1383,5 +1385,9 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
 
     ipcMain.handle('game:getDownloadSize', async (_, gameId: string) => {
         return await getGameDownloadSize(gameId);
+    });
+
+    ipcMain.handle('metrics:getGameMetrics', async (_event, { source, gameId }) => {
+        return getGameMetrics(source, gameId);
     });
 }

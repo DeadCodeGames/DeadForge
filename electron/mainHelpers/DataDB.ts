@@ -628,3 +628,20 @@ export function addDeadForgeGameToLocalLibrary(game: DeadForgeGameObject): Promi
         }
     })
 }
+
+/**
+ * Gets the metrics (lastPlayed, totalPlayedFor) for a game from the metrics table
+ */
+export function getGameMetrics(client: string, gameId: string | number): { lastPlayed: number, totalPlayedFor: number } {
+    const metrics = selectRows(db, "metrics", `source = @source AND gameId = @gameId`, {
+        source: client,
+        gameId: String(gameId)
+    });
+    if (metrics.length > 0) {
+        return {
+            lastPlayed: metrics[0].lastPlayed || 0,
+            totalPlayedFor: metrics[0].totalPlayedFor || 0
+        };
+    }
+    return { lastPlayed: 0, totalPlayedFor: 0 };
+}

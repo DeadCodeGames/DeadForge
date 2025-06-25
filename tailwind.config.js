@@ -32,7 +32,8 @@ module.exports = {
                 "fullMoon": "#E9E9E9"
             },
             screens: {
-                "settingsShrink": { max: "999px" }
+                "settingsShrink": { max: "999px" },
+                "hidePlayTimeStats": { max: "1150px" }
             },
             animation: {
                 'fade-slide-in': 'fadeSlideIn 0.3s ease-out',

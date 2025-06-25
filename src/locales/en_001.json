@@ -253,12 +253,15 @@
             "gameNotes": "Game Notes",
             "gameNotesTooltip": "Game notes are maintained by the <1>DeadForge</1> developers and community.\nYou can contribute to them, as well as curated <3>DeadForge</3> Assets for external software, and other cool stuff on <5>the GitHub page of DeadCodeGames/DeadForgeExternalData</5>.",
             "noGameNotes": "No notes available for this game.",
-            "installDir": "Installation Directory"
+            "installDir": "Installation Directory",
+            "lastPlayed": "Last Played",
+            "playTime": "Play Time"
         },
         "recentView": {
             "today": "Today",
             "thisWeek": "This Week",
             "thisMonth": "This Month",
+            "neverPlayed": "Never Played",
             "noRecentGames": "No recent games",
             "noRecentGamesDescription": "Games you play will appear here"
         },
