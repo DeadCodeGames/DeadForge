@@ -130,6 +130,7 @@
     "postinstall": "electron-rebuild -f -w better-sqlite3,registry-js",
     "start": "npm run electron:serve",
     "react:start": "react-app-rewired start",
+    "prereact:start": "cpx \"customTwemoji/*.svg\" \"public/twemoji/svg\"",
     "prereact:build": "node scripts/fetchTwemoji.js",
     "react:build": "react-app-rewired build",
     "postreact:build": "tsx scripts/hydrateLoader.js",

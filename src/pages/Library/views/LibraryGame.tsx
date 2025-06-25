@@ -1728,9 +1728,9 @@ const LibraryGame: React.FC = () => {
                             </div>
                         </div>
                         {/* Game statistics bar styled like Steam */}
-                        <div className="hidePlayTimeStats:hidden flex flex-row gap-x-12 items-center bg-gradient-to-b from-[#3b434a]/80 to-[#23282e]/80 dark:from-[#23282e]/80 dark:to-[#181c20]/80 rounded-md px-4 py-2 w-fit max-w-[420px] border border-black/10 dark:border-white/10 shadow-sm">
+                        <div className="hidePlayTimeStats:hidden flex flex-row gap-x-6 items-center bg-gradient-to-b from-[#3b435f]/50 to-[#232843]/80 dark:from-[#232842]/50 dark:to-[#181c34]/80 rounded-md px-3 py-2 w-fit max-w-[420px] border border-solid border-black/10 dark:border-white/10 shadow-sm">
                             <div className="flex flex-col items-start">
-                                <span className="uppercase text-xs font-semibold tracking-wider text-gray-400 dark:text-gray-400">{t('library.gameView.lastPlayed')}</span>
+                                <span className="uppercase text-xs font-semibold tracking-wider text-gray-100 dark:text-gray-400">{t('library.gameView.lastPlayed')}</span>
                                 <span className="text-base font-medium text-white dark:text-white">
                                     {(() => {
                                         const lastPlayed = metrics.lastPlayed;
@@ -1747,7 +1747,7 @@ const LibraryGame: React.FC = () => {
                             </div>
                             {metrics.totalPlayedFor ? (
                                 <div className="flex flex-col items-start">
-                                    <span className="uppercase text-xs font-semibold tracking-wider text-gray-400 dark:text-gray-400">{t('library.gameView.playTime')}</span>
+                                    <span className="uppercase text-xs font-semibold tracking-wider text-gray-100 dark:text-gray-400">{t('library.gameView.playTime')}</span>
                                     <span className="text-base font-medium text-white dark:text-white">
                                         {(() => {
                                             const playTime = metrics.totalPlayedFor || 0;
