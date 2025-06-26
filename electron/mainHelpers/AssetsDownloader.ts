@@ -17,7 +17,7 @@ const MEDIA_TO_DB_FIELD: Record<string, string> = {
     'logoUrl': 'logo',
     'heroUrl': 'hero',
     'headerUrl': 'header',
-    'capsuleUrl': 'capsule'
+    'capsuleUrl': 'capsule',
 };
 
 /**
@@ -151,10 +151,14 @@ export async function DownloadCuratedAssets(...targets: { source: string, id: st
                 continue;
             }
 
+            console.log(match);
+
             const media = match.media || {};
             const mediaKeys = Object.keys(media) as (keyof GameAsset['media'])[];
 
-            const dbUpdate: Record<string, string> = {};
+            const dbUpdate: Record<string, string | null> = {};
+
+            dbUpdate.executablesToWatch = match.executablesToWatch ? JSON.stringify(match.executablesToWatch) : null;
 
             for (const mediaKey of mediaKeys) {
                 const mediaEntry = media[mediaKey];

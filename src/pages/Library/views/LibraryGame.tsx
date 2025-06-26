@@ -20,7 +20,7 @@ import { getLauncherName } from "../utils/LibraryHelpers"
 import { useTranslation } from "react-i18next"
 import { Trans } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { formatDistanceToNowStrict, formatDistance, formatDistanceStrict } from 'date-fns';
+import { formatDistanceToNowStrict, formatDistance, formatDistanceStrict, format } from 'date-fns';
 import i18n, { dateFNSResources } from '@/locales/i18n';
 const GameWarningComponent = lazy(() => import("@/pages/Library/components/GameWarning"))
 // const GameSettingsModal = lazy(() => import("@/pages/Library/components/GameSettingsModal"))
@@ -667,6 +667,10 @@ const LibraryGame: React.FC = () => {
     const isStopping = isGameJoin
         ? (gameJoinStates?.some((state) => state.state === "stopping") ?? false)
         : currentGameState?.state === "stopping"
+    
+    const isChecking = isGameJoin
+        ? (gameJoinStates?.some((state) => state.state === "checking") ?? false)
+        : currentGameState?.state === "checking"
 
     const isDownloading = isGameJoin
         ? (gameJoinStates?.some((state) => state.state === "downloading") ?? false)
@@ -713,6 +717,29 @@ const LibraryGame: React.FC = () => {
             }
         }
     }, [isLaunching, launchStartTime, launchTimeExceeded])
+
+    // Effect to automatically stop launching after 3 minutes
+    useEffect(() => {
+        if (!isLaunching || !launchStartTime) return;
+        const timeout = setTimeout(async () => {
+            // Stop launching after 3 minutes (180000 ms)
+            if (isGameJoin && gameJoinStates) {
+                // For game joins, stop any launching processes
+                const launchingGames = gameJoinStates.filter((state) => state.state === "launching");
+                for (const game of launchingGames) {
+                    setGameState(game.gameId, game.source, "stopping");
+                    await window.Electron.stopGame(game.source, game.gameId);
+                }
+            } else if (currentGame) {
+                // For single games
+                const gameToStop = resolveDefaultGameVendor(currentGame);
+                const gameId = typeof gameToStop.id === "object" ? JSON.stringify(gameToStop.id) : gameToStop.id;
+                setGameState(gameId, gameToStop.source, "stopping");
+                await window.Electron.stopGame(gameToStop.source, gameId);
+            }
+        }, 180000); // 3 minutes
+        return () => clearTimeout(timeout);
+    }, [isLaunching, launchStartTime, isGameJoin, gameJoinStates, currentGame, setGameState]);
 
     // Determine source from selected launch option
     const selectedOptionSource = useMemo(() => {
@@ -1052,6 +1079,8 @@ const LibraryGame: React.FC = () => {
                 const gameToCheck = resolveDefaultGameVendor(currentGame)
                 const gameId = typeof gameToCheck.id === "object" ? JSON.stringify(gameToCheck.id) : gameToCheck.id
                 const runningStates = await window.Electron.checkRunningGames([{ source: gameToCheck.source, id: gameId }])
+
+                console.log(runningStates);
 
                 const isRunning = runningStates[`${gameToCheck.source}|${gameId}`]
                 if (isRunning) {
@@ -1491,11 +1520,12 @@ const LibraryGame: React.FC = () => {
                                         className={cn(
                                             "font-bold h-14 rounded-md flex items-center transition-all duration-200 justify-between group w-72",
                                             (isLaunching || isRunning || isStopping) && "bg-progress text-white hover:bg-progress/80",
-                                            (isLaunching || isStopping) && "cursor-not-allowed",
+                                            (isLaunching || isStopping || isChecking) && "cursor-not-allowed",
                                             String(currentGame?.id) === "-1" && "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
                                             !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
+                                        !isChecking &&
                                         !needsLauncher &&
                                         String(currentGame?.id) !== "-1" &&
                                         resolveDefaultGameVendor(currentGame).source === "deadforge" &&
@@ -1504,6 +1534,7 @@ const LibraryGame: React.FC = () => {
                                             !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
+                                        !isChecking &&
                                         !needsLauncher &&
                                         String(currentGame?.id) !== "-1" &&
                                         !(resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath) &&
@@ -1511,15 +1542,20 @@ const LibraryGame: React.FC = () => {
                                             !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
+                                        !isChecking &&
                                         needsLauncher &&
                                         isLauncherRunning &&
                                         "bg-green-600 hover:bg-green-700 text-white shadow-lg",
                                             !isLaunching &&
                                         !isRunning &&
                                         !isStopping &&
+                                        !isChecking &&
                                         needsLauncher &&
                                         !isLauncherRunning &&
-                                        "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
+                                            "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
+                                        isChecking &&
+                                            "bg-neutral-600 hover:bg-neutral-700 text-neutral-100 shadow-lg",
+                                            
                                             "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
                                         )}
                                     >
@@ -1530,10 +1566,11 @@ const LibraryGame: React.FC = () => {
                                             !isRunning &&
                                             !isStopping &&
                                             !isLaunching &&
+                                            !isChecking &&
                                             "border-0 border-r-2 pr-2 border-white/20 border-solid",
                                             )}
                                         >
-                                            {!(isRunning || isStopping || isLaunching) &&
+                                            {!(isRunning || isStopping || isLaunching || isChecking) &&
                                             ((needsLauncher && !isLauncherRunning) || String(currentGame?.id) === "-1") ? (
                                                     <div className="flex items-center flex-row space-x-2">
                                                         <GetSourceIcon source={selectedOptionSource} keyProp={null} size={20} />
@@ -1555,15 +1592,17 @@ const LibraryGame: React.FC = () => {
                                                                     ? "stop_circle"
                                                                     : isStopping
                                                                         ? "hourglass_bottom"
-                                                                        : isDownloading
-                                                                            ? "downloading"
-                                                                            : isInstalling
-                                                                                ? "install_desktop"
-                                                                                : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                    ? "download"
-                                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                        ? "launch"
-                                                                                        : "play_circle"}
+                                                                        : isChecking
+                                                                            ? "hourglass_top"
+                                                                            : isDownloading
+                                                                                ? "downloading"
+                                                                                : isInstalling
+                                                                                    ? "install_desktop"
+                                                                                    : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                        ? "download"
+                                                                                        : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                            ? "launch"
+                                                                                            : "play_circle"}
                                                         </span>
                                                         <span>
                                                             {isLaunching
@@ -1572,15 +1611,17 @@ const LibraryGame: React.FC = () => {
                                                                     ? t("library.shared.gameState.stop")
                                                                     : isStopping
                                                                         ? t("library.shared.gameState.stopping")
-                                                                        : isDownloading
-                                                                            ? t("library.shared.gameState.downloading")
-                                                                            : isInstalling
-                                                                                ? t("library.shared.gameState.installing")
-                                                                                : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                    ? t("library.shared.gameState.install")
-                                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                        ? t("library.shared.gameState.launch")
-                                                                                        : t("library.shared.gameState.play")}
+                                                                        : isChecking
+                                                                            ? t("library.shared.gameState.checking")
+                                                                            : isDownloading
+                                                                                ? t("library.shared.gameState.downloading")
+                                                                                : isInstalling
+                                                                                    ? t("library.shared.gameState.installing")
+                                                                                    : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                        ? t("library.shared.gameState.install")
+                                                                                        : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                            ? t("library.shared.gameState.launch")
+                                                                                            : t("library.shared.gameState.play")}
                                                         </span>
                                                     </div>
                                                 )}
@@ -1697,38 +1738,80 @@ const LibraryGame: React.FC = () => {
                                     )}
                                 </div>
 
-                                {/* Manual check button */}
-                                <Tooltip
-                                    content={t("library.gameView.checkStatusDescription")}
-                                    position="top"
-                                    showDelay={200}
-                                    containerClassName={cn(
-                                        "absolute -z-10 -mt-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
-                                        hasBeenLaunchingLong && "z-10 !opacity-100 -mt-12 pointer-events-auto",
-                                    )}
-                                >
-                                    <button
-                                        onClick={checkGameStatus}
-                                        disabled={isCheckingStatus || !hasBeenLaunchingLong}
-                                        className={cn(
-                                            "font-bold py-2 rounded-md flex items-center space-x-2 transition-all duration-300 w-72",
-                                            "bg-yellow-600/25 hover:bg-yellow-600 text-yellow-600 hover:text-white",
-                                            "justify-center",
-                                            "disabled:opacity-50 disabled:cursor-not-allowed",
-                                            "opacity-0 pointer-events-none",
-                                            hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
+                                <div className="flex flex-row items-center gap-x-2 absolute right-0 top-0 -mt-12">
+                                    {/* Manual check button */}
+                                    <Tooltip
+                                        content={t("library.gameView.checkStatusDescription")}
+                                        position="top"
+                                        showDelay={200}
+                                        containerClassName={cn(
+                                            "-z-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
+                                            hasBeenLaunchingLong && "z-10 !opacity-100 pointer-events-auto",
                                         )}
                                     >
-                                        <span className={cn("material-symbols", isCheckingStatus && "animate-hourglass")}>
-                                            {isCheckingStatus ? "hourglass_top" : "refresh"}
-                                        </span>
-                                        <span>{t("library.gameView.checkStatus")}</span>
-                                    </button>
-                                </Tooltip>
+                                        <button
+                                            onClick={checkGameStatus}
+                                            disabled={isCheckingStatus || !hasBeenLaunchingLong}
+                                            className={cn(
+                                                "font-bold py-2 rounded-md flex items-center space-x-2 transition-all duration-300 w-60 h-6 text-sm",
+                                                "bg-yellow-600/25 hover:bg-yellow-600 text-yellow-600 hover:text-white",
+                                                "justify-center",
+                                                "disabled:opacity-50 disabled:cursor-not-allowed",
+                                                "opacity-0 pointer-events-none",
+                                                hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
+                                            )}
+                                        >
+                                            <span className={cn("material-symbols", isCheckingStatus && "animate-hourglass")}> 
+                                                {isCheckingStatus ? "hourglass_top" : "refresh"}
+                                            </span>
+                                            <span>{t("library.gameView.checkStatus")}</span>
+                                        </button>
+                                    </Tooltip>
+                                    {/* Manual stop button */}
+                                    {isLaunching && (
+                                    <Tooltip
+                                        content={t("library.gameView.checkStatusDescription")}
+                                        position="top"
+                                        showDelay={200}
+                                        containerClassName={cn(
+                                            "-z-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
+                                            hasBeenLaunchingLong && "z-10 !opacity-100 pointer-events-auto",
+                                        )}
+                                    >
+                                        <button
+                                            onClick={async () => {
+                                                if (isGameJoin && gameJoinStates) {
+                                                    const launchingGames = gameJoinStates.filter((state) => state.state === "launching");
+                                                    for (const game of launchingGames) {
+                                                        setGameState(game.gameId, game.source, "stopping");
+                                                        await window.Electron.stopGame(game.source, game.gameId);
+                                                    }
+                                                } else if (currentGame) {
+                                                    const gameToStop = resolveDefaultGameVendor(currentGame);
+                                                    const gameId = typeof gameToStop.id === "object" ? JSON.stringify(gameToStop.id) : gameToStop.id;
+                                                    setGameState(gameId, gameToStop.source, "stopping");
+                                                    await window.Electron.stopGame(gameToStop.source, gameId);
+                                                }
+                                            }}
+                                            disabled={isCheckingStatus || !hasBeenLaunchingLong}
+                                            className={cn(
+                                                "font-bold p-2 rounded-md flex items-center space-x-2 transition-all duration-300 text-sm aspect-square",
+                                                "bg-danger/25 hover:bg-danger text-white",
+                                                "justify-center",
+                                                "disabled:opacity-50 disabled:cursor-not-allowed",
+                                                "opacity-0 pointer-events-none",
+                                                hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
+                                            )}
+                                        >
+                                            <span className="material-symbols">stop_circle</span>
+                                            </button>
+                                    </Tooltip>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         {/* Game statistics bar styled like Steam */}
-                        <div className="hidePlayTimeStats:hidden flex flex-row gap-x-6 items-center bg-gradient-to-b from-[#3b435f]/50 to-[#232843]/80 dark:from-[#232842]/50 dark:to-[#181c34]/80 rounded-md px-3 py-2 w-fit max-w-[420px] border border-solid border-black/10 dark:border-white/10 shadow-sm">
+                        <div className="hidePlayTimeStats:hidden flex flex-row gap-x-6 items-center bg-gradient-to-b from-[#3b436f]/50 to-[#232853]/80 dark:from-[#232852]/50 dark:to-[#181c44]/80 rounded-md px-3 py-2 w-fit max-w-[420px] border border-solid border-black/10 dark:border-white/10 shadow-sm">
                             <div className="flex flex-col items-start">
                                 <span className="uppercase text-xs font-semibold tracking-wider text-gray-100 dark:text-gray-400">{t('library.gameView.lastPlayed')}</span>
                                 <span className="text-base font-medium text-white dark:text-white">
@@ -1740,6 +1823,8 @@ const LibraryGame: React.FC = () => {
                                         const now = new Date();
                                         if (lastPlayedDate.toDateString() === now.toDateString()) {
                                             return t('library.recentView.today');
+                                        } else if (lastPlayedDate.getTime() < (now.getTime() - 28 * 24 * 60 * 60 * 100)) {
+                                            return format(lastPlayedDate, 'P', {locale})
                                         }
                                         return formatDistanceToNowStrict(lastPlayedDate, { addSuffix: true, locale });
                                     })()}

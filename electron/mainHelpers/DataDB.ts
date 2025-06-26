@@ -109,6 +109,7 @@ export function initUserDB() {
             title: "TEXT",
             type: "TEXT",
             ratings: "TEXT",
+            executablesToWatch: "TEXT",
             "PRIMARY KEY": "(source, gameId)"
         },
         customAssets: {
@@ -404,7 +405,7 @@ export function getAllCuratedAssetsFromDB() {
     const curatedAssets: any[] = [];
     const rows = selectRows(db, "curatedAssets");
     for (const row of rows) {
-        const game = { source: row.source, id: row.gameId, media: { iconUrl: row.icon, logoUrl: row.logo, heroUrl: row.hero, headerUrl: row.header, capsuleUrl: row.capsule }, title: row.title, ratings: row.ratings };
+        const game = { source: row.source, id: row.gameId, media: { iconUrl: row.icon, logoUrl: row.logo, heroUrl: row.hero, headerUrl: row.header, capsuleUrl: row.capsule }, title: row.title, ratings: row.ratings, executablesToWatch: row.executablesToWatch };
         if (game.media) {
 
             // Handle logoUrl (complex object)

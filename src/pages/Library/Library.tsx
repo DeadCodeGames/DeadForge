@@ -298,8 +298,16 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
             setGameState(gameId, source, 'idle');
         };
 
+        // Add game status change listener
+        const handleGameStatusChange = (_event: any, source: string, gameId: string, status: string) => {
+            if (status === 'running') setGameState(gameId, source, 'running');
+            else if (status === 'checking') setGameState(gameId, source, 'checking');
+            else if (status === 'closed') setGameState(gameId, source, 'idle');
+        };
+
         window.Electron.onGamesUpdate(handleGamesUpdate);
         window.Electron.onGameProcessTerminated(handleGameProcessTerminated);
+        window.Electron.onGameStatusChange(handleGameStatusChange);
 
         const fetchCollections = async () => {
             try {
@@ -318,6 +326,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
         return () => {
             window.Electron.removeGamesUpdateListener(handleGamesUpdate);
             window.Electron.removeGameProcessTerminatedListener(handleGameProcessTerminated);
+            window.Electron.onGameStatusChange(() => {});
         };
     }, []);
 

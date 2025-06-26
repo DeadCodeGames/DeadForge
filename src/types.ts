@@ -65,9 +65,13 @@ declare global {
             getDefaultInstallPath: (gameId: string) => Promise<string>,
             installGame: (gameid: string, installPath: string) => Promise<{ success: true, error: null } | {success: false, error: Error}>,
             getDownloadSize: (gameId: string) => Promise<{ success: true, size: number, error: null } | { success: false, size: null, error: Error }>,
-            onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void
-            removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void
-            getGameMetrics: (source: string, gameId: string) => Promise<{ lastPlayed: number, totalPlayedFor: number }>;
+            onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void,
+            removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void,
+            getGameMetrics: (source: string, gameId: string) => Promise<{ lastPlayed: number, totalPlayedFor: number }>,
+            /**
+             * Listen for game status changes (running/checking/closed)
+             */
+            onGameStatusChange: (callback: (event: any, source: string, gameId: string, status: GameStatus) => void) => void
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
@@ -267,7 +271,7 @@ export type CollectionGame = {
 }
 
 export type GameState = {
-    state: 'launching' | 'running' | 'stopping' | 'idle' | 'downloading' | 'installing';
+    state: 'launching' | 'running' | 'stopping' | 'idle' | 'downloading' | 'installing' | 'checking';
     gameId: string;
     source: string;
     progress?: number | string;
@@ -314,3 +318,5 @@ export interface Article {
 export interface ArticleList {
     articles: Article[];
 }
+
+export type GameStatus = 'running' | 'checking' | 'closed';

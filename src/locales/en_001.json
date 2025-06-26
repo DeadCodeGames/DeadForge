@@ -180,7 +180,8 @@
                 "launching": "Launching...",
                 "stopping": "Stopping...",
                 "downloading": "Downloading",
-                "installing": "Installing"
+                "installing": "Installing",
+                "checking": "Checking..."
             },
             "favourites": "Favourites",
             "favouritesDescription": "Your most loved games",

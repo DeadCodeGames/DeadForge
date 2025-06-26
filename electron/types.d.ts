@@ -87,6 +87,7 @@ export interface ExternalData {
 }
 
 export interface GameAsset extends ExternalData {
+    executablesToWatch?: string[];
     media: {
         iconUrl: {
             filePath: string;

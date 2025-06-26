@@ -816,7 +816,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                     throw new Error('Steam path not found');
                 }
                 resolvedExecutable = path.join(steamPath, 'steam.exe');
-                args = Array.isArray(args) ? [`steam://run/${gameId}//'${args.join(" ")}'`] : [`steam://run/${gameId}//'${args}'`];
+                args = args.length > 0 ? (Array.isArray(args) ? [`steam://run/${gameId}//'${args.join(" ")}'`] : [`steam://run/${gameId}//'${args}'`]) : [`steam://run/${gameId}`];
             }
 
             const child = spawn(resolvedExecutable, Array.isArray(args) ? args : [args], {
@@ -862,14 +862,93 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                     }
                 }
             } else {
-                child.on('exit', (code, signal) => {
+                child.on('exit', async (code, signal) => {
                     console.log(`Game ${gameId} from ${client} process exited with code ${code} and signal ${signal}`);
 
-                    // Calculate and update playtime when game exits
-                    updatePlaytimeOnGameExit(client, gameId);
+                    // Grace period logic for executablesToWatch
+                    const games = getAllGamesFromDB();
+                    const gameData = games.find(g => g.source === client && String(g.id) === String(gameId));
+                    let executablesToWatch: string[] | undefined = undefined;
+                    let installPath: string | undefined = undefined;
+                    if (gameData) {
+                        // Try to get executablesToWatch from curated assets first
+                        const curatedAssets = getAllCuratedAssetsFromDB();
+                        const curated = curatedAssets.find(a => a.source === client && String(a.id) === String(gameId));
+                        if (curated && curated.executablesToWatch) {
+                            try {
+                                executablesToWatch = typeof curated.executablesToWatch === 'string' ? JSON.parse(curated.executablesToWatch) : curated.executablesToWatch;
+                            } catch { executablesToWatch = curated.executablesToWatch; }
+                        }
+                        // Fallback to custom assets if needed (not implemented here)
+                        installPath = gameData.installPath;
+                    }
 
-                    gameProcesses.delete(key);
-                    mainWindow?.webContents.send('game:processTerminated', client, gameId);
+                    if (executablesToWatch && executablesToWatch.length > 0 && installPath) {
+                        // Substitute %GAMEROOT% with installPath
+                        const watchedExecutables = executablesToWatch.map(e => e.replace(/%GAMEROOT%/g, installPath!));
+                        const { areAnyExecutablesRunning, findRunningExecutableProcess, monitorExternalProcess } = require('./mainHelpers/ProcessWatcher');
+                        const gracePeriod = 3000;
+                        const interval = 500;
+                        let elapsed = 0;
+                        let graceTimeout: NodeJS.Timeout | null = null;
+                        let monitoring = false;
+                        const tryMonitorNewProcess = async () => {
+                            const proc = await findRunningExecutableProcess(watchedExecutables);
+                            if (proc) {
+                                // Update gameProcesses for this game
+                                gameProcesses.set(key, {
+                                    pid: proc.pid,
+                                    stopMonitoring: () => {}, // Will be set below
+                                    kill: () => { try { process.kill(proc.pid); } catch {} },
+                                });
+                                // Start monitoring this process
+                                const monitor = monitorExternalProcess(proc.pid, () => {
+                                    // When this process exits, re-run the grace period logic
+                                    monitoring = false;
+                                    startGracePeriod();
+                                });
+                                // Update stopMonitoring
+                                const entry = gameProcesses.get(key);
+                                if (entry && typeof entry === 'object' && !(entry instanceof ChildProcess)) entry.stopMonitoring = monitor.stop;
+                                monitoring = true;
+                            }
+                        };
+                        const startGracePeriod = () => {
+                            elapsed = 0;
+                            if (graceTimeout) clearTimeout(graceTimeout);
+                            // Notify UI that we're checking if the game is really closed
+                            mainWindow?.webContents.send('game:status', client, gameId, 'checking');
+                            const checkAndMaybeClose = async () => {
+                                const anyRunning = await areAnyExecutablesRunning(watchedExecutables);
+                                if (anyRunning) {
+                                    // If any are running, try to monitor the new process if not already
+                                    if (!monitoring) {
+                                        await tryMonitorNewProcess();
+                                        // Notify UI that the game is running again
+                                        mainWindow?.webContents.send('game:status', client, gameId, 'running');
+                                    }
+                                    return; // Do not mark as closed
+                                }
+                                elapsed += interval;
+                                if (elapsed < gracePeriod) {
+                                    graceTimeout = setTimeout(checkAndMaybeClose, interval);
+                                } else {
+                                    // After grace period, if none are running, mark as closed
+                                    updatePlaytimeOnGameExit(client, gameId);
+                                    gameProcesses.delete(key);
+                                    mainWindow?.webContents.send('game:processTerminated', client, gameId);
+                                    mainWindow?.webContents.send('game:status', client, gameId, 'closed');
+                                }
+                            };
+                            graceTimeout = setTimeout(checkAndMaybeClose, interval);
+                        };
+                        startGracePeriod();
+                    } else {
+                        // Calculate and update playtime when game exits (original logic)
+                        updatePlaytimeOnGameExit(client, gameId);
+                        gameProcesses.delete(key);
+                        mainWindow?.webContents.send('game:processTerminated', client, gameId);
+                    }
                 });
             }
 
@@ -1053,30 +1132,62 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
      */
     ipcMain.handle('games:checkRunning', async (_, gameChecks: Array<{ source: string, id: string }>) => {
         const games = getAllGamesFromDB();
+        const curatedAssets = getAllCuratedAssetsFromDB();
         const processKeys = gameChecks.map(game => `${game.source}-${game.id}`);
-        const tracked = new Set(processKeys.filter(key => gameProcesses.has(key)));
+        const tracked = new Set(processKeys.filter(key => gameProcesses.has(key) && !(key.split("-")[0] === "steam" && (gameProcesses.get(key) as ChildProcess).spawnfile.endsWith("steam.exe"))));
 
-        // For untracked, collect all executable paths
-        const toCheck: { key: string, executable: string }[] = [];
+        // For untracked, collect all executable paths (including executablesToWatch)
+        const toCheck: { key: string, executables: string[] }[] = [];
         for (const game of gameChecks) {
             const key = `${game.source}|${game.id}`;
             const processKey = `${game.source}-${game.id}`;
             if (tracked.has(processKey)) continue;
             const gameData = games.find(g => g.source === game.source && String(g.id) === String(game.id));
+            const executables: string[] = [];
+            // Add main launchOptions executable
             if (gameData?.launchOptions) {
                 try {
                     const launchOptions = JSON.parse(gameData.launchOptions as any as string);
                     if (launchOptions[0]?.executable) {
-                        toCheck.push({ key, executable: launchOptions[0].executable });
+                        executables.push(launchOptions[0].executable);
                     }
                 } catch { }
+            }
+            // Add executablesToWatch from curated assets
+            const curated = curatedAssets.find(a => a.source === game.source && String(a.id) === String(game.id));
+            if (curated && curated.executablesToWatch && gameData?.installPath) {
+                try {
+                    const execs = typeof curated.executablesToWatch === 'string' ? JSON.parse(curated.executablesToWatch) : curated.executablesToWatch;
+                    if (Array.isArray(execs)) {
+                        executables.push(...(execs.map(e => {
+                            if (e.includes('%GAMEROOT%')) {
+                                if (gameData.installPath) {
+                                    // Remove %GAMEROOT% and resolve the rest relative to installPath
+                                    const rel = e.replace(/%GAMEROOT%[\\/]/, '');
+                                    return path.resolve(gameData.installPath, rel);
+                                } else {
+                                    // installPath missing, skip this entry
+                                    return undefined;
+                                }
+                            } else {
+                                return path.resolve(e);
+                            }
+                        }).filter(e => e !== undefined))); // Remove undefined entries
+                    }
+                } catch { }
+            }
+            if (executables.length > 0) {
+                toCheck.push({ key, executables });
             }
         }
 
         let running: Record<string, boolean> = {};
         if (process.platform === 'win32' && toCheck.length > 0) {
-            running = await areProcessesRunningWindows(toCheck.map(x => x.executable));
+            // Flatten all executables to check
+            const allExecutables = Array.from(new Set(toCheck.flatMap(x => x.executables)));
+            running = await areProcessesRunningWindows(allExecutables);
         }
+        console.log(running);
 
         // Build result
         const result: Record<string, boolean> = {};
@@ -1087,7 +1198,8 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                 result[key] = true;
             } else {
                 const check = toCheck.find(x => x.key === key);
-                result[key] = check ? running[check.executable] : false;
+                // If any of the executables for this game are running, mark as running
+                result[key] = check ? check.executables.some(exec => running[exec]) : false;
             }
         }
         return result;
@@ -1354,6 +1466,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                 for (const path of targetPaths) {
                     result[path] = runningPaths.has(path.toLowerCase());
                 }
+                console.log(result)
                 resolve(result);
             });
         });

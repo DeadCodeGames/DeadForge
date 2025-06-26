@@ -324,7 +324,8 @@ const LibrarySidebar: React.FC = () => {
             running: 'text-green-500',
             stopping: 'text-blue-400 animate-pulse',
             downloading: 'text-blue-400 animate-pulse',
-            installing: 'text-blue-400 animate-pulse'
+            installing: 'text-blue-400 animate-pulse',
+            checking: 'text-blue-400 animate-pulse'
         };
 
         const stateIcons: Record<Exclude<GameState['state'], 'idle'>, string> = {
@@ -332,7 +333,8 @@ const LibrarySidebar: React.FC = () => {
             running: 'check_circle',
             stopping: 'stop_circle',
             downloading: 'downloading',
-            installing: 'install_desktop'
+            installing: 'install_desktop',
+            checking: 'hourglass_top'
         };
 
         // Since we know activeState is not null and is one of the valid states,
@@ -353,7 +355,8 @@ const LibrarySidebar: React.FC = () => {
             stopping: 'to-transparent from-blue-500/50',
             downloading: 'to-transparent from-green-500/50',
             installing: 'to-transparent from-blue-500/50',
-            idle: 'to-transparent from-transparent'
+            idle: 'to-transparent from-transparent',
+            checking: 'to-transparent from-neutral-500/50'
         };
         
         if (!activeState) return cn('absolute inset-0 bg-gradient-to-l from-0% to-75% transition-[opacity,background-image] duration-200', gradientColors.idle);

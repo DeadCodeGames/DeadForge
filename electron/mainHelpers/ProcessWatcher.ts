@@ -71,3 +71,25 @@ export function monitorExternalProcess(pid: number, onExit: () => void): { stop:
       }
     };
   }
+
+/**
+ * Checks if any of the given executable paths are running (by basename, case-insensitive)
+ */
+export async function areAnyExecutablesRunning(executablePaths: string[]): Promise<boolean> {
+    if (!executablePaths || executablePaths.length === 0) return false;
+    const exeNames = executablePaths.map(p => path.basename(p).toLowerCase());
+    const processes = await psList();
+    return processes.some(proc => exeNames.includes(proc.name.toLowerCase()));
+}
+
+/**
+ * Finds the first running process for any of the given executable paths (by basename, case-insensitive)
+ * Returns { pid, name } or null if none are running
+ */
+export async function findRunningExecutableProcess(executablePaths: string[]): Promise<{ pid: number, name: string } | null> {
+    if (!executablePaths || executablePaths.length === 0) return null;
+    const exeNames = executablePaths.map(p => path.basename(p).toLowerCase());
+    const processes = await psList();
+    const match = processes.find(proc => exeNames.includes(proc.name.toLowerCase()));
+    return match ? { pid: match.pid, name: match.name } : null;
+}

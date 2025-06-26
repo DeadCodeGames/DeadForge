@@ -414,7 +414,8 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             running: 'text-green-500 hover:text-blue-400 bg-gradient-to-l from-green-500/50 hover:from-blue-500/50 to-transparent',
             stopping: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
             downloading: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            installing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent'
+            installing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            checking: 'text-neutral-400 bg-gradient-to-l from-neutral-500/50 to-transparent'
         };
 
         return stateClasses[state];
@@ -428,7 +429,8 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             running: 'check_circle',
             stopping: 'stop_circle',
             downloading: 'downloading',
-            installing: 'install_desktop'
+            installing: 'install_desktop',
+            checking: 'hourglass_top'
         };
 
         return stateIcons[state];
@@ -439,6 +441,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     const isRunning = currentState === 'running';
     const isLaunching = currentState === 'launching';
     const isStopping = currentState === 'stopping';
+    const isChecking = currentState === 'checking';
 
     const openInStoreButton: (MenuItemType | MenuItemWithPrefix | false) = game.source === "deadforge" && {
         id: "open-in-store",
@@ -466,6 +469,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                 }
                 if (isLaunching) return t("library.shared.gameState.launching");
                 if (isStopping) return t("library.shared.gameState.stopping");
+                if (isChecking) return t("library.shared.gameState.checking");
                 return ['Tool', 'Application'].includes(gameType || '') ? t("library.shared.gameState.launch") : t("library.shared.gameState.play");
             })(),
             onClick: async () => {
