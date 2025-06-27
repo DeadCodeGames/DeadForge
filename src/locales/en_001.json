@@ -25,6 +25,7 @@
     },
     "home": {
         "articles": {
+            "writtenBy_one": "Written by <0></0>",
             "writtenBy_other": "Written by <0></0>",
             "publishedOn": "Published on {{date}}",
             "lastEditedOn": "Last edited on {{date}}"

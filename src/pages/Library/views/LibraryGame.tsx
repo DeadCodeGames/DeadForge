@@ -1408,8 +1408,8 @@ const LibraryGame: React.FC = () => {
 
     if (!currentGame) {
         return (
-            <div className="flex items-center justify-center h-full">
-                <p className="text-2xl dark:text-gray-200 text-gray-800">{t("library.gameView.loading")}</p>
+            <div className="flex items-center justify-center h-full w-full">
+                <p className="text-4xl dark:text-gray-200 text-gray-800 font-uniSansCAPS font-bold">{t("library.gameView.loading")}</p>
             </div>
         )
     }
@@ -2048,7 +2048,7 @@ const LibraryGame: React.FC = () => {
 
             {/* Loading state */}
             <div className="flex items-center justify-center h-full" style={{ display: isReady ? "none" : "flex" }}>
-                <div className="text-4xl dark:text-gray-200 text-gray-800 font-uniSansCAPS font-bold">{t("loading")}</div>
+                <div className="text-4xl dark:text-gray-200 text-gray-800 font-uniSansCAPS font-bold">{t("library.gameView.loading")}</div>
             </div>
 
             {/* Collection Menu */}

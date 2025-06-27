@@ -53,11 +53,11 @@ const Home = () => {
     }
 
     return (
-        <div className="w-[calc(100%-3rem)] h-full p-6 bg-fullMoon dark:bg-night overflow-y-auto">
+        <div className="w-[calc(100%-3rem)] h-[calc(100%-3rem)] p-6 space-y-6 bg-fullMoon dark:bg-night overflow-y-auto">
             {articles.map((article) => (
                 <article 
                     key={article.slug}
-                    className="mb-16 bg-white dark:bg-neutral-800 rounded-2xl shadow-lg overflow-hidden"
+                    className="bg-white dark:bg-neutral-800 rounded-2xl shadow-lg overflow-hidden"
                 >
                     <img 
                         src={`local://${article.bannerImage.replace("%USERDATA%", "CONST_USERDATA")}`} 
@@ -96,7 +96,7 @@ const Home = () => {
                             <div className="flex flex-col">
                                 {/* Author names row */}
                                 <div className="inline">
-                                    <Trans i18nKey={article.authors.length === 1 ? "home.articles.writtenBy.one" : "home.articles.writtenBy.other"} count={article.authors.length}>
+                                    <Trans i18nKey="home.articles.writtenBy" count={article.authors.length}>
                                         <>
                                             {article.authors.map((author, index) => (
                                                 <React.Fragment key={author.name}>
