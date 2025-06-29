@@ -262,6 +262,7 @@ const LibraryHome: React.FC = () => {
     // Get last played games - memoize the timestamp sorting
     const lastPlayedGamesMemo = useMemo(() => {
         const gamesWithTimestamps = allGamesMemo
+            .filter((game) => String(game.id) !== "-1")
             .map((game) => {
                 let timestamp: number | undefined
                 if (((g): g is NormalizedPseudoGameJoin => g.type === "GameJoin")(game)) {

@@ -149,10 +149,6 @@ contextBridge.exposeInMainWorld('Electron', {
         ipcRenderer.removeListener('game:stateChange', callback),
 
     getGameMetrics: (source: string, gameId: string) => ipcRenderer.invoke('metrics:getGameMetrics', { source, gameId }),
-
-    // Game status change handler
-    // eslint-disable-next-line no-unused-vars
-    onGameStatusChange: (callback: (event: any, source: string, gameId: string, status: string) => void) => ipcRenderer.on('game:status', callback),
 });
 
 contextBridge.exposeInMainWorld('Process', {

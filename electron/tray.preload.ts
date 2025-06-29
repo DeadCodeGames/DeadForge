@@ -29,7 +29,10 @@ contextBridge.exposeInMainWorld('Electron', {
     // eslint-disable-next-line no-unused-vars
     onGameProcessTerminated: (callback: (event: any, source: string, gameId: string) => void) => ipcRenderer.on('game:processTerminated', callback),
     // eslint-disable-next-line no-unused-vars
-    removeGameProcessTerminatedListener: (callback: (event: any, source: string, gameId: string) => void) => ipcRenderer.removeListener('game:processTerminated', callback)
+    removeGameProcessTerminatedListener: (callback: (event: any, source: string, gameId: string) => void) => ipcRenderer.removeListener('game:processTerminated', callback),
+    // eslint-disable-next-line no-unused-vars
+    onGameStateChange: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string) => void) => 
+        ipcRenderer.on('game:stateChange', callback),
 });
 
 contextBridge.exposeInMainWorld('Process', {

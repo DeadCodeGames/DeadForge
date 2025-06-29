@@ -68,10 +68,6 @@ declare global {
             onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void,
             removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void,
             getGameMetrics: (source: string, gameId: string) => Promise<{ lastPlayed: number, totalPlayedFor: number }>,
-            /**
-             * Listen for game status changes (running/checking/closed)
-             */
-            onGameStatusChange: (callback: (event: any, source: string, gameId: string, status: GameStatus) => void) => void
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';

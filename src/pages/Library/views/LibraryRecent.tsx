@@ -34,7 +34,7 @@ const LibraryRecent: React.FC = () => {
     // Get all games with their launch timestamps
     const recentGames = useMemo(() => {
         const allGames = [
-            ...games.filter(game => gameJoinsPopulated.some(join => join.clients[game.source]?.id !== game.id)),
+            ...games.filter(game => gameJoinsPopulated.some(join => join.clients[game.source]?.id !== game.id && String(game.id) !== "-1")),
             ...gameJoinsPopulated.map(transformGameJoinIntoUsableFormat),
         ];
 

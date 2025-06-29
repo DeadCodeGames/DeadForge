@@ -33,7 +33,15 @@ module.exports = {
             },
             screens: {
                 "settingsShrink": { max: "999px" },
-                "hidePlayTimeStats": { max: "1150px" }
+                "hidePlayTimeStats": { max: "1150px" },
+                // originally homepageVerticalLastPlayedListFullyVisible for the first 3 minutes of its existence
+                "hVLPLFV": { raw: "(max-height: 1030px)" },
+                // homepageVerticalLastPlayedListFullyVisibleAlsoIncludingThe2XLSelector
+                "hVLPLFVAIT2XLS": { raw: "(max-height: 1030px) and (min-width: 1536px)" },
+                // homepageHorizontalLastPlayedListNOTFullyVisible
+                "hHLPLNFV": { raw: "(max-width: 1281px)" },
+                // homepageHorizontalLastPlayedListFullyVisibleButBelowThe2XLSelector
+                "hHLPLFVBBT2XLS": {raw: "(max-width: 1535px)"}
             },
             animation: {
                 'fade-slide-in': 'fadeSlideIn 0.3s ease-out',

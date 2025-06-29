@@ -179,6 +179,8 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             }
         }
 
+        trayWindow?.webContents.openDevTools();
+
         tray.on('click', trayClickEvent);
         tray.on('right-click', trayClickEvent);
 
@@ -199,7 +201,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
         })
 
         mainWindow = new BrowserWindow({
-            minWidth: 1010,
+            minWidth: 1016,
             minHeight: 725,
             maxWidth: 3840,
             maxHeight: 2160,

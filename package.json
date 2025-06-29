@@ -1,6 +1,6 @@
 {
   "name": "deadforge",
-  "version": "v2.0.0-Beta-2-Patch-1-LangPack-1",
+  "version": "v2.0.0-Beta-3",
   "description": "An Electron Launcher for DeadCode Projects (AND OTHER STUFF TOO NOW :3).",
   "author": "DeadCodeGames <404@mail.deadcode.is-a.dev> (https://deadcode.is-a.dev)",
   "contributors": [
@@ -65,6 +65,7 @@
     "react-app-rewired": "^2.2.1",
     "react-dom": "^19.1.0",
     "react-i18next": "^15.4.1",
+    "react-responsive": "^10.0.1",
     "react-router-dom": "^7.5.0",
     "react-scripts": "5.0.1",
     "react-twemoji": "^0.6.0",
