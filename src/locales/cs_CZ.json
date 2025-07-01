@@ -187,10 +187,10 @@
                 "running": "Spuštěno",
                 "launching": "Spouští se...",
                 "stopping": "Zastavuje se...",
-                "preparing": "",
+                "preparing": "Probíhá příprava",
                 "downloading": "Stahuje se",
                 "installing": "Instaluje se",
-                "finishingUp": "",
+                "finishingUp": "Dokončuje se...",
                 "checking": "Probíhá kontrola...",
                 "update": "",
                 "reinstall": ""
@@ -311,9 +311,9 @@
                 "reinstall": ""
             },
             "install": "Nainstalovat",
-            "reinstall": "",
+            "reinstall": "Přeinstalovat",
             "reinstallReason": "",
-            "update": "",
+            "update": "Aktualizovat",
             "installLocation": "Umístění instalace",
             "downloadSize": "Velkost stáhnutého balíčku:",
             "installSize": "Velkost nainstalovaného softvéru:",
@@ -326,8 +326,8 @@
             "cleaningUp": ""
         },
         "update": {
-            "applying": "",
-            "applyingPatch": ""
+            "applying": "Aplikuje se aktualizace",
+            "applyingPatch": "Aplikuje se aktualizace {{A}}/{{B}}"
         }
     }
 }

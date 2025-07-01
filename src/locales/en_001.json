@@ -304,7 +304,7 @@
             },
             "install": "Install",
             "reinstall": "Reinstall",
-            "reinstallReason": "It seems, like the currently installed version of this game is not available in our releases history. Because of this, DEADFORGE cannot cleanly update it to the newest version, and requires a full reinstall. Files marked by the developers as storing user data will be preserved.",
+            "reinstallReason": "It seems like the currently installed version of this game is not available in our releases history. Because of this, DEADFORGE cannot cleanly update it to the newest version, and requires a full reinstall. Files marked by the developers as storing user data will be preserved.",
             "update": "Update",
             "installLocation": "Install Location",
             "downloadSize": "Download Size:",
