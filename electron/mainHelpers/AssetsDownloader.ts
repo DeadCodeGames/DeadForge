@@ -8,8 +8,8 @@ import { GameAsset } from '../types';
 import getDB from './DataDB';
 import { insertRow, updateRow, selectRows } from './dbHelpers';
 
-const CURATED_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/curated/list.json';
-const OFFICIAL_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/official/list.json';
+export const CURATED_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/curated/list.json';
+export const OFFICIAL_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/official/list.json';
 
 // Map media type to database field
 const MEDIA_TO_DB_FIELD: Record<string, string> = {

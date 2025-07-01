@@ -13,7 +13,7 @@ import { selectCustomAsset, saveCustomAsset, updateLogoPosition } from './mainHe
 import { updateArticles, getArticles } from './mainHelpers/ArticleManager';
 import { handleProtocolUrl, registerProtocolHandler } from './mainHelpers/DeadForgeProtocolHandler';
 import { handleDeadForgeUpdate } from './mainHelpers/Updater';
-import { installDeadForgeGame, getGameDownloadSize } from './mainHelpers/GameInstallerAndUpdater';
+import { installDeadForgeGame, getGameDownloadSize, updateDeadForgeGame } from './mainHelpers/GameInstallerAndUpdater';
 const gotInstanceLock = app.requestSingleInstanceLock();
 if (!gotInstanceLock) { app.exit(); }
 const windowStateKeeper = require('electron-window-state');
@@ -1189,7 +1189,6 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             const allExecutables = Array.from(new Set(toCheck.flatMap(x => x.executables)));
             running = await areProcessesRunningWindows(allExecutables);
         }
-        console.log(running);
 
         // Build result
         const result: Record<string, boolean> = {};
@@ -1468,7 +1467,6 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                 for (const path of targetPaths) {
                     result[path] = runningPaths.has(path.toLowerCase());
                 }
-                console.log(result)
                 resolve(result);
             });
         });
@@ -1479,12 +1477,12 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
     ipcMain.on("store:protocol-navigate", (_, url: string) => handleProtocolUrl(url, mainWindow));
     ipcMain.on("store:external-navigate", (_, url: string) => shell.openExternal(`https://deadcode.is-a.dev/DeadForgeRedirect?url=${encodeURIComponent(url)}`))
     ipcMain.handle("library:getDefaultGameInstallPath", (_, gameId: string) => path.join(app.getPath("userData"), "software", gameId))
-    ipcMain.handle("library:startGameInstall", async (_, gameId: string, installPath: string) => {
+    ipcMain.handle("library:startGameInstall", async (_, gameId: string, installPath: string, reinstall?: boolean) => {
         try {
             if (!mainWindow) {
                 throw new Error('Main window not found');
             }
-            const result = await installDeadForgeGame(gameId, installPath, mainWindow);
+            const result = await installDeadForgeGame(gameId, installPath, mainWindow, reinstall);
             return result;
         } catch (error) {
             console.error('Failed to install game:', error);
@@ -1497,6 +1495,24 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             };
         }
     });
+    ipcMain.handle("library:startGameUpdate", async (_, gameId: string) => {
+        try {
+            if (!mainWindow) {
+                throw new Error('Main window not found');
+            }
+            const result = await updateDeadForgeGame(gameId, mainWindow);
+            return result;
+        } catch (error) {
+            console.error('Failed to install game:', error);
+            return {
+                success: false,
+                error: {
+                    message: error instanceof Error ? error.message : 'Unknown error occurred',
+                    code: 'UNKNOWN_ERROR'
+                }
+            };
+        }
+    })
 
     ipcMain.handle('game:getDownloadSize', async (_, gameId: string) => {
         return await getGameDownloadSize(gameId);

@@ -32,6 +32,7 @@ export interface NormalizedGame extends NormalizedSoftware {
     media?: GameMedia;
     lastPlayed?: number;
     totalPlayedFor?: number;
+    updateAvailable?: "" | "update" | "reinstall";
 }
 
 export interface NormalizedDLC extends NormalizedSoftware {

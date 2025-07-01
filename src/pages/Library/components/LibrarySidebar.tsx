@@ -323,17 +323,25 @@ const LibrarySidebar: React.FC = () => {
             launching: 'text-blue-400 animate-pulse',
             running: 'text-green-500',
             stopping: 'text-blue-400 animate-pulse',
+            preparing: 'text-blue-400 animate-pulse',
             downloading: 'text-blue-400 animate-pulse',
+            downloadingPatch: 'text-blue-400 animate-pulse',
             installing: 'text-blue-400 animate-pulse',
-            checking: 'text-blue-400 animate-pulse'
+            applyingPatch: 'text-blue-400 animate-pulse',
+            finishing: 'text-blue-400 animate-pulse',
+            checking: 'text-neutral-400 animate-pulse'
         };
 
         const stateIcons: Record<Exclude<GameState['state'], 'idle'>, string> = {
             launching: 'hourglass_top',
             running: 'check_circle',
             stopping: 'stop_circle',
+            preparing: 'settings',
             downloading: 'downloading',
+            downloadingPatch: 'downloading',
             installing: 'install_desktop',
+            applyingPatch: 'healing',
+            finishing: 'sports_score',
             checking: 'hourglass_top'
         };
 
@@ -353,8 +361,12 @@ const LibrarySidebar: React.FC = () => {
             launching: 'to-transparent from-blue-500/50',
             running: 'to-transparent from-green-500/50',
             stopping: 'to-transparent from-blue-500/50',
-            downloading: 'to-transparent from-green-500/50',
-            installing: 'to-transparent from-blue-500/50',
+            preparing: 'to-transparent from-blue-500/50',
+            downloading: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            downloadingPatch: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            installing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            applyingPatch: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            finishing: 'to-transparent from-blue-500/50',
             idle: 'to-transparent from-transparent',
             checking: 'to-transparent from-neutral-500/50'
         };

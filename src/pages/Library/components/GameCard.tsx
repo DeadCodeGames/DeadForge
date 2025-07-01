@@ -220,6 +220,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                             className="absolute inset-0 w-full h-full object-contain object-left-top"
                             loading="eager"
                             fetchPriority="high"
+                            draggable={false}
                         />
                     )}
                 
@@ -272,6 +273,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                     onError={() => setHeaderError(true)}
                     loading="eager"
                     fetchPriority="high"
+                    draggable={false}
                 />
 
                 {resolvedGame.type && ["Demo", "Mod", "Tool"].includes(resolvedGame.type) && (
@@ -281,6 +283,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                         className="absolute inset-0 w-full h-full object-contain object-left-top"
                         loading="eager"
                         fetchPriority="high"
+                        draggable={false}
                     />
                 )}
 

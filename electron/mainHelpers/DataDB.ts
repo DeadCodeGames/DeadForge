@@ -7,6 +7,7 @@ import { notifyPathChanged } from "./WatchManager";
 import { NormalizedDLC, NormalizedGame, NormalizedGameJoin } from "../types";
 import { notifyGamesUpdate } from "../main";
 import { DownloadCuratedAssets } from "./AssetsDownloader";
+import { checkForDeadForgeGameUpdates } from "./GameInstallerAndUpdater";
 
 let db: Database.Database;
 
@@ -67,13 +68,17 @@ export function initUserDB() {
         heroHash: "TEXT", 
         headerHash: "TEXT",
         capsuleHash: "TEXT",
+        title: "TEXT",
         type: "TEXT",
+        ratings: "TEXT",
+        executablesToWatch: "TEXT",
         lastPlayed: "INTEGER",
         installedVersion: "TEXT",
         installed: "BOOLEAN",
         lastUpdated: "INTEGER",
-        updateAvailable: "BOOLEAN",
-        installSize: "INTEGER"
+        updateAvailable: "TEXT",
+        installSize: "INTEGER",
+        userDataFiles: "TEXT"
     }
 
     const clients = ["steamGames", "itchGames", "epicGames"] as const;
@@ -143,7 +148,8 @@ export function initUserDB() {
     });
 
     console.log("DB initialized at", dbPath);
-    DownloadCuratedAssets(...(selectRows(db, "deadforgeGames").map(r => ({source: "deadforge", id: String(r.id)})))).then(notifyGamesUpdate)
+    DownloadCuratedAssets(...(selectRows(db, "deadforgeGames").map(r => ({ source: "deadforge", id: String(r.id) })))).then(notifyGamesUpdate)
+    checkForDeadForgeGameUpdates(...(selectRows(db, "deadforgeGames").map(r => String(r.id) )))
     return db;
 }
 
@@ -247,7 +253,7 @@ export function getAllGamesFromDB() {
         const rows = selectRows(db, tableName);
         for (const row of rows) {
             const game = { id: row.id, name: row.name, installPath: row.installPath, launchOptions: row.launchOptions, raw: row.raw, source: client, media: { iconUrl: row.icon, logoUrl: row.logo, heroUrl: row.hero, headerUrl: row.header, capsuleUrl: row.capsule }, type: row.type, lastPlayed: row.lastPlayed } as NormalizedGame;
-            
+            if (row.updateAvailable) game.updateAvailable = row.updateAvailable;
             // Override lastPlayed with data from metrics if available
             const metricKey = `${client}-${row.id}`;
             if (metricsMap.has(metricKey)) {
@@ -616,12 +622,11 @@ export type DeadForgeGameObject = {
 }
 
 export function addDeadForgeGameToLocalLibrary(game: DeadForgeGameObject): Promise<boolean> {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
         try {
             const res = insertRow(db, "deadforgeGames", game, "ignore");
+            await DownloadCuratedAssets({ source: "deadforge", id: String(game.id) })
             notifyGamesUpdate();
-            const rows = selectRows(db, "deadforgeGames");
-            DownloadCuratedAssets(...rows.map(r => ({source: "deadforge", id: String(r.id)})))
             resolve(Boolean(res.changes));
         } catch (error) {
             console.error(error)

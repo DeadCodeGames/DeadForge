@@ -142,7 +142,6 @@
                 "expanded": "Expanded",
                 "darkModeInContext": "Dark Mode",
                 "lightModeInContext": "Light Mode"
-
             },
             "replaySetup": "Replay Setup",
             "dataManagement": "Data Management",
@@ -182,9 +181,13 @@
                 "running": "Running",
                 "launching": "Launching...",
                 "stopping": "Stopping...",
+                "preparing": "Preparing",
                 "downloading": "Downloading",
                 "installing": "Installing",
-                "checking": "Checking..."
+                "finishingUp": "Finishing up...",
+                "checking": "Checking...",
+                "update": "Update Available",
+                "reinstall": "Reinstall Required"
             },
             "favourites": "Favourites",
             "favouritesDescription": "Your most loved games",
@@ -295,15 +298,28 @@
             "collectionNotFoundCTA": "Back to Collections"
         },
         "install": {
-            "title": "Install <b>{{title}}</b>",
+            "title": {
+                "install": "Install <b>{{title}}</b>",
+                "reinstall": "Reinstall <b>{{title}}</b>"
+            },
             "install": "Install",
+            "reinstall": "Reinstall",
+            "reinstallReason": "It seems like the currently installed version of this game is not available in our releases history. Because of this, DEADFORGE cannot cleanly update it to the newest version, and requires a full reinstall. Files marked by the developers as storing user data will be preserved.",
+            "update": "Update",
             "installLocation": "Install Location",
             "downloadSize": "Download Size:",
             "installSize": "Install Size:",
             "noReleaseinfo": "Software with ID {{id}} is missing release information",
             "copyingFiles": "Copying files...",
             "updatingDeadForgeDB": "Updating DeadForge Database",
-            "updatingWindowsRegistry": "Updating Windows Registry"
+            "updatingWindowsRegistry": "Updating Windows Registry",
+            "backingUpUserDataFiles": "Backing up user data",
+            "restoringUserDataFiles": "Restoring user data",
+            "cleaningUp": "Cleaning up..."
+        },
+        "update": {
+            "applying": "Applying Patch",
+            "applyingPatch": "Applying patch {{A}} out of {{B}}"
         }
     }
 }

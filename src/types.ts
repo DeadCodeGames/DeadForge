@@ -63,10 +63,11 @@ declare global {
             onProtocolNavigation: (callback: (event: IpcRendererEvent, protocolURL: string) => void) => void,
             navigateExternal: (url: string) => void,
             getDefaultInstallPath: (gameId: string) => Promise<string>,
-            installGame: (gameid: string, installPath: string) => Promise<{ success: true, error: null } | {success: false, error: Error}>,
+            installGame: (gameid: string, installPath: string, reinstall?: boolean) => Promise<{ success: true, error: null } | { success: false, error: Error }>,
+            updateGame: (gameid: string) => Promise<{ success: true, error: null } | {success: false, error: Error}>,
             getDownloadSize: (gameId: string) => Promise<{ success: true, size: number, error: null } | { success: false, size: null, error: Error }>,
-            onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void,
-            removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"]) => void) => void,
+            onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"], progress?: GameState["progress"], extraNumberA?: GameState["extraNumberA"], extraNumberB?: GameState["extraNumberB"]) => void) => void,
+            removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"], progress?: GameState["progress"], extraNumberA?: GameState["extraNumberA"], extraNumberB?: GameState["extraNumberB"]) => void) => void,
             getGameMetrics: (source: string, gameId: string) => Promise<{ lastPlayed: number, totalPlayedFor: number }>,
         };
         Process: {
@@ -138,7 +139,7 @@ export interface GameMedia extends Media {
 }
 
 export interface NormalizedSoftware {
-    id: string | Record<string, string>;
+    id: string;
     source: 'steam' | 'epic' | 'itch' | 'osu' | 'deadforge';
     name: string | Record<string, string>;
     sizeBytes?: number;
@@ -153,6 +154,7 @@ export interface NormalizedGame extends NormalizedSoftware {
     media?: GameMedia;
     lastPlayed?: number;
     totalPlayedFor?: number;
+    updateAvailable?: "" | "update" | "reinstall";
 }
 
 export interface NormalizedDLC extends NormalizedSoftware {
@@ -267,10 +269,12 @@ export type CollectionGame = {
 }
 
 export type GameState = {
-    state: 'launching' | 'running' | 'stopping' | 'idle' | 'downloading' | 'installing' | 'checking';
+    state: 'launching' | 'running' | 'stopping' | 'idle' | 'downloading' | 'downloadingPatch' | 'installing' | 'applyingPatch' | 'checking' | 'preparing' | 'finishing';
     gameId: string;
     source: string;
     progress?: number | string;
+    extraNumberA?: number;
+    extraNumberB?: number;
 }
 
 export type GameStates = Record<string, GameState>;

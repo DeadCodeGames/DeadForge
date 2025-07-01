@@ -3,6 +3,7 @@ import { NormalizedGame, LaunchOption, steamLanguageMap, NormalizedDLC, Normaliz
 import React, { createContext, useState, useLayoutEffect, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { checkMissingAssets, formatReportForGitHub } from './utils/assetChecker';
+import InstallModal from "./components/InstallModal";
 
 export const LibraryContext = createContext<{
     games: NormalizedGame[];
@@ -21,7 +22,10 @@ export const LibraryContext = createContext<{
     setCollections: React.Dispatch<React.SetStateAction<Collection[]>>;
     setFavourites: React.Dispatch<React.SetStateAction<CollectionGame[]>>;
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    setGameState: (gameId: string, source: string, state: GameState['state'], progress?: number | string) => void;
+    setGameState: (gameId: string, source: string, state: GameState['state'], progress?: number | string, extraNumberA?: number, extraNumberB?: number) => void;
+    installModalState: { isOpen: boolean, game: NormalizedGame | null };
+    openInstallModal: (game: NormalizedGame) => void;
+    closeInstallModal: () => void;
         }>({
             games: [],
             dlcs: [],
@@ -39,6 +43,9 @@ export const LibraryContext = createContext<{
             setCollections: () => { },
             setFavourites: () => { },
             setGameState: () => { },
+            installModalState: { isOpen: false, game: null },
+            openInstallModal: () => { },
+            closeInstallModal: () => { },
         });
 
 export const LibrarySidebarContext = createContext<{
@@ -112,8 +119,11 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
     const location = useLocation();
     // hack for persisting the library location when switching tabs
     const [lastVisitedLibraryLocation, setLastVisitedLibraryLocation] = useState<string>('/library');
+    const [installModalState, setInstallModalState] = useState<{ isOpen: boolean, game: NormalizedGame | null }>({ isOpen: false, game: null });
+    const openInstallModal = (game: NormalizedGame) => setInstallModalState({ isOpen: true, game });
+    const closeInstallModal = () => setInstallModalState({ isOpen: false, game: null });
 
-    const setGameState = (gameId: string, source: string, state: GameState['state'], progress?: number | string) => {
+    const setGameState = (gameId: string, source: string, state: GameState['state'], progress?: number | string, extraA?: number, extraB?: number) => {
         setGameStates(prev => {
             const key = `${source}-${gameId}`;
             if (state === 'idle') {
@@ -136,7 +146,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
             }
             return {
                 ...prev,
-                [key]: { state, gameId, source, progress: !(progress === null || progress === undefined) ? progress : prev?.[key]?.progress }
+                [key]: { state, gameId, source, progress: !(progress === null || progress === undefined) ? progress : prev?.[key]?.progress, extraNumberA: extraA, extraNumberB: extraB }
             };
         });
     };
@@ -354,8 +364,9 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
             });
         };
 
-        const handleGameStateChange = (_event: any, source: string, gameId: string, state: GameState['state'], progress?: number) => {
-            setGameState(gameId, source, state, progress);
+        const handleGameStateChange = (_event: any, source: string, gameId: string, state: GameState['state'], progress?: number | string, extraA?: number, extraB?: number) => {
+            console.log(gameId, source, state, progress, extraA, extraB);
+            setGameState(gameId, source, state, progress, extraA, extraB);
         };
 
         window.Electron.onTrayGameLaunch(handleTrayGameLaunch);
@@ -386,11 +397,34 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
             setGameJoins, 
             setCollections, 
             setFavourites,
-            setGameState
+            setGameState,
+            installModalState,
+            openInstallModal,
+            closeInstallModal
         }}>
             <LibrarySidebarContextProvider>
                 {children}
             </LibrarySidebarContextProvider>
+            <InstallModal
+                isOpen={installModalState.isOpen}
+                onClose={closeInstallModal}
+                onInstall={async (installPath) => {
+                    if (!installModalState.game) return;
+                    try {
+                        const gameId = typeof installModalState.game.id === "object" ? JSON.stringify(installModalState.game.id) : installModalState.game.id;
+                        const result = await window.Electron.installGame(gameId, installPath, installModalState.game.updateAvailable === "reinstall");
+                        if (!result.success) {
+                            console.error("Failed to install game:", result.error);
+                        } else {
+                            console.log(result);
+                            closeInstallModal();
+                        }
+                    } catch (error) {
+                        console.error("Failed to install game:", error);
+                    }
+                }}
+                game={installModalState.game as any}
+            />
         </LibraryContext.Provider>
     );
 };
@@ -400,6 +434,7 @@ export function getLocalizedGameSuffix(defaultSuffix: string = "default") {
 }
 
 export function getLocalizedGameName(game: NormalizedGame | NormalizedDLC, extraOptions?: "deprefix", games: NormalizedGame[] | NormalizedDLC[] = [], deprefixerGame?: NormalizedGame) {
+    if (!game) return "";
     if (typeof game.name === 'string' && extraOptions !== "deprefix") return game.name;
     const suffix = getLocalizedGameSuffix();
     if (extraOptions === "deprefix") {

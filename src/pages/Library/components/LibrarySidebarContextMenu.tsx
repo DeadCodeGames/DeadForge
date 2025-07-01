@@ -16,18 +16,18 @@ interface MenuItemWithPrefix extends Omit<MenuItem, 'type'> {
 }
 
 interface LibrarySidebarContextMenuProps {
-  x: number
-  y: number
-  onClose: () => void
-  game: NormalizedGame | NormalizedPseudoGameJoin
-  collections: Collection[]
-  favourites: CollectionGame[]
-  setCollections: React.Dispatch<React.SetStateAction<Collection[]>>
-  setFavourites: React.Dispatch<React.SetStateAction<CollectionGame[]>>
-  gameStates: Record<string, GameState>
-  // eslint-disable-next-line no-unused-vars
-  setGameState: (gameId: string, gameSource: string, newState: GameState['state']) => void
-  games: NormalizedGame[]
+    x: number
+    y: number
+    onClose: () => void
+    game: NormalizedGame | NormalizedPseudoGameJoin
+    collections: Collection[]
+    favourites: CollectionGame[]
+    setCollections: React.Dispatch<React.SetStateAction<Collection[]>>
+    setFavourites: React.Dispatch<React.SetStateAction<CollectionGame[]>>
+    gameStates: Record<string, GameState>
+    // eslint-disable-next-line no-unused-vars
+    setGameState: (gameId: string, gameSource: string, newState: GameState['state']) => void
+    games: NormalizedGame[]
 }
 
 const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
@@ -49,6 +49,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     const navigate = useNavigate()
     const { customAssets, curatedAssets } = useContext(LibraryContext)
     const { t } = useTranslation();
+    const { openInstallModal } = useContext(LibraryContext)
     // Focus input when creating a collection
     useEffect(() => {
         if (isCreatingCollection && newCollectionInputRef.current) {
@@ -154,7 +155,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             }
             return [...prev, newCollection]
         })
-        
+
         setNewCollectionName("")
         setIsCreatingCollection(false)
         onClose()
@@ -181,9 +182,9 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     // Determine if game is launchable
     const isLaunchable = (() => {
         if (typeof game.source === "object") {
-            return Object.values(game.source).some((client) => (client?.launchOptions || []).length > 0)
+            return Object.values(game.source).some((client) => (client?.launchOptions || []).length > 0 && !client.updateAvailable)
         }
-        return (game?.launchOptions || []).length > 0
+        return (game?.launchOptions || []).length > 0 && !game.updateAvailable
     })()
 
     // Determine if game needs a launcher
@@ -207,14 +208,14 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                 if (gameToLaunch.source && typeof gameToLaunch.source === 'string') {
                     const gameId = typeof gameToLaunch.id === 'object' ? JSON.stringify(gameToLaunch.id) : gameToLaunch.id;
                     setGameState(gameId, gameToLaunch.source, 'launching');
-                    
+
                     const result = await window.Electron.launchGame(
                         gameToLaunch.source,
                         gameId,
                         launchOption.executable,
                         launchOption.arguments
                     );
-                    
+
                     if (!result.success) {
                         console.error('Failed to launch game:', result.error);
                         setGameState(gameId, gameToLaunch.source, 'idle');
@@ -249,7 +250,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                 launcherGame.launchOptions[0].executable,
                 launcherGame.launchOptions[0].arguments || []
             );
-            
+
             if (!result.success) {
                 console.error(`Failed to launch ${source} launcher:`, result.error);
                 setGameState('-1', source, 'idle');
@@ -274,7 +275,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     }
 
     // Get game type for proper button label
-    const gameType = typeof game.source === "object" ? game.source[game.defaultClient].type : game.type;
+    const gameType = typeof game.source === "string" ? game.type : game.source[game.defaultClient].type;
 
     // Get game icon
     const getGameIcon = (): string => {
@@ -296,8 +297,8 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         }
 
         // Finally fall back to official assets
-        const iconUrl = typeof game.source === 'string' 
-            ? game.media?.iconUrl 
+        const iconUrl = typeof game.source === 'string'
+            ? game.media?.iconUrl
             : game.source[game.defaultClient].media?.iconUrl;
 
         return `local://${iconUrl?.replaceAll("%USERDATA%", "CONST_USERDATA")}?fallback=defaultIcon`;
@@ -305,7 +306,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
 
     const gameIcon = getGameIcon()
     const gameName =
-    typeof game.source === "string" ? getLocalizedGameName(game) : getLocalizedGameName(game.source[game.defaultClient])
+        typeof game.source === "string" ? getLocalizedGameName(game) : getLocalizedGameName(game.source[game.defaultClient])
 
     // Generate collections submenu items dynamically
     const collectionsItems = useMemo(() => {
@@ -352,11 +353,10 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                                 <button
                                     onClick={handleSaveNewCollection}
                                     disabled={!newCollectionName.trim()}
-                                    className={`w-full flex-1 flex-grow px-3 py-1.5 rounded text-sm transition-colors flex items-center justify-center gap-2 ${
-                                        newCollectionName.trim()
-                                            ? 'bg-progress/80 hover:bg-progress'
-                                            : 'bg-white/10 opacity-50 cursor-not-allowed'
-                                    }`}
+                                    className={`w-full flex-1 flex-grow px-3 py-1.5 rounded text-sm transition-colors flex items-center justify-center gap-2 ${newCollectionName.trim()
+                                        ? 'bg-progress/80 hover:bg-progress'
+                                        : 'bg-white/10 opacity-50 cursor-not-allowed'
+                                        }`}
                                     type="submit"
                                 >
                                     <span className="material-symbols text-base">check</span>
@@ -394,8 +394,8 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     const getGameState = (game: NormalizedGame | NormalizedPseudoGameJoin): Exclude<GameState['state'], 'idle'> | null => {
         // For regular games, use source-id format
         // For game joins, check all possible client states
-        const gameIds = typeof game.source === 'string' 
-            ? [`${game.source}-${game.id}`] 
+        const gameIds = typeof game.source === 'string'
+            ? [`${game.source}-${game.id}`]
             : Object.entries(game.source).map(([source, client]) => `${source}-${client.id}`);
 
         // Find the first non-idle state among all possible game IDs
@@ -413,23 +413,34 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             launching: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
             running: 'text-green-500 hover:text-blue-400 bg-gradient-to-l from-green-500/50 hover:from-blue-500/50 to-transparent',
             stopping: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            preparing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
             downloading: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            downloadingPatch: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
             installing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            applyingPatch: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
+            finishing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
             checking: 'text-neutral-400 bg-gradient-to-l from-neutral-500/50 to-transparent'
         };
 
         return stateClasses[state];
     };
 
-    const getStateIcon = (state: Exclude<GameState['state'], 'idle'> | null): string => {
+    const getStateIcon = (state: Exclude<GameState['state'], 'idle'> | null, updateRequired?: "" | "update" | "reinstall", game?: NormalizedGame): string => {
+        if (updateRequired === "update" && !state) return 'upgrade';
+        if (updateRequired === "reinstall" && !state) return 'restart_alt';
+        if (!game?.installPath) return "download";
         if (!state) return isLaunchable ? 'play_arrow' : 'block';
 
         const stateIcons: Record<Exclude<GameState['state'], 'idle'>, string> = {
             launching: 'hourglass_top',
             running: 'check_circle',
             stopping: 'stop_circle',
+            preparing: 'settings',
             downloading: 'downloading',
+            downloadingPatch: 'downloading',
             installing: 'install_desktop',
+            applyingPatch: 'healing',
+            finishing: 'sports_score',
             checking: 'hourglass_top'
         };
 
@@ -442,6 +453,39 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     const isLaunching = currentState === 'launching';
     const isStopping = currentState === 'stopping';
     const isChecking = currentState === 'checking';
+    const isPreparing = currentState === 'preparing';
+    const isDownloading = currentState === 'downloading';
+    const isDownloadingPatch = currentState === 'downloadingPatch';
+    const isInstalling = currentState === 'installing';
+    const isApplyingPatch = currentState === 'applyingPatch';
+    const isFinishing = currentState === 'finishing';
+
+    // Helper to determine the primary action for the Play/Launch button
+    const getPrimaryAction = () => {
+        const gameId = getGameIdAsString();
+        if (String(gameId) === '-1' || (needsLauncher && !isLauncherRunning)) {
+            return 'launchLauncher';
+        }
+        if (isPreparing) return 'preparing';
+        if (isDownloading) return 'downloading';
+        if (isDownloadingPatch) return 'downloadingPatch';
+        if (isInstalling) return 'installing';
+        if (isApplyingPatch) return 'applyingPatch';
+        if (isFinishing) return 'finishingUp';
+        if (isLaunching) return 'launching';
+        if (isStopping) return 'stopping';
+        if (isChecking) return 'checking';
+        if (resolveDefaultGameVendor(game).updateAvailable === "reinstall") return 'reinstall';
+        if (resolveDefaultGameVendor(game).updateAvailable === "update") return 'update';
+        if (!resolveDefaultGameVendor(game).installPath) return 'install';
+        return isRunning ? 'stop' : 'play';
+    };
+
+    // Placeholder for update logic
+    const handleUpdateGame = async () => {
+        // TODO: Implement update logic
+        return await window.Electron.updateGame(resolveDefaultGameVendor(game).id)
+    };
 
     const openInStoreButton: (MenuItemType | MenuItemWithPrefix | false) = game.source === "deadforge" && {
         id: "open-in-store",
@@ -450,30 +494,55 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         onClick: openInStore
     };
 
+    console.log(currentState);
+
     // Define menu items
     const menuItems: (MenuItemType | MenuItemWithPrefix)[] = [
         // Play/Launch button
-        {
+        ...[(isLaunchable || resolveDefaultGameVendor(game).source === "deadforge") && {
             id: "play",
             icon: isRunning ? {
                 default: 'check_circle',
                 hover: 'stop_circle'
-            } : getStateIcon(currentState),
+            } : getStateIcon(currentState, resolveDefaultGameVendor(game).updateAvailable, resolveDefaultGameVendor(game)),
             label: isRunning ? {
                 default: t("library.shared.gameState.running"),
                 hover: t("library.shared.gameState.stop")
             } : (() => {
-                const gameId = getGameIdAsString();
-                if (String(gameId) === '-1' || (needsLauncher && !isLauncherRunning)) {
-                    return t("library.shared.gameState.launchLauncher", { launcher: getLauncherName(game) });
+                const action = getPrimaryAction();
+                switch (action) {
+                    case 'launchLauncher':
+                        return t("library.shared.gameState.launchLauncher", { launcher: getLauncherName(game) });
+                    case 'preparing':
+                        return t("library.shared.gameState.preparing");
+                    case 'downloading':
+                    case 'downloadingPatch':
+                        return t("library.shared.gameState.downloading");
+                    case 'installing':
+                        return t("library.shared.gameState.installing");
+                    case 'applyingPatch':
+                        return t("library.update.applying");
+                    case 'finishingUp':
+                        return t("library.shared.gameState.finishingUp");
+                    case 'launching':
+                        return t("library.shared.gameState.launching");
+                    case 'stopping':
+                        return t("library.shared.gameState.stopping");
+                    case 'checking':
+                        return t("library.shared.gameState.checking");
+                    case 'reinstall':
+                        return t("library.install.reinstall");
+                    case 'update':
+                        return t("library.install.update");
+                    case 'install':
+                        return t("library.install.install");
+                    default:
+                        return ['Tool', 'Application'].includes(gameType || '') ? t("library.shared.gameState.launch") : t("library.shared.gameState.play");
                 }
-                if (isLaunching) return t("library.shared.gameState.launching");
-                if (isStopping) return t("library.shared.gameState.stopping");
-                if (isChecking) return t("library.shared.gameState.checking");
-                return ['Tool', 'Application'].includes(gameType || '') ? t("library.shared.gameState.launch") : t("library.shared.gameState.play");
             })(),
             onClick: async () => {
-                if (isRunning) {
+                const action = getPrimaryAction();
+                if (action === 'stop') {
                     // Stop the game
                     const gameToStop = resolveDefaultGameVendor(game);
                     const gameId = typeof gameToStop.id === 'object' ? JSON.stringify(gameToStop.id) : gameToStop.id;
@@ -483,27 +552,33 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                         console.error('Failed to stop game:', result.error);
                     }
                     onClose();
-                } else if (needsLauncher && !isLauncherRunning) {
-                    // Launch the source launcher
+                } else if (action === 'launchLauncher') {
                     await launchSourceLauncher(resolveDefaultGameVendor(game).source);
+                } else if (action === 'install' || action === 'reinstall') {
+                    openInstallModal(resolveDefaultGameVendor(game));
+                    onClose();
+                } else if (action === 'update') {
+                    await window.Electron.updateGame(resolveDefaultGameVendor(game).id)
                 } else {
                     // Launch the game
                     await launchGame();
                 }
             },
-            disabled: !isLaunchable || isLaunching || isStopping,
+            disabled: (!isLaunchable && resolveDefaultGameVendor(game).source !== "deadforge") || isLaunching || isStopping,
             className: cn(
                 'transition-[background-image,color] duration-200',
                 getStateClasses(currentState),
                 (isLaunching || isStopping) && 'animate-pulse',
-                (needsLauncher || String(game.id) === '-1') && !isLauncherRunning && !currentState && 'text-blue-400'
+                (((needsLauncher || String(game.id) === '-1') && !isLauncherRunning && !currentState) || resolveDefaultGameVendor(game).updateAvailable === "update" || ((!resolveDefaultGameVendor(game).installPath || (!currentState || currentState !== "checking")) && resolveDefaultGameVendor(game).source === "deadforge")) && 'text-blue-400',
+                currentState === "checking" && "text-neutral-500",
+                (resolveDefaultGameVendor(game).updateAvailable === "reinstall" && !currentState) && "text-red-500"
             ),
-            icon_prefix: needsLauncher && !isLauncherRunning ? 
+            icon_prefix: needsLauncher && !isLauncherRunning ?
                 resolveDefaultGameVendor(game)?.source === 'steam' ? <SiSteam className="w-4 h-4" /> :
                     resolveDefaultGameVendor(game)?.source === 'epic' ? <SiEpicgames className="w-4 h-4" /> : null
                 : undefined,
             type: 'item'
-        } as MenuItemWithPrefix,
+        } as MenuItemWithPrefix].filter(i => i !== false),
         // View button
         {
             id: "view",

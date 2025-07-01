@@ -137,15 +137,16 @@ contextBridge.exposeInMainWorld('Electron', {
     // eslint-disable-next-line no-unused-vars
     onProtocolNavigation: (callback: (event: any, protocolURL: string) => void) => ipcRenderer.on('protocol:navigate', callback),
     getDefaultInstallPath: (gameId: string) => ipcRenderer.invoke('library:getDefaultGameInstallPath', gameId),
-    installGame: (gameId: string, installPath: string) => ipcRenderer.invoke('library:startGameInstall', gameId, installPath),
+    installGame: (gameId: string, installPath: string, reinstall?: boolean) => ipcRenderer.invoke('library:startGameInstall', gameId, installPath, reinstall),
+    updateGame: (gameId: string) => ipcRenderer.invoke('library:startGameUpdate', gameId),
     getDownloadSize: (gameId: string) => ipcRenderer.invoke('game:getDownloadSize', gameId),
 
     // Game state change handler
     // eslint-disable-next-line no-unused-vars
-    onGameStateChange: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string) => void) => 
+    onGameStateChange: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string, extraNumberA?: number, extraNumberB?: number) => void) => 
         ipcRenderer.on('game:stateChange', callback),
     // eslint-disable-next-line no-unused-vars
-    removeGameStateChangeListener: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string) => void) => 
+    removeGameStateChangeListener: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string, extraNumberA?: number, extraNumberB?: number) => void) => 
         ipcRenderer.removeListener('game:stateChange', callback),
 
     getGameMetrics: (source: string, gameId: string) => ipcRenderer.invoke('metrics:getGameMetrics', { source, gameId }),
