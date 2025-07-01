@@ -260,14 +260,14 @@
             "gameNotesTooltip": "Poznámky ke hrám jsou spravovány vývojáři a komunitou <1>DeadForge</1>.\nMůžete přispět k nim, i vybranému vizuálnímu materiálu <3>DeadForge</3> pro externí softvér, a další cool věci na <5>stránce GitHub DeadCodeGames/DeadForgeExternalData</5>.",
             "noGameNotes": "Pro tuto hru nejsou k dispozici žádné poznámky.",
             "installDir": "Adresář pro instalaci",
-            "lastPlayed": "",
-            "playTime": ""
+            "lastPlayed": "Naposledy hráno",
+            "playTime": "Odehraný čas"
         },
         "recentView": {
             "today": "Dnes",
             "thisWeek": "Tento Týden",
             "thisMonth": "Tento Měsíc",
-            "neverPlayed": "",
+            "neverPlayed": "Nikdy nehráno",
             "noRecentGames": "Žádné nedávné hry",
             "noRecentGamesDescription": "Zde se zobrazí hry, které spustíte"
         },

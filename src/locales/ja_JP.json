@@ -251,14 +251,14 @@
             "gameNotesTooltip": "ゲーム・ノーツは<1>DeadForge</1>の開発者とコミュニティによって管理されています。\n外部ソフト用の<3>DeadForge</3>アセットや、その他のクールなものは、<5>DeadCodeGames/DeadForgeExternalData</5>のGitHubページでコントリビュートできます。",
             "noGameNotes": "このゲームでノーツはありません。",
             "installDir": "インストール先",
-            "lastPlayed": "",
-            "playTime": ""
+            "lastPlayed": "最終プレイ日時",
+            "playTime": "プレイ時間"
         },
         "recentView": {
             "today": "今日",
             "thisWeek": "今週",
             "thisMonth": "今月",
-            "neverPlayed": "",
+            "neverPlayed": "未プレイ",
             "noRecentGames": "最近のゲームはありません",
             "noRecentGamesDescription": "プレイしたゲームはここに表示されます"
         },
