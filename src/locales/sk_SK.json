@@ -140,12 +140,6 @@
                 "expanded": "Rozbaleného",
                 "darkModeInContext": "Tmavého motívu",
                 "lightModeInContext": "Svetlého motívu",
-                "play": "",
-                "update": "",
-                "reinstall": "",
-                "launching": "",
-                "updating": "",
-                "reinstalling": "",
                 "gameCount_one": "{{count}} hra",
                 "gameCount_few": "{{count}} hry",
                 "gameCount_many": "{{count}} hier",
@@ -198,8 +192,8 @@
                 "installing": "Inštaluje sa",
                 "finishingUp": "",
                 "checking": "Prebieha kontrola...",
-                "update": "",
-                "reinstall": ""
+                "update": "Dostupná aktualizácia",
+                "reinstall": "Preinštalovať"
             },
             "favourites": "Obľúbené",
             "favouritesDescription": "Vaše najobľúbenejšie hry",
@@ -314,11 +308,11 @@
         "install": {
             "title": {
                 "install": "Inštalácia <b>{{title}}</b>",
-                "reinstall": ""
+                "reinstall": "Renštalácia <b>{{title}}</b>"
             },
             "install": "Nainštalovať",
             "reinstall": "Preinštalovať",
-            "reinstallReason": "",
+            "reinstallReason": "Zdá sa, že aktuálne nainštalovaná verzia tejto hry nie je dostupná v histórii vydaní. Z tohto dôvodu ju DEADFORGE nemôže aktualizovať na najnovšiu verziu a vyžaduje úplnú reinštaláciu. \nSúbory označené vývojármi ako súbory uchovávajúce používateľské údaje budú zachované.",
             "update": "Aktualizovať",
             "installLocation": "Miesto inštalácie",
             "downloadSize": "Veľkosť stiahnutého balíčka:",
@@ -327,13 +321,13 @@
             "copyingFiles": "Kopírujú sa súbory...",
             "updatingDeadForgeDB": "Aktualizuje sa databáza DeadForge",
             "updatingWindowsRegistry": "Aktualizuje sa Windows Registry",
-            "backingUpUserDataFiles": "",
-            "restoringUserDataFiles": "",
-            "cleaningUp": ""
+            "backingUpUserDataFiles": "Zálohujú sa užívateľské dáta",
+            "restoringUserDataFiles": "Obnovujú sa užívateľské dáta",
+            "cleaningUp": "Upratuje sa..."
         },
         "update": {
-            "applying": "",
-            "applyingPatch": ""
+            "applying": "Aplikuje sa aktualizácia",
+            "applyingPatch": "Aplikuje sa aktualizácia {{A}}/{{B}}"
         }
     }
 }

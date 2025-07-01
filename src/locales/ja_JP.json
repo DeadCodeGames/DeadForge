@@ -137,12 +137,6 @@
                 "expanded": "",
                 "darkModeInContext": "",
                 "lightModeInContext": "",
-                "play": "",
-                "update": "",
-                "reinstall": "",
-                "launching": "",
-                "updating": "",
-                "reinstalling": "",
                 "gameCount_other": "{{count}}本ゲーム",
                 "foundGames_other": "{{count}}のゲームが見つかりました"
             },
