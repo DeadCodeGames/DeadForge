@@ -186,7 +186,8 @@
                 "launching": "Spouští se...",
                 "stopping": "Zastavuje se...",
                 "downloading": "Stahuje se",
-                "installing": "Instaluje se"
+                "installing": "Instaluje se",
+                "checking": ""
             },
             "favourites": "Oblíbené",
             "favouritesDescription": "Vaše nejoblíbenější hry",

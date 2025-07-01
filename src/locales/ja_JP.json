@@ -177,7 +177,8 @@
                 "launching": "起動中…",
                 "stopping": "停止中…",
                 "downloading": "ダウンロードしています",
-                "installing": "インストール中"
+                "installing": "インストール中",
+                "checking": ""
             },
             "favourites": "お気に入り",
             "favouritesDescription": "あなたの最も愛されているゲーム",
