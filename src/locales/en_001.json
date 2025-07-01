@@ -24,6 +24,8 @@
         "collapse": "Collapse"
     },
     "home": {
+        "newsAndUpdatesHeader": "Latest <bold>DEADFORGE</bold> News and Updates",
+        "jumpBackIn": "Jump right back!",
         "articles": {
             "writtenBy_one": "Written by <0></0>",
             "writtenBy_other": "Written by <0></0>",

@@ -24,6 +24,8 @@
         "collapse": "Minimizza"
     },
     "home": {
+        "newsAndUpdatesHeader": "",
+        "jumpBackIn": "",
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",

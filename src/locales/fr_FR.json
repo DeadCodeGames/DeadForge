@@ -24,6 +24,8 @@
         "collapse": "Réduire"
     },
     "home": {
+        "newsAndUpdatesHeader": "",
+        "jumpBackIn": "",
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",

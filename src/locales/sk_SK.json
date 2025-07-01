@@ -24,6 +24,8 @@
         "collapse": "Zbaliť"
     },
     "home": {
+        "newsAndUpdatesHeader": "",
+        "jumpBackIn": "",
         "articles": {
             "publishedOn": "Zverejnené {{date}}",
             "lastEditedOn": "Naposledy upravené {{date}}",

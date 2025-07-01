@@ -24,6 +24,8 @@
         "collapse": "접기"
     },
     "home": {
+        "newsAndUpdatesHeader": "",
+        "jumpBackIn": "",
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",

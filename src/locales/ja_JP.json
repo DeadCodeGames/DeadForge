@@ -24,6 +24,8 @@
         "collapse": "折りたたむ"
     },
     "home": {
+        "newsAndUpdatesHeader": "",
+        "jumpBackIn": "",
         "articles": {
             "publishedOn": "{{date}}に公開",
             "lastEditedOn": "{{date}}に最終更新",
