@@ -24,8 +24,8 @@
         "collapse": "折りたたむ"
     },
     "home": {
-        "newsAndUpdatesHeader": "",
-        "jumpBackIn": "",
+        "newsAndUpdatesHeader": "最新の<bold>DEADFORGE</bold>ニュースとアップデート",
+        "jumpBackIn": "最後にプレイした",
         "articles": {
             "publishedOn": "{{date}}に公開",
             "lastEditedOn": "{{date}}に最終更新",
@@ -113,7 +113,7 @@
                 "itchioExecutablePlaceholder": "",
                 "itchioExecutableValid": "",
                 "itchioExecutableInvalid": "",
-                "readyToImport": "",
+                "readyToImport": "インポートの準備完了",
                 "importFromPlatforms": "",
                 "deadforgeV1Settings": "",
                 "deadforgeV2BackupImported": "",
@@ -137,8 +137,8 @@
                 "expanded": "",
                 "darkModeInContext": "",
                 "lightModeInContext": "",
-                "gameCount_other": "",
-                "foundGames_other": ""
+                "gameCount_other": "{{count}}本ゲーム",
+                "foundGames_other": "{{count}}のゲームが見つかりました"
             },
             "replaySetup": "初期設定を再度開始",
             "dataManagement": "データ管理",

@@ -24,8 +24,8 @@
         "collapse": "Zbaliť"
     },
     "home": {
-        "newsAndUpdatesHeader": "",
-        "jumpBackIn": "",
+        "newsAndUpdatesHeader": "Najnovšie správy a aktualizácie <bold>DEADFORGE</bold>",
+        "jumpBackIn": "Naposledy hrané",
         "articles": {
             "publishedOn": "Zverejnené {{date}}",
             "lastEditedOn": "Naposledy upravené {{date}}",
