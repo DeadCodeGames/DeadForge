@@ -24,6 +24,8 @@
         "collapse": ""
     },
     "home": {
+        "newsAndUpdatesHeader": "",
+        "jumpBackIn": "",
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",
@@ -179,8 +181,13 @@
                 "running": "",
                 "launching": "",
                 "stopping": "",
+                "preparing": "",
                 "downloading": "",
-                "installing": ""
+                "installing": "",
+                "finishingUp": "",
+                "checking": "",
+                "update": "",
+                "reinstall": ""
             },
             "favourites": "",
             "favouritesDescription": "",
@@ -253,12 +260,15 @@
             "gameNotes": "",
             "gameNotesTooltip": "",
             "noGameNotes": "",
-            "installDir": ""
+            "installDir": "",
+            "lastPlayed": "",
+            "playTime": ""
         },
         "recentView": {
             "today": "",
             "thisWeek": "",
             "thisMonth": "",
+            "neverPlayed": "",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },
@@ -288,15 +298,28 @@
             "collectionNotFoundCTA": ""
         },
         "install": {
-            "title": "",
+            "title": {
+                "install": "",
+                "reinstall": ""
+            },
             "install": "",
+            "reinstall": "",
+            "reinstallReason": "",
+            "update": "",
             "installLocation": "",
             "downloadSize": "",
             "installSize": "",
             "noReleaseinfo": "",
             "copyingFiles": "",
             "updatingDeadForgeDB": "",
-            "updatingWindowsRegistry": ""
+            "updatingWindowsRegistry": "",
+            "backingUpUserDataFiles": "",
+            "restoringUserDataFiles": "",
+            "cleaningUp": ""
+        },
+        "update": {
+            "applying": "",
+            "applyingPatch": ""
         }
     }
 }

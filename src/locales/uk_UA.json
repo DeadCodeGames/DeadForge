@@ -1,10 +1,10 @@
 {
     "meta": {
-        "name": "Français",
-        "emoji": "🇫🇷"
+        "name": "Українська мова",
+        "emoji": "🇺🇦"
     },
-    "commaSeparator": "",
-    "ampersandSeparator": "",
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
@@ -17,11 +17,11 @@
     "finish": "",
     "sidebar": {
         "home": "",
-        "library": "Bibliothèque",
+        "library": "",
         "arcade": "",
-        "store": "Magasin",
-        "settings": "Paramètres",
-        "collapse": "Réduire"
+        "store": "",
+        "settings": "",
+        "collapse": ""
     },
     "home": {
         "newsAndUpdatesHeader": "",
@@ -30,14 +30,16 @@
             "publishedOn": "",
             "lastEditedOn": "",
             "writtenBy_one": "",
+            "writtenBy_few": "",
+            "writtenBy_many": "",
             "writtenBy_other": ""
         }
     },
     "store": {
-        "urlCopied": "L'URL a été copiée avec succès"
+        "urlCopied": ""
     },
     "tray": {
-        "exit": "Quitter <0>DEADFORGE</0>",
+        "exit": "",
         "arcade": ""
     },
     "settings": {
@@ -139,8 +141,12 @@
                 "darkModeInContext": "",
                 "lightModeInContext": "",
                 "gameCount_one": "",
+                "gameCount_few": "",
+                "gameCount_many": "",
                 "gameCount_other": "",
                 "foundGames_one": "",
+                "foundGames_few": "",
+                "foundGames_many": "",
                 "foundGames_other": ""
             },
             "replaySetup": "",
@@ -238,7 +244,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "Réduire",
+                "collapse": "",
                 "expand": "",
                 "rename": "",
                 "delete": "",
@@ -288,6 +294,8 @@
                 "actions": ""
             },
             "gameCount_one": "",
+            "gameCount_few": "",
+            "gameCount_many": "",
             "gameCount_other": ""
         },
         "collectionView": {
