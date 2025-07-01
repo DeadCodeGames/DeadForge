@@ -313,13 +313,13 @@
         },
         "install": {
             "title": {
-                "install": "",
+                "install": "Inštalácia <b>{{title}}</b>",
                 "reinstall": ""
             },
             "install": "Nainštalovať",
-            "reinstall": "",
+            "reinstall": "Preinštalovať",
             "reinstallReason": "",
-            "update": "",
+            "update": "Aktualizovať",
             "installLocation": "Miesto inštalácie",
             "downloadSize": "Veľkosť stiahnutého balíčka:",
             "installSize": "Veľkosť nainštalovaného softvéru:",

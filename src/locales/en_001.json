@@ -142,12 +142,6 @@
                 "expanded": "Expanded",
                 "darkModeInContext": "Dark Mode",
                 "lightModeInContext": "Light Mode",
-                "play": "Play",
-                "update": "Update",
-                "reinstall": "Reinstall",
-                "launching": "Launching...",
-                "updating": "Updating...",
-                "reinstalling": "Reinstalling..."
             },
             "replaySetup": "Replay Setup",
             "dataManagement": "Data Management",
