@@ -140,6 +140,12 @@
                 "expanded": "",
                 "darkModeInContext": "",
                 "lightModeInContext": "",
+                "play": "",
+                "update": "",
+                "reinstall": "",
+                "launching": "",
+                "updating": "",
+                "reinstalling": "",
                 "gameCount_one": "",
                 "gameCount_few": "",
                 "gameCount_many": "",
@@ -187,9 +193,13 @@
                 "running": "",
                 "launching": "",
                 "stopping": "",
+                "preparing": "",
                 "downloading": "",
                 "installing": "",
-                "checking": ""
+                "finishingUp": "",
+                "checking": "",
+                "update": "",
+                "reinstall": ""
             },
             "favourites": "",
             "favouritesDescription": "",
@@ -302,15 +312,28 @@
             "collectionNotFoundCTA": ""
         },
         "install": {
-            "title": "",
+            "title": {
+                "install": "",
+                "reinstall": ""
+            },
             "install": "",
+            "reinstall": "",
+            "reinstallReason": "",
+            "update": "",
             "installLocation": "",
             "downloadSize": "",
             "installSize": "",
             "noReleaseinfo": "",
             "copyingFiles": "",
             "updatingDeadForgeDB": "",
-            "updatingWindowsRegistry": ""
+            "updatingWindowsRegistry": "",
+            "backingUpUserDataFiles": "",
+            "restoringUserDataFiles": "",
+            "cleaningUp": ""
+        },
+        "update": {
+            "applying": "",
+            "applyingPatch": ""
         }
     }
 }

@@ -137,6 +137,12 @@
                 "expanded": "",
                 "darkModeInContext": "",
                 "lightModeInContext": "",
+                "play": "",
+                "update": "",
+                "reinstall": "",
+                "launching": "",
+                "updating": "",
+                "reinstalling": "",
                 "gameCount_other": "{{count}}本ゲーム",
                 "foundGames_other": "{{count}}のゲームが見つかりました"
             },
@@ -178,9 +184,13 @@
                 "running": "実行中",
                 "launching": "起動中…",
                 "stopping": "停止中…",
+                "preparing": "",
                 "downloading": "ダウンロードしています",
                 "installing": "インストール中",
-                "checking": ""
+                "finishingUp": "",
+                "checking": "",
+                "update": "",
+                "reinstall": ""
             },
             "favourites": "お気に入り",
             "favouritesDescription": "あなたの最も愛されているゲーム",
@@ -290,15 +300,28 @@
             "collectionNotFoundCTA": "コレクションに戻る"
         },
         "install": {
-            "title": "<b>{{title}}</b>をインストール",
+            "title": {
+                "install": "",
+                "reinstall": ""
+            },
             "install": "インストール",
+            "reinstall": "",
+            "reinstallReason": "",
+            "update": "",
             "installLocation": "インストール場所",
             "downloadSize": "ダウンロード・サイズ：",
             "installSize": "インストール・サイズ：",
             "noReleaseinfo": "ID {{id}} のソフトにリリース情報がありません",
             "copyingFiles": "ファイルをコピー中⋯",
             "updatingDeadForgeDB": "DeadForge DBを更新中⋯",
-            "updatingWindowsRegistry": "Windowsレジストリを更新中⋯"
+            "updatingWindowsRegistry": "Windowsレジストリを更新中⋯",
+            "backingUpUserDataFiles": "",
+            "restoringUserDataFiles": "",
+            "cleaningUp": ""
+        },
+        "update": {
+            "applying": "",
+            "applyingPatch": ""
         }
     }
 }

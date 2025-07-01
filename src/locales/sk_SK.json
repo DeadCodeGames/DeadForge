@@ -140,6 +140,12 @@
                 "expanded": "Rozbaleného",
                 "darkModeInContext": "Tmavého motívu",
                 "lightModeInContext": "Svetlého motívu",
+                "play": "",
+                "update": "",
+                "reinstall": "",
+                "launching": "",
+                "updating": "",
+                "reinstalling": "",
                 "gameCount_one": "{{count}} hra",
                 "gameCount_few": "{{count}} hry",
                 "gameCount_many": "{{count}} hier",
@@ -187,9 +193,13 @@
                 "running": "Spustené",
                 "launching": "Spúšťa sa...",
                 "stopping": "Zastavuje sa...",
+                "preparing": "",
                 "downloading": "Sťahuje sa",
                 "installing": "Inštaluje sa",
-                "checking": "Prebieha kontrola..."
+                "finishingUp": "",
+                "checking": "Prebieha kontrola...",
+                "update": "",
+                "reinstall": ""
             },
             "favourites": "Obľúbené",
             "favouritesDescription": "Vaše najobľúbenejšie hry",
@@ -302,15 +312,28 @@
             "collectionNotFoundCTA": "Späť na zbierky"
         },
         "install": {
-            "title": "Inštalácia <b>{{title}}</b>",
+            "title": {
+                "install": "",
+                "reinstall": ""
+            },
             "install": "Nainštalovať",
+            "reinstall": "",
+            "reinstallReason": "",
+            "update": "",
             "installLocation": "Miesto inštalácie",
             "downloadSize": "Veľkosť stiahnutého balíčka:",
             "installSize": "Veľkosť nainštalovaného softvéru:",
             "noReleaseinfo": "Softvéru s ID {{id}} nemá informácie o vydaniach",
             "copyingFiles": "Kopírujú sa súbory...",
             "updatingDeadForgeDB": "Aktualizuje sa databáza DeadForge",
-            "updatingWindowsRegistry": "Aktualizuje sa Windows Registry"
+            "updatingWindowsRegistry": "Aktualizuje sa Windows Registry",
+            "backingUpUserDataFiles": "",
+            "restoringUserDataFiles": "",
+            "cleaningUp": ""
+        },
+        "update": {
+            "applying": "",
+            "applyingPatch": ""
         }
     }
 }

@@ -140,6 +140,12 @@
                 "expanded": "Rozbaleného",
                 "darkModeInContext": "Tmavého motivu",
                 "lightModeInContext": "Světlého motivu",
+                "play": "",
+                "update": "",
+                "reinstall": "",
+                "launching": "",
+                "updating": "",
+                "reinstalling": "",
                 "gameCount_one": "{{count}} hra",
                 "gameCount_few": "{{count}} hry",
                 "gameCount_many": "{{count}} her",
@@ -187,9 +193,13 @@
                 "running": "Spuštěno",
                 "launching": "Spouští se...",
                 "stopping": "Zastavuje se...",
+                "preparing": "",
                 "downloading": "Stahuje se",
                 "installing": "Instaluje se",
-                "checking": "Probíhá kontrola..."
+                "finishingUp": "",
+                "checking": "Probíhá kontrola...",
+                "update": "",
+                "reinstall": ""
             },
             "favourites": "Oblíbené",
             "favouritesDescription": "Vaše nejoblíbenější hry",
@@ -302,15 +312,28 @@
             "collectionNotFoundCTA": "Zpět na sbírky"
         },
         "install": {
-            "title": "Instalace <b>{{title}}</b>",
+            "title": {
+                "install": "",
+                "reinstall": ""
+            },
             "install": "Nainstalovat",
+            "reinstall": "",
+            "reinstallReason": "",
+            "update": "",
             "installLocation": "Umístění instalace",
             "downloadSize": "Velkost stáhnutého balíčku:",
             "installSize": "Velkost nainstalovaného softvéru:",
             "noReleaseinfo": "Softwaru s ID {{id}} chybí informace o vydání",
             "copyingFiles": "Kopírují se soubory...",
             "updatingDeadForgeDB": "Aktualizuje se databáza DeadForge",
-            "updatingWindowsRegistry": "Aktualizuje se Registr Windows"
+            "updatingWindowsRegistry": "Aktualizuje se Registr Windows",
+            "backingUpUserDataFiles": "",
+            "restoringUserDataFiles": "",
+            "cleaningUp": ""
+        },
+        "update": {
+            "applying": "",
+            "applyingPatch": ""
         }
     }
 }
