@@ -24,6 +24,8 @@
         "collapse": "Sbalit"
     },
     "home": {
+        "newsAndUpdatesHeader": "Nejnovější zprávy a aktualizace <bold>DEADFORGE</bold>",
+        "jumpBackIn": "Naposledy hráno",
         "articles": {
             "publishedOn": "Zveřejněno {{date}}",
             "lastEditedOn": "Naposledy upraveno {{date}}",
@@ -185,8 +187,13 @@
                 "running": "Spuštěno",
                 "launching": "Spouští se...",
                 "stopping": "Zastavuje se...",
+                "preparing": "Probíhá příprava",
                 "downloading": "Stahuje se",
-                "installing": "Instaluje se"
+                "installing": "Instaluje se",
+                "finishingUp": "Dokončuje se...",
+                "checking": "Probíhá kontrola...",
+                "update": "Dostupná aktualizace",
+                "reinstall": "Vyžaduje se reinstalace"
             },
             "favourites": "Oblíbené",
             "favouritesDescription": "Vaše nejoblíbenější hry",
@@ -259,12 +266,15 @@
             "gameNotes": "Poznámky ke hře",
             "gameNotesTooltip": "Poznámky ke hrám jsou spravovány vývojáři a komunitou <1>DeadForge</1>.\nMůžete přispět k nim, i vybranému vizuálnímu materiálu <3>DeadForge</3> pro externí softvér, a další cool věci na <5>stránce GitHub DeadCodeGames/DeadForgeExternalData</5>.",
             "noGameNotes": "Pro tuto hru nejsou k dispozici žádné poznámky.",
-            "installDir": "Adresář pro instalaci"
+            "installDir": "Adresář pro instalaci",
+            "lastPlayed": "Naposledy hráno",
+            "playTime": "Odehraný čas"
         },
         "recentView": {
             "today": "Dnes",
             "thisWeek": "Tento Týden",
             "thisMonth": "Tento Měsíc",
+            "neverPlayed": "Nikdy nehráno",
             "noRecentGames": "Žádné nedávné hry",
             "noRecentGamesDescription": "Zde se zobrazí hry, které spustíte"
         },
@@ -296,15 +306,28 @@
             "collectionNotFoundCTA": "Zpět na sbírky"
         },
         "install": {
-            "title": "Instalace <b>{{title}}</b>",
+            "title": {
+                "install": "Instalace <b>{{title}}</b>",
+                "reinstall": "Reinstalace <b>{{title}}</b>"
+            },
             "install": "Nainstalovat",
+            "reinstall": "Přeinstalovat",
+            "reinstallReason": "Zdá se, že aktuálně nainstalovaná verze této hry není v naši historii vydání. Z tohoto důvodu ji DEADFORGE nemůže aktualizovat na nejnovější verzi a vyžaduje úplnou reinstalaci.\nSoubory označené vývojáři jako soubory uchovávající uživatelská data budou zachovány.",
+            "update": "Aktualizovat",
             "installLocation": "Umístění instalace",
             "downloadSize": "Velkost stáhnutého balíčku:",
             "installSize": "Velkost nainstalovaného softvéru:",
             "noReleaseinfo": "Softwaru s ID {{id}} chybí informace o vydání",
             "copyingFiles": "Kopírují se soubory...",
             "updatingDeadForgeDB": "Aktualizuje se databáza DeadForge",
-            "updatingWindowsRegistry": "Aktualizuje se Registr Windows"
+            "updatingWindowsRegistry": "Aktualizuje se Registr Windows",
+            "backingUpUserDataFiles": "Zálohují se uživatelská data",
+            "restoringUserDataFiles": "Obnovují se uživatelská data",
+            "cleaningUp": "Probíhá čištění..."
+        },
+        "update": {
+            "applying": "Aplikuje se aktualizace",
+            "applyingPatch": "Aplikuje se aktualizace {{A}}/{{B}}"
         }
     }
 }
