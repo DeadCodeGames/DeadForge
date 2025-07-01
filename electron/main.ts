@@ -4,7 +4,7 @@ import { ExtensionReference, InstallExtensionOptions } from 'electron-devtools-i
 import { Preferences, OldPreferences, defaultPreferences } from './preferences';
 import * as SteamStuff from './mainHelpers/SteamStuff'; import * as EpicStuff from './mainHelpers/EpicStuff'; import * as ItchStuff from './mainHelpers/ItchStuff';
 import { importBackup, exportBackup, validateBackup } from './mainHelpers/BackupStuff';
-import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB, updateGameLastPlayed, getPathsFromDB, updateGamePlaytime, getAllCuratedAssetsFromDB, getAllCustomAssetsFromDB, checkIsDeadForgeGameInLibrary, DeadForgeGameObject, addDeadForgeGameToLocalLibrary, getGameMetrics } from './mainHelpers/DataDB';
+import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB, updateGameLastPlayed, getPathsFromDB, updateGamePlaytime, getAllCuratedAssetsFromDB, getAllCustomAssetsFromDB, checkIsDeadForgeGameInLibrary, DeadForgeGameObject, addDeadForgeGameToLocalLibrary } from './mainHelpers/DataDB';
 import { initWatchers } from './mainHelpers/WatchManager';
 import { Collection, CollectionGame, Collections, GameWarning, OldCollections } from './types';
 import { waitForGameProcess, monitorExternalProcess } from './mainHelpers/ProcessWatcher';
@@ -13,7 +13,7 @@ import { selectCustomAsset, saveCustomAsset, updateLogoPosition } from './mainHe
 import { updateArticles, getArticles } from './mainHelpers/ArticleManager';
 import { handleProtocolUrl, registerProtocolHandler } from './mainHelpers/DeadForgeProtocolHandler';
 import { handleDeadForgeUpdate } from './mainHelpers/Updater';
-import { installDeadForgeGame, getGameDownloadSize, updateDeadForgeGame } from './mainHelpers/GameInstallerAndUpdater';
+import { installDeadForgeGame, getGameDownloadSize } from './mainHelpers/GameInstallerAndUpdater';
 const gotInstanceLock = app.requestSingleInstanceLock();
 if (!gotInstanceLock) { app.exit(); }
 const windowStateKeeper = require('electron-window-state');
@@ -179,8 +179,6 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             }
         }
 
-        trayWindow?.webContents.openDevTools();
-
         tray.on('click', trayClickEvent);
         tray.on('right-click', trayClickEvent);
 
@@ -201,10 +199,8 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
         })
 
         mainWindow = new BrowserWindow({
-            minWidth: 1016,
+            minWidth: 1010,
             minHeight: 725,
-            maxWidth: 3840,
-            maxHeight: 2160,
             x: mainWindowState.x || undefined,
             y: mainWindowState.y || undefined,
             height: mainWindowState.height,
@@ -818,7 +814,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                     throw new Error('Steam path not found');
                 }
                 resolvedExecutable = path.join(steamPath, 'steam.exe');
-                args = args.length > 0 ? (Array.isArray(args) ? [`steam://run/${gameId}//'${args.join(" ")}'`] : [`steam://run/${gameId}//'${args}'`]) : [`steam://run/${gameId}`];
+                args = Array.isArray(args) ? [`steam://run/${gameId}//'${args.join(" ")}'`] : [`steam://run/${gameId}//'${args}'`];
             }
 
             const child = spawn(resolvedExecutable, Array.isArray(args) ? args : [args], {
@@ -864,93 +860,14 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                     }
                 }
             } else {
-                child.on('exit', async (code, signal) => {
+                child.on('exit', (code, signal) => {
                     console.log(`Game ${gameId} from ${client} process exited with code ${code} and signal ${signal}`);
 
-                    // Grace period logic for executablesToWatch
-                    const games = getAllGamesFromDB();
-                    const gameData = games.find(g => g.source === client && String(g.id) === String(gameId));
-                    let executablesToWatch: string[] | undefined = undefined;
-                    let installPath: string | undefined = undefined;
-                    if (gameData) {
-                        // Try to get executablesToWatch from curated assets first
-                        const curatedAssets = getAllCuratedAssetsFromDB();
-                        const curated = curatedAssets.find(a => a.source === client && String(a.id) === String(gameId));
-                        if (curated && curated.executablesToWatch) {
-                            try {
-                                executablesToWatch = typeof curated.executablesToWatch === 'string' ? JSON.parse(curated.executablesToWatch) : curated.executablesToWatch;
-                            } catch { executablesToWatch = curated.executablesToWatch; }
-                        }
-                        // Fallback to custom assets if needed (not implemented here)
-                        installPath = gameData.installPath;
-                    }
+                    // Calculate and update playtime when game exits
+                    updatePlaytimeOnGameExit(client, gameId);
 
-                    if (executablesToWatch && executablesToWatch.length > 0 && installPath) {
-                        // Substitute %GAMEROOT% with installPath
-                        const watchedExecutables = executablesToWatch.map(e => e.replace(/%GAMEROOT%/g, installPath!));
-                        const { areAnyExecutablesRunning, findRunningExecutableProcess, monitorExternalProcess } = require('./mainHelpers/ProcessWatcher');
-                        const gracePeriod = 3000;
-                        const interval = 500;
-                        let elapsed = 0;
-                        let graceTimeout: NodeJS.Timeout | null = null;
-                        let monitoring = false;
-                        const tryMonitorNewProcess = async () => {
-                            const proc = await findRunningExecutableProcess(watchedExecutables);
-                            if (proc) {
-                                // Update gameProcesses for this game
-                                gameProcesses.set(key, {
-                                    pid: proc.pid,
-                                    stopMonitoring: () => {}, // Will be set below
-                                    kill: () => { try { process.kill(proc.pid); } catch {} },
-                                });
-                                // Start monitoring this process
-                                const monitor = monitorExternalProcess(proc.pid, () => {
-                                    // When this process exits, re-run the grace period logic
-                                    monitoring = false;
-                                    startGracePeriod();
-                                });
-                                // Update stopMonitoring
-                                const entry = gameProcesses.get(key);
-                                if (entry && typeof entry === 'object' && !(entry instanceof ChildProcess)) entry.stopMonitoring = monitor.stop;
-                                monitoring = true;
-                            }
-                        };
-                        const startGracePeriod = () => {
-                            elapsed = 0;
-                            if (graceTimeout) clearTimeout(graceTimeout);
-                            // Notify UI that we're checking if the game is really closed
-                            mainWindow?.webContents.send('game:status', client, gameId, 'checking');
-                            const checkAndMaybeClose = async () => {
-                                const anyRunning = await areAnyExecutablesRunning(watchedExecutables);
-                                if (anyRunning) {
-                                    // If any are running, try to monitor the new process if not already
-                                    if (!monitoring) {
-                                        await tryMonitorNewProcess();
-                                        // Notify UI that the game is running again
-                                        mainWindow?.webContents.send('game:status', client, gameId, 'running');
-                                    }
-                                    return; // Do not mark as closed
-                                }
-                                elapsed += interval;
-                                if (elapsed < gracePeriod) {
-                                    graceTimeout = setTimeout(checkAndMaybeClose, interval);
-                                } else {
-                                    // After grace period, if none are running, mark as closed
-                                    updatePlaytimeOnGameExit(client, gameId);
-                                    gameProcesses.delete(key);
-                                    mainWindow?.webContents.send('game:processTerminated', client, gameId);
-                                    mainWindow?.webContents.send('game:status', client, gameId, 'closed');
-                                }
-                            };
-                            graceTimeout = setTimeout(checkAndMaybeClose, interval);
-                        };
-                        startGracePeriod();
-                    } else {
-                        // Calculate and update playtime when game exits (original logic)
-                        updatePlaytimeOnGameExit(client, gameId);
-                        gameProcesses.delete(key);
-                        mainWindow?.webContents.send('game:processTerminated', client, gameId);
-                    }
+                    gameProcesses.delete(key);
+                    mainWindow?.webContents.send('game:processTerminated', client, gameId);
                 });
             }
 
@@ -1134,60 +1051,29 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
      */
     ipcMain.handle('games:checkRunning', async (_, gameChecks: Array<{ source: string, id: string }>) => {
         const games = getAllGamesFromDB();
-        const curatedAssets = getAllCuratedAssetsFromDB();
         const processKeys = gameChecks.map(game => `${game.source}-${game.id}`);
-        const tracked = new Set(processKeys.filter(key => gameProcesses.has(key) && !(key.split("-")[0] === "steam" && (gameProcesses.get(key) as ChildProcess).spawnfile.endsWith("steam.exe"))));
+        const tracked = new Set(processKeys.filter(key => gameProcesses.has(key)));
 
-        // For untracked, collect all executable paths (including executablesToWatch)
-        const toCheck: { key: string, executables: string[] }[] = [];
+        // For untracked, collect all executable paths
+        const toCheck: { key: string, executable: string }[] = [];
         for (const game of gameChecks) {
             const key = `${game.source}|${game.id}`;
             const processKey = `${game.source}-${game.id}`;
             if (tracked.has(processKey)) continue;
             const gameData = games.find(g => g.source === game.source && String(g.id) === String(game.id));
-            const executables: string[] = [];
-            // Add main launchOptions executable
             if (gameData?.launchOptions) {
                 try {
                     const launchOptions = JSON.parse(gameData.launchOptions as any as string);
                     if (launchOptions[0]?.executable) {
-                        executables.push(launchOptions[0].executable);
+                        toCheck.push({ key, executable: launchOptions[0].executable });
                     }
                 } catch { }
-            }
-            // Add executablesToWatch from curated assets
-            const curated = curatedAssets.find(a => a.source === game.source && String(a.id) === String(game.id));
-            if (curated && curated.executablesToWatch && gameData?.installPath) {
-                try {
-                    const execs = typeof curated.executablesToWatch === 'string' ? JSON.parse(curated.executablesToWatch) : curated.executablesToWatch;
-                    if (Array.isArray(execs)) {
-                        executables.push(...(execs.map(e => {
-                            if (e.includes('%GAMEROOT%')) {
-                                if (gameData.installPath) {
-                                    // Remove %GAMEROOT% and resolve the rest relative to installPath
-                                    const rel = e.replace(/%GAMEROOT%[\\/]/, '');
-                                    return path.resolve(gameData.installPath, rel);
-                                } else {
-                                    // installPath missing, skip this entry
-                                    return undefined;
-                                }
-                            } else {
-                                return path.resolve(e);
-                            }
-                        }).filter(e => e !== undefined))); // Remove undefined entries
-                    }
-                } catch { }
-            }
-            if (executables.length > 0) {
-                toCheck.push({ key, executables });
             }
         }
 
         let running: Record<string, boolean> = {};
         if (process.platform === 'win32' && toCheck.length > 0) {
-            // Flatten all executables to check
-            const allExecutables = Array.from(new Set(toCheck.flatMap(x => x.executables)));
-            running = await areProcessesRunningWindows(allExecutables);
+            running = await areProcessesRunningWindows(toCheck.map(x => x.executable));
         }
 
         // Build result
@@ -1199,8 +1085,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                 result[key] = true;
             } else {
                 const check = toCheck.find(x => x.key === key);
-                // If any of the executables for this game are running, mark as running
-                result[key] = check ? check.executables.some(exec => running[exec]) : false;
+                result[key] = check ? running[check.executable] : false;
             }
         }
         return result;
@@ -1477,12 +1362,12 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
     ipcMain.on("store:protocol-navigate", (_, url: string) => handleProtocolUrl(url, mainWindow));
     ipcMain.on("store:external-navigate", (_, url: string) => shell.openExternal(`https://deadcode.is-a.dev/DeadForgeRedirect?url=${encodeURIComponent(url)}`))
     ipcMain.handle("library:getDefaultGameInstallPath", (_, gameId: string) => path.join(app.getPath("userData"), "software", gameId))
-    ipcMain.handle("library:startGameInstall", async (_, gameId: string, installPath: string, reinstall?: boolean) => {
+    ipcMain.handle("library:startGameInstall", async (_, gameId: string, installPath: string) => {
         try {
             if (!mainWindow) {
                 throw new Error('Main window not found');
             }
-            const result = await installDeadForgeGame(gameId, installPath, mainWindow, reinstall);
+            const result = await installDeadForgeGame(gameId, installPath, mainWindow);
             return result;
         } catch (error) {
             console.error('Failed to install game:', error);
@@ -1495,30 +1380,8 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             };
         }
     });
-    ipcMain.handle("library:startGameUpdate", async (_, gameId: string) => {
-        try {
-            if (!mainWindow) {
-                throw new Error('Main window not found');
-            }
-            const result = await updateDeadForgeGame(gameId, mainWindow);
-            return result;
-        } catch (error) {
-            console.error('Failed to install game:', error);
-            return {
-                success: false,
-                error: {
-                    message: error instanceof Error ? error.message : 'Unknown error occurred',
-                    code: 'UNKNOWN_ERROR'
-                }
-            };
-        }
-    })
 
     ipcMain.handle('game:getDownloadSize', async (_, gameId: string) => {
         return await getGameDownloadSize(gameId);
-    });
-
-    ipcMain.handle('metrics:getGameMetrics', async (_event, { source, gameId }) => {
-        return getGameMetrics(source, gameId);
     });
 }

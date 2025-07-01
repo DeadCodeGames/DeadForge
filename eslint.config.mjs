@@ -2,7 +2,6 @@ import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
-import pluginJSXA11y from "eslint-plugin-jsx-a11y";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import pluginTypescript from "@typescript-eslint/eslint-plugin";
 import pluginArrayDestructureCommaSpacing from "./.eslint/index.js";
@@ -13,7 +12,7 @@ export default defineConfig([
     pluginReact.configs.flat.recommended,
     {
         files: ["src/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-        plugins: { js, pluginReact, pluginTypescript, pluginReactHooks, pluginArrayDestructureCommaSpacing, pluginJSXA11y },
+        plugins: { js, pluginReact, pluginTypescript, pluginReactHooks, pluginArrayDestructureCommaSpacing },
         extends: ["js/recommended"],
         languageOptions: {
             globals: {
@@ -33,8 +32,7 @@ export default defineConfig([
             "@typescript-eslint/no-explicit-any": "off",
             'react/no-unknown-property': ['error', { ignore: ['preload'] }],
             'pluginArrayDestructureCommaSpacing/array-destructure-comma-spacing': 'error',
-            'pluginArrayDestructureCommaSpacing/format-jsx-paren': 'error',
-            'jsx-a11y/anchor-has-content': 'warn'
+            'pluginArrayDestructureCommaSpacing/format-jsx-paren': 'error'
         }
     },
     {

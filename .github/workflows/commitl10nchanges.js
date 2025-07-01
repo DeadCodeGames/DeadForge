@@ -57,37 +57,19 @@ async function syncCrowdinTranslations() {
             }
         }
         
-        let baseSha = mainCommit.tree.sha;
-        let parentSha = mainRef.object.sha;
+        let baseSha;
         
         if (l10nBranchExists) {
-            // Get all l10n commits not in main
-            const { data: comparison } = await octokit.repos.compareCommits({
+            // Get latest commit from l10n branch
+            const { data: l10nCommit } = await octokit.git.getCommit({
                 owner,
                 repo,
-                base: mainRef.object.sha,
-                head: l10nRef.object.sha
+                commit_sha: l10nRef.object.sha
             });
-
-            // Cherry-pick each l10n commit onto main
-            for (const commit of comparison.commits) {
-                // Only cherry-pick if not merge commit
-                if (commit.parents.length === 1) {
-                    // Reuse the tree and message
-                    const { data: newCommit } = await octokit.git.createCommit({
-                        owner,
-                        repo,
-                        message: commit.commit.message,
-                        tree: commit.commit.tree.sha,
-                        parents: [parentSha]
-                    });
-                    parentSha = newCommit.sha;
-                    baseSha = commit.commit.tree.sha;
-                } else {
-                    // If merge commit, skip or handle as needed
-                    console.log(`Skipping merge commit ${commit.sha}`);
-                }
-            }
+            baseSha = l10nCommit.tree.sha;
+        } else {
+            // Use main as base
+            baseSha = mainCommit.tree.sha;
         }
         
         // Restore locale files from backup
@@ -115,7 +97,7 @@ async function syncCrowdinTranslations() {
             repo,
             message: 'chore(i18n): sync Crowdin translations',
             tree: tree.sha,
-            parents: [parentSha]
+            parents: l10nBranchExists ? [l10nRef.object.sha] : [mainRef.object.sha]
         });
         
         if (l10nBranchExists) {
@@ -124,8 +106,7 @@ async function syncCrowdinTranslations() {
                 owner,
                 repo,
                 ref: `heads/${l10nBranch}`,
-                sha: newCommit.sha,
-                force: true
+                sha: newCommit.sha
             });
         } else {
             // Create new branch

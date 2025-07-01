@@ -52,19 +52,13 @@ function fetchAndSave(url, outPath) {
     const codepoints = new Set();
 
     for (const emoji of EMOJIS) {
-        if (emoji === "🏳️‍🇱‍🇴‍🇱‍‍") {
-            console.log("The LOLCAT Flag custom emoji file will be copied manually.");
-            fs.cpSync('customTwemoji', path.join(OUTPUT_DIR, "svg"), { recursive: true });
-            continue;
-        } else {
-            const parsed = twemoji.parse(emoji, {
-                callback: (_icon, options, variant) =>
-                    twemoji.convert.toCodePoint(emoji),
-            });
-    
-            const match = parsed.match(/src="([a-f0-9-]+)"/);
-            if (match && match[1]) codepoints.add(match[1]);
-        }
+        const parsed = twemoji.parse(emoji, {
+            callback: (_icon, options, variant) =>
+                twemoji.convert.toCodePoint(emoji),
+        });
+
+        const match = parsed.match(/src="([a-f0-9-]+)"/);
+        if (match && match[1]) codepoints.add(match[1]);
     }
 
     for (const codepoint of codepoints) {

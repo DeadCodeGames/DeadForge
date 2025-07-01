@@ -8,8 +8,8 @@ const Store = () => {
     const { t } = useTranslation();
     const location = useLocation();
     const [,setSearchParams] = useSearchParams();
-    const [currentUrl, setCurrentUrl] = useState<string>(process.env.REACT_APP_STORE_PROD_URL!)
-    const [homeUrl, setHomeUrl] = useState<string>(process.env.REACT_APP_STORE_PROD_URL!)
+    const [currentUrl, setCurrentUrl] = useState<string>(process.env.REACT_APP_STORE_URL!)
+    const [homeUrl, setHomeUrl] = useState<string>(process.env.REACT_APP_STORE_URL!)
     const [canGoBack, setCanGoBack] = useState(false)
     const [canGoForward, setCanGoForward] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -207,7 +207,7 @@ const Store = () => {
             <div className="flex-1 relative">
                 <webview
                     ref={webviewRef}
-                    src={process.env.REACT_APP_STORE_PROD_URL!}
+                    src={process.env.REACT_APP_STORE_URL!}
                     preload={storePreload}
                     style={{
                         position: "absolute",

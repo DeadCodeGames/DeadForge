@@ -24,10 +24,7 @@
         "collapse": "Collapse"
     },
     "home": {
-        "newsAndUpdatesHeader": "Latest <bold>DEADFORGE</bold> News and Updates",
-        "jumpBackIn": "Jump right back!",
         "articles": {
-            "writtenBy_one": "Written by <0></0>",
             "writtenBy_other": "Written by <0></0>",
             "publishedOn": "Published on {{date}}",
             "lastEditedOn": "Last edited on {{date}}"
@@ -141,13 +138,8 @@
                 "collapsed": "Collapsed",
                 "expanded": "Expanded",
                 "darkModeInContext": "Dark Mode",
-                "lightModeInContext": "Light Mode",
-                "play": "Play",
-                "update": "Update",
-                "reinstall": "Reinstall",
-                "launching": "Launching...",
-                "updating": "Updating...",
-                "reinstalling": "Reinstalling..."
+                "lightModeInContext": "Light Mode"
+
             },
             "replaySetup": "Replay Setup",
             "dataManagement": "Data Management",
@@ -187,13 +179,8 @@
                 "running": "Running",
                 "launching": "Launching...",
                 "stopping": "Stopping...",
-                "preparing": "Preparing",
                 "downloading": "Downloading",
-                "installing": "Installing",
-                "finishingUp": "Finishing up...",
-                "checking": "Checking...",
-                "update": "Update Available",
-                "reinstall": "Reinstall Required"
+                "installing": "Installing"
             },
             "favourites": "Favourites",
             "favouritesDescription": "Your most loved games",
@@ -266,15 +253,12 @@
             "gameNotes": "Game Notes",
             "gameNotesTooltip": "Game notes are maintained by the <1>DeadForge</1> developers and community.\nYou can contribute to them, as well as curated <3>DeadForge</3> Assets for external software, and other cool stuff on <5>the GitHub page of DeadCodeGames/DeadForgeExternalData</5>.",
             "noGameNotes": "No notes available for this game.",
-            "installDir": "Installation Directory",
-            "lastPlayed": "Last Played",
-            "playTime": "Play Time"
+            "installDir": "Installation Directory"
         },
         "recentView": {
             "today": "Today",
             "thisWeek": "This Week",
             "thisMonth": "This Month",
-            "neverPlayed": "Never Played",
             "noRecentGames": "No recent games",
             "noRecentGamesDescription": "Games you play will appear here"
         },
@@ -304,28 +288,15 @@
             "collectionNotFoundCTA": "Back to Collections"
         },
         "install": {
-            "title": {
-                "install": "Install <b>{{title}}</b>",
-                "reinstall": "Reinstall <b>{{title}}</b>"
-            },
+            "title": "Install <b>{{title}}</b>",
             "install": "Install",
-            "reinstall": "Reinstall",
-            "reinstallReason": "It seems, like the currently installed version of this game is not available in our releases history. Because of this, DEADFORGE cannot cleanly update it to the newest version, and requires a full reinstall. Files marked by the developers as storing user data will be preserved.",
-            "update": "Update",
             "installLocation": "Install Location",
             "downloadSize": "Download Size:",
             "installSize": "Install Size:",
             "noReleaseinfo": "Software with ID {{id}} is missing release information",
             "copyingFiles": "Copying files...",
             "updatingDeadForgeDB": "Updating DeadForge Database",
-            "updatingWindowsRegistry": "Updating Windows Registry",
-            "backingUpUserDataFiles": "Backing up user data",
-            "restoringUserDataFiles": "Restoring user data",
-            "cleaningUp": "Cleaning up..."
-        },
-        "update": {
-            "applying": "Applying Patch",
-            "applyingPatch": "Applying patch {{A}} out of {{B}}"
+            "updatingWindowsRegistry": "Updating Windows Registry"
         }
     }
 }

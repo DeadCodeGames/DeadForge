@@ -162,7 +162,9 @@ export async function checkMissingAssets(games: NormalizedGame[], curatedAssets:
             // If game has no media object at all, report all assets as missing
             reports.push({
                 source: game.source,
-                id: game.id,
+                id: (typeof game.id === 'string' || typeof game.id === 'number') ? game.id : 
+                    typeof game.id === 'object' && game.id !== null ? game.id.default : 
+                        undefined,
                 name: typeof game.name === 'string' ? game.name : 
                     typeof game.name === 'object' && game.name !== null ? game.name.default : 
                         'Unknown Game',
@@ -181,7 +183,9 @@ export async function checkMissingAssets(games: NormalizedGame[], curatedAssets:
         if (missingAssets.length > 0) {
             reports.push({
                 source: game.source,
-                id: game.id,
+                id: (typeof game.id === 'string' || typeof game.id === 'number') ? game.id : 
+                    typeof game.id === 'object' && game.id !== null ? game.id.default : 
+                        undefined,
                 name: typeof game.name === 'string' ? game.name : 
                     typeof game.name === 'object' && game.name !== null ? game.name.default : 
                         'Unknown Game',

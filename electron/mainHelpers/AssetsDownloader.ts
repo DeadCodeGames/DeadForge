@@ -8,8 +8,8 @@ import { GameAsset } from '../types';
 import getDB from './DataDB';
 import { insertRow, updateRow, selectRows } from './dbHelpers';
 
-export const CURATED_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/curated/list.json';
-export const OFFICIAL_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/official/list.json';
+const CURATED_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/curated/list.json';
+const OFFICIAL_LIST_URL = 'https://deadcode.is-a.dev/DeadForgeExternalData/official/list.json';
 
 // Map media type to database field
 const MEDIA_TO_DB_FIELD: Record<string, string> = {
@@ -17,7 +17,7 @@ const MEDIA_TO_DB_FIELD: Record<string, string> = {
     'logoUrl': 'logo',
     'heroUrl': 'hero',
     'headerUrl': 'header',
-    'capsuleUrl': 'capsule',
+    'capsuleUrl': 'capsule'
 };
 
 /**
@@ -151,14 +151,10 @@ export async function DownloadCuratedAssets(...targets: { source: string, id: st
                 continue;
             }
 
-            console.log(match);
-
             const media = match.media || {};
             const mediaKeys = Object.keys(media) as (keyof GameAsset['media'])[];
 
-            const dbUpdate: Record<string, string | null> = {};
-
-            dbUpdate.executablesToWatch = match.executablesToWatch ? JSON.stringify(match.executablesToWatch) : null;
+            const dbUpdate: Record<string, string> = {};
 
             for (const mediaKey of mediaKeys) {
                 const mediaEntry = media[mediaKey];

@@ -10,7 +10,7 @@ import LibrarySidebarContextMenu from "./LibrarySidebarContextMenu"
 
 interface GameCardProps {
   game: NormalizedGame | NormalizedPseudoGameJoin
-  size?: "small" | "medium" | "large" | "homepage"
+  size?: "small" | "medium" | "large"
   showTitle?: boolean
   useCapsule?: boolean
   isFavorite?: boolean
@@ -152,15 +152,15 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
 
     const getAspectRatio = useCallback(() => {
         if (useCapsule) {
-            return "!aspect-[2/3]"
+            return "aspect-[2/3]"
         }
         switch (size) {
             case "small":
-                return "!aspect-[92/43]"
+                return "aspect-[92/43]"
             case "large":
-                return "!aspect-[92/43]"
+                return "aspect-[92/43]"
             default:
-                return "!aspect-[92/43]"
+                return "aspect-[92/43]"
         }
     }, [size, useCapsule])
 
@@ -171,8 +171,6 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                     return "w-24"
                 case "large":
                     return "w-64"
-                case "homepage":
-                    return "h-full"
                 default:
                     return "w-36"
             }
@@ -182,8 +180,6 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                 return "w-32"
             case "large":
                 return "w-80"
-            case "homepage":
-                return "w-[13.5rem]"
             default:
                 return "w-48"
         }
@@ -198,6 +194,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                         "relative rounded-md overflow-hidden cursor-pointer group transition-transform hover:scale-95",
                         getCardSize(),
                         getAspectRatio(),
+                        "after:absolute after:bottom-0 after:left-0 after:w-[calc(100%-1rem)] after:p-2 after:max-h-8 after:min-h-4 after:line-clamp-2 after:text-xs after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300 after:content-[attr(data-title)] after:bg-gradient-to-t after:from-black/80 after:to-transparent after:text-white after:rounded-tl-md"
                     )}
                     style={{
                         contentVisibility: "auto"
@@ -207,10 +204,12 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                     data-title={getLocalizedGameName(resolvedGame)}
                 >
                     {isFavorite && <FavouritesRibbon />}
-                    <div className="w-full h-full bg-gradient-to-br from-night/80 to-night/60 text-fullMoon dark:from-fullMoon/30 dark:to-fullMoon/10 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-night/80 to-night/40 dark:from-fullMoon/20 dark:to-fullMoon/10 flex items-center justify-center">
                         <div className="text-center p-2">
-                            <span className="material-symbols text-2xl opacity-50 mb-1 block">videogame_asset</span>
-                            <span className="text-[11px] font-medium opacity-75 line-clamp-2 leading-4">{getLocalizedGameName(resolvedGame)}</span>
+                            <span className="material-symbols text-2xl opacity-50 mb-2 block">videogame_asset</span>
+                            {showTitle && (
+                                <span className="text-xs font-medium opacity-75 line-clamp-2">{getLocalizedGameName(resolvedGame)}</span>
+                            )}
                         </div>
                     </div>
                     {resolvedGame.type && ["Demo", "Mod", "Tool"].includes(resolvedGame.type) && (
@@ -220,7 +219,6 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                             className="absolute inset-0 w-full h-full object-contain object-left-top"
                             loading="eager"
                             fetchPriority="high"
-                            draggable={false}
                         />
                     )}
                 
@@ -273,7 +271,6 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                     onError={() => setHeaderError(true)}
                     loading="eager"
                     fetchPriority="high"
-                    draggable={false}
                 />
 
                 {resolvedGame.type && ["Demo", "Mod", "Tool"].includes(resolvedGame.type) && (
@@ -283,12 +280,11 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                         className="absolute inset-0 w-full h-full object-contain object-left-top"
                         loading="eager"
                         fetchPriority="high"
-                        draggable={false}
                     />
                 )}
 
                 {showTitle && (
-                    <div className="absolute inset-0 p-2 pb-1 text-xs flex flex-col justify-end bg-gradient-to-t from-0% to-50% dark:from-night dark:to-night/0 from-fullMoon to-fullMoon/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 p-2 pb-1 text-xs flex flex-col justify-end bg-gradient-to-t from-0% to-75% dark:from-black/70 dark:to-night/0 from-fullMoon/70 to-fullMoon/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <span className="line-clamp-2">{getLocalizedGameName(resolvedGame)}</span>
                     </div>
                 )}

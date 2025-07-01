@@ -32,7 +32,6 @@ export interface NormalizedGame extends NormalizedSoftware {
     media?: GameMedia;
     lastPlayed?: number;
     totalPlayedFor?: number;
-    updateAvailable?: "" | "update" | "reinstall";
 }
 
 export interface NormalizedDLC extends NormalizedSoftware {
@@ -88,7 +87,6 @@ export interface ExternalData {
 }
 
 export interface GameAsset extends ExternalData {
-    executablesToWatch?: string[];
     media: {
         iconUrl: {
             filePath: string;
