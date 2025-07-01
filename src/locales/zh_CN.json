@@ -250,12 +250,15 @@
             "gameNotes": "",
             "gameNotesTooltip": "",
             "noGameNotes": "",
-            "installDir": ""
+            "installDir": "",
+            "lastPlayed": "",
+            "playTime": ""
         },
         "recentView": {
             "today": "本日",
             "thisWeek": "本周",
             "thisMonth": "本月",
+            "neverPlayed": "",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },

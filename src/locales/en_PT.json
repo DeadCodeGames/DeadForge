@@ -253,12 +253,15 @@
             "gameNotes": "",
             "gameNotesTooltip": "",
             "noGameNotes": "",
-            "installDir": ""
+            "installDir": "",
+            "lastPlayed": "",
+            "playTime": ""
         },
         "recentView": {
             "today": "Ter'day",
             "thisWeek": "",
             "thisMonth": "",
+            "neverPlayed": "",
             "noRecentGames": "",
             "noRecentGamesDescription": ""
         },
