@@ -27,7 +27,7 @@
         "articles": {
             "publishedOn": "Zverejnené {{date}}",
             "lastEditedOn": "Naposledy upravené {{date}}",
-            "writtenBy_one": "Napísal <0></0>",
+            "writtenBy_one": "Napísal/-a <0></0>",
             "writtenBy_few": "Napísali <0></0>",
             "writtenBy_many": "Napísali <0></0>",
             "writtenBy_other": "Napísali <0></0>"
@@ -187,7 +187,7 @@
                 "stopping": "Zastavuje sa...",
                 "downloading": "Sťahuje sa",
                 "installing": "Inštaluje sa",
-                "checking": ""
+                "checking": "Prebieha kontrola..."
             },
             "favourites": "Obľúbené",
             "favouritesDescription": "Vaše najobľúbenejšie hry",
