@@ -333,8 +333,21 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
     }
 
     const renderContent = (content: string | Token[]): React.ReactNode => {
-        if (typeof content === "string") {
-            return <Twemoji noWrapper><span className="[&>.emoji]:inline [&>.emoji]:size-[calc(4em/3)] [&>.emoji]:mx-[0.125em] [&>.emoji]:mt-[-0.225em]">{content}</span></Twemoji>
+        if (((c): c is string => typeof c === "string")(content)) {
+            let processedContent = content.split("🏳️‍🇱‍🇴‍🇱‍‍").map((part, i, arr) =>
+                i < arr.length - 1
+                    ? [part, (
+                        <img
+                            key={i}
+                            draggable="false"
+                            className="emoji"
+                            alt="🏳️‍🇱‍🇴‍🇱‍‍"
+                            src={process.env.PUBLIC_URL + "/twemoji/svg/1f3f3-fe0f-200d-1f1ed-200d-1f1f4-200d-1f1ed-200d.svg"}
+                        />
+                    )]
+                    : part
+            );
+            return <Twemoji noWrapper><span className="[&>.emoji]:inline [&>.emoji]:size-[calc(4em/3)] [&>.emoji]:mx-[0.125em] [&>.emoji]:mt-[-0.225em]">{processedContent}</span></Twemoji>
         }
         return renderTokens(content)
     }
@@ -469,4 +482,4 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
     )
 }
 
-export default MarkdownText
+export default MarkdownText;
