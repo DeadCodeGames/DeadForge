@@ -90,7 +90,7 @@ const Home = () => {
                     lastPlayed: ((g): g is NormalizedPseudoGameJoin => g.type === "GameJoin")(game) ? Math.max(...Object.values(game.source).map(game => game.lastPlayed || 0), 0) : (game.lastPlayed || 0)
                 };
             })
-            .filter(({ lastPlayed }) => {console.log(lastPlayed); return lastPlayed > 0})
+            .filter(({ lastPlayed }) => lastPlayed > 0)
             .sort((a, b) => b.lastPlayed - a.lastPlayed);
     }, [games, gameJoinsPopulated, launchTimestamps]);
 

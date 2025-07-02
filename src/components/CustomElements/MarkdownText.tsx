@@ -2,6 +2,7 @@ import React, { type JSX } from "react"
 import { cn } from "@/lib/utils"
 import Spoiler from "@/components/CustomElements/Spoiler"
 import Twemoji from "react-twemoji"
+import { Info, Lightbulb, MessageSquareWarning, TriangleAlert, OctagonAlert } from "lucide-react"
 
 interface MarkdownTextProps {
   children: string
@@ -9,12 +10,13 @@ interface MarkdownTextProps {
     mediaMap?: Record<string, string>
 }
 
-type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "link" | "image" | "spoiler"
-type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule"
+type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "monospace" | "link" | "image" | "spoiler"
+type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule" | "alert"
 type ListType = "unordered" | "ordered"
+type AlertType = "note" | "tip" | "important" | "warning" | "caution"
 
 type Token =
-  | { type: Extract<TokenType, "text">; content: string }
+  | { type: Extract<TokenType, "text" | "monospace">; content: string }
   | { type: Extract<TokenType, "bold" | "italic" | "strikethrough" | "underline">; content: Token[] }
   | { type: Extract<TokenType, "link">; content: Token[]; url: string }
   | { type: Extract<TokenType, "image">; content: string; url: string; alt: string }
@@ -32,6 +34,7 @@ interface Block {
   content: Token[]
   level?: number // For headings (1-6)
   items?: ListItem[] // For lists
+  alertType?: AlertType
 }
 
 const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaMap }) => {
@@ -125,10 +128,11 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
 
             // Check for markdown patterns
             const patterns = [
-                { marker: "**", type: "bold" as const },
-                { marker: "__", type: "underline" as const },
-                { marker: "~~", type: "strikethrough" as const },
-                { marker: "_", type: "italic" as const },
+                { marker: "**" as const, type: "bold" as const },
+                { marker: "__" as const, type: "underline" as const },
+                { marker: "~~" as const, type: "strikethrough" as const },
+                { marker: "_" as const, type: "italic" as const },
+                { marker: "`" as const, type: "monospace" as const}
             ]
 
             let matched = false
@@ -138,10 +142,17 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                     if (closeIndex !== -1) {
                         pushText()
                         const innerContent = text.slice(i + marker.length, closeIndex)
-                        tokens.push({
-                            type,
-                            content: tokenizeInline(innerContent),
-                        })
+                        if (type === "monospace") {
+                            tokens.push({
+                                type: "monospace",
+                                content: innerContent,
+                            })
+                        } else {
+                            tokens.push({
+                                type,
+                                content: tokenizeInline(innerContent),
+                            })
+                        }
                         i = closeIndex + marker.length
                         matched = true
                         break
@@ -239,6 +250,26 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i]
+
+            // Handle alert blocks
+            const alertMatch = line.match(/^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/m)
+            console.log(line, alertMatch);
+            if (alertMatch) {
+                const alertType = alertMatch[1].toLowerCase() as AlertType
+                let alertContentLines: string[] = []
+                let j = i + 1
+                while (j < lines.length && lines[j].trim().startsWith(">")) {
+                    alertContentLines.push(lines[j].replace(/^>\s?/, ""))
+                    j++
+                }
+                blocks.push({
+                    type: "alert",
+                    alertType,
+                    content: tokenizeInline(alertContentLines.join("\n")),
+                })
+                i = j - 1
+                continue
+            }
 
             // Handle spoiler tags
             if (line.trim() === "<spoiler>") {
@@ -347,7 +378,10 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                     )]
                     : part
             );
-            return <Twemoji noWrapper><span className="[&>.emoji]:inline [&>.emoji]:size-[calc(4em/3)] [&>.emoji]:mx-[0.125em] [&>.emoji]:mt-[-0.225em]">{processedContent}</span></Twemoji>
+            return <Twemoji noWrapper options={{
+                folder: 'svg',
+                ext: '.svg',
+            }}><span className="[&>.emoji]:inline [&>.emoji]:size-[calc(4em/3)] [&>.emoji]:mx-[0.125em] [&>.emoji]:mt-[-0.225em]">{processedContent}</span></Twemoji>
         }
         return renderTokens(content)
     }
@@ -367,6 +401,8 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                             return <del key={index}>{renderContent(token.content)}</del>
                         case "underline":
                             return <u key={index}>{renderContent(token.content)}</u>
+                        case "monospace":
+                            return <code key={index} className="px-1 py-0.5 dark:bg-night bg-fullMoon text-notQuiteBlack dark:text-notQuiteWhite rounded-md border border-solid dark:border-fullMoon/25 border-night/25">{token.content}</code>
                         case "link":
                             return (
                                 <a
@@ -383,7 +419,13 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                             return (
                                 <div key={index} className="flex flex-col items-center my-4">
                                     <img
-                                        src={mediaMap?.[token.url] || token.url?.startsWith("http") ? token.url : `local://${token.url}`}
+                                        src={
+                                            mediaMap?.[token.url]
+                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
+                                                : token.url?.startsWith("http")
+                                                    ? token.url
+                                                    : `local://${token.url}`
+                                        }
                                         alt={token.alt || ""}
                                         className="max-w-full h-auto max-h-[66vh] rounded-lg shadow-lg"
                                     />
@@ -457,6 +499,29 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
             )
         } else if (block.type === "horizontalRule") {
             return <hr key={index} className="my-4 border-0 border-b border-solid border-neutral-500/70" />
+        } else if (block.type === "alert") {
+            const alertStyles: Record<AlertType, { textColor: string; borderColor: string; icon: React.ReactNode; label: string }> = {
+                note:      { borderColor: "border-blue-500/50", textColor: "text-blue-500", icon: (<Info />), label: "Note" },
+                tip:       { borderColor: "border-green-600/50", textColor: "text-green-600", icon: (<Lightbulb />), label: "Tip" },
+                important: { borderColor: "border-purple-600/50", textColor: "text-purple-600", icon: (<MessageSquareWarning />), label: "Important" },
+                warning:   { borderColor: "border-yellow-600/50", textColor: "text-yellow-600", icon: (<TriangleAlert />), label: "Warning" },
+                caution:   { borderColor: "border-red-600/50", textColor: "text-red-600", icon: (<OctagonAlert />), label: "Caution" },
+            }
+            const { borderColor, textColor, icon, label } = alertStyles[block.alertType!]
+            return (
+                <div
+                    key={index}
+                    className={cn("my-4 px-4 py-2 border-0 border-l-4 border-solid flex items-start gap-3 w-fit", borderColor)}
+                    role="alert"
+                    aria-label={label}
+                >
+                    <span className={cn("text-2xl mt-0.5", textColor)}>{icon}</span>
+                    <div>
+                        <div className={cn("font-bold mb-1 -mt-0.5 text-lg", textColor)}>{label}</div>
+                        <div className="text-sm -mt-0.5">{renderTokens(block.content)}</div>
+                    </div>
+                </div>
+            )
         } else {
             // Paragraph
             const isEmpty = block.content.length === 1 && block.content[0].type === "text" && block.content[0].content === ""
