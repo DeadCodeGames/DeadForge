@@ -1431,7 +1431,7 @@ const LibraryGame: React.FC = () => {
         window.Electron.getGameMetrics(game.source, typeof game.id === 'object' ? JSON.stringify(game.id) : game.id)
             .then(setMetrics)
             .catch(() => setMetrics({ lastPlayed: 0, totalPlayedFor: 0 }));
-    }, [currentGame]);
+    }, [currentGame, currentGameState?.state]);
 
     if (!currentGame) {
         return (

@@ -158,6 +158,7 @@ export async function checkMissingAssets(games: NormalizedGame[], curatedAssets:
 
     // Check games
     for (const game of games) {
+        if (game.source === "deadforge") continue;
         if (!game.media) {
             // If game has no media object at all, report all assets as missing
             reports.push({

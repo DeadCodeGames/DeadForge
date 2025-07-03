@@ -10,7 +10,7 @@ interface MarkdownTextProps {
     mediaMap?: Record<string, string>
 }
 
-type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "monospace" | "link" | "image" | "spoiler"
+type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "monospace" | "link" | "image" | "spoiler" | "video" | "audio" | "embed"
 type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule" | "alert"
 type ListType = "unordered" | "ordered"
 type AlertType = "note" | "tip" | "important" | "warning" | "caution"
@@ -19,7 +19,7 @@ type Token =
   | { type: Extract<TokenType, "text" | "monospace">; content: string }
   | { type: Extract<TokenType, "bold" | "italic" | "strikethrough" | "underline">; content: Token[] }
   | { type: Extract<TokenType, "link">; content: Token[]; url: string }
-  | { type: Extract<TokenType, "image">; content: string; url: string; alt: string }
+  | { type: Extract<TokenType, "image" | "video" | "audio" | "embed">; content: string; url: string; alt: string }
   | { type: Extract<TokenType, "spoiler">; content: Token[] }
 
 interface ListItem {
@@ -84,23 +84,50 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                 }
             }
 
+            // Check for video/audio/embed pattern ![video:alt](url), ![audio:alt](url), ![embed:alt](url)
+            const mediaTypes = ["video", "audio", "embed"] as const;
+            let mediaMatched = false;
+            for (const mediaType of mediaTypes) {
+                if (text.startsWith(`![${mediaType}:`, i)) {
+                    const closeBracket = text.indexOf("]", i);
+                    if (closeBracket !== -1 && text[closeBracket + 1] === "(") {
+                        const closeParens = text.indexOf(")", closeBracket);
+                        if (closeParens !== -1) {
+                            pushText();
+                            const altText = text.slice(i + 3 + mediaType.length, closeBracket);
+                            const url = text.slice(closeBracket + 2, closeParens);
+                            tokens.push({
+                                type: mediaType,
+                                content: "",
+                                url,
+                                alt: altText,
+                            });
+                            i = closeParens + 1;
+                            mediaMatched = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (mediaMatched) continue;
+
             // Check for image pattern ![alt](url)
             if (text.startsWith("![", i)) {
-                const closeBracket = text.indexOf("]", i)
+                const closeBracket = text.indexOf("]", i);
                 if (closeBracket !== -1 && text[closeBracket + 1] === "(") {
-                    const closeParens = text.indexOf(")", closeBracket)
+                    const closeParens = text.indexOf(")", closeBracket);
                     if (closeParens !== -1) {
-                        pushText()
-                        const altText = text.slice(i + 2, closeBracket)
-                        const url = text.slice(closeBracket + 2, closeParens)
+                        pushText();
+                        const altText = text.slice(i + 2, closeBracket);
+                        const url = text.slice(closeBracket + 2, closeParens);
                         tokens.push({
                             type: "image",
                             content: "",
                             url,
                             alt: altText,
-                        })
-                        i = closeParens + 1
-                        continue
+                        });
+                        i = closeParens + 1;
+                        continue;
                     }
                 }
             }
@@ -443,6 +470,72 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                                     {renderTokens(token.content)}
                                 </Spoiler>
                             )
+                        case "video":
+                            return (
+                                <div key={index} className="flex flex-col items-center my-4">
+                                    <video
+                                        src={
+                                            mediaMap?.[token.url]
+                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
+                                                : token.url?.startsWith("http")
+                                                    ? token.url
+                                                    : `local://${token.url}`
+                                        }
+                                        controls
+                                        className="max-w-full h-auto max-h-[66vh] rounded-lg shadow-lg"
+                                    >
+                                        {token.alt && <track kind="captions" label={token.alt} />}
+                                    </video>
+                                    {token.alt && (
+                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 text-center">
+                                            {token.alt}
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        case "audio":
+                            return (
+                                <div key={index} className="flex flex-col items-center my-4">
+                                    <audio
+                                        src={
+                                            mediaMap?.[token.url]
+                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
+                                                : token.url?.startsWith("http")
+                                                    ? token.url
+                                                    : `local://${token.url}`
+                                        }
+                                        controls
+                                        className="w-full max-w-xl rounded-lg shadow-lg"
+                                    />
+                                    {token.alt && (
+                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 text-center">
+                                            {token.alt}
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        case "embed":
+                            return (
+                                <div key={index} className="flex flex-col items-center my-4">
+                                    <iframe
+                                        src={
+                                            mediaMap?.[token.url]
+                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
+                                                : token.url?.startsWith("http")
+                                                    ? token.url
+                                                    : `local://${token.url}`
+                                        }
+                                        title={token.alt || "Embedded content"}
+                                        className="w-full max-w-2xl aspect-video rounded-lg shadow-lg border border-neutral-300 dark:border-neutral-700"
+                                        allowFullScreen
+                                    />
+                                    {token.alt && (
+                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 text-center">
+                                            {token.alt}
+                                        </p>
+                                    )}
+                                </div>
+                            );
                         default:
                             return null
                     }
