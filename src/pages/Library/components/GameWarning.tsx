@@ -97,17 +97,17 @@ const GameWarning: React.FC<GameWarningProps> = ({ note, className }) => {
                             {processDescription(note.description)}
                         </div>
                         {isExpanded && note.recommendation && (
-                        <div className="pb-4 pr-6">
-                            <div className="border-t border-neutral-200 dark:border-neutral-700 pt-3">
-                                <h4 className="text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                            <div className="pb-4 pr-6">
+                                <div className="border-t border-neutral-200 dark:border-neutral-700 pt-3">
+                                    <h4 className="text-sm font-medium text-neutral-900 dark:text-white mb-2">
                                     Recommendations
-                                </h4>
-                                <div className="text-sm text-neutral-600 dark:text-neutral-300">
-                                    <MarkdownText>{note.recommendation}</MarkdownText>
+                                    </h4>
+                                    <div className="text-sm text-neutral-600 dark:text-neutral-300">
+                                        <MarkdownText>{note.recommendation}</MarkdownText>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
                     </div>
                 </div>
             </div>

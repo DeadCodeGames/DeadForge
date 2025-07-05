@@ -1,5 +1,5 @@
 import i18n from '@/locales/i18n';
-import { NormalizedGame, LaunchOption, steamLanguageMap, NormalizedDLC, NormalizedGameJoin, Sorting, Filters, Collection, CollectionGame, GameMedia, Media, GameState, GameStates, steamLanguageMapFallbacks } from '@/types';
+import { NormalizedGame, LaunchOption, steamLanguageMap, NormalizedDLC, NormalizedGameJoin, Sorting, Filters, Collection, CollectionGame, GameMedia, Media, GameState, GameStates } from '@/types';
 import React, { createContext, useState, useLayoutEffect, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { checkMissingAssets, formatReportForGitHub } from './utils/assetChecker';
@@ -24,6 +24,7 @@ export const LibraryContext = createContext<{
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     setGameState: (gameId: string, source: string, state: GameState['state'], progress?: number | string, extraNumberA?: number, extraNumberB?: number) => void;
     installModalState: { isOpen: boolean, game: NormalizedGame | null };
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     openInstallModal: (game: NormalizedGame) => void;
     closeInstallModal: () => void;
         }>({
@@ -430,23 +431,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 };
 
 export function getLocalizedGameSuffix(defaultSuffix: string = "default") {
-    const lang = i18n.language;
-    // Try direct match
-    const direct = Object.entries(steamLanguageMap).find(([key]) => lang.startsWith(key.replace('-', '_')))?.[0] as string;
-    if (direct && steamLanguageMap[direct]) {
-        return steamLanguageMap[direct];
-    }
-    // Try fallbacks
-    const fallbackKeys = Object.keys(steamLanguageMapFallbacks);
-    const fallbackKey = fallbackKeys.find(key => lang.startsWith(key.replace('-', '_')));
-    if (fallbackKey) {
-        for (const fb of steamLanguageMapFallbacks[fallbackKey]) {
-            if (steamLanguageMap[fb]) {
-                return steamLanguageMap[fb];
-            }
-        }
-    }
-    return defaultSuffix;
+    return steamLanguageMap[Object.entries(steamLanguageMap).find(([key]) => i18n.language.startsWith(key.replace('-', '_')))?.[0] as string] || defaultSuffix;
 }
 
 export function getLocalizedGameName(game: NormalizedGame | NormalizedDLC, extraOptions?: "deprefix", games: NormalizedGame[] | NormalizedDLC[] = [], deprefixerGame?: NormalizedGame) {

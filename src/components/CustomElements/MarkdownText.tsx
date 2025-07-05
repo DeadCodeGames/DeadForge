@@ -280,9 +280,10 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
 
             // Handle alert blocks
             const alertMatch = line.match(/^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/m)
+            console.log(line, alertMatch);
             if (alertMatch) {
                 const alertType = alertMatch[1].toLowerCase() as AlertType
-                let alertContentLines: string[] = []
+                const alertContentLines: string[] = []
                 let j = i + 1
                 while (j < lines.length && lines[j].trim().startsWith(">")) {
                     alertContentLines.push(lines[j].replace(/^>\s?/, ""))
@@ -391,7 +392,7 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
 
     const renderContent = (content: string | Token[]): React.ReactNode => {
         if (((c): c is string => typeof c === "string")(content)) {
-            let processedContent = content.split("🏳️‍🇱‍🇴‍🇱‍‍").map((part, i, arr) =>
+            const processedContent = content.split("🏳️‍🇱‍🇴‍🇱‍‍").map((part, i, arr) =>
                 i < arr.length - 1
                     ? [part, (
                         <img
@@ -463,6 +464,7 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                                 </div>
                             )
                         case "spoiler":
+                            console.log(token);
                             return (
                                 <Spoiler key={index} className="my-4">
                                     {renderTokens(token.content)}

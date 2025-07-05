@@ -356,7 +356,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                                     className={`w-full flex-1 flex-grow px-3 py-1.5 rounded text-sm transition-colors flex items-center justify-center gap-2 ${newCollectionName.trim()
                                         ? 'bg-progress/80 hover:bg-progress'
                                         : 'bg-white/10 opacity-50 cursor-not-allowed'
-                                        }`}
+                                    }`}
                                     type="submit"
                                 >
                                     <span className="material-symbols text-base">check</span>
@@ -479,12 +479,6 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         if (resolveDefaultGameVendor(game).updateAvailable === "update") return 'update';
         if (!resolveDefaultGameVendor(game).installPath) return 'install';
         return isRunning ? 'stop' : 'play';
-    };
-
-    // Placeholder for update logic
-    const handleUpdateGame = async () => {
-        // TODO: Implement update logic
-        return await window.Electron.updateGame(resolveDefaultGameVendor(game).id)
     };
 
     const openInStoreButton: (MenuItemType | MenuItemWithPrefix | false) = game.source === "deadforge" && {

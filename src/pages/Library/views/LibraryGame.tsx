@@ -1404,26 +1404,6 @@ const LibraryGame: React.FC = () => {
         }
     }, [currentGame, logoUrl, heroUrl]);
 
-    const handleInstall = useCallback(async (installPath: string) => {
-        if (!currentGame) return;
-
-        try {
-            const gameId = typeof currentGame.id === "object" ? JSON.stringify(currentGame.id) : currentGame.id;
-            const result = await window.Electron.installGame(gameId, installPath, resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall");
-
-            if (!result.success) {
-                console.error("Failed to install game:", result.error);
-                // You might want to show an error message to the user here
-            } else {
-                console.log(result)
-                openInstallModal(resolveDefaultGameVendor(currentGame))
-            }
-        } catch (error) {
-            console.error("Failed to install game:", error);
-            // You might want to show an error message to the user here
-        }
-    }, [currentGame, openInstallModal]);
-
     // Fetch metrics when currentGame changes
     useEffect(() => {
         if (!currentGame) return;
@@ -1610,7 +1590,7 @@ const LibraryGame: React.FC = () => {
                                         !isLauncherRunning &&
                                         !resolveDefaultGameVendor(currentGame).updateAvailable &&
                                             "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
-                                        isChecking &&
+                                            isChecking &&
                                             "bg-neutral-600 hover:bg-neutral-700 text-neutral-100 shadow-lg",
                                             
                                             "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
@@ -1663,13 +1643,13 @@ const LibraryGame: React.FC = () => {
                                                                                                 ? "sports_score"
                                                                                                 : resolveDefaultGameVendor(currentGame).updateAvailable === "update"
                                                                                                     ? "upgrade"
-                                                                                                : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
-                                                                                                    ? "restart_alt"
-                                                                                                : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                                    ? "download"
-                                                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                                        ? "launch"
-                                                                                                        : "play_circle"}
+                                                                                                    : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
+                                                                                                        ? "restart_alt"
+                                                                                                        : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                                            ? "download"
+                                                                                                            : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                                                ? "launch"
+                                                                                                                : "play_circle"}
                                                         </span>
                                                         <span>
                                                             {isLaunching
@@ -1692,13 +1672,13 @@ const LibraryGame: React.FC = () => {
                                                                                                 ? t("library.shared.gameState.finishingUp")
                                                                                                 : resolveDefaultGameVendor(currentGame).updateAvailable === "update"
                                                                                                     ? t("library.shared.gameState.update")
-                                                                                                : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
-                                                                                                    ? t("library.shared.gameState.reinstall")
-                                                                                                : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                                    ? t("library.shared.gameState.install")
-                                                                                                    : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                                        ? t("library.shared.gameState.launch")
-                                                                                                        : t("library.shared.gameState.play")}
+                                                                                                    : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
+                                                                                                        ? t("library.shared.gameState.reinstall")
+                                                                                                        : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                                            ? t("library.shared.gameState.install")
+                                                                                                            : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                                                ? t("library.shared.gameState.launch")
+                                                                                                                : t("library.shared.gameState.play")}
                                                         </span>
                                                     </div>
                                                 )}
@@ -1850,43 +1830,43 @@ const LibraryGame: React.FC = () => {
                                     </Tooltip>
                                     {/* Manual stop button */}
                                     {isLaunching && (
-                                    <Tooltip
-                                        content={t("library.gameView.checkStatusDescription")}
-                                        position="top"
-                                        showDelay={200}
-                                        containerClassName={cn(
-                                            "-z-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
-                                            hasBeenLaunchingLong && "z-10 !opacity-100 pointer-events-auto",
-                                        )}
-                                    >
-                                        <button
-                                            onClick={async () => {
-                                                if (isGameJoin && gameJoinStates) {
-                                                    const launchingGames = gameJoinStates.filter((state) => state.state === "launching");
-                                                    for (const game of launchingGames) {
-                                                        setGameState(game.gameId, game.source, "stopping");
-                                                        await window.Electron.stopGame(game.source, game.gameId);
-                                                    }
-                                                } else if (currentGame) {
-                                                    const gameToStop = resolveDefaultGameVendor(currentGame);
-                                                    const gameId = typeof gameToStop.id === "object" ? JSON.stringify(gameToStop.id) : gameToStop.id;
-                                                    setGameState(gameId, gameToStop.source, "stopping");
-                                                    await window.Electron.stopGame(gameToStop.source, gameId);
-                                                }
-                                            }}
-                                            disabled={isCheckingStatus || !hasBeenLaunchingLong}
-                                            className={cn(
-                                                "font-bold p-2 rounded-md flex items-center space-x-2 transition-all duration-300 text-sm aspect-square",
-                                                "bg-danger/25 hover:bg-danger text-white",
-                                                "justify-center",
-                                                "disabled:opacity-50 disabled:cursor-not-allowed",
-                                                "opacity-0 pointer-events-none",
-                                                hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
+                                        <Tooltip
+                                            content={t("library.gameView.checkStatusDescription")}
+                                            position="top"
+                                            showDelay={200}
+                                            containerClassName={cn(
+                                                "-z-10 opacity-0 transition-[margin-top,opacity] duration-200 ease-in-out pointer-events-none",
+                                                hasBeenLaunchingLong && "z-10 !opacity-100 pointer-events-auto",
                                             )}
                                         >
-                                            <span className="material-symbols">stop_circle</span>
+                                            <button
+                                                onClick={async () => {
+                                                    if (isGameJoin && gameJoinStates) {
+                                                        const launchingGames = gameJoinStates.filter((state) => state.state === "launching");
+                                                        for (const game of launchingGames) {
+                                                            setGameState(game.gameId, game.source, "stopping");
+                                                            await window.Electron.stopGame(game.source, game.gameId);
+                                                        }
+                                                    } else if (currentGame) {
+                                                        const gameToStop = resolveDefaultGameVendor(currentGame);
+                                                        const gameId = typeof gameToStop.id === "object" ? JSON.stringify(gameToStop.id) : gameToStop.id;
+                                                        setGameState(gameId, gameToStop.source, "stopping");
+                                                        await window.Electron.stopGame(gameToStop.source, gameId);
+                                                    }
+                                                }}
+                                                disabled={isCheckingStatus || !hasBeenLaunchingLong}
+                                                className={cn(
+                                                    "font-bold p-2 rounded-md flex items-center space-x-2 transition-all duration-300 text-sm aspect-square",
+                                                    "bg-danger/25 hover:bg-danger text-white",
+                                                    "justify-center",
+                                                    "disabled:opacity-50 disabled:cursor-not-allowed",
+                                                    "opacity-0 pointer-events-none",
+                                                    hasBeenLaunchingLong && "!opacity-100 pointer-events-auto",
+                                                )}
+                                            >
+                                                <span className="material-symbols">stop_circle</span>
                                             </button>
-                                    </Tooltip>
+                                        </Tooltip>
                                     )}
                                 </div>
                             </div>

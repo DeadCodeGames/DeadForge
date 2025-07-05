@@ -1,6 +1,6 @@
 import type React from "react"
 import type { JSX } from "react"
-import { useState, useContext, useCallback, useMemo, useEffect } from "react"
+import { useState, useContext, useCallback, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import type { NormalizedGame, NormalizedPseudoGameJoin } from "@/types"
 import { getLocalizedGameName, getLocalizedGameSuffix, LibraryContext } from "../Library"
@@ -23,13 +23,10 @@ const FavouritesRibbon = () => (
     </div>
 )
 
-export const getImageUrlCandidates = (
-    resolvedGame: NormalizedGame,
-    useCapsule: boolean,
-    curatedAssets: any[],
-    customAssets: any[]
-): string[] => {
-    if (!resolvedGame.media) return [];
+export const getImageUrl = (resolvedGame: NormalizedGame, useCapsule: boolean, curatedAssets: any[], customAssets: any[]): string => {
+    if (!resolvedGame.media) {
+        return '';
+    }
 
     const gameId = String(resolvedGame.id);
     const gameSource = resolvedGame.source;
@@ -37,126 +34,88 @@ export const getImageUrlCandidates = (
     const suffix = getLocalizedGameSuffix();
     const defaultSuffix = 'english';
 
-    // Helper to extract URL from media data for a given language
-    const getUrlFromMediaData = (mediaData: any, lang: string): string | null => {
+    // Helper function to extract URL from media data
+    const getUrlFromMediaData = (mediaData: any): string | null => {
         if (!mediaData) return null;
         if (typeof mediaData === 'string') return mediaData;
-        if (typeof mediaData === 'object' && mediaData.image && typeof mediaData.image === 'string') return mediaData.image;
-        if (mediaData.image?.[lang]) return mediaData.image[lang];
-        if (mediaData[lang]) return mediaData[lang];
-        return null;
-    };
-    // Helper to extract any available URL from media data
-    const getAnyUrlFromMediaData = (mediaData: any): string | null => {
-        if (!mediaData) return null;
-        if (typeof mediaData === 'string') return mediaData;
-        if (typeof mediaData === 'object' && mediaData.image && typeof mediaData.image === 'string') return mediaData.image;
+        else if (typeof mediaData === 'object' && mediaData.image && typeof mediaData.image === 'string') return mediaData.image;
+        
+        // Try current language
+        if (mediaData.image?.[suffix]) return mediaData.image[suffix];
+        if (mediaData[suffix]) return mediaData[suffix];
+        
+        // Try default language
+        if (mediaData.image?.[defaultSuffix]) return mediaData.image[defaultSuffix];
+        if (mediaData[defaultSuffix]) return mediaData[defaultSuffix];
+        
+        // Try any available language
         if (mediaData.image) {
             const firstImage = Object.values(mediaData.image)[0];
             if (firstImage) return firstImage as string;
         }
         const firstValue = Object.values(mediaData)[0];
         if (firstValue) return firstValue as string;
-        return null;
-    };
-    // Helper to normalize the URL for local://
-    const normalizeUrl = (url: string): string => {
-        if (url.startsWith("CONST_USERDATA")) {
-            return `local://${url}`;
-        }
-        if (url.startsWith('%USERDATA%')) {
-            return `local://${url.replace('%USERDATA%', 'CONST_USERDATA')}`;
-        }
-        if (/^[A-Za-z]:\\/.test(url) || url.startsWith('\\\\')) {
-            return `local://${url}`;
-        }
-        // For relative paths from other sources
-        if (!url.startsWith('local://') && !url.startsWith('http')) {
-            return `local://CONST_USERDATA/game_assets/${gameSource}_${gameId}.${url}`;
-        }
-        return url;
-    };
-    // Helper for Steam cache path
-    const getSteamCacheUrl = (officialCurrentUrl: string): string | null => {
-        const allMediaUrls = Object.values(resolvedGame.media || {}).flatMap(url => {
-            if (typeof url === 'string') return [url];
-            if (url?.image) return Object.values(url.image);
-            return [];
-        });
-        const steamCachePath = allMediaUrls.find(url =>
-            typeof url === 'string' &&
-            url.includes('Steam\\appcache\\librarycache') &&
-            url.includes(resolvedGame.id.toString())
-        );
-        if (steamCachePath && typeof steamCachePath === 'string') {
-            const basePath = steamCachePath.split(resolvedGame.id.toString())[0] + resolvedGame.id.toString() + '\\';
-            return `local://${basePath}${officialCurrentUrl}`;
-        }
+        
         return null;
     };
 
-    // 1. Custom asset (current language)
-    const customAsset = customAssets.find(asset => String(asset.id) === String(gameId) && asset.source === gameSource)?.media?.[mediaType];
-    const customCurrentUrl = getUrlFromMediaData(customAsset, suffix);
-    // 2. Curated asset (current language)
-    const curatedAsset = curatedAssets.find(asset => String(asset.id) === String(gameId) && asset.source === gameSource)?.media?.[mediaType];
-    const curatedCurrentUrl = getUrlFromMediaData(curatedAsset, suffix);
-    console.log(customAssets, curatedAssets);
-    // 3. Official asset (current language)
+    const customAsset = customAssets.find(asset => asset.id === gameId && asset.source === gameSource)?.media?.[mediaType];
+    const curatedAsset = curatedAssets.find(asset => asset.id === gameId && asset.source === gameSource)?.media?.[mediaType];
     const officialAsset = resolvedGame.media[mediaType];
-    const officialCurrentUrl = getUrlFromMediaData(officialAsset, suffix);
-    // 4. Custom asset (default language)
-    const customDefaultUrl = getUrlFromMediaData(customAsset, defaultSuffix);
-    // 5. Curated asset (default language)
-    const curatedDefaultUrl = getUrlFromMediaData(curatedAsset, defaultSuffix);
-    // 6. Official asset (default language)
-    const officialDefaultUrl = getUrlFromMediaData(officialAsset, defaultSuffix);
-    // 7. Any custom asset
-    const customAnyUrl = getAnyUrlFromMediaData(customAsset);
-    // 8. Any curated asset
-    const curatedAnyUrl = getAnyUrlFromMediaData(curatedAsset);
-    // 9. Any official asset
-    const officialAnyUrl = getAnyUrlFromMediaData(officialAsset);
 
-    // Compose the list in order, normalizing URLs and handling Steam special case
-    const candidates: string[] = [];
-    if (customCurrentUrl) candidates.push(normalizeUrl(customCurrentUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    if (curatedCurrentUrl) candidates.push(normalizeUrl(curatedCurrentUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    if (officialCurrentUrl) {
-        if (resolvedGame.source === 'steam') {
-            const steamUrl = getSteamCacheUrl(officialCurrentUrl);
-            if (steamUrl) candidates.push(steamUrl);
-        }
-        candidates.push(normalizeUrl(officialCurrentUrl));
+    // Try each asset source with current language
+    const customCurrentUrl = getUrlFromMediaData(customAsset);
+    if (customCurrentUrl && typeof customCurrentUrl === 'string') {
+        return `local://${customCurrentUrl.replaceAll("%USERDATA%", "CONST_USERDATA")}`;
     }
-    if (customDefaultUrl) candidates.push(normalizeUrl(customDefaultUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    if (curatedDefaultUrl) candidates.push(normalizeUrl(curatedDefaultUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    if (officialDefaultUrl) {
-        if (resolvedGame.source === 'steam') {
-            const steamUrl = getSteamCacheUrl(officialDefaultUrl);
-            if (steamUrl) candidates.push(steamUrl);
-        }
-        candidates.push(normalizeUrl(officialDefaultUrl));
+
+    const curatedCurrentUrl = getUrlFromMediaData(curatedAsset);
+    if (curatedCurrentUrl && typeof curatedCurrentUrl === 'string') {
+        return `local://${curatedCurrentUrl.replaceAll("%USERDATA%", "CONST_USERDATA")}`;
     }
-    if (customAnyUrl) candidates.push(normalizeUrl(customAnyUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    if (curatedAnyUrl) candidates.push(normalizeUrl(curatedAnyUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    if (officialAnyUrl) {
-        if (resolvedGame.source === 'steam') {
-            const steamUrl = getSteamCacheUrl(officialAnyUrl);
-            if (steamUrl) candidates.push(steamUrl);
+
+    const officialCurrentUrl = getUrlFromMediaData(officialAsset);
+    if (officialCurrentUrl && typeof officialCurrentUrl === 'string') {
+        // Handle special cases for official assets
+        if (officialCurrentUrl.startsWith('%USERDATA%')) {
+            return `local://${officialCurrentUrl.replace('%USERDATA%', 'CONST_USERDATA')}`;
         }
-        candidates.push(normalizeUrl(officialAnyUrl));
+
+        if (/^[A-Za-z]:\\/.test(officialCurrentUrl) || officialCurrentUrl.startsWith('\\\\')) {
+            return `local://${officialCurrentUrl}`;
+        }
+
+        // Handle Steam games with relative paths
+        if (resolvedGame.source === 'steam') {
+            const allMediaUrls = Object.values(resolvedGame.media || {}).flatMap(url => {
+                if (typeof url === 'string') return [url];
+                if (url?.image) return Object.values(url.image);
+                return [];
+            });
+
+            const steamCachePath = allMediaUrls.find(url =>
+                typeof url === 'string' &&
+                url.includes('Steam\\appcache\\librarycache') &&
+                url.includes(resolvedGame.id.toString())
+            );
+
+            if (steamCachePath && typeof steamCachePath === 'string') {
+                const basePath = steamCachePath.split(resolvedGame.id.toString())[0] + resolvedGame.id.toString() + '\\';
+                return `local://${basePath}${officialCurrentUrl}`;
+            }
+        }
+
+        // For relative paths from other sources
+        return `local://CONST_USERDATA/game_assets/${resolvedGame.source}_${resolvedGame.id}.${officialCurrentUrl}`;
     }
-    console.log(resolvedGame.name, [...new Set(candidates.filter(Boolean))])
-    // Remove duplicates and falsy
-    return [...new Set(candidates.filter(Boolean))];
-};
+
+    return '';
+}
 
 const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = true, useCapsule = false, isFavorite = false, children }): JSX.Element => {
     const navigate = useNavigate()
     const [headerLoaded, setHeaderLoaded] = useState(false)
     const [headerError, setHeaderError] = useState(false)
-    const [candidateIndex, setCandidateIndex] = useState(0)
     const resolvedGame = resolveDefaultGameVendor(game)
     const { collections, favourites, customAssets, curatedAssets, setCollections, setFavourites, gameStates, setGameState, games } = useContext(LibraryContext)
 
@@ -230,14 +189,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
         }
     }, [size, useCapsule])
 
-    useEffect(() => {
-        setHeaderError(false);
-        setCandidateIndex(0);
-    }, [resolvedGame, useCapsule, curatedAssets, customAssets])
-
-    const imageUrlCandidates = useMemo(() => getImageUrlCandidates(resolvedGame, useCapsule, curatedAssets, customAssets), [resolvedGame, useCapsule, curatedAssets, customAssets])
-    const imageUrl = imageUrlCandidates[candidateIndex] || '';
-
+    const imageUrl = useMemo(() => getImageUrl(resolvedGame, useCapsule, curatedAssets, customAssets), [resolvedGame, useCapsule, curatedAssets, customAssets])
     if (!imageUrl || headerError) {
         return (
             <>
@@ -318,13 +270,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, size = "medium", showTitle = 
                         !headerLoaded ? "opacity-0" : "opacity-100",
                     )}
                     onLoad={() => setHeaderLoaded(true)}
-                    onError={() => {
-                        if (candidateIndex < imageUrlCandidates.length - 1) {
-                            setCandidateIndex(idx => idx + 1);
-                        } else {
-                            setHeaderError(true);
-                        }
-                    }}
+                    onError={() => setHeaderError(true)}
                     loading="eager"
                     fetchPriority="high"
                     draggable={false}

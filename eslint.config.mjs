@@ -13,7 +13,7 @@ export default defineConfig([
     pluginReact.configs.flat.recommended,
     {
         files: ["src/**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-        plugins: { js, pluginReact, pluginTypescript, pluginReactHooks, pluginArrayDestructureCommaSpacing, "jsx-ally": pluginJSXA11y },
+        plugins: { js, pluginReact, pluginTypescript, pluginReactHooks, pluginArrayDestructureCommaSpacing, "jsx-a11y": pluginJSXA11y },
         extends: ["js/recommended"],
         languageOptions: {
             globals: {
