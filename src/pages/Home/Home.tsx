@@ -92,8 +92,8 @@ const Home = () => {
     console.log(recentGames);
 
     return (
-        <div className="w-[calc(100%-2.5rem)] flex flex-col-reverse 2xl:flex-row h-full py-6 2xl:py-0 px-6 2xl:pr-4 bg-fullMoon dark:bg-night overflow-y-auto 2xl:overflow-y-hidden">
-            <div className='flex flex-col w-full 2xl:max-w-[calc(100%-257px)] gap-y-4 overflow-y-auto pt-4 2xl:pt-6 py-6 pr-6 border-0 border-solid border-notQuiteBlack/20 dark:border-notQuiteWhite/20 2xl:border-r h-[calc(100%-3rem)]'>
+        <div className="w-full flex flex-col-reverse 2xl:flex-row h-[calc(100%-1.5rem)] 2xl:h-full pt-6 2xl:pt-0 2xl:pr-4 bg-fullMoon dark:bg-night overflow-y-auto 2xl:overflow-y-hidden">
+            <div className='flex flex-col w-[calc(100%-49px)] 2xl:max-w-[calc(100%-257px)] gap-y-4 overflow-y-auto px-6 pt-4 2xl:pt-6 py-6 pr-6 border-0 border-solid border-notQuiteBlack/20 dark:border-notQuiteWhite/20 2xl:border-r h-[calc(100%-3rem)]'>
                 <h1 className="font-bold text-3xl pl-2 font-heading">
                     <div className="flex flex-row gap-2 items-center">
                         <span>
@@ -202,9 +202,9 @@ const Home = () => {
                     )
                 }
             </div>
-            <div className='flex flex-col gap-2 2xl:w-[216px] overflow-y-visible overflow-x-visible 2xl:p-4 !pr-0 border-solid border-0 border-b 2xl:border-b-0 border-notQuiteBlack/20 dark:border-notQuiteWhite/20'>
+            <div className='flex flex-col gap-2 2xl:w-[216px] overflow-y-visible overflow-x-visible px-6 2xl:p-4 border-solid border-0 border-b 2xl:border-b-0 border-notQuiteBlack/20 dark:border-notQuiteWhite/20'>
                 <h1 className="block font-bold text-2xl hHLPLFVBBT2XLS:-mt-2 hHLPLFVBBT2XLS:mb-1 font-heading w-[216px]">{t("home.jumpBackIn")}</h1>
-                <div className='flex flex-row *:flex-shrink-0 2xl:flex-col h-44 2xl:h-full pb-4 2xl:pb-0 justify-start gap-4 overflow-y-hidden overflow-x-hidden 2xl:w-[216px] after:transition-opacity after:duration-300 after:opacity-0 after:hHLPLNFV:opacity-100 after:hVLPLFVAIT2XLS:opacity-100 after:from-fullMoon after:to-fullMoon/0 after:dark:from-night after:dark:to-night/0 2xl:after:w-[216px] hHLPLFVBBT2XLS:after:h-44 2xl:after:h-[100px] hHLPLFVBBT2XLS:after:w-16 hHLPLFVBBT2XLS:after:bg-gradient-to-l 2xl:after:bg-gradient-to-t 2xl:after:absolute hHLPLFVBBT2XLS:after:absolute 2xl:after:bottom-4 hHLPLFVBBT2XLS:after:right-4 after:pointer-events-none 2xl:after:after:absolute 2xl:before:absolute 2xl:before:bottom-4 2xl:before:bg-transparent 2xl:before:hVLPLFVAIT2XLS:w-[216px] 2xl:before:hVLPLFVAIT2XLS:h-[25px] before:hVLPLFVAIT2XLS:z-[1]'>
+                <div className='flex flex-row *:flex-shrink-0 2xl:flex-col h-44 2xl:h-full pb-4 2xl:pb-0 justify-start gap-4 overflow-y-hidden overflow-x-hidden 2xl:w-[216px] after:transition-opacity after:duration-300 after:opacity-0 after:hHLPLNFV:opacity-100 after:hVLPLFVAIT2XLS:opacity-100 after:from-fullMoon after:to-fullMoon/0 after:dark:from-night after:dark:to-night/0 2xl:after:w-[216px] hHLPLFVBBT2XLS:after:h-44 2xl:after:h-[100px] hHLPLFVBBT2XLS:after:w-16 hHLPLFVBBT2XLS:after:bg-gradient-to-l 2xl:after:bg-gradient-to-t 2xl:after:absolute hHLPLFVBBT2XLS:after:absolute 2xl:after:bottom-4 hHLPLFVBBT2XLS:after:right-6 after:pointer-events-none 2xl:after:after:absolute 2xl:before:absolute 2xl:before:bottom-4 2xl:before:bg-transparent 2xl:before:hVLPLFVAIT2XLS:w-[216px] 2xl:before:hVLPLFVAIT2XLS:h-[25px] before:hVLPLFVAIT2XLS:z-[1]'>
                     {recentGames.slice(0, 8).map(g => <GameCard game={g.game} size='homepage' useCapsule={!isWideEnoughForHorizontalGameCardsUwU} showTitle={false} isFavorite={favourites.some(f => f.source === g.game.source && f.id === g.game.id)} />)}
                 </div>
             </div>
