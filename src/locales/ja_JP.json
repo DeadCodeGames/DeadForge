@@ -118,7 +118,7 @@
                 "itchioExecutableInvalid": "指定されたディレクトリに、itch実行ファイルが見つかりませんでした。\nこのパスにはitch-setup実行ファイルとapp-[バージョン]フォルダが直接含まれている必要があります。",
                 "readyToImport": "インポートの準備完了",
                 "importFromPlatforms": "以下のプラットフォームからデータをインポートします：",
-                "deadforgeV1Settings": "<bold>DEADFORGE</bold>v1設定：<check/> 転送された",
+                "deadforgeV1Settings": "<bold>DEADFORGE</bold> v1設定：<check/> 転送された",
                 "deadforgeV2BackupImported": "<bold>DEADFORGE</bold> v2 バックアップ：<check/> インポート元：",
                 "deadforgeV2BackupNotFound": "<bold>DEADFORGE</bold> v2 バックアップ：<x/> 指定された場所にバックアップが見つかりませんでした：",
                 "backupImportWarning": "DEADFORGEバックアップアーカイブをインポートしています。これにより、Steam・Epic・itch のパスのインポートなど、他の初期設定ステップは自動的にスキップされます。\nバックアップのインポート完了後に、<0>設定</0> → <1>アプリデータとアップデート</1> → <2>初期設定</2> → <3>初期設定を再度開始</3> から、再びこの初期設定をやり直すこともできます。",
