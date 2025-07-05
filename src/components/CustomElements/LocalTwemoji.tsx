@@ -43,6 +43,8 @@ const LocalTwemoji: React.FC<LocalTwemojiProps> = ({
         );
     }
 
+    console.log(processedChildren)
+
     return (
         <Twemoji
             options={{

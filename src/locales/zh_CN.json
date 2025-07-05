@@ -30,7 +30,10 @@
             "publishedOn": "",
             "lastEditedOn": "",
             "writtenBy_other": ""
-        }
+        },
+        "errorWithLoadingArticles": "",
+        "errorWithUpdatingArticles": "",
+        "errorWithUpdatingArticles-NetworkError": ""
     },
     "store": {
         "urlCopied": "URL 已成功复制"

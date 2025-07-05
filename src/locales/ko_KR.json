@@ -30,7 +30,10 @@
             "publishedOn": "",
             "lastEditedOn": "",
             "writtenBy_other": ""
-        }
+        },
+        "errorWithLoadingArticles": "",
+        "errorWithUpdatingArticles": "",
+        "errorWithUpdatingArticles-NetworkError": ""
     },
     "store": {
         "urlCopied": "URL이 성공적으로 복사되었습니다"
