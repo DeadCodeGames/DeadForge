@@ -34,9 +34,9 @@
             "writtenBy_many": "Napísali <0></0>",
             "writtenBy_other": "Napísali <0></0>"
         },
-        "errorWithLoadingArticles": "",
-        "errorWithUpdatingArticles": "",
-        "errorWithUpdatingArticles-NetworkError": ""
+        "errorWithLoadingArticles": "Nastala chyba pri načítavaní článkov:",
+        "errorWithUpdatingArticles": "Nastala chyba pri aktualizovaní článkov:",
+        "errorWithUpdatingArticles-NetworkError": "Toto je pravdepodobne chyba siete. Skontrolujte vaše pripojenie k internetu, a skúste to znova."
     },
     "store": {
         "urlCopied": "Adresa bola úspešne skopírovaná"

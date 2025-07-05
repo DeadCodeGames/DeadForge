@@ -34,9 +34,9 @@
             "writtenBy_many": "Napsali <0></0>",
             "writtenBy_other": "Napsali <0></0>"
         },
-        "errorWithLoadingArticles": "",
-        "errorWithUpdatingArticles": "",
-        "errorWithUpdatingArticles-NetworkError": ""
+        "errorWithLoadingArticles": "Chyba při načítání článků:",
+        "errorWithUpdatingArticles": "Chyba při aktualizaci článků:",
+        "errorWithUpdatingArticles-NetworkError": "Zdá se, že se jedná o chybu sítě. Zkontrolujte připojení k internetu a zkuste načíst tuto stránku znovu."
     },
     "store": {
         "urlCopied": "Adresa byla úspěšně zkopírovaná"
