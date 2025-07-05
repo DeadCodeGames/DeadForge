@@ -31,7 +31,10 @@
             "writtenBy_other": "Written by <0></0>",
             "publishedOn": "Published on {{date}}",
             "lastEditedOn": "Last edited on {{date}}"
-        }
+        },
+        "errorWithLoadingArticles": "Error with loading articles:",
+        "errorWithUpdatingArticles": "Error with updating articles:",
+        "errorWithUpdatingArticles-NetworkError": "This seems to be a network error. Check your internet connection, and try reloading this page."
     },
     "store": {
         "urlCopied": "URL has been successfully copied"
