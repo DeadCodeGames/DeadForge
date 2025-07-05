@@ -1,5 +1,5 @@
 import i18n from '@/locales/i18n';
-import { NormalizedGame, LaunchOption, steamLanguageMap, NormalizedDLC, NormalizedGameJoin, Sorting, Filters, Collection, CollectionGame, GameMedia, Media, GameState, GameStates } from '@/types';
+import { NormalizedGame, LaunchOption, steamLanguageMap, NormalizedDLC, NormalizedGameJoin, Sorting, Filters, Collection, CollectionGame, GameMedia, Media, GameState, GameStates, steamLanguageMapFallbacks } from '@/types';
 import React, { createContext, useState, useLayoutEffect, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { checkMissingAssets, formatReportForGitHub } from './utils/assetChecker';
@@ -430,7 +430,23 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 };
 
 export function getLocalizedGameSuffix(defaultSuffix: string = "default") {
-    return steamLanguageMap[Object.entries(steamLanguageMap).find(([key]) => i18n.language.startsWith(key.replace('-', '_')))?.[0] as string] || defaultSuffix;
+    const lang = i18n.language;
+    // Try direct match
+    const direct = Object.entries(steamLanguageMap).find(([key]) => lang.startsWith(key.replace('-', '_')))?.[0] as string;
+    if (direct && steamLanguageMap[direct]) {
+        return steamLanguageMap[direct];
+    }
+    // Try fallbacks
+    const fallbackKeys = Object.keys(steamLanguageMapFallbacks);
+    const fallbackKey = fallbackKeys.find(key => lang.startsWith(key.replace('-', '_')));
+    if (fallbackKey) {
+        for (const fb of steamLanguageMapFallbacks[fallbackKey]) {
+            if (steamLanguageMap[fb]) {
+                return steamLanguageMap[fb];
+            }
+        }
+    }
+    return defaultSuffix;
 }
 
 export function getLocalizedGameName(game: NormalizedGame | NormalizedDLC, extraOptions?: "deprefix", games: NormalizedGame[] | NormalizedDLC[] = [], deprefixerGame?: NormalizedGame) {

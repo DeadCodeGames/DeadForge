@@ -76,8 +76,6 @@ const Home = () => {
             ...gameJoinsPopulated.map(transformGameJoinIntoUsableFormat),
         ];
 
-        console.log(allGames);
-
         return allGames
             .map(game => {
                 return {
@@ -88,8 +86,6 @@ const Home = () => {
             .filter(({ lastPlayed }) => lastPlayed > 0)
             .sort((a, b) => b.lastPlayed - a.lastPlayed);
     }, [games, gameJoinsPopulated, launchTimestamps]);
-
-    console.log(recentGames);
 
     return (
         <div className="w-full flex flex-col-reverse 2xl:flex-row h-[calc(100%-1.5rem)] 2xl:h-full pt-6 2xl:pt-0 2xl:pr-4 bg-fullMoon dark:bg-night overflow-y-auto 2xl:overflow-y-hidden">
@@ -112,12 +108,12 @@ const Home = () => {
                 {
                     loading ? (
                         <div className="flex items-center justify-center min-h-[calc(100%-102px)]">
-                            <div className="rounded-full h-8 w-8 border-t-2 border-b-2 border-neutral-900 dark:border-white">{t("loading")}</div>
+                            <div className="rounded-full h-8 w-full text-center border-t-2 border-b-2 border-neutral-900 dark:border-white">{t("loading")}</div>
                         </div>
                     ) : errorLoading ? (
                         <div className="flex flex-col items-center justify-center min-h-[calc(100%-102px)] text-red-600">
-                                <h2 className="text-xl font-bold mb-2">{t("errorWithLoadingArticles")}</h2>
-                            <p>{errorLoading}</p>
+                            <h2 className="text-xl font-bold mb-2 w-full text-center">{t("errorWithLoadingArticles")}</h2>
+                            <p className="w-full text-center">{errorLoading}</p>
                         </div>
                     ) : (
                         <div className='space-y-6'>
