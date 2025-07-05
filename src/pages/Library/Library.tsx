@@ -24,6 +24,7 @@ export const LibraryContext = createContext<{
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     setGameState: (gameId: string, source: string, state: GameState['state'], progress?: number | string, extraNumberA?: number, extraNumberB?: number) => void;
     installModalState: { isOpen: boolean, game: NormalizedGame | null };
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     openInstallModal: (game: NormalizedGame) => void;
     closeInstallModal: () => void;
         }>({
