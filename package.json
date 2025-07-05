@@ -36,6 +36,7 @@
     "@icons-pack/react-simple-icons": "^12.7.0",
     "@types/adm-zip": "^0.5.7",
     "@types/better-sqlite3": "^7.6.13",
+    "@types/eslint-plugin-jsx-a11y": "^6.10.0",
     "@types/flat": "^5.0.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.2",
