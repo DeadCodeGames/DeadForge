@@ -216,8 +216,6 @@ const Settings = () => {
             const pluralForms = PLURAL_SUFFIXES.map(suffix => baseKey + suffix).concat([baseKey]);
             return pluralForms.some(formKey => langFlat[formKey] !== undefined && langFlat[formKey] !== "");
         }).length;
-        
-        console.log(lang, enBaseKeys.length, translatedCount)
 
         return Math.round((translatedCount / enBaseKeys.length) * 100);
     };

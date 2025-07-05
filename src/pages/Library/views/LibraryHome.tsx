@@ -2,7 +2,7 @@ import type React from "react"
 import { useCallback, useContext, useMemo, useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { getLocalizedGameName, LibraryContext } from "../Library"
-import GameCard, { getImageUrl } from "../components/GameCard"
+import GameCard, { getImageUrlCandidates } from "../components/GameCard"
 import type { NormalizedGame, NormalizedPseudoGameJoin, NormalizedGameJoin, CollectionGame } from "@/types"
 import { Heart, Clock, Gamepad2 } from "lucide-react"
 import { resolveDefaultGameVendor } from "../utils/LibraryHelpers"
@@ -66,12 +66,12 @@ const StaticGameList: React.FC<{games: (NormalizedGame | NormalizedPseudoGameJoi
         gamesMapped.forEach((game) => {
             if (!game.media) return;
             try {
-                const imgUrl = getImageUrl(game, false, curatedAssets, customAssets);
-                if (imgUrl) imagesToPreload.add(imgUrl);
+                const imgUrl = getImageUrlCandidates(game, false, curatedAssets, customAssets);
+                if (imgUrl) imgUrl.forEach(i => imagesToPreload.add(i));
             } catch (e) { console.log(e); }
             try {
-                const imgUrl = getImageUrl(game, true, curatedAssets, customAssets);
-                if (imgUrl) imagesToPreload.add(imgUrl);
+                const imgUrl = getImageUrlCandidates(game, true, curatedAssets, customAssets);
+                if (imgUrl) imgUrl.forEach(i => imagesToPreload.add(i));
             } catch (e) { console.log(e); }
             if (game.media.iconUrl) {
                 try {
