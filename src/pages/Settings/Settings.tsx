@@ -372,7 +372,7 @@ const Settings = () => {
                                             <SelectOption key={lang} value={lang} hiddenFromSelect={!context.preferences.showIncompleteLanguages && percentage !== 100}>
                                                 <div className="flex row items-center justify-between w-full">
                                                     <div className="flex flex-row items-center">
-                                                        <LocalTwemoji controlled key={lang + "_flag"} options={{ className: '!w-8 !aspect-square mx-1', base: window.App.isPackaged ? `${process.env.PUBLIC_URL}/twemoji` : undefined }}>{(resources as any)[lang].translation.meta.emoji}</LocalTwemoji>
+                                                        <LocalTwemoji controlled options={{ className: '!w-8 !aspect-square mx-1', base: window.App.isPackaged ? `${process.env.PUBLIC_URL}/twemoji` : undefined }}>{(resources as any)[lang].translation.meta.emoji}</LocalTwemoji>
                                                         <span className="ml-2 mr-8">{(resources as any)[lang].translation.meta.name}</span>
                                                     </div>
                                                     <div className="border-2 border-solid rounded-full text-sm px-2 py-1" style={{ color: color, backgroundColor }}>

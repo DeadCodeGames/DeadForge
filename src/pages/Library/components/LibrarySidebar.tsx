@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useRef, useState, memo, useCallback } from 'react';
 import { getLocalizedGameName, LibraryContext, LibrarySidebarContext } from '../Library';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { SiEpicgames, SiItchdotio, SiSteam } from '@icons-pack/react-simple-icons';
 import DEADCODELogo from '@/components/CustomElements/DEADCODELogo';
 import { Collection, Filters, NormalizedGame, NormalizedGameJoin, NormalizedPseudoGameJoin, Sorting, GameState } from '@/types';
@@ -458,8 +458,6 @@ const LibrarySidebar: React.FC = () => {
         return categorized;
     }, [dateFnsLocale])
 
-    const navigate = useNavigate();
-
     const sidebarItems = useMemo(() => {
         const gamesJoined = [...games.filter(game => !gameJoinsPopulated.some(join => (join?.clients?.[game.source as keyof typeof join.clients] as NormalizedGame)?.id === game.id)), ...gameJoinsPopulated.map(transformGameJoinIntoUsableFormat)];
         const filteredGames = gamesJoined
@@ -653,7 +651,6 @@ const LibrarySidebar: React.FC = () => {
                             <Link
                                 draggable={false}
                                 to={`/library/game/${typeof game.source === "object" ? "" : `${game.source}-`}${game.id}`}
-                                onClick={(e) => {if (e.shiftKey || e.ctrlKey) {navigate(`/library/game/${typeof game.source === "object" ? "" : `${game.source}-`}${game.id}`)}}}
                                 key={`${category}-${typeof game.source === "object" ? "join" : game.source}-${game.id}`}
                                 className="no-underline no-user-drag m-0 group-has-[input:checked]/category:hidden"
                             >

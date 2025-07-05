@@ -91,26 +91,27 @@ const GameWarning: React.FC<GameWarningProps> = ({ note, className }) => {
                             </button>
                         </div>
                         <div className={cn(
-                            "mt-1 pr-6 text-sm text-neutral-600 dark:text-neutral-300",
+                            "mt-1 text-sm text-neutral-600 dark:text-neutral-300",
                             !isExpanded && "line-clamp-2"
                         )}>
                             {processDescription(note.description)}
                         </div>
-                        {isExpanded && note.recommendation && (
-                        <div className="pb-4 pr-6">
-                            <div className="border-t border-neutral-200 dark:border-neutral-700 pt-3">
-                                <h4 className="text-sm font-medium text-neutral-900 dark:text-white mb-2">
-                                    Recommendations
-                                </h4>
-                                <div className="text-sm text-neutral-600 dark:text-neutral-300">
-                                    <MarkdownText>{note.recommendation}</MarkdownText>
-                                </div>
-                            </div>
-                        </div>
-                    )}
                     </div>
                 </div>
             </div>
+            
+            {isExpanded && note.recommendation && (
+                <div className="px-4 pb-4">
+                    <div className="border-t border-neutral-200 dark:border-neutral-700 pt-3">
+                        <h4 className="text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                            Recommendations
+                        </h4>
+                        <div className="text-sm text-neutral-600 dark:text-neutral-300">
+                            <MarkdownText>{note.recommendation}</MarkdownText>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

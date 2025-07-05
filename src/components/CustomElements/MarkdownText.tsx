@@ -2,7 +2,6 @@ import React, { type JSX } from "react"
 import { cn } from "@/lib/utils"
 import Spoiler from "@/components/CustomElements/Spoiler"
 import Twemoji from "react-twemoji"
-import { Info, Lightbulb, MessageSquareWarning, TriangleAlert, OctagonAlert } from "lucide-react"
 
 interface MarkdownTextProps {
   children: string
@@ -10,16 +9,15 @@ interface MarkdownTextProps {
     mediaMap?: Record<string, string>
 }
 
-type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "monospace" | "link" | "image" | "spoiler" | "video" | "audio" | "embed"
-type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule" | "alert"
+type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "link" | "image" | "spoiler"
+type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule"
 type ListType = "unordered" | "ordered"
-type AlertType = "note" | "tip" | "important" | "warning" | "caution"
 
 type Token =
-  | { type: Extract<TokenType, "text" | "monospace">; content: string }
+  | { type: Extract<TokenType, "text">; content: string }
   | { type: Extract<TokenType, "bold" | "italic" | "strikethrough" | "underline">; content: Token[] }
   | { type: Extract<TokenType, "link">; content: Token[]; url: string }
-  | { type: Extract<TokenType, "image" | "video" | "audio" | "embed">; content: string; url: string; alt: string }
+  | { type: Extract<TokenType, "image">; content: string; url: string; alt: string }
   | { type: Extract<TokenType, "spoiler">; content: Token[] }
 
 interface ListItem {
@@ -34,7 +32,6 @@ interface Block {
   content: Token[]
   level?: number // For headings (1-6)
   items?: ListItem[] // For lists
-  alertType?: AlertType
 }
 
 const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaMap }) => {
@@ -84,50 +81,23 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                 }
             }
 
-            // Check for video/audio/embed pattern ![video:alt](url), ![audio:alt](url), ![embed:alt](url)
-            const mediaTypes = ["video", "audio", "embed"] as const;
-            let mediaMatched = false;
-            for (const mediaType of mediaTypes) {
-                if (text.startsWith(`![${mediaType}:`, i)) {
-                    const closeBracket = text.indexOf("]", i);
-                    if (closeBracket !== -1 && text[closeBracket + 1] === "(") {
-                        const closeParens = text.indexOf(")", closeBracket);
-                        if (closeParens !== -1) {
-                            pushText();
-                            const altText = text.slice(i + 3 + mediaType.length, closeBracket);
-                            const url = text.slice(closeBracket + 2, closeParens);
-                            tokens.push({
-                                type: mediaType,
-                                content: "",
-                                url,
-                                alt: altText,
-                            });
-                            i = closeParens + 1;
-                            mediaMatched = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (mediaMatched) continue;
-
             // Check for image pattern ![alt](url)
             if (text.startsWith("![", i)) {
-                const closeBracket = text.indexOf("]", i);
+                const closeBracket = text.indexOf("]", i)
                 if (closeBracket !== -1 && text[closeBracket + 1] === "(") {
-                    const closeParens = text.indexOf(")", closeBracket);
+                    const closeParens = text.indexOf(")", closeBracket)
                     if (closeParens !== -1) {
-                        pushText();
-                        const altText = text.slice(i + 2, closeBracket);
-                        const url = text.slice(closeBracket + 2, closeParens);
+                        pushText()
+                        const altText = text.slice(i + 2, closeBracket)
+                        const url = text.slice(closeBracket + 2, closeParens)
                         tokens.push({
                             type: "image",
                             content: "",
                             url,
                             alt: altText,
-                        });
-                        i = closeParens + 1;
-                        continue;
+                        })
+                        i = closeParens + 1
+                        continue
                     }
                 }
             }
@@ -155,11 +125,10 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
 
             // Check for markdown patterns
             const patterns = [
-                { marker: "**" as const, type: "bold" as const },
-                { marker: "__" as const, type: "underline" as const },
-                { marker: "~~" as const, type: "strikethrough" as const },
-                { marker: "_" as const, type: "italic" as const },
-                { marker: "`" as const, type: "monospace" as const}
+                { marker: "**", type: "bold" as const },
+                { marker: "__", type: "underline" as const },
+                { marker: "~~", type: "strikethrough" as const },
+                { marker: "_", type: "italic" as const },
             ]
 
             let matched = false
@@ -169,17 +138,10 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                     if (closeIndex !== -1) {
                         pushText()
                         const innerContent = text.slice(i + marker.length, closeIndex)
-                        if (type === "monospace") {
-                            tokens.push({
-                                type: "monospace",
-                                content: innerContent,
-                            })
-                        } else {
-                            tokens.push({
-                                type,
-                                content: tokenizeInline(innerContent),
-                            })
-                        }
+                        tokens.push({
+                            type,
+                            content: tokenizeInline(innerContent),
+                        })
                         i = closeIndex + marker.length
                         matched = true
                         break
@@ -278,26 +240,6 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i]
 
-            // Handle alert blocks
-            const alertMatch = line.match(/^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/m)
-            console.log(line, alertMatch);
-            if (alertMatch) {
-                const alertType = alertMatch[1].toLowerCase() as AlertType
-                let alertContentLines: string[] = []
-                let j = i + 1
-                while (j < lines.length && lines[j].trim().startsWith(">")) {
-                    alertContentLines.push(lines[j].replace(/^>\s?/, ""))
-                    j++
-                }
-                blocks.push({
-                    type: "alert",
-                    alertType,
-                    content: tokenizeInline(alertContentLines.join("\n")),
-                })
-                i = j - 1
-                continue
-            }
-
             // Handle spoiler tags
             if (line.trim() === "<spoiler>") {
                 inSpoiler = true
@@ -391,24 +333,8 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
     }
 
     const renderContent = (content: string | Token[]): React.ReactNode => {
-        if (((c): c is string => typeof c === "string")(content)) {
-            let processedContent = content.split("🏳️‍🇱‍🇴‍🇱‍‍").map((part, i, arr) =>
-                i < arr.length - 1
-                    ? [part, (
-                        <img
-                            key={i}
-                            draggable="false"
-                            className="emoji"
-                            alt="🏳️‍🇱‍🇴‍🇱‍‍"
-                            src={process.env.PUBLIC_URL + "/twemoji/svg/1f3f3-fe0f-200d-1f1ed-200d-1f1f4-200d-1f1ed-200d.svg"}
-                        />
-                    )]
-                    : part
-            );
-            return <Twemoji noWrapper options={{
-                folder: 'svg',
-                ext: '.svg',
-            }}><span className="[&>.emoji]:inline [&>.emoji]:size-[calc(4em/3)] [&>.emoji]:mx-[0.125em] [&>.emoji]:mt-[-0.225em]">{processedContent}</span></Twemoji>
+        if (typeof content === "string") {
+            return <Twemoji noWrapper><span className="[&>.emoji]:inline [&>.emoji]:size-[calc(4em/3)] [&>.emoji]:mx-[0.125em] [&>.emoji]:mt-[-0.225em]">{content}</span></Twemoji>
         }
         return renderTokens(content)
     }
@@ -428,8 +354,6 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                             return <del key={index}>{renderContent(token.content)}</del>
                         case "underline":
                             return <u key={index}>{renderContent(token.content)}</u>
-                        case "monospace":
-                            return <code key={index} className="px-1 py-0.5 dark:bg-night bg-fullMoon text-notQuiteBlack dark:text-notQuiteWhite rounded-md border border-solid dark:border-fullMoon/25 border-night/25">{token.content}</code>
                         case "link":
                             return (
                                 <a
@@ -446,13 +370,7 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                             return (
                                 <div key={index} className="flex flex-col items-center my-4">
                                     <img
-                                        src={
-                                            mediaMap?.[token.url]
-                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
-                                                : token.url?.startsWith("http")
-                                                    ? token.url
-                                                    : `local://${token.url}`
-                                        }
+                                        src={mediaMap?.[token.url] || token.url?.startsWith("http") ? token.url : `local://${token.url}`}
                                         alt={token.alt || ""}
                                         className="max-w-full h-auto max-h-[66vh] rounded-lg shadow-lg"
                                     />
@@ -470,72 +388,6 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                                     {renderTokens(token.content)}
                                 </Spoiler>
                             )
-                        case "video":
-                            return (
-                                <div key={index} className="flex flex-col items-center my-4">
-                                    <video
-                                        src={
-                                            mediaMap?.[token.url]
-                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
-                                                : token.url?.startsWith("http")
-                                                    ? token.url
-                                                    : `local://${token.url}`
-                                        }
-                                        controls
-                                        className="max-w-full h-auto max-h-[66vh] rounded-lg shadow-lg"
-                                    >
-                                        {token.alt && <track kind="captions" label={token.alt} />}
-                                    </video>
-                                    {token.alt && (
-                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 text-center">
-                                            {token.alt}
-                                        </p>
-                                    )}
-                                </div>
-                            );
-                        case "audio":
-                            return (
-                                <div key={index} className="flex flex-col items-center my-4">
-                                    <audio
-                                        src={
-                                            mediaMap?.[token.url]
-                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
-                                                : token.url?.startsWith("http")
-                                                    ? token.url
-                                                    : `local://${token.url}`
-                                        }
-                                        controls
-                                        className="w-full max-w-xl rounded-lg shadow-lg"
-                                    />
-                                    {token.alt && (
-                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 text-center">
-                                            {token.alt}
-                                        </p>
-                                    )}
-                                </div>
-                            );
-                        case "embed":
-                            return (
-                                <div key={index} className="flex flex-col items-center my-4">
-                                    <iframe
-                                        src={
-                                            mediaMap?.[token.url]
-                                                ? `local://${mediaMap[token.url].replace("%USERDATA%", "CONST_USERDATA")}`
-                                                : token.url?.startsWith("http")
-                                                    ? token.url
-                                                    : `local://${token.url}`
-                                        }
-                                        title={token.alt || "Embedded content"}
-                                        className="w-full max-w-2xl aspect-video rounded-lg shadow-lg border border-neutral-300 dark:border-neutral-700"
-                                        allowFullScreen
-                                    />
-                                    {token.alt && (
-                                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2 text-center">
-                                            {token.alt}
-                                        </p>
-                                    )}
-                                </div>
-                            );
                         default:
                             return null
                     }
@@ -592,29 +444,6 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
             )
         } else if (block.type === "horizontalRule") {
             return <hr key={index} className="my-4 border-0 border-b border-solid border-neutral-500/70" />
-        } else if (block.type === "alert") {
-            const alertStyles: Record<AlertType, { textColor: string; borderColor: string; icon: React.ReactNode; label: string }> = {
-                note:      { borderColor: "border-blue-500/50", textColor: "text-blue-500", icon: (<Info />), label: "Note" },
-                tip:       { borderColor: "border-green-600/50", textColor: "text-green-600", icon: (<Lightbulb />), label: "Tip" },
-                important: { borderColor: "border-purple-600/50", textColor: "text-purple-600", icon: (<MessageSquareWarning />), label: "Important" },
-                warning:   { borderColor: "border-yellow-600/50", textColor: "text-yellow-600", icon: (<TriangleAlert />), label: "Warning" },
-                caution:   { borderColor: "border-red-600/50", textColor: "text-red-600", icon: (<OctagonAlert />), label: "Caution" },
-            }
-            const { borderColor, textColor, icon, label } = alertStyles[block.alertType!]
-            return (
-                <div
-                    key={index}
-                    className={cn("my-4 px-4 py-2 border-0 border-l-4 border-solid flex items-start gap-3 w-fit", borderColor)}
-                    role="alert"
-                    aria-label={label}
-                >
-                    <span className={cn("text-2xl mt-0.5", textColor)}>{icon}</span>
-                    <div>
-                        <div className={cn("font-bold mb-1 -mt-0.5 text-lg", textColor)}>{label}</div>
-                        <div className="text-sm -mt-0.5">{renderTokens(block.content)}</div>
-                    </div>
-                </div>
-            )
         } else {
             // Paragraph
             const isEmpty = block.content.length === 1 && block.content[0].type === "text" && block.content[0].content === ""
@@ -640,4 +469,4 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
     )
 }
 
-export default MarkdownText;
+export default MarkdownText

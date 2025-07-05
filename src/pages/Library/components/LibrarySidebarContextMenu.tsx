@@ -569,7 +569,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                 'transition-[background-image,color] duration-200',
                 getStateClasses(currentState),
                 (isLaunching || isStopping) && 'animate-pulse',
-                (((needsLauncher || String(game.id) === '-1') && !isLauncherRunning && !currentState) || resolveDefaultGameVendor(game).updateAvailable === "update" || ((!resolveDefaultGameVendor(game).installPath || (currentState !== "checking" && currentState)) && resolveDefaultGameVendor(game).source === "deadforge")) && 'text-blue-400',
+                (((needsLauncher || String(game.id) === '-1') && !isLauncherRunning && !currentState) || resolveDefaultGameVendor(game).updateAvailable === "update" || ((!resolveDefaultGameVendor(game).installPath || (!currentState || currentState !== "checking")) && resolveDefaultGameVendor(game).source === "deadforge")) && 'text-blue-400',
                 currentState === "checking" && "text-neutral-500",
                 (resolveDefaultGameVendor(game).updateAvailable === "reinstall" && !currentState) && "text-red-500"
             ),

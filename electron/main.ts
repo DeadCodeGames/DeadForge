@@ -247,43 +247,10 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             }
         });
 
-        // Helper function to filter URLs
-        function shouldOpenExternally(url: string): boolean {
-            try {
-                const parsed = new URL(url);
-                // Block file:// and localhost (and 127.0.0.1, ::1)
-                if (
-                    parsed.protocol === 'file:' ||
-                    parsed.hostname === 'localhost'
-                ) {
-                    return false;
-                }
-                // Allow http(s) and others
-                return true;
-            } catch {
-                // If URL can't be parsed, be safe and block
-                return false;
-            }
-        }
-
-        // For main window
         mainWindow!.webContents.setWindowOpenHandler(({ url }) => {
-            if (shouldOpenExternally(url)) {
-                shell.openExternal(`https://deadcode.is-a.dev/DeadForgeRedirect?url=${encodeURIComponent(url)}`);
-            }
-            return { action: 'deny' };
-        });
-
-        // For all webviews
-        app.on('web-contents-created', (event, contents) => {
-            if (contents.getType() === 'webview') {
-                contents.setWindowOpenHandler(({ url }) => {
-                    if (shouldOpenExternally(url)) {
-                        shell.openExternal(`https://deadcode.is-a.dev/DeadForgeRedirect?url=${encodeURIComponent(url)}`);
-                    }
-                    return { action: 'deny' };
-                });
-            }
+            console.log("window open handler", url)
+            shell.openExternal(`https://deadcode.is-a.dev/DeadForgeRedirect?url=${encodeURIComponent(url)}`);
+            return { action: 'deny' as const };
         });
     };
 
@@ -292,7 +259,6 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             scheme: 'local',
             privileges: {
                 standard: true,
-                stream: true,
                 supportFetchAPI: true,
                 secure: true,
                 corsEnabled: true,
@@ -774,7 +740,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             updatePlaytimeOnGameExit(client, gameId);
         });
 
-        setTimeout(closeDB, 1000);
+        closeDB();
     });
 
     ipcMain.handle('games:fetch', () => {
@@ -1170,7 +1136,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
         const games = getAllGamesFromDB();
         const curatedAssets = getAllCuratedAssetsFromDB();
         const processKeys = gameChecks.map(game => `${game.source}-${game.id}`);
-        const tracked = new Set(processKeys.filter(key => gameProcesses.has(key) && !(key.split("-")[0] === "steam" && (gameProcesses.get(key) as ChildProcess).spawnfile?.endsWith("steam.exe"))));
+        const tracked = new Set(processKeys.filter(key => gameProcesses.has(key) && !(key.split("-")[0] === "steam" && (gameProcesses.get(key) as ChildProcess).spawnfile.endsWith("steam.exe"))));
 
         // For untracked, collect all executable paths (including executablesToWatch)
         const toCheck: { key: string, executables: string[] }[] = [];
@@ -1229,18 +1195,12 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
         for (const game of gameChecks) {
             const key = `${game.source}|${game.id}`;
             const processKey = `${game.source}-${game.id}`;
-            let isRunning = false;
             if (tracked.has(processKey)) {
-                isRunning = true;
+                result[key] = true;
             } else {
                 const check = toCheck.find(x => x.key === key);
                 // If any of the executables for this game are running, mark as running
-                isRunning = check ? check.executables.some(exec => running[exec]) : false;
-            }
-            result[key] = isRunning;
-            // If running and not already tracked in gameLaunchTimestamps, start tracking now
-            if (isRunning && !gameLaunchTimestamps.has(processKey)) {
-                gameLaunchTimestamps.set(processKey, Math.floor(Date.now() / 1000));
+                result[key] = check ? check.executables.some(exec => running[exec]) : false;
             }
         }
         return result;
@@ -1561,88 +1521,4 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
     ipcMain.handle('metrics:getGameMetrics', async (_event, { source, gameId }) => {
         return getGameMetrics(source, gameId);
     });
-
-    // Background polling loop to detect new launches and closed games
-    setInterval(async () => {
-        try {
-            const games = getAllGamesFromDB();
-            const curatedAssets = getAllCuratedAssetsFromDB();
-            const toCheck: { key: string, executables: string[], client: string, gameId: string|number }[] = [];
-
-            for (const game of games) {
-                const processKey = `${game.source}-${game.id}`;
-                const executables: string[] = [];
-                // Add main launchOptions executable
-                if (game.launchOptions) {
-                    try {
-                        const launchOptions = JSON.parse(game.launchOptions as any as string);
-                        if (launchOptions[0]?.executable) {
-                            executables.push(launchOptions[0].executable);
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    }
-                }
-                // Add executablesToWatch from curated assets
-                const curated = curatedAssets.find(a => a.source === game.source && String(a.id) === String(game.id));
-                if (curated && curated.executablesToWatch && game.installPath) {
-                    try {
-                        const execs = typeof curated.executablesToWatch === 'string' ? JSON.parse(curated.executablesToWatch) : curated.executablesToWatch;
-                        if (Array.isArray(execs)) {
-                            executables.push(...(execs.map(e => {
-                                if (e.includes('%GAMEROOT%')) {
-                                    if (game.installPath) {
-                                        const rel = e.replace(/%GAMEROOT%[\\/]/, '');
-                                        return path.resolve(game.installPath, rel);
-                                    } else {
-                                        return undefined;
-                                    }
-                                } else {
-                                    return path.resolve(e);
-                                }
-                            }).filter(e => e !== undefined)));
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    }
-                }
-                if (executables.length > 0) {
-                    toCheck.push({ key: processKey, executables, client: game.source, gameId: game.id });
-                }
-            }
-
-            let running: Record<string, boolean> = {};
-            if (process.platform === 'win32' && toCheck.length > 0) {
-                const allExecutables = Array.from(new Set(toCheck.flatMap(x => x.executables)));
-                running = await areProcessesRunningWindows(allExecutables);
-            }
-
-            for (const entry of toCheck) {
-                // If tracked by ChildProcess, skip (handled elsewhere)
-                const trackedProcess = gameProcesses.get(entry.key);
-                const isChild = trackedProcess instanceof ChildProcess;
-                // Check if any of the executables are running
-                const isRunning = process.platform === 'win32'
-                    ? entry.executables.some(exec => running[exec])
-                    : false; // TODO: Add non-Windows support if needed
-
-                if (isRunning) {
-                    // If not already tracked, start tracking
-                    if (!gameLaunchTimestamps.has(entry.key)) {
-                        gameLaunchTimestamps.set(entry.key, Math.floor(Date.now() / 1000));
-                        mainWindow?.webContents.send('game:stateChange', entry.client, entry.gameId, 'running');
-                    }
-                } else {
-                    // If tracked (and not by ChildProcess), stop tracking
-                    if (gameLaunchTimestamps.has(entry.key) && !isChild) {
-                        updatePlaytimeOnGameExit(entry.client, entry.gameId);
-                        gameLaunchTimestamps.delete(entry.key);
-                        mainWindow?.webContents.send('game:processTerminated', entry.client, entry.gameId);
-                    }
-                }
-            }
-        } catch (err) {
-            console.error('Error in background game polling loop:', err);
-        }
-    }, 5000); // every 5 seconds
 }

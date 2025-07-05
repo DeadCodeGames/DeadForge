@@ -39,7 +39,7 @@ module.exports = {
                 // homepageVerticalLastPlayedListFullyVisibleAlsoIncludingThe2XLSelector
                 "hVLPLFVAIT2XLS": { raw: "(max-height: 1030px) and (min-width: 1536px)" },
                 // homepageHorizontalLastPlayedListNOTFullyVisible
-                "hHLPLNFV": { raw: "(max-width: 1290px)" },
+                "hHLPLNFV": { raw: "(max-width: 1281px)" },
                 // homepageHorizontalLastPlayedListFullyVisibleButBelowThe2XLSelector
                 "hHLPLFVBBT2XLS": {raw: "(max-width: 1535px)"}
             },

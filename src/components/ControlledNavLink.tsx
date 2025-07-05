@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import React, { useContext } from 'react';
 import { AppContext } from '@/App'; // adjust the import to your actual context path
 
@@ -20,7 +20,6 @@ export const ControlledNavLink = ({
     children
 }: ControlledNavLinkProps) => {
     const { useSettingsWindow } = useContext(AppContext).context.preferences;
-    const navigate = useNavigate()
 
     const intercept = shouldIntercept || (to === '/settings' && useSettingsWindow);
 
@@ -43,7 +42,7 @@ export const ControlledNavLink = ({
     }
 
     return (
-        <NavLink draggable={false} to={to} onClick={(e) => {if (e.shiftKey || e.ctrlKey) {navigate(to)}}} className={className}>
+        <NavLink draggable={false} to={to} className={className}>
             {children}
         </NavLink>
     );
