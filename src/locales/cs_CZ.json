@@ -33,7 +33,10 @@
             "writtenBy_few": "Napsali <0></0>",
             "writtenBy_many": "Napsali <0></0>",
             "writtenBy_other": "Napsali <0></0>"
-        }
+        },
+        "errorWithLoadingArticles": "",
+        "errorWithUpdatingArticles": "",
+        "errorWithUpdatingArticles-NetworkError": ""
     },
     "store": {
         "urlCopied": "Adresa byla úspěšně zkopírovaná"

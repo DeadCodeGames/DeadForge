@@ -31,7 +31,10 @@
             "lastEditedOn": "",
             "writtenBy_one": "",
             "writtenBy_other": ""
-        }
+        },
+        "errorWithLoadingArticles": "",
+        "errorWithUpdatingArticles": "",
+        "errorWithUpdatingArticles-NetworkError": ""
     },
     "store": {
         "urlCopied": ""

@@ -33,7 +33,10 @@
             "writtenBy_few": "",
             "writtenBy_many": "",
             "writtenBy_other": ""
-        }
+        },
+        "errorWithLoadingArticles": "",
+        "errorWithUpdatingArticles": "",
+        "errorWithUpdatingArticles-NetworkError": ""
     },
     "store": {
         "urlCopied": ""

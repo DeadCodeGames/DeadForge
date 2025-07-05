@@ -33,7 +33,10 @@
             "writtenBy_few": "Napísali <0></0>",
             "writtenBy_many": "Napísali <0></0>",
             "writtenBy_other": "Napísali <0></0>"
-        }
+        },
+        "errorWithLoadingArticles": "",
+        "errorWithUpdatingArticles": "",
+        "errorWithUpdatingArticles-NetworkError": ""
     },
     "store": {
         "urlCopied": "Adresa bola úspešne skopírovaná"

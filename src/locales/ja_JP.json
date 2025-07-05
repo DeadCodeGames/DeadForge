@@ -30,7 +30,10 @@
             "publishedOn": "{{date}}に公開",
             "lastEditedOn": "{{date}}に最終更新",
             "writtenBy_other": "<0></0>によって書かれました"
-        }
+        },
+        "errorWithLoadingArticles": "",
+        "errorWithUpdatingArticles": "",
+        "errorWithUpdatingArticles-NetworkError": ""
     },
     "store": {
         "urlCopied": "URLは正常にコピーされました"
