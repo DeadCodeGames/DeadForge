@@ -136,7 +136,7 @@ export const getImageUrlCandidates = (
         if (resolvedGame.source === 'steam') {
             const steamUrl = getSteamCacheUrl(officialCurrentUrl);
             if (steamUrl) candidates.push(steamUrl);
-        }
+        } else { candidates.push(normalizeUrl(officialDefaultUrl!)) }
     }
     if (customDefaultUrl) candidates.push(normalizeUrl(customDefaultUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
     if (curatedDefaultUrl) candidates.push(normalizeUrl(curatedDefaultUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
@@ -144,7 +144,7 @@ export const getImageUrlCandidates = (
         if (resolvedGame.source === 'steam') {
             const steamUrl = getSteamCacheUrl(officialDefaultUrl);
             if (steamUrl) candidates.push(steamUrl);
-        }
+        } else { candidates.push(normalizeUrl(officialDefaultUrl!)) }
     }
     for (const url of customAnyUrls) {
         candidates.push(normalizeUrl(url.replaceAll("%USERDATA%", "CONST_USERDATA")));
@@ -156,7 +156,7 @@ export const getImageUrlCandidates = (
         if (resolvedGame.source === 'steam') {
             const steamUrl = getSteamCacheUrl(url);
             if (steamUrl) candidates.push(steamUrl);
-        }
+        } else { candidates.push(normalizeUrl(url!)) }
     }
     // Remove duplicates and falsy
     return [...new Set(candidates.filter(Boolean))];
