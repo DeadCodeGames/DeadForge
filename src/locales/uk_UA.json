@@ -36,7 +36,9 @@
         },
         "errorWithLoadingArticles": "",
         "errorWithUpdatingArticles": "",
-        "errorWithUpdatingArticles-NetworkError": ""
+        "errorWithUpdatingArticles-NetworkError": "",
+        "noArticlesTitle": "",
+        "noArticlesDescription": ""
     },
     "store": {
         "urlCopied": ""
