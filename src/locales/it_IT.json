@@ -34,7 +34,9 @@
         },
         "errorWithLoadingArticles": "",
         "errorWithUpdatingArticles": "",
-        "errorWithUpdatingArticles-NetworkError": ""
+        "errorWithUpdatingArticles-NetworkError": "",
+        "noArticlesTitle": "",
+        "noArticlesDescription": ""
     },
     "store": {
         "urlCopied": "L'URL è stato copiato con successo"
