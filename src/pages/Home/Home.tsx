@@ -6,7 +6,7 @@ import MarkdownText from '@/components/CustomElements/MarkdownText';
 import i18n, { dateFNSResources } from '@/locales/i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMediaQuery } from "react-responsive"
-import { TriangleAlert } from "lucide-react";
+import { TriangleAlert, Newspaper } from "lucide-react";
 import Tooltip from '@/components/CustomElements/Tooltip';
 import GameCard from '../Library/components/GameCard';
 import { cn } from '@/lib/utils';
@@ -111,7 +111,7 @@ const Home = () => {
 
     useEffect(() => {
         const el = scrollContainerRef.current;
-        if (!el) return;
+        if (!el) { console.error("Failed to attach to the scroll container."); return; };
 
         const handleScroll = () => {
             setScrolled(el.scrollTop > 40 && !isWideEnoughForHorizontalGameCardsUwU); // adjust threshold if needed
@@ -125,26 +125,35 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        const fetchArticles = async () => {
+        const fetchArticles = () => {
             try {
                 // First try to update articles
-                const updatingResult = await window.Electron.updateArticles()
-                if (updatingResult.success) {
-                    setErrorUpdating(null)
-                } else if (updatingResult.error) {
-                    setErrorUpdating(updatingResult.error);
-                }
+                window.Electron.updateArticles().then((updatingResult) => {
+                    if (updatingResult.success) {
+                        setErrorUpdating(null)
+                    } else if (updatingResult.error) {
+                        setErrorUpdating(updatingResult.error);
+                    }
+                }).catch((err) => {
+                    setErrorUpdating((err as Error).message);
+                });
 
                 // Get articles regardless of update success
-                const result = await window.Electron.getArticles();
-                console.log(result)
-                setArticles(result.articles);
-                setErrorLoading(null);
+                window.Electron.getArticles()
+                    .then((result) => {
+                        setArticles(result.articles);
+                        setErrorLoading(null);
+                    })
+                    .catch((err) => {
+                        setErrorLoading((err as Error).message);
+                        console.error('Error loading articles:', err);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    });
             } catch (err) {
                 setErrorLoading((err as Error).message);
                 console.error('Error loading articles:', err);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -217,6 +226,12 @@ const Home = () => {
                         <div className="flex flex-col items-center justify-center min-h-[calc(100%-102px)] text-red-600">
                             <h2 className="text-xl font-bold mb-2 w-full text-center">{t("errorWithLoadingArticles")}</h2>
                             <p className="w-full text-center">{errorLoading}</p>
+                        </div>
+                    ) : articles.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center min-h-[calc(100%-102px)] text-neutral-500 dark:text-neutral-400">
+                            <Newspaper className="w-16 h-16 mb-4 opacity-50" />
+                            <h2 className="text-xl font-bold mb-2 text-center">{t("home.noArticlesTitle")}</h2>
+                            <p className="text-center max-w-md">{t("home.noArticlesDescription")}</p>
                         </div>
                     ) : (
                         <div className='space-y-6'>

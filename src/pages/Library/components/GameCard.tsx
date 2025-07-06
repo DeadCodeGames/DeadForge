@@ -101,7 +101,6 @@ export const getImageUrlCandidates = (
     // 2. Curated asset (current language)
     const curatedAsset = curatedAssets.find(asset => String(asset.id) === String(gameId) && asset.source === gameSource)?.media?.[mediaType];
     const curatedCurrentUrl = getUrlFromMediaData(curatedAsset, suffix);
-    console.log(customAssets, curatedAssets);
     // 3. Official asset (current language)
     const officialAsset = resolvedGame.media[mediaType];
     const officialCurrentUrl = getUrlFromMediaData(officialAsset, suffix);
@@ -147,7 +146,6 @@ export const getImageUrlCandidates = (
         }
         candidates.push(normalizeUrl(officialAnyUrl));
     }
-    console.log(resolvedGame.name, [...new Set(candidates.filter(Boolean))])
     // Remove duplicates and falsy
     return [...new Set(candidates.filter(Boolean))];
 };

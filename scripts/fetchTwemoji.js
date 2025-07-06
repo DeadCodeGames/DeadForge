@@ -50,11 +50,15 @@ function fetchAndSave(url, outPath) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
     const codepoints = new Set();
+    
+    fs.cpSync('customTwemoji', path.join(OUTPUT_DIR, "svg"), { recursive: true });
 
     for (const emoji of EMOJIS) {
         if (emoji === "🏳️‍🇱‍🇴‍🇱‍‍") {
-            console.log("The LOLCAT Flag custom emoji file will be copied manually.");
-            fs.cpSync('customTwemoji', path.join(OUTPUT_DIR, "svg"), { recursive: true });
+            console.log("The LOLCAT Flag custom emoji file has been copied.");
+            continue;
+        } else if (emoji === "🏳️‍🇪‍🇳‍🇬‍‍") {
+            console.log("The International English Flag custom emoji file has been copied.");
             continue;
         } else {
             const parsed = twemoji.parse(emoji, {
