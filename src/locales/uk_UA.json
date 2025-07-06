@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "Українська мова",
-        "emoji": "🇺🇦"
+        "name": "",
+        "emoji": ""
     },
     "commaSeparator": ", ",
     "ampersandSeparator": " & ",
@@ -36,7 +36,9 @@
         },
         "errorWithLoadingArticles": "",
         "errorWithUpdatingArticles": "",
-        "errorWithUpdatingArticles-NetworkError": ""
+        "errorWithUpdatingArticles-NetworkError": "",
+        "noArticlesTitle": "",
+        "noArticlesDescription": ""
     },
     "store": {
         "urlCopied": ""

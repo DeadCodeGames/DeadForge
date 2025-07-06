@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "日本語",
-        "emoji": "🇯🇵"
+        "name": "",
+        "emoji": ""
     },
     "commaSeparator": "、",
     "ampersandSeparator": "と",
@@ -33,7 +33,9 @@
         },
         "errorWithLoadingArticles": "記事の読み込みエラー：",
         "errorWithUpdatingArticles": "記事の更新エラー：",
-        "errorWithUpdatingArticles-NetworkError": "これはネットワークエラーのようです。インターネット接続を確認して、このページを再読み込みしてください。"
+        "errorWithUpdatingArticles-NetworkError": "これはネットワークエラーのようです。インターネット接続を確認して、このページを再読み込みしてください。",
+        "noArticlesTitle": "",
+        "noArticlesDescription": ""
     },
     "store": {
         "urlCopied": "URLは正常にコピーされました"

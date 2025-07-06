@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "한국어",
-        "emoji": "🇰🇷"
+        "name": "",
+        "emoji": ""
     },
     "commaSeparator": "·",
     "ampersandSeparator": " 와 ",
@@ -33,7 +33,9 @@
         },
         "errorWithLoadingArticles": "",
         "errorWithUpdatingArticles": "",
-        "errorWithUpdatingArticles-NetworkError": ""
+        "errorWithUpdatingArticles-NetworkError": "",
+        "noArticlesTitle": "",
+        "noArticlesDescription": ""
     },
     "store": {
         "urlCopied": "URL이 성공적으로 복사되었습니다"

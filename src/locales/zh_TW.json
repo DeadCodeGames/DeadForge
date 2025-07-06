@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "繁體中文",
-        "emoji": "🇹🇼"
+        "name": "",
+        "emoji": ""
     },
     "commaSeparator": "、",
     "ampersandSeparator": "和",
@@ -33,7 +33,9 @@
         },
         "errorWithLoadingArticles": "",
         "errorWithUpdatingArticles": "",
-        "errorWithUpdatingArticles-NetworkError": ""
+        "errorWithUpdatingArticles-NetworkError": "",
+        "noArticlesTitle": "",
+        "noArticlesDescription": ""
     },
     "store": {
         "urlCopied": "URL 已成功複製"
