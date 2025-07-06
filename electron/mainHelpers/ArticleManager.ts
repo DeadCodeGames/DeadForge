@@ -116,7 +116,7 @@ async function downloadFile(url: string, destPath: string, expectedHash?: string
                     const currentHash = computeFileHash(destPath);
                     if (currentHash !== expectedHash) {
                         console.error(`Hash mismatch for ${destPath}: expected ${expectedHash}, got ${currentHash}`);
-                        fs.unlinkSync(destPath);
+                        try { fs.unlinkSync(destPath) } catch (e) {console.error(e)}
                         resolve(false);
                         return;
                     }
@@ -127,7 +127,7 @@ async function downloadFile(url: string, destPath: string, expectedHash?: string
             file.on('error', (err) => {
                 console.error(`Error writing file ${destPath}:`, err);
                 file.close();
-                fs.unlinkSync(destPath);
+                try { fs.unlinkSync(destPath) } catch (e) {console.error(e)}
                 resolve(false);
             });
         };

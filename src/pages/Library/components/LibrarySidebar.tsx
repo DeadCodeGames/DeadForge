@@ -593,8 +593,6 @@ const LibrarySidebar: React.FC = () => {
                     ...(uncategorized ? [uncategorized] : [])
                 ];
             }
-
-            console.log(entries);
             
             return entries.filter(([,games]) => games.length > 0).map(([category, categoryGames]) => {
                 const isFavourites = category === "Favourites";

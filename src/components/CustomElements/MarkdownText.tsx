@@ -487,7 +487,6 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                                 </div>
                             )
                         case "spoiler":
-                            console.log(token);
                             return (
                                 <Spoiler key={index} className="my-4">
                                     {renderTokens(token.content)}

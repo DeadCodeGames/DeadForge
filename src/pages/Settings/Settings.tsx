@@ -351,6 +351,18 @@ const Settings = () => {
                             >
                                 {Object.keys(resources)
                                     .sort((langA, langB) => {
+                                        const priority = (lang: string) => {
+                                            if (lang === "en_001") return 0;
+                                            if (lang === "stringsDebug") return 1;
+                                            return 2;
+                                        };
+                                
+                                        const priorityA = priority(langA);
+                                        const priorityB = priority(langB);
+                                
+                                        if (priorityA !== priorityB) {
+                                            return priorityA - priorityB; // Lower priority number comes first
+                                        }
                                         const percentageA = calculateTranslationPercentage(langA);
                                         const percentageB = calculateTranslationPercentage(langB);
 

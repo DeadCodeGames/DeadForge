@@ -222,13 +222,15 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
                     }
                 });
 
-                // Check for missing assets
-                const missingAssetReports = await checkMissingAssets(fetchedGames, fetchedCuratedAssets);
-                if (missingAssetReports.length > 0) {
-                    const report = formatReportForGitHub(missingAssetReports);
-                    const reportString = `---MISSING_ASSETS_REPORT_BEGIN---\n${report}\n---MISSING_ASSETS_REPORT_END---`;
-                    console.warn(reportString);
-                    window.Electron.saveMissingAssetsReport(reportString);
+                if (!(window.Electron.isTray || window.Electron.isNotificationsWindow || window.Electron.isSettingsWindow)) {
+                    // Check for missing assets
+                    const missingAssetReports = await checkMissingAssets(fetchedGames, fetchedCuratedAssets);
+                    if (missingAssetReports.length > 0) {
+                        const report = formatReportForGitHub(missingAssetReports);
+                        const reportString = `---MISSING_ASSETS_REPORT_BEGIN---\n${report}\n---MISSING_ASSETS_REPORT_END---`;
+                        console.warn(reportString);
+                        window.Electron.saveMissingAssetsReport(reportString);
+                    }
                 }
             } catch (error) {
                 console.error('Failed to fetch games:', error);
@@ -339,7 +341,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
     }, [collections, favourites, canSendCollections]);
 
     useEffect(() => {
-        if (window.Electron.isTray) return;
+        if (window.Electron.isTray || window.Electron.isNotificationsWindow || window.Electron.isSettingsWindow) return;
 
         const handleTrayGameLaunch = (_event: any, source: string, gameId: string, executable: string, args: string | string[]) => {
             console.log(`Tray game launch: ${source}-${gameId}`);

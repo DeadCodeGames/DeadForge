@@ -22,7 +22,7 @@ contextBridge.exposeInMainWorld('Electron', {
     getPreferences: (): Promise<{preferences: Preferences, v1PrefsAvailable: boolean, legacyPrefs: OldPreferences | undefined}> => ipcRenderer.invoke('preferences:get'),
     setPreferences: (preferences: object, isSettingsOpen: boolean, fromSettingsWindow: boolean) => ipcRenderer.invoke('preferences:set', preferences, isSettingsOpen, fromSettingsWindow),
     // eslint-disable-next-line no-unused-vars
-    onPreferencesUpdate: (callback: (newPrefs: object) => void) => ipcRenderer.on('preferences:update', callback),
+    onPreferencesUpdate: (callback: (event: Electron.IpcRendererEvent, newPrefs: Preferences) => void) => ipcRenderer.on('preferences:update', callback),
 
     onTrayNavigate: (callback: () => void) => ipcRenderer.on('tray:navigate', callback),
     openSettingsWindow: () => ipcRenderer.send('window:openSettingsWindow'),
