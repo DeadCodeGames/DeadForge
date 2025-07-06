@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "English (Intl.)",
-        "emoji": "🏳️‍🇪‍🇳‍🇬‍‍"
+        "name": "English (International)",
+        "emoji": "🇬🇧"
     },
     "commaSeparator": ", ",
     "ampersandSeparator": " & ",
@@ -34,9 +34,7 @@
         },
         "errorWithLoadingArticles": "Error with loading articles:",
         "errorWithUpdatingArticles": "Error with updating articles:",
-        "errorWithUpdatingArticles-NetworkError": "This seems to be a network error. Check your internet connection, and try reloading this page.",
-        "noArticlesTitle": "No Articles Available",
-        "noArticlesDescription": "There are no news articles to display at the moment. Please, check your internet connection."
+        "errorWithUpdatingArticles-NetworkError": "This seems to be a network error. Check your internet connection, and try reloading this page."
     },
     "store": {
         "urlCopied": "URL has been successfully copied"

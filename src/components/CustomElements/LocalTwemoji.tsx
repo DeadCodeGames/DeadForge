@@ -28,45 +28,22 @@ const LocalTwemoji: React.FC<LocalTwemojiProps> = ({
 
     let processedChildren = children;
     if (typeof children === "string") {
-        // Special case for LOLCAT flag
         processedChildren = children.split("🏳️‍🇱‍🇴‍🇱‍‍").map((part, i, arr) =>
             i < arr.length - 1
-                ? [part.split("🏳️‍🇪‍🇳‍🇬‍‍").map((part, i, arr) =>
-                    i < arr.length - 1
-                        ? [part, (
-                            <img
-                                key={"inteng-" + i}
-                                draggable="false"
-                                className={(options as any)?.className}
-                                alt="🏳️‍🇪‍🇳‍🇬‍‍"
-                                src={process.env.PUBLIC_URL + "/twemoji/svg/1f3f3-fe0f-200d-1f1ea-200d-1f1f3-200d-1f1ec-200d.svg"}
-                            />
-                        )]
-                        : part
-                ), (
+                ? [part, (
                     <img
-                        key={"lolcat-" + i}
+                        key={i}
                         draggable="false"
                         className={(options as any)?.className}
                         alt="🏳️‍🇱‍🇴‍🇱‍‍"
-                        src={process.env.PUBLIC_URL + "/twemoji/svg/1f3f3-fe0f-200d-1f1f1-200d-1f1f4-200d-1f1f1-200d.svg"}
+                        src={process.env.PUBLIC_URL + "/twemoji/svg/1f3f3-fe0f-200d-1f1ed-200d-1f1f4-200d-1f1ed-200d.svg"}
                     />
                 )]
-                : part.split("🏳️‍🇪‍🇳‍🇬‍‍").map((part, i, arr) =>
-                    i < arr.length - 1
-                        ? [part, (
-                            <img
-                                key={"inteng-" + i}
-                                draggable="false"
-                                className={(options as any)?.className}
-                                alt="🏳️‍🇪‍🇳‍🇬‍‍"
-                                src={process.env.PUBLIC_URL + "/twemoji/svg/1f3f3-fe0f-200d-1f1ea-200d-1f1f3-200d-1f1ec-200d.svg"}
-                            />
-                        )]
-                        : part
-                )
+                : part
         );
     }
+
+    console.log(processedChildren)
 
     return (
         <Twemoji

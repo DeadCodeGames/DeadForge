@@ -6,7 +6,7 @@ import MarkdownText from '@/components/CustomElements/MarkdownText';
 import i18n, { dateFNSResources } from '@/locales/i18n';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMediaQuery } from "react-responsive"
-import { TriangleAlert, Newspaper } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 import Tooltip from '@/components/CustomElements/Tooltip';
 import GameCard from '../Library/components/GameCard';
 import { cn } from '@/lib/utils';
@@ -111,7 +111,7 @@ const Home = () => {
 
     useEffect(() => {
         const el = scrollContainerRef.current;
-        if (!el) { console.error("Failed to attach to the scroll container."); return; };
+        if (!el) return;
 
         const handleScroll = () => {
             setScrolled(el.scrollTop > 40 && !isWideEnoughForHorizontalGameCardsUwU); // adjust threshold if needed
@@ -125,35 +125,26 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        const fetchArticles = () => {
+        const fetchArticles = async () => {
             try {
                 // First try to update articles
-                window.Electron.updateArticles().then((updatingResult) => {
-                    if (updatingResult.success) {
-                        setErrorUpdating(null)
-                    } else if (updatingResult.error) {
-                        setErrorUpdating(updatingResult.error);
-                    }
-                }).catch((err) => {
-                    setErrorUpdating((err as Error).message);
-                });
+                const updatingResult = await window.Electron.updateArticles()
+                if (updatingResult.success) {
+                    setErrorUpdating(null)
+                } else if (updatingResult.error) {
+                    setErrorUpdating(updatingResult.error);
+                }
 
                 // Get articles regardless of update success
-                window.Electron.getArticles()
-                    .then((result) => {
-                        setArticles(result.articles);
-                        setErrorLoading(null);
-                    })
-                    .catch((err) => {
-                        setErrorLoading((err as Error).message);
-                        console.error('Error loading articles:', err);
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                    });
+                const result = await window.Electron.getArticles();
+                console.log(result)
+                setArticles(result.articles);
+                setErrorLoading(null);
             } catch (err) {
                 setErrorLoading((err as Error).message);
                 console.error('Error loading articles:', err);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -227,12 +218,6 @@ const Home = () => {
                             <h2 className="text-xl font-bold mb-2 w-full text-center">{t("errorWithLoadingArticles")}</h2>
                             <p className="w-full text-center">{errorLoading}</p>
                         </div>
-                    ) : articles.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center min-h-[calc(100%-102px)] text-neutral-500 dark:text-neutral-400">
-                            <Newspaper className="w-16 h-16 mb-4 opacity-50" />
-                            <h2 className="text-xl font-bold mb-2 text-center">{t("home.noArticlesTitle")}</h2>
-                            <p className="text-center max-w-md">{t("home.noArticlesDescription")}</p>
-                        </div>
                     ) : (
                         <div className='space-y-6'>
                             <ArticlesList list={articles} t={t} />
@@ -242,8 +227,8 @@ const Home = () => {
             </div>
             <div className='flex flex-col gap-2 2xl:w-[216px] overflow-y-visible overflow-x-visible px-6 2xl:p-4 border-solid border-0 border-b 2xl:border-b-0 border-notQuiteBlack/20 dark:border-notQuiteWhite/20'>
                 <h1 className={cn("block font-bold text-2xl hHLPLFVBBT2XLS:-mt-2 hHLPLFVBBT2XLS:mb-1 font-heading w-[216px] transition-[transform,margin-bottom,opacity] duration-300", (scrolled && !isWideEnoughForHorizontalGameCardsUwU) ? "-translate-y-11 !-mb-8 opacity-0" : "opacity-100")}>{t("home.jumpBackIn")}</h1>
-                <div className={cn('flex flex-row *:flex-shrink-0 2xl:flex-col 2xl:h-full pb-4 2xl:pb-0 justify-start gap-4 overflow-y-hidden overflow-x-hidden 2xl:w-[216px] after:transition-[opacity,height] after:duration-300 after:opacity-0 after:hHLPLNFV:opacity-100 after:hVLPLFVAIT2XLS:opacity-100 after:from-fullMoon after:to-fullMoon/0 after:dark:from-night after:dark:to-night/0 2xl:after:w-[216px] hHLPLFVBBT2XLS:after:h-[11.5rem] 2xl:after:h-[100px] hHLPLFVBBT2XLS:after:w-16 hHLPLFVBBT2XLS:after:bg-gradient-to-l 2xl:after:bg-gradient-to-t 2xl:after:absolute hHLPLFVBBT2XLS:after:absolute 2xl:after:bottom-4 hHLPLFVBBT2XLS:after:right-6 after:pointer-events-none 2xl:after:after:absolute 2xl:before:absolute 2xl:before:bottom-4 2xl:before:bg-transparent 2xl:before:hVLPLFVAIT2XLS:w-[216px] 2xl:before:hVLPLFVAIT2XLS:h-[25px] before:hVLPLFVAIT2XLS:z-[1] transition-[height] duration-300', scrolled ? "h-32 hHLPLFVBBT2XLS:after:!h-[8.5rem]" : "h-44")}>
-                    {recentGames.slice(0, 8).map((g, i) => <GameCard game={g.game} key={i} size='homepage' useCapsule={!isWideEnoughForHorizontalGameCardsUwU} showTitle={false} isFavorite={favourites.some(f => f.source === g.game.source && f.id === g.game.id)} />)}
+                <div className={cn('flex flex-row *:flex-shrink-0 2xl:flex-col 2xl:h-full pb-4 2xl:pb-0 justify-start gap-4 overflow-y-hidden overflow-x-hidden 2xl:w-[216px] after:transition-opacity after:duration-300 after:opacity-0 after:hHLPLNFV:opacity-100 after:hVLPLFVAIT2XLS:opacity-100 after:from-fullMoon after:to-fullMoon/0 after:dark:from-night after:dark:to-night/0 2xl:after:w-[216px] hHLPLFVBBT2XLS:after:h-44 2xl:after:h-[100px] hHLPLFVBBT2XLS:after:w-16 hHLPLFVBBT2XLS:after:bg-gradient-to-l 2xl:after:bg-gradient-to-t 2xl:after:absolute hHLPLFVBBT2XLS:after:absolute 2xl:after:bottom-4 hHLPLFVBBT2XLS:after:right-6 after:pointer-events-none 2xl:after:after:absolute 2xl:before:absolute 2xl:before:bottom-4 2xl:before:bg-transparent 2xl:before:hVLPLFVAIT2XLS:w-[216px] 2xl:before:hVLPLFVAIT2XLS:h-[25px] before:hVLPLFVAIT2XLS:z-[1] transition-[height] duration-300', scrolled ? "h-32" : "h-44")}>
+                    {recentGames.slice(0, 8).map(g => <GameCard game={g.game} size='homepage' useCapsule={!isWideEnoughForHorizontalGameCardsUwU} showTitle={false} isFavorite={favourites.some(f => f.source === g.game.source && f.id === g.game.id)} />)}
                 </div>
             </div>
         </div>
