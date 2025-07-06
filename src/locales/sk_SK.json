@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "",
-        "emoji": ""
+        "name": "Slovenčina",
+        "emoji": "🇸🇰"
     },
     "commaSeparator": ", ",
     "ampersandSeparator": " & ",
@@ -37,8 +37,8 @@
         "errorWithLoadingArticles": "Nastala chyba pri načítavaní článkov:",
         "errorWithUpdatingArticles": "Nastala chyba pri aktualizovaní článkov:",
         "errorWithUpdatingArticles-NetworkError": "Toto je pravdepodobne chyba siete. Skontrolujte vaše pripojenie k internetu, a skúste to znova.",
-        "noArticlesTitle": "",
-        "noArticlesDescription": ""
+        "noArticlesTitle": "Nie sú k dispozícii žiadne články",
+        "noArticlesDescription": "Momentálne nie sú k dispozícii žiadne články. Skontrolujte si prosím svoje internetové pripojenie."
     },
     "store": {
         "urlCopied": "Adresa bola úspešne skopírovaná"

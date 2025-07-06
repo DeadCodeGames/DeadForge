@@ -1,7 +1,7 @@
 {
     "meta": {
-        "name": "",
-        "emoji": ""
+        "name": "Čeština",
+        "emoji": "🇨🇿"
     },
     "commaSeparator": ", ",
     "ampersandSeparator": " & ",
@@ -37,8 +37,8 @@
         "errorWithLoadingArticles": "Chyba při načítání článků:",
         "errorWithUpdatingArticles": "Chyba při aktualizaci článků:",
         "errorWithUpdatingArticles-NetworkError": "Zdá se, že se jedná o chybu sítě. Zkontrolujte připojení k internetu a zkuste načíst tuto stránku znovu.",
-        "noArticlesTitle": "",
-        "noArticlesDescription": ""
+        "noArticlesTitle": "Žádné články nejsou k dispozici",
+        "noArticlesDescription": "V tuto chvíli nejsou žádné články. Zkontrolujte prosím připojení k internetu."
     },
     "store": {
         "urlCopied": "Adresa byla úspěšně zkopírovaná"
