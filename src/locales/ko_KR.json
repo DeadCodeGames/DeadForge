@@ -30,11 +30,11 @@
             "publishedOn": "",
             "lastEditedOn": "",
             "tags": {
-                "deadforgeUpdate": "",
-                "beta": "",
-                "patch": "",
-                "languageUpdate": "",
-                "metaUpdate": ""
+                "deadforgeUpdate": "최신 정보",
+                "beta": "베타",
+                "patch": "패치",
+                "languageUpdate": "언어 최신 정보",
+                "metaUpdate": "비하인드 스토리 뉴스"
             },
             "writtenBy_other": ""
         },
@@ -168,8 +168,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": "",
-            "credits": ""
+            "privacyPolicy": "개인정보 보호정책",
+            "credits": "크레딧"
         }
     },
     "library": {

@@ -30,11 +30,11 @@
             "publishedOn": "",
             "lastEditedOn": "",
             "tags": {
-                "deadforgeUpdate": "",
-                "beta": "",
-                "patch": "",
-                "languageUpdate": "",
-                "metaUpdate": ""
+                "deadforgeUpdate": "DEADFORGE 更新",
+                "beta": "测试版",
+                "patch": "修补",
+                "languageUpdate": "语种更新",
+                "metaUpdate": "幕后新闻"
             },
             "writtenBy_other": ""
         },
@@ -168,8 +168,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": "",
-            "credits": ""
+            "privacyPolicy": "隐私政策",
+            "credits": "贡献者"
         }
     },
     "library": {

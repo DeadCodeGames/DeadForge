@@ -30,11 +30,11 @@
             "publishedOn": "Zverejnené {{date}}",
             "lastEditedOn": "Naposledy upravené {{date}}",
             "tags": {
-                "deadforgeUpdate": "",
-                "beta": "",
-                "patch": "",
-                "languageUpdate": "",
-                "metaUpdate": ""
+                "deadforgeUpdate": "Aktualizácia DEADFORGE",
+                "beta": "Beta",
+                "patch": "Záplata",
+                "languageUpdate": "Aktualizácia jazykového balíčka",
+                "metaUpdate": "novinky zo zákulisia"
             },
             "writtenBy_one": "Napísal/-a <0></0>",
             "writtenBy_few": "Napísali <0></0>",
@@ -178,7 +178,7 @@
             "languageUpdates": "Aktualizácie jazykových balíčkov",
             "languageUpdatesDescription": "Niekedy nemusíme stihnúť úplne preložiť aplikáciu do všetkých jazykov pred vydaním novej aktualizácie.\nMôžete sa prihlásiť na odber týchto malých aktualizácií, ktoré obsahujú iba zmeny lokalizácie (vyžaduje Automatické aktualizácie)",
             "privacyPolicy": "Zásady ochrany osobných údajov",
-            "credits": ""
+            "credits": "Zásluhy"
         }
     },
     "library": {

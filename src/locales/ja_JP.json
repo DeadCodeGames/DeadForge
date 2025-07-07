@@ -30,11 +30,11 @@
             "publishedOn": "{{date}}に公開",
             "lastEditedOn": "{{date}}に最終更新",
             "tags": {
-                "deadforgeUpdate": "",
-                "beta": "",
-                "patch": "",
-                "languageUpdate": "",
-                "metaUpdate": ""
+                "deadforgeUpdate": "DEADFORGEアップデート",
+                "beta": "ベータ",
+                "patch": "パッチ",
+                "languageUpdate": "言語パックアップデート",
+                "metaUpdate": "舞台裏のニュース"
             },
             "writtenBy_other": "<0></0>によって書かれました"
         },
@@ -169,7 +169,7 @@
             "languageUpdates": "言語パックのアップデート",
             "languageUpdatesDescription": "アップデート時に、すべての言語へのアプリの翻訳が間に合わないことがあります。\nローカライズの変更のみを含む、これらの小規模なアップデートは、\n言語パックのアップデートをオンにすることで受け取ることができます（自動アップデートが必要）",
             "privacyPolicy": "プライバシー・ポリシー",
-            "credits": ""
+            "credits": "クレジット"
         }
     },
     "library": {

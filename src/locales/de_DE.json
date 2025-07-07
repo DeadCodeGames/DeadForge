@@ -30,11 +30,11 @@
             "publishedOn": "",
             "lastEditedOn": "",
             "tags": {
-                "deadforgeUpdate": "",
-                "beta": "",
-                "patch": "",
-                "languageUpdate": "",
-                "metaUpdate": ""
+                "deadforgeUpdate": "DEADFORGE-Update",
+                "beta": "Beta-Update",
+                "patch": "Patch-Update",
+                "languageUpdate": "Sprach-Update",
+                "metaUpdate": "Update hinter den Kulissen"
             },
             "writtenBy_one": "",
             "writtenBy_other": ""
@@ -171,8 +171,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": "",
-            "credits": ""
+            "privacyPolicy": "Datenschutzbestimmungen",
+            "credits": "Mitwirkende"
         }
     },
     "library": {

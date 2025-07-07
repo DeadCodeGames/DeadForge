@@ -30,11 +30,11 @@
             "publishedOn": "",
             "lastEditedOn": "",
             "tags": {
-                "deadforgeUpdate": "",
-                "beta": "",
-                "patch": "",
-                "languageUpdate": "",
-                "metaUpdate": ""
+                "deadforgeUpdate": "Оновлення DEADFORGE",
+                "beta": "Бета",
+                "patch": "Патч",
+                "languageUpdate": "Оновлення мови",
+                "metaUpdate": "новини з-за лаштунків"
             },
             "writtenBy_one": "",
             "writtenBy_few": "",
@@ -177,8 +177,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": "",
-            "credits": ""
+            "privacyPolicy": "Політика конфіденційності",
+            "credits": "Автори"
         }
     },
     "library": {
