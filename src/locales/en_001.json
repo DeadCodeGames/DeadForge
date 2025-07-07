@@ -30,14 +30,7 @@
             "writtenBy_one": "Written by <0></0>",
             "writtenBy_other": "Written by <0></0>",
             "publishedOn": "Published on {{date}}",
-            "lastEditedOn": "Last edited on {{date}}",
-            "tags": {
-                "deadforgeUpdate": "DEADFORGE Update",
-                "beta": "Beta",
-                "patch": "Patch",
-                "languageUpdate": "Language Update",
-                "metaUpdate": "meta update"
-            }
+            "lastEditedOn": "Last edited on {{date}}"
         },
         "errorWithLoadingArticles": "Error with loading articles:",
         "errorWithUpdatingArticles": "Error with updating articles:",
@@ -171,8 +164,7 @@
             "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires Automatic Updates)",
             "languageUpdates": "Language Pack Updates",
             "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receiving these small updates, containing only localization changes (requires Automatic Updates)",
-            "privacyPolicy": "Privacy Policy",
-            "credits": "Credits"
+            "privacyPolicy": "Privacy Policy"
         }
     },
     "library": {

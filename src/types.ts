@@ -22,7 +22,7 @@ declare global {
             onUnmaximize: (callback: (event: IpcRendererEvent) => void) => void;
             getPreferences: () => Promise<{preferences: Preferences, v1PrefsAvailable: boolean, v1Prefs: OldPreferences}>;
             setPreferences: (preferences: object, isSettingsOpen: boolean, fromSettingsWindow: boolean) => void;
-            onPreferencesUpdate: (callback: (event: IpcRendererEvent, newPrefs: Preferences) => void) => void,
+            onPreferencesUpdate: (callback: (e: any, newPrefs: object) => void) => void,
             openSettingsWindow: () => void;
             getSteamGamesData: (path: string) => Promise<SteamLauncherData | null>;
             getEpicGamesData: (path: string) => Promise<any | null>,

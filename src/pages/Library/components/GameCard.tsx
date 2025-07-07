@@ -47,22 +47,17 @@ export const getImageUrlCandidates = (
         return null;
     };
     // Helper to extract any available URL from media data
-    const getAnyUrlsFromMediaData = (mediaData: any): string[] => {
-        if (!mediaData) return [];
-        if (typeof mediaData === 'string') return [mediaData];
-        const urls: string[] = [];
-        if (typeof mediaData === 'object') {
-            if (mediaData.image) {
-                if (typeof mediaData.image === 'string') {
-                    urls.push(mediaData.image);
-                } else if (typeof mediaData.image === 'object') {
-                    urls.push(...Object.values(mediaData.image).filter(Boolean) as string[]);
-                }
-            }
-            // Add all other string values in the object
-            urls.push(...Object.values(mediaData).filter(v => typeof v === 'string') as string[]);
+    const getAnyUrlFromMediaData = (mediaData: any): string | null => {
+        if (!mediaData) return null;
+        if (typeof mediaData === 'string') return mediaData;
+        if (typeof mediaData === 'object' && mediaData.image && typeof mediaData.image === 'string') return mediaData.image;
+        if (mediaData.image) {
+            const firstImage = Object.values(mediaData.image)[0];
+            if (firstImage) return firstImage as string;
         }
-        return urls;
+        const firstValue = Object.values(mediaData)[0];
+        if (firstValue) return firstValue as string;
+        return null;
     };
     // Helper to normalize the URL for local://
     const normalizeUrl = (url: string): string => {
@@ -83,12 +78,6 @@ export const getImageUrlCandidates = (
     };
     // Helper for Steam cache path
     const getSteamCacheUrl = (officialCurrentUrl: string): string | null => {
-        // If the url already contains the Steam cache path, just return it as a local:// path
-        if (officialCurrentUrl.includes('Steam\\appcache\\librarycache')) {
-            return officialCurrentUrl.startsWith('local://')
-                ? officialCurrentUrl
-                : `local://${officialCurrentUrl}`;
-        }
         const allMediaUrls = Object.values(resolvedGame.media || {}).flatMap(url => {
             if (typeof url === 'string') return [url];
             if (url?.image) return Object.values(url.image);
@@ -122,12 +111,12 @@ export const getImageUrlCandidates = (
     // 6. Official asset (default language)
     const officialDefaultUrl = getUrlFromMediaData(officialAsset, defaultSuffix);
     // 7. Any custom asset
-    const customAnyUrls = getAnyUrlsFromMediaData(customAsset);
+    const customAnyUrl = getAnyUrlFromMediaData(customAsset);
     // 8. Any curated asset
-    const curatedAnyUrls = getAnyUrlsFromMediaData(curatedAsset);
+    const curatedAnyUrl = getAnyUrlFromMediaData(curatedAsset);
     // 9. Any official asset
-    const officialAnyUrls = getAnyUrlsFromMediaData(officialAsset);
-    
+    const officialAnyUrl = getAnyUrlFromMediaData(officialAsset);
+
     // Compose the list in order, normalizing URLs and handling Steam special case
     const candidates: string[] = [];
     if (customCurrentUrl) candidates.push(normalizeUrl(customCurrentUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
@@ -136,7 +125,8 @@ export const getImageUrlCandidates = (
         if (resolvedGame.source === 'steam') {
             const steamUrl = getSteamCacheUrl(officialCurrentUrl);
             if (steamUrl) candidates.push(steamUrl);
-        } else { candidates.push(normalizeUrl(officialDefaultUrl!)) }
+        }
+        candidates.push(normalizeUrl(officialCurrentUrl));
     }
     if (customDefaultUrl) candidates.push(normalizeUrl(customDefaultUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
     if (curatedDefaultUrl) candidates.push(normalizeUrl(curatedDefaultUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
@@ -144,19 +134,17 @@ export const getImageUrlCandidates = (
         if (resolvedGame.source === 'steam') {
             const steamUrl = getSteamCacheUrl(officialDefaultUrl);
             if (steamUrl) candidates.push(steamUrl);
-        } else { candidates.push(normalizeUrl(officialDefaultUrl!)) }
+        }
+        candidates.push(normalizeUrl(officialDefaultUrl));
     }
-    for (const url of customAnyUrls) {
-        candidates.push(normalizeUrl(url.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    }
-    for (const url of curatedAnyUrls) {
-        candidates.push(normalizeUrl(url.replaceAll("%USERDATA%", "CONST_USERDATA")));
-    }
-    for (const url of officialAnyUrls) {
+    if (customAnyUrl) candidates.push(normalizeUrl(customAnyUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
+    if (curatedAnyUrl) candidates.push(normalizeUrl(curatedAnyUrl.replaceAll("%USERDATA%", "CONST_USERDATA")));
+    if (officialAnyUrl) {
         if (resolvedGame.source === 'steam') {
-            const steamUrl = getSteamCacheUrl(url);
+            const steamUrl = getSteamCacheUrl(officialAnyUrl);
             if (steamUrl) candidates.push(steamUrl);
-        } else { candidates.push(normalizeUrl(url!)) }
+        }
+        candidates.push(normalizeUrl(officialAnyUrl));
     }
     // Remove duplicates and falsy
     return [...new Set(candidates.filter(Boolean))];

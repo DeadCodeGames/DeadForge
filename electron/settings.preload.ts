@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { Preferences } from './preferences';
+import { NormalizedGame } from './types';
 
 contextBridge.exposeInMainWorld('Electron', {
     isTray: false,
@@ -16,8 +16,11 @@ contextBridge.exposeInMainWorld('Electron', {
 
     getPreferences: (): Promise<object | ""> => ipcRenderer.invoke('preferences:get'),
     setPreferences: (preferences: object, isSettingsOpen: boolean, fromSettingsWindow: boolean) => ipcRenderer.invoke('preferences:set', preferences, isSettingsOpen, fromSettingsWindow),
-    // eslint-disable-next-line no-unused-vars
-    onPreferencesUpdate: (callback: (event: Electron.IpcRendererEvent, newPrefs: Preferences) => void) => ipcRenderer.on('preferences:update', callback),
+    onPreferencesUpdate: (callback: (newPrefs: object) => void) => ipcRenderer.on('preferences:update', callback),
+
+    fetchGames: (): Promise<NormalizedGame[]> => ipcRenderer.invoke('games:fetch'),
+    onGamesUpdate: (callback: (event: any, games: NormalizedGame[]) => void) => ipcRenderer.on('games:update', callback),
+    removeGamesUpdateListener: (callback: (event: any, games: NormalizedGame[]) => void) => ipcRenderer.removeListener('games:update', callback),
 
     resetAllData: () => ipcRenderer.invoke('app:resetAllData'),
     restartApp: () => ipcRenderer.invoke('app:restart'),
