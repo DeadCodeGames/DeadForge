@@ -29,6 +29,13 @@
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",
+            "tags": {
+                "deadforgeUpdate": "Оновлення DEADFORGE",
+                "beta": "Бета",
+                "patch": "Патч",
+                "languageUpdate": "Оновлення мови",
+                "metaUpdate": "новини з-за лаштунків"
+            },
             "writtenBy_one": "",
             "writtenBy_few": "",
             "writtenBy_many": "",
@@ -170,7 +177,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": ""
+            "privacyPolicy": "Політика конфіденційності",
+            "credits": "Автори"
         }
     },
     "library": {

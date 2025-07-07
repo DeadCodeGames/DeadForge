@@ -29,6 +29,13 @@
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",
+            "tags": {
+                "deadforgeUpdate": "Mise à jour de DEADFORGE",
+                "beta": "Bêta",
+                "patch": "Patch",
+                "languageUpdate": "Mise à jour de la localisation",
+                "metaUpdate": "actualités des coulisses"
+            },
             "writtenBy_one": "",
             "writtenBy_other": ""
         },
@@ -164,7 +171,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": ""
+            "privacyPolicy": "Protection des données",
+            "credits": "Crédits"
         }
     },
     "library": {

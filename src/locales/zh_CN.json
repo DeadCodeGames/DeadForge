@@ -29,6 +29,13 @@
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",
+            "tags": {
+                "deadforgeUpdate": "DEADFORGE 更新",
+                "beta": "测试版",
+                "patch": "修补",
+                "languageUpdate": "语种更新",
+                "metaUpdate": "幕后新闻"
+            },
             "writtenBy_other": ""
         },
         "errorWithLoadingArticles": "",
@@ -161,7 +168,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": ""
+            "privacyPolicy": "隐私政策",
+            "credits": "贡献者"
         }
     },
     "library": {
