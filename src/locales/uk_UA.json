@@ -29,6 +29,13 @@
         "articles": {
             "publishedOn": "",
             "lastEditedOn": "",
+            "tags": {
+                "deadforgeUpdate": "",
+                "beta": "",
+                "patch": "",
+                "languageUpdate": "",
+                "metaUpdate": ""
+            },
             "writtenBy_one": "",
             "writtenBy_few": "",
             "writtenBy_many": "",
@@ -170,7 +177,8 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
-            "privacyPolicy": ""
+            "privacyPolicy": "",
+            "credits": ""
         }
     },
     "library": {

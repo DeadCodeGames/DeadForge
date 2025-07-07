@@ -29,6 +29,13 @@
         "articles": {
             "publishedOn": "Zveřejněno {{date}}",
             "lastEditedOn": "Naposledy upraveno {{date}}",
+            "tags": {
+                "deadforgeUpdate": "",
+                "beta": "",
+                "patch": "",
+                "languageUpdate": "",
+                "metaUpdate": ""
+            },
             "writtenBy_one": "Napsal/-a <0></0>",
             "writtenBy_few": "Napsali <0></0>",
             "writtenBy_many": "Napsali <0></0>",
@@ -170,7 +177,8 @@
             "betaUpdatesDescription": "Instalovat předběžné beta verzie s novými funkcemi dříve (vyžaduje Automatické aktualizace)",
             "languageUpdates": "Aktualizace jazykových balíčků",
             "languageUpdatesDescription": "Někdy se nám nepovede úplně přeložit aplikaci do všech jazyků prěd vydáním nové aktualizace\nMůžete se přihlásit na odběr těchto malých aktualizací, které obsahují jenom změny lokalizace (vyžaduje Automatické aktualizace)",
-            "privacyPolicy": "Zásady ochrany osobních údajů"
+            "privacyPolicy": "Zásady ochrany osobních údajů",
+            "credits": ""
         }
     },
     "library": {
