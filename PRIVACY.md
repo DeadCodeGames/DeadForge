@@ -1,7 +1,7 @@
 # Privacy Policy
-**Last updated: [July 08, 2025]** <!-- 2025-07-08T11:35:03.086Z -->
+**Last updated: [July 08, 2025]** <!-- 2025-07-08T08:18:50.588Z -->
 
-**DEADFORGE**, developed by **DEADCODEGAMES**, respects your privacy. This app is designed with privacy in mind and does **not collect, track, or store any Personal Data, User Data, or App Data externally**. This means your data never leaves your device unless you choose to share it manually (_see **Manual Action**_).
+**DEADFORGE**, developed by **DEADCODEGAMES**, respects your privacy. This app is designed with privacy in mind and does **not collect, track, or store any Personal Data, User Data, or App Data externally**. This means your data never leaves your device unless you choose to share it manually (*see **Manual Action***).
 
 ## Jurisdiction
 DEADCODEGAMES is an informal student developer group based in Slovakia, a member country of the European Union. This Privacy Policy is governed by Slovak and EU law.
@@ -46,9 +46,9 @@ All settings and user-created content are stored locally on your device:
 - **User Software Database Entries**: Stored in a local SQLite database, located at `db/user.sqlite3`. This includes user-added software metadata and preferences. (_More in the **Data Storage** section._)
 - **Window State**: The last known window position and size are stored in `window-state.json`. This file does not contain any Personal Data or User Data, and is created automatically by the program.
 - **Developer & Community Content**: Articles, warnings, and notes are downloaded as part of the app experience, but are not tied to individual users and are not considered Personal Data.
-- **Missing Asset Reports**: If software entries are missing artwork, this information is stored locally (e.g., which image is missing for a given store ID). You may choose to submit this information manually via a GitHub issue. No sensitive or personal data is included. This info is stored in `missingAssetsReport[TIMESTAMP].txt` files in the app's data directory.
+- **Missing Asset Info**: If software entries are missing artwork, this information is stored locally (e.g., which image is missing for a given store ID). You may choose to submit this information manually via a GitHub issue. No sensitive or personal data is included. This info is stored in `missingAssetsReport[TIMESTAMP].txt` files in the app's data directory.
 
-### 🔄 Update Checks _(Planned)_
+### 🔄 Update Checks *(Planned)*
 
 - DEADFORGE will regularly check for updates using the GitHub Releases API. This check will only retrieve info about DEADFORGE's release history, and does **not** transmit any data from your device. It uses standard, anonymous HTTP requests.
 
@@ -56,12 +56,12 @@ All settings and user-created content are stored locally on your device:
 
 - If a user adds software from platforms like itch.io, Steam, or Epic Games, DEADFORGE may download associated artwork (e.g., icons, banners, headers, logos, etc.) from a curated list, created by developers and the community. This list may contain images hosted by Third-Party Services. These Services may log IP addresses as part of standard HTTP delivery. No user-identifiable data is sent from DEADFORGE to these services.
 
-### 🔵 Discord Integration _(Planned)_
+### 🟣 Discord Integration *(Planned)*
 
 - If you choose to enable Discord Rich Presence, DEADFORGE will send basic, non-personal information (such as version number and launch time) to Discord’s API. This feature is entirely optional and disabled by default.  
 - **Legal Basis**: This processing is based on your **explicit consent**, in line with GDPR Article 6(1)(a).
 
-### 🔐 Private Software Key Validation _(Planned)_
+### 🔐 Private Software Key Validation *(Planned)*
 
 - Some **hidden** software in the built-in DEADFORGE Store may require a private key to access. These keys are defined and managed by the software’s developers. Most software remains public and key-free.
 - If you enter a key, DEADFORGE will:
@@ -93,8 +93,8 @@ While DEADFORGE does not collect or transmit any Personal Data automatically, ce
 | Service | Purpose | Data Sent | Legal Basis | Notes |
 |--------|---------|-----------|-------------|-------|
 | **GitHub API** & **GitHub Pages** | To check for updates (Plannned) and download software | No user-identifying data is sent. Standard HTTP GET requests only. | Legitimate interest (GDPR Art. 6(1)(f)) | GitHub may log your IP address as part of normal server operation |
-| **Discord API** _(Planned, optional)_ | To show Rich Presence status if enabled by the user | App version and launch time only (no personal identifiers) | Consent (GDPR Art. 6(1)(a)) | Disabled by default |
-| **Vercel API** _(Planned, optional)_ | To validate private software keys entered by the user and download private software | Hashed key + software ID only | Consent (GDPR Art. 6(1)(a)) | Only triggered if user submits a key |
+| **Discord API** *(Planned, optional)* | To show Rich Presence status if enabled by the user | App version and launch time only (no personal identifiers) | Consent (GDPR Art. 6(1)(a)) | Disabled by default |
+| **Vercel API** *(Planned, optional)* | To validate private software keys entered by the user and download private software | Hashed key + software ID only | Consent (GDPR Art. 6(1)(a)) | Only triggered if user submits a key |
 | **External Image Hosting (e.g., itch.io, Steam)** | To download artwork for user-added software | No personal data sent, but your IP address may be logged by the image host | Legitimate interest (GDPR Art. 6(1)(f)) | Standard web requests initiated by the app |
 
 Each of these services has its own Privacy Policy:
@@ -117,10 +117,10 @@ The following data is stored:
 |-----------------|------|-------------|
 | `preferences.json` | User Data | App settings and configuration |
 | `collections.json` | User Data | Your curated collections of software |
-| `db/user.sqlite3` | User Data | User-added software entries and related metadata |
+| SQLite database | User Data | User-added software entries and related metadata |
 | `window-state.json` | App Data | Last known window size and position (non-personal) |
 | Developer/community content | Developer/Community Data | Articles, warnings, and notes included or updated by developers/community (not linked to User Data) |
-| Missing Asset Reports | App Data (based on User Data) | Locally stored notes about which artwork (e.g. `icon`, `logo`) is missing for a given software ID from a known storefront (e.g. Steam, itch.io) |
+| Missing asset info | App Data (based on User Data) | Locally stored notes about which artwork (e.g. `icon`, `logo`) is missing for a given software ID from a known storefront (e.g. Steam, itch.io) |
 
 🗂️ You can export or import your data using the in-app settings menu:
 
