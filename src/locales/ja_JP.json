@@ -30,7 +30,7 @@
             "publishedOn": "{{date}}に公開",
             "lastEditedOn": "{{date}}に最終更新",
             "tags": {
-                "deadforgeUpdate": "DEADFORGEアップデート",
+                "deadforgeUpdate": "DEADFORGE アップデート",
                 "beta": "ベータ",
                 "patch": "パッチ",
                 "languageUpdate": "言語パックアップデート",
