@@ -16,9 +16,9 @@
     "next": "",
     "finish": "",
     "sidebar": {
-        "home": "",
+        "home": "首页",
         "library": "图书馆",
-        "arcade": "",
+        "arcade": "街机",
         "store": "商店",
         "settings": "设置",
         "collapse": "折叠"

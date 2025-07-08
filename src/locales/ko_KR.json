@@ -16,9 +16,9 @@
     "next": "",
     "finish": "",
     "sidebar": {
-        "home": "",
+        "home": "홈페이지",
         "library": "도서관",
-        "arcade": "",
+        "arcade": "아케이드",
         "store": "상점",
         "settings": "설정",
         "collapse": "접기"
