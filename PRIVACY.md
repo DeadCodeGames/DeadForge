@@ -1,5 +1,5 @@
 # Privacy Policy
-**Last updated: [July 08, 2025]** <!-- 2025-07-08T11:27:53.140Z -->
+**Last updated: [July 08, 2025]** <!-- 2025-07-08T11:31:30.247Z -->
 
 **DEADFORGE**, developed by **DEADCODEGAMES**, respects your privacy. This app is designed with privacy in mind and does **not collect, track, or store any Personal Data, User Data, or App Data externally**. This means your data never leaves your device unless you choose to share it manually (_see **Manual Action**_).
 
@@ -46,7 +46,7 @@ All settings and user-created content are stored locally on your device:
 - **User Software Database Entries**: Stored in a local SQLite database, located at `db/user.sqlite3`. This includes user-added software metadata and preferences. (_More in the **Data Storage** section._)
 - **Window State**: The last known window position and size are stored in `window-state.json`. This file does not contain any Personal Data or User Data, and is created automatically by the program.
 - **Developer & Community Content**: Articles, warnings, and notes are downloaded as part of the app experience, but are not tied to individual users and are not considered Personal Data.
-- **Missing Asset Info**: If software entries are missing artwork, this information is stored locally (e.g., which image is missing for a given store ID). You may choose to submit this information manually via a GitHub issue. No sensitive or personal data is included. This info is stored in `missingAssetsReport[TIMESTAMP].txt` files in the app's data directory.
+- **Missing Asset Reports**: If software entries are missing artwork, this information is stored locally (e.g., which image is missing for a given store ID). You may choose to submit this information manually via a GitHub issue. No sensitive or personal data is included. This info is stored in `missingAssetsReport[TIMESTAMP].txt` files in the app's data directory.
 
 ### 🔄 Update Checks _(Planned)_
 
@@ -120,7 +120,7 @@ The following data is stored:
 | `db/user.sqlite3` | User Data | User-added software entries and related metadata |
 | `window-state.json` | App Data | Last known window size and position (non-personal) |
 | Developer/community content | Developer/Community Data | Articles, warnings, and notes included or updated by developers/community (not linked to User Data) |
-| Missing asset info | App Data (based on User Data) | Locally stored notes about which artwork (e.g. `icon`, `logo`) is missing for a given software ID from a known storefront (e.g. Steam, itch.io) |
+| Missing Asset Reports | App Data (based on User Data) | Locally stored notes about which artwork (e.g. `icon`, `logo`) is missing for a given software ID from a known storefront (e.g. Steam, itch.io) |
 
 🗂️ You can export or import your data using the in-app settings menu:
 
