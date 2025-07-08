@@ -1,5 +1,5 @@
 # Privacy Policy
-**Last updated: [July 08, 2025]** <!-- 2025-07-08T11:37:51.078Z -->
+**Last updated: [July 08, 2025]** <!-- 2025-07-08T11:35:03.086Z -->
 
 **DEADFORGE**, developed by **DEADCODEGAMES**, respects your privacy. This app is designed with privacy in mind and does **not collect, track, or store any Personal Data, User Data, or App Data externally**. This means your data never leaves your device unless you choose to share it manually (_see **Manual Action**_).
 
@@ -92,7 +92,7 @@ While DEADFORGE does not collect or transmit any Personal Data automatically, ce
 
 | Service | Purpose | Data Sent | Legal Basis | Notes |
 |--------|---------|-----------|-------------|-------|
-| **GitHub API** & **GitHub Pages** | To check for updates (Planned) and download software | No user-identifying data is sent. Standard HTTP GET requests only. | Legitimate interest (GDPR Art. 6(1)(f)) | GitHub may log your IP address as part of normal server operation |
+| **GitHub API** & **GitHub Pages** | To check for updates (Plannned) and download software | No user-identifying data is sent. Standard HTTP GET requests only. | Legitimate interest (GDPR Art. 6(1)(f)) | GitHub may log your IP address as part of normal server operation |
 | **Discord API** _(Planned, optional)_ | To show Rich Presence status if enabled by the user | App version and launch time only (no personal identifiers) | Consent (GDPR Art. 6(1)(a)) | Disabled by default |
 | **Vercel API** _(Planned, optional)_ | To validate private software keys entered by the user and download private software | Hashed key + software ID only | Consent (GDPR Art. 6(1)(a)) | Only triggered if user submits a key |
 | **External Image Hosting (e.g., itch.io, Steam)** | To download artwork for user-added software | No personal data sent, but your IP address may be logged by the image host | Legitimate interest (GDPR Art. 6(1)(f)) | Standard web requests initiated by the app |
