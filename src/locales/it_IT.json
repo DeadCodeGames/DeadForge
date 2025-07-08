@@ -16,9 +16,9 @@
     "next": "",
     "finish": "",
     "sidebar": {
-        "home": "",
-        "library": "Biblioteca",
-        "arcade": "",
+        "home": "Inizio",
+        "library": "Mediateca",
+        "arcade": "Arcade",
         "store": "Negozio",
         "settings": "Impostazioni",
         "collapse": "Minimizza"

@@ -16,12 +16,12 @@
     "next": "",
     "finish": "",
     "sidebar": {
-        "home": "",
-        "library": "",
-        "arcade": "",
-        "store": "",
-        "settings": "",
-        "collapse": ""
+        "home": "Hauptseite",
+        "library": "Mediathek",
+        "arcade": "Arcade",
+        "store": "Store",
+        "settings": "Einstellungen",
+        "collapse": "Einklappen"
     },
     "home": {
         "newsAndUpdatesHeader": "",

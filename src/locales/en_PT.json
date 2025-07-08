@@ -20,8 +20,8 @@
         "library": "Logbook Hold",
         "arcade": "Saloon-games",
         "store": "Market",
-        "settings": "",
-        "collapse": ""
+        "settings": "Scribble",
+        "collapse": "Shrivel"
     },
     "home": {
         "newsAndUpdatesHeader": "",
