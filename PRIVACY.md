@@ -1,5 +1,5 @@
 # Privacy Policy
-**Last updated: [July 08, 2025]** <!-- 2025-07-08T08:18:50.588Z -->
+**Last updated: [July 08, 2025]** <!-- 2025-07-08T11:27:53.140Z -->
 
 **DEADFORGE**, developed by **DEADCODEGAMES**, respects your privacy. This app is designed with privacy in mind and does **not collect, track, or store any Personal Data, User Data, or App Data externally**. This means your data never leaves your device unless you choose to share it manually (_see **Manual Action**_).
 
@@ -117,7 +117,7 @@ The following data is stored:
 |-----------------|------|-------------|
 | `preferences.json` | User Data | App settings and configuration |
 | `collections.json` | User Data | Your curated collections of software |
-| SQLite database | User Data | User-added software entries and related metadata |
+| `db/user.sqlite3` | User Data | User-added software entries and related metadata |
 | `window-state.json` | App Data | Last known window size and position (non-personal) |
 | Developer/community content | Developer/Community Data | Articles, warnings, and notes included or updated by developers/community (not linked to User Data) |
 | Missing asset info | App Data (based on User Data) | Locally stored notes about which artwork (e.g. `icon`, `logo`) is missing for a given software ID from a known storefront (e.g. Steam, itch.io) |
