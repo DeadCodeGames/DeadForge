@@ -209,7 +209,8 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": ""
+            "allGamesDescriptionAlternate": "",
+            "uninstall": ""
         },
         "sidebar": {
             "homeButton": "首页",
@@ -275,6 +276,7 @@
             "playTime": ""
         },
         "recentView": {
+            "now": "",
             "today": "本日",
             "thisWeek": "本周",
             "thisMonth": "本月",
@@ -309,10 +311,12 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": ""
+                "reinstall": "",
+                "uninstall": ""
             },
             "install": "",
             "reinstall": "",
+            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",
