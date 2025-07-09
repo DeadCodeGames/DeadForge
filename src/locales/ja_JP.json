@@ -328,7 +328,10 @@
             "updatingWindowsRegistry": "Windowsレジストリを更新中⋯",
             "backingUpUserDataFiles": "ユーザーデータをバックアップ中",
             "restoringUserDataFiles": "ユーザーデータを復元中",
-            "cleaningUp": "清掃中…"
+            "cleaningUp": "清掃中…",
+            "installedSize": "インストール済みプログラムサイズ",
+            "userDataSize": "ユーザーデータのサイズ",
+            "totalSize": "ディスク上の合計サイズ（ユーザーデータを含む）"
         },
         "update": {
             "applying": "パッチを適用中",

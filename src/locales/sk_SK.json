@@ -340,7 +340,10 @@
             "updatingWindowsRegistry": "Aktualizuje sa Windows Registry",
             "backingUpUserDataFiles": "Zálohujú sa užívateľské dáta",
             "restoringUserDataFiles": "Obnovujú sa užívateľské dáta",
-            "cleaningUp": "Upratuje sa..."
+            "cleaningUp": "Upratuje sa...",
+            "installedSize": "Veľkosť nainštalovaného programu",
+            "userDataSize": "Veľkosť Užívateľských Dát",
+            "totalSize": "Celková veľkosť na disku (vrátané Užívateľských Dát)"
         },
         "update": {
             "applying": "Aplikuje sa aktualizácia",
