@@ -215,7 +215,7 @@
             "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "",
+            "homeButton": "Hauptseite",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -251,7 +251,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "",
+                "collapse": "Einklappen",
                 "expand": "",
                 "rename": "",
                 "delete": "",

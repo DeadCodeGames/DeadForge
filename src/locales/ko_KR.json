@@ -212,7 +212,7 @@
             "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "",
+            "homeButton": "홈페이지",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -248,7 +248,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "",
+                "collapse": "접기",
                 "expand": "",
                 "rename": "",
                 "delete": "",
