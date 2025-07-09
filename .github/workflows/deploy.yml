@@ -4,7 +4,7 @@ on:
   push:
     branches: [web]
   repository_dispatch:
-    types: [store-updated]
+    types: ["store-updated", "software-cache-invalidated"]
 
 permissions:
   contents: read
@@ -35,7 +35,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "18"
 
       - name: Install & Build DeadForgeStore
         working-directory: ./store
@@ -48,6 +48,23 @@ jobs:
         run: |
           mkdir -p ./public/store
           cp -r ./store/build/* ./public/store/
+
+      - name: Clone DeadForgeStore GitHub API Cacher
+        uses: actions/checkout@v4
+        with:
+          repository: DeadCodeGames/DeadForgeSoftwareGitHubReleasesCache
+          ref: main
+          token: ${{secrets.DEADFORGESTORE_PULL_PAT}}
+          path: cacher
+
+      - name: Build DeadForge Software Cache
+        working-directory: ./cacher
+        run: node cache-github-releases.mjs
+
+      - name: Copy DeadForge Software Cache build to /software-gh-pages-cache
+        run: |
+          mkdir -p ./public/store
+          cp -r ./cache/software-gh-pages-cache/* ./public/store/software-gh-pages-cache/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
