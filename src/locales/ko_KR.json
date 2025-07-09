@@ -328,7 +328,10 @@
             "updatingWindowsRegistry": "",
             "backingUpUserDataFiles": "",
             "restoringUserDataFiles": "",
-            "cleaningUp": ""
+            "cleaningUp": "",
+            "installedSize": "",
+            "userDataSize": "",
+            "totalSize": ""
         },
         "update": {
             "applying": "",

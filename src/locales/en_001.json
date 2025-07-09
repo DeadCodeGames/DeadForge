@@ -332,7 +332,10 @@
             "updatingWindowsRegistry": "Updating Windows Registry",
             "backingUpUserDataFiles": "Backing up user data",
             "restoringUserDataFiles": "Restoring user data",
-            "cleaningUp": "Cleaning up..."
+            "cleaningUp": "Cleaning up...",
+            "installedSize": "Installed software size",
+            "userDataSize": "User Data size",
+            "totalSize": "Total size on disk (including User Data)"
         },
         "update": {
             "applying": "Applying Patch",
