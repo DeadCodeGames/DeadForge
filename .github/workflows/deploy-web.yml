@@ -60,10 +60,12 @@ jobs:
       - name: Build DeadForge Software Cache
         working-directory: ./cacher
         run: node cache-github-releases.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEADFORGESTORE_PULL_PAT }}
 
       - name: Copy DeadForge Software Cache build to /software-gh-pages-cache
         run: |
-          mkdir -p ./public/store
+          mkdir -p ./public/store/software-gh-pages-cache/
           cp -r ./cacher/software-gh-pages-cache/* ./public/store/software-gh-pages-cache/
 
       - name: Upload artifact
