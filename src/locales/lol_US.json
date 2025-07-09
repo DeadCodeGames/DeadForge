@@ -212,8 +212,7 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": "",
-            "uninstall": ""
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
             "homeButton": "",
@@ -279,7 +278,6 @@
             "playTime": ""
         },
         "recentView": {
-            "now": "",
             "today": "",
             "thisWeek": "",
             "thisMonth": "",
@@ -315,12 +313,10 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": "",
-                "uninstall": ""
+                "reinstall": ""
             },
             "install": "",
             "reinstall": "",
-            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",

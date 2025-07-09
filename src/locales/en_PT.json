@@ -212,8 +212,7 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": "",
-            "uninstall": ""
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
             "homeButton": "Home Port",
@@ -252,7 +251,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "Shrivel",
+                "collapse": "",
                 "expand": "",
                 "rename": "",
                 "delete": "",
@@ -279,7 +278,6 @@
             "playTime": ""
         },
         "recentView": {
-            "now": "",
             "today": "Ter'day",
             "thisWeek": "",
             "thisMonth": "",
@@ -315,12 +313,10 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": "",
-                "uninstall": ""
+                "reinstall": ""
             },
             "install": "",
             "reinstall": "",
-            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",

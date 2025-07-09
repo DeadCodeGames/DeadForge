@@ -209,8 +209,7 @@
             "allGames": "全ゲーム",
             "yourGames": "あなたのゲーム",
             "allGamesDescription": "コレクション全体を閲覧する",
-            "allGamesDescriptionAlternate": "あなたの完全なゲームライブラリ",
-            "uninstall": "アンインストール"
+            "allGamesDescriptionAlternate": "あなたの完全なゲームライブラリ"
         },
         "sidebar": {
             "homeButton": "ホーム",
@@ -276,7 +275,6 @@
             "playTime": "プレイ時間"
         },
         "recentView": {
-            "now": "今すぐ",
             "today": "今日",
             "thisWeek": "今週",
             "thisMonth": "今月",
@@ -311,12 +309,10 @@
         "install": {
             "title": {
                 "install": "<b>{{title}}</b>をインストール",
-                "reinstall": "<b>{{title}}</b>を再インストール",
-                "uninstall": "<b>{{title}}</b>をアンインストール"
+                "reinstall": "<b>{{title}}</b>を再インストール"
             },
             "install": "インストール",
             "reinstall": "再インストール",
-            "uninstall": "アンインストール",
             "reinstallReason": "現在インストールされているこのゲームのバージョンは、リリース履歴に存在しないようです。\nそのため、DEADFORGEでは最新バージョンへのクリーンなアップデートができず、再インストールが必要となります。\nただし、開発者によってユーザーデータを保存するファイルとして指定されたものは保持されます。",
             "update": "アップデート",
             "installLocation": "インストール場所",

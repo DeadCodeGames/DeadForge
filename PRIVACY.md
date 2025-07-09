@@ -5,7 +5,6 @@
 
 ## Jurisdiction
 DEADCODEGAMES is an informal student developer group based in Slovakia, a member country of the European Union. This Privacy Policy is governed by Slovak and EU law.
-
 As an EU-based project, this Privacy Policy complies with the General Data Protection Regulation (GDPR) (EU) 2016/679. Under GDPR, data protection rights apply to any individual whose data is processed in the EU, regardless of their country of residence. Therefore, this policy applies to all users.
 
 ## Definitions
