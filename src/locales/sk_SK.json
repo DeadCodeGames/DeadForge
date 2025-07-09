@@ -219,7 +219,7 @@
             "yourGames": "Vaše hry",
             "allGamesDescription": "Prehliadajte svoju úplnú knižnicu",
             "allGamesDescriptionAlternate": "Vaša úplná herná knižnica",
-            "uninstall": ""
+            "uninstall": "Odinštalovať"
         },
         "sidebar": {
             "homeButton": "Domov",
@@ -285,7 +285,7 @@
             "playTime": "Odohraný čas"
         },
         "recentView": {
-            "now": "",
+            "now": "Práve teraz",
             "today": "Dnes",
             "thisWeek": "Tento Týždeň",
             "thisMonth": "Tento Mesiac",
@@ -324,11 +324,11 @@
             "title": {
                 "install": "Inštalácia <b>{{title}}</b>",
                 "reinstall": "Reinštalácia <b>{{title}}</b>",
-                "uninstall": ""
+                "uninstall": "Odinštalácia <b>{{title}}</b>"
             },
             "install": "Nainštalovať",
             "reinstall": "Preinštalovať",
-            "uninstall": "",
+            "uninstall": "Odinštalovať",
             "reinstallReason": "Zdá sa, že aktuálne nainštalovaná verzia tejto hry nie je dostupná v histórii vydaní. Z tohto dôvodu ju DEADFORGE nemôže aktualizovať na najnovšiu verziu a vyžaduje úplnú reinštaláciu. \nSúbory označené vývojármi ako súbory uchovávajúce používateľské údaje budú zachované.",
             "update": "Aktualizovať",
             "installLocation": "Miesto inštalácie",

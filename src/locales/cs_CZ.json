@@ -219,7 +219,7 @@
             "yourGames": "Vaše hry",
             "allGamesDescription": "Prohlédněte si svou úplnou knihovnu",
             "allGamesDescriptionAlternate": "Vaše úplná knihovna her",
-            "uninstall": ""
+            "uninstall": "Odinstalovat"
         },
         "sidebar": {
             "homeButton": "Domov",
@@ -285,7 +285,7 @@
             "playTime": "Odehraný čas"
         },
         "recentView": {
-            "now": "",
+            "now": "Právě teď",
             "today": "Dnes",
             "thisWeek": "Tento Týden",
             "thisMonth": "Tento Měsíc",
@@ -324,11 +324,11 @@
             "title": {
                 "install": "Instalace <b>{{title}}</b>",
                 "reinstall": "Reinstalace <b>{{title}}</b>",
-                "uninstall": ""
+                "uninstall": "Odinstalace <b>{{title}}</b>"
             },
             "install": "Nainstalovat",
             "reinstall": "Přeinstalovat",
-            "uninstall": "",
+            "uninstall": "Odinstalovat",
             "reinstallReason": "Zdá se, že aktuálně nainstalovaná verze této hry není v naši historii vydání. Z tohoto důvodu ji DEADFORGE nemůže aktualizovat na nejnovější verzi a vyžaduje úplnou reinstalaci.\nSoubory označené vývojáři jako soubory uchovávající uživatelská data budou zachovány.",
             "update": "Aktualizovat",
             "installLocation": "Umístění instalace",
