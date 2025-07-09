@@ -218,7 +218,8 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": ""
+            "allGamesDescriptionAlternate": "",
+            "uninstall": ""
         },
         "sidebar": {
             "homeButton": "Головна",
@@ -284,6 +285,7 @@
             "playTime": ""
         },
         "recentView": {
+            "now": "",
             "today": "",
             "thisWeek": "",
             "thisMonth": "",
@@ -321,10 +323,12 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": ""
+                "reinstall": "",
+                "uninstall": ""
             },
             "install": "",
             "reinstall": "",
+            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",

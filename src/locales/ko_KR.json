@@ -209,7 +209,8 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": ""
+            "allGamesDescriptionAlternate": "",
+            "uninstall": ""
         },
         "sidebar": {
             "homeButton": "홈페이지",
@@ -275,6 +276,7 @@
             "playTime": ""
         },
         "recentView": {
+            "now": "",
             "today": "오늘",
             "thisWeek": "이번 주",
             "thisMonth": "이번 달",
@@ -309,10 +311,12 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": ""
+                "reinstall": "",
+                "uninstall": ""
             },
             "install": "",
             "reinstall": "",
+            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",
