@@ -212,7 +212,7 @@
             "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "",
+            "homeButton": "首页",
             "filters": {
                 "favouriteStatus": {
                     "description": "",

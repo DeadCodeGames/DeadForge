@@ -221,7 +221,7 @@
             "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "",
+            "homeButton": "Головна",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -257,7 +257,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "",
+                "collapse": "Згорнути",
                 "expand": "",
                 "rename": "",
                 "delete": "",
