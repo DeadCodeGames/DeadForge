@@ -64,7 +64,7 @@ jobs:
       - name: Copy DeadForge Software Cache build to /software-gh-pages-cache
         run: |
           mkdir -p ./public/store
-          cp -r ./cache/software-gh-pages-cache/* ./public/store/software-gh-pages-cache/
+          cp -r ./cacher/software-gh-pages-cache/* ./public/store/software-gh-pages-cache/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
