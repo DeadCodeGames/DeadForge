@@ -3,8 +3,8 @@
         "name": "Italiano",
         "emoji": "🇮🇹"
     },
-    "commaSeparator": "",
-    "ampersandSeparator": "",
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
     "showLess": "",
     "showMore": "",
     "viewAll": "",

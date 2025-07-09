@@ -3,8 +3,8 @@
         "name": "Français",
         "emoji": "🇫🇷"
     },
-    "commaSeparator": "",
-    "ampersandSeparator": "",
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
