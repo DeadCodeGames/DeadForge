@@ -215,7 +215,7 @@
             "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "",
+            "homeButton": "Inizio",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
