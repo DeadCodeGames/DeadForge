@@ -212,8 +212,7 @@
             "allGames": "All Games",
             "yourGames": "Your Games",
             "allGamesDescription": "Browse your complete collection",
-            "allGamesDescriptionAlternate": "Your complete game library",
-            "uninstall": "Uninstall"
+            "allGamesDescriptionAlternate": "Your complete game library"
         },
         "sidebar": {
             "homeButton": "Home",
@@ -279,7 +278,6 @@
             "playTime": "Play Time"
         },
         "recentView": {
-            "now": "Now",
             "today": "Today",
             "thisWeek": "This Week",
             "thisMonth": "This Month",
@@ -315,12 +313,10 @@
         "install": {
             "title": {
                 "install": "Install <b>{{title}}</b>",
-                "reinstall": "Reinstall <b>{{title}}</b>",
-                "uninstall": "Uninstall <b>{{title}}</b>"
+                "reinstall": "Reinstall <b>{{title}}</b>"
             },
             "install": "Install",
             "reinstall": "Reinstall",
-            "uninstall": "Uninstall",
             "reinstallReason": "It seems like the currently installed version of this game is not available in our releases history. Because of this, DEADFORGE cannot cleanly update it to the newest version, and requires a full reinstall. Files marked by the developers as storing user data will be preserved.",
             "update": "Update",
             "installLocation": "Install Location",
@@ -332,10 +328,7 @@
             "updatingWindowsRegistry": "Updating Windows Registry",
             "backingUpUserDataFiles": "Backing up user data",
             "restoringUserDataFiles": "Restoring user data",
-            "cleaningUp": "Cleaning up...",
-            "installedSize": "Installed software size",
-            "userDataSize": "User Data size",
-            "totalSize": "Total size on disk (including User Data)"
+            "cleaningUp": "Cleaning up..."
         },
         "update": {
             "applying": "Applying Patch",

@@ -218,11 +218,10 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": "",
-            "uninstall": ""
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "Головна",
+            "homeButton": "",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -258,7 +257,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "Згорнути",
+                "collapse": "",
                 "expand": "",
                 "rename": "",
                 "delete": "",
@@ -285,7 +284,6 @@
             "playTime": ""
         },
         "recentView": {
-            "now": "",
             "today": "",
             "thisWeek": "",
             "thisMonth": "",
@@ -323,12 +321,10 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": "",
-                "uninstall": ""
+                "reinstall": ""
             },
             "install": "",
             "reinstall": "",
-            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",
@@ -340,10 +336,7 @@
             "updatingWindowsRegistry": "",
             "backingUpUserDataFiles": "",
             "restoringUserDataFiles": "",
-            "cleaningUp": "",
-            "installedSize": "",
-            "userDataSize": "",
-            "totalSize": ""
+            "cleaningUp": ""
         },
         "update": {
             "applying": "",

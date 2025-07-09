@@ -3,8 +3,8 @@
         "name": "Français",
         "emoji": "🇫🇷"
     },
-    "commaSeparator": ", ",
-    "ampersandSeparator": " & ",
+    "commaSeparator": "",
+    "ampersandSeparator": "",
     "showLess": "",
     "showMore": "",
     "viewAll": "",
@@ -212,11 +212,10 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": "",
-            "uninstall": ""
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "Accueil",
+            "homeButton": "",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -279,7 +278,6 @@
             "playTime": ""
         },
         "recentView": {
-            "now": "",
             "today": "",
             "thisWeek": "",
             "thisMonth": "",
@@ -315,12 +313,10 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": "",
-                "uninstall": ""
+                "reinstall": ""
             },
             "install": "",
             "reinstall": "",
-            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",
@@ -332,10 +328,7 @@
             "updatingWindowsRegistry": "",
             "backingUpUserDataFiles": "",
             "restoringUserDataFiles": "",
-            "cleaningUp": "",
-            "installedSize": "",
-            "userDataSize": "",
-            "totalSize": ""
+            "cleaningUp": ""
         },
         "update": {
             "applying": "",

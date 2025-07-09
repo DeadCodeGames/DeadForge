@@ -5,16 +5,16 @@
     },
     "commaSeparator": ", ",
     "ampersandSeparator": " & ",
-    "showLess": "Zeige weniger",
-    "showMore": "Zeig mehr",
-    "viewAll": "Alles zeigen",
-    "loading": "Wird geladen",
-    "browse": "Durchsuchen",
-    "cancel": "Abbrechen",
-    "back": "Vorheriger",
-    "skip": "Überspringen",
-    "next": "Nächster",
-    "finish": "Abschließen",
+    "showLess": "",
+    "showMore": "",
+    "viewAll": "",
+    "loading": "",
+    "browse": "",
+    "cancel": "",
+    "back": "",
+    "skip": "",
+    "next": "",
+    "finish": "",
     "sidebar": {
         "home": "Hauptseite",
         "library": "Mediathek",
@@ -212,11 +212,10 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": "",
-            "uninstall": ""
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "Hauptseite",
+            "homeButton": "",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -252,7 +251,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "Einklappen",
+                "collapse": "",
                 "expand": "",
                 "rename": "",
                 "delete": "",
@@ -279,7 +278,6 @@
             "playTime": ""
         },
         "recentView": {
-            "now": "",
             "today": "",
             "thisWeek": "",
             "thisMonth": "",
@@ -315,12 +313,10 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": "",
-                "uninstall": ""
+                "reinstall": ""
             },
             "install": "",
             "reinstall": "",
-            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",
@@ -332,10 +328,7 @@
             "updatingWindowsRegistry": "",
             "backingUpUserDataFiles": "",
             "restoringUserDataFiles": "",
-            "cleaningUp": "",
-            "installedSize": "",
-            "userDataSize": "",
-            "totalSize": ""
+            "cleaningUp": ""
         },
         "update": {
             "applying": "",

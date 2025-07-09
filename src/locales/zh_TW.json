@@ -209,11 +209,10 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": "",
-            "uninstall": ""
+            "allGamesDescriptionAlternate": ""
         },
         "sidebar": {
-            "homeButton": "首頁",
+            "homeButton": "",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -249,7 +248,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "折叠",
+                "collapse": "",
                 "expand": "",
                 "rename": "",
                 "delete": "",
@@ -276,7 +275,6 @@
             "playTime": ""
         },
         "recentView": {
-            "now": "現在",
             "today": "本日",
             "thisWeek": "本周",
             "thisMonth": "本月",
@@ -311,12 +309,10 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": "",
-                "uninstall": ""
+                "reinstall": ""
             },
             "install": "",
             "reinstall": "",
-            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",
@@ -328,10 +324,7 @@
             "updatingWindowsRegistry": "",
             "backingUpUserDataFiles": "",
             "restoringUserDataFiles": "",
-            "cleaningUp": "",
-            "installedSize": "",
-            "userDataSize": "",
-            "totalSize": ""
+            "cleaningUp": ""
         },
         "update": {
             "applying": "",
