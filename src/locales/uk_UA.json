@@ -218,10 +218,11 @@
             "allGames": "",
             "yourGames": "",
             "allGamesDescription": "",
-            "allGamesDescriptionAlternate": ""
+            "allGamesDescriptionAlternate": "",
+            "uninstall": ""
         },
         "sidebar": {
-            "homeButton": "",
+            "homeButton": "Головна",
             "filters": {
                 "favouriteStatus": {
                     "description": "",
@@ -257,7 +258,7 @@
         },
         "contextMenu": {
             "collections": {
-                "collapse": "",
+                "collapse": "Згорнути",
                 "expand": "",
                 "rename": "",
                 "delete": "",
@@ -284,6 +285,7 @@
             "playTime": ""
         },
         "recentView": {
+            "now": "",
             "today": "",
             "thisWeek": "",
             "thisMonth": "",
@@ -321,10 +323,12 @@
         "install": {
             "title": {
                 "install": "",
-                "reinstall": ""
+                "reinstall": "",
+                "uninstall": ""
             },
             "install": "",
             "reinstall": "",
+            "uninstall": "",
             "reinstallReason": "",
             "update": "",
             "installLocation": "",
