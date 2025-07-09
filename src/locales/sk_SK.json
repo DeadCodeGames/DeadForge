@@ -341,9 +341,9 @@
             "backingUpUserDataFiles": "Zálohujú sa užívateľské dáta",
             "restoringUserDataFiles": "Obnovujú sa užívateľské dáta",
             "cleaningUp": "Upratuje sa...",
-            "installedSize": "",
-            "userDataSize": "",
-            "totalSize": ""
+            "installedSize": "Veľkosť nainštalovaného programu",
+            "userDataSize": "Veľkosť Užívateľských Dát",
+            "totalSize": "Celková veľkosť na disku (vrátané Užívateľských Dát)"
         },
         "update": {
             "applying": "Aplikuje sa aktualizácia",
