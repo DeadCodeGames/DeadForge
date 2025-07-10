@@ -48,10 +48,10 @@
         "noArticlesDescription": ""
     },
     "store": {
-        "urlCopied": ""
+        "urlCopied": "URL успішно скопійовано"
     },
     "tray": {
-        "exit": "",
+        "exit": "Вийти з <0>DEADFORGE</0>",
         "arcade": ""
     },
     "settings": {

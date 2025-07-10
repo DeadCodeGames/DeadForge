@@ -184,7 +184,7 @@
             "noCollections": "",
             "collectionNamePlaceholder": "",
             "createCollectionConfirm": "",
-            "createCollectionCancel": "",
+            "createCollectionCancel": "Abbrechen",
             "gameState": {
                 "install": "",
                 "launch": "",
