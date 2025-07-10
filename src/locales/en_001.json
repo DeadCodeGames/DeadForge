@@ -72,6 +72,8 @@
             "themeButtonInFrameDescription": "Whether to include a theme switch button in the window's title bar for quick access\nLeft click to switch between dark and light, right click to set to system preferences",
             "language": "Language",
             "languageDescription": "Select your preferred language for the application",
+            "languageComplete": "Fully Translated",
+            "languageIncomplete": "Incomplete",
             "languageShowIncomplete": "Show Incomplete Translations",
             "languageShowIncompleteDescription": "Show translations that are not fully translated yet. You can contribute to these translations over on <0>Crowdin</0>."
         },
