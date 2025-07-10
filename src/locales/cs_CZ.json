@@ -173,6 +173,8 @@
             "resetDataConfirmation": "Jste si jisti, že chcete resetovat všechna data aplikací? Tímto odstraníte všechna vaše nastavení, data o hrách a předvolby. Tuto akci nelze navrátit.",
             "resetDataConfirm": "Ano, resetovat vše",
             "resetDataCancel": "Ne, ponechat data",
+            "updateCentre": "",
+            "updateCentreDescription": "",
             "autoUpdate": "Automatické aktualizace",
             "autoUpdateDescription": "Automaticky stáhnout a nainštalovat aktualizace aplikace",
             "betaUpdates": "Předběžné (Beta) aktualizace",
