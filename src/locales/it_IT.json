@@ -335,7 +335,9 @@
             "cleaningUp": "",
             "installedSize": "",
             "userDataSize": "",
-            "totalSize": ""
+            "totalSize": "",
+            "sizeToRemove": "",
+            "removeUserData": ""
         },
         "update": {
             "applying": "",
