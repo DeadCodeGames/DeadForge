@@ -71,6 +71,8 @@
             "themeButtonInFrameDescription": "",
             "language": "",
             "languageDescription": "",
+            "languageComplete": "",
+            "languageIncomplete": "",
             "languageShowIncomplete": "",
             "languageShowIncompleteDescription": ""
         },

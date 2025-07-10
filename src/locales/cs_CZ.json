@@ -74,6 +74,8 @@
             "themeButtonInFrameDescription": "Zvolte, zda zahrnout tlačítko přepínače motivů do hlavičky okna pro rychlý přístup\nLevým tlačítkem přepnete mezi tmavým a světlem, klikněte pravým tlačítkem myši pro přepnutí na automatický (systémový) motiv",
             "language": "Jazyk",
             "languageDescription": "Vyberte si váš preferovaný jazyk aplikace",
+            "languageComplete": "",
+            "languageIncomplete": "",
             "languageShowIncomplete": "Zobrazovat neúplné překlady",
             "languageShowIncompleteDescription": "Zobrazit překlady, které nejsou kompletné. Můžete nám pomoci s překladem DEADFORGE na našem <0>Crowdinu</0>."
         },
