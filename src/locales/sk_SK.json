@@ -344,8 +344,8 @@
             "installedSize": "Veľkosť nainštalovaného programu",
             "userDataSize": "Veľkosť Užívateľských Dát",
             "totalSize": "Celková veľkosť na disku (vrátané Užívateľských Dát)",
-            "sizeToRemove": "",
-            "removeUserData": ""
+            "sizeToRemove": "Veľkosť dát na odstránenie",
+            "removeUserData": "Odstrániť aj Používateľské Dáta"
         },
         "update": {
             "applying": "Aplikuje sa aktualizácia",

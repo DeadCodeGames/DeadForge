@@ -332,8 +332,8 @@
             "installedSize": "インストール済みプログラムサイズ",
             "userDataSize": "ユーザーデータのサイズ",
             "totalSize": "ディスク上の合計サイズ（ユーザーデータを含む）",
-            "sizeToRemove": "",
-            "removeUserData": ""
+            "sizeToRemove": "削除するデータのサイズ",
+            "removeUserData": "ユーザーデータも削除する"
         },
         "update": {
             "applying": "パッチを適用中",
