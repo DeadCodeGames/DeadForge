@@ -71,6 +71,8 @@
             "themeButtonInFrameDescription": "クイックアクセスのために、ウィンドウ枠にテーマ切り替えボタンを含めるかどうか\n左クリックでダーク／ライトテーマを切り替え、右クリックでシステム設定に切り替え",
             "language": "言語",
             "languageDescription": "アプリの言語を選択して",
+            "languageComplete": "完全翻訳済み",
+            "languageIncomplete": "不完全翻訳済み",
             "languageShowIncomplete": "未完了の翻訳を表示",
             "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。"
         },
