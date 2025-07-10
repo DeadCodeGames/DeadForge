@@ -343,7 +343,9 @@
             "cleaningUp": "Probíhá čištění...",
             "installedSize": "Velikost nainstalovaného programu",
             "userDataSize": "Velikost Uživatelských Dat",
-            "totalSize": "Celková velikost na disku (včetně Uživatelských Dat)"
+            "totalSize": "Celková velikost na disku (včetně Uživatelských Dat)",
+            "sizeToRemove": "",
+            "removeUserData": ""
         },
         "update": {
             "applying": "Aplikuje se aktualizace",

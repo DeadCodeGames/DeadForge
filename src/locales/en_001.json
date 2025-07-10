@@ -335,7 +335,9 @@
             "cleaningUp": "Cleaning up...",
             "installedSize": "Installed software size",
             "userDataSize": "User Data size",
-            "totalSize": "Total size on disk (including User Data)"
+            "totalSize": "Total size on disk (including User Data)",
+            "sizeToRemove": "Size of data to delete",
+            "removeUserData": "Also remove User Data"
         },
         "update": {
             "applying": "Applying Patch",
