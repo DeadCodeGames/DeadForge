@@ -167,6 +167,8 @@
             "resetDataConfirmation": "Are you sure you want to reset all app data? This will delete all your settings, game data, and preferences. This action cannot be undone.",
             "resetDataConfirm": "Yes, Reset Everything",
             "resetDataCancel": "No, Keep My Data",
+            "updateCentre": "Update Centre",
+            "updateCentreDescription": "Manage update settings and view available updates in the Update Centre.",
             "autoUpdate": "Automatic Updates",
             "autoUpdateDescription": "Automatically download and install application updates",
             "betaUpdates": "Beta Updates",

@@ -164,6 +164,8 @@
             "resetDataConfirmation": "全てのアプリデータをリセットしてもよろしいですか？設定とゲームデータがすべて削除されます。この操作は元に戻せません。",
             "resetDataConfirm": "はい、全てをリセットします",
             "resetDataCancel": "いいえ、自分のデータを保持します",
+            "updateCentre": "",
+            "updateCentreDescription": "",
             "autoUpdate": "自動アップデート",
             "autoUpdateDescription": "アプリアップデートを自動的にダウンロードしてインストールします",
             "betaUpdates": "ベータアップデート",
