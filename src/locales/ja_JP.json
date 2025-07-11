@@ -34,7 +34,8 @@
                 "beta": "ベータ",
                 "patch": "パッチ",
                 "languageUpdate": "言語パックアップデート",
-                "metaUpdate": "舞台裏のニュース"
+                "metaUpdate": "舞台裏のニュース",
+                "workInProgress": ""
             },
             "writtenBy_other": "<0></0>によって書かれました"
         },

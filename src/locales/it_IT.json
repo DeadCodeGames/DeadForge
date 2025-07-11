@@ -34,7 +34,8 @@
                 "beta": "Beta",
                 "patch": "Patch",
                 "languageUpdate": "Aggiornamento Lingua",
-                "metaUpdate": "notizie dietro le quinte"
+                "metaUpdate": "notizie dietro le quinte",
+                "workInProgress": ""
             },
             "writtenBy_one": "",
             "writtenBy_other": ""
