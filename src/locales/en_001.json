@@ -36,7 +36,8 @@
                 "beta": "Beta",
                 "patch": "Patch",
                 "languageUpdate": "Language Update",
-                "metaUpdate": "meta update"
+                "metaUpdate": "meta update",
+                "workInProgress": "Work In Progress"
             }
         },
         "errorWithLoadingArticles": "Error with loading articles:",
