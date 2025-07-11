@@ -34,7 +34,8 @@
                 "beta": "Бета",
                 "patch": "Патч",
                 "languageUpdate": "Оновлення мови",
-                "metaUpdate": "новини з-за лаштунків"
+                "metaUpdate": "новини з-за лаштунків",
+                "workInProgress": ""
             },
             "writtenBy_one": "",
             "writtenBy_few": "",

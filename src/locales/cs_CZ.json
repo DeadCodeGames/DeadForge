@@ -34,7 +34,8 @@
                 "beta": "Beta",
                 "patch": "Záplata",
                 "languageUpdate": "Aktualizace jazykového balíčku",
-                "metaUpdate": "novinky ze zákulisí"
+                "metaUpdate": "novinky ze zákulisí",
+                "workInProgress": ""
             },
             "writtenBy_one": "Napsal/-a <0></0>",
             "writtenBy_few": "Napsali <0></0>",

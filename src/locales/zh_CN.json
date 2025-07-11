@@ -34,7 +34,8 @@
                 "beta": "测试版",
                 "patch": "修补",
                 "languageUpdate": "语种更新",
-                "metaUpdate": "幕后新闻"
+                "metaUpdate": "幕后新闻",
+                "workInProgress": ""
             },
             "writtenBy_other": ""
         },

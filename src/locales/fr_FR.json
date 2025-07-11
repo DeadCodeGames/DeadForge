@@ -34,7 +34,8 @@
                 "beta": "Bêta",
                 "patch": "Patch",
                 "languageUpdate": "Mise à jour de la localisation",
-                "metaUpdate": "actualités des coulisses"
+                "metaUpdate": "actualités des coulisses",
+                "workInProgress": ""
             },
             "writtenBy_one": "",
             "writtenBy_other": ""
