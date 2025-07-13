@@ -176,8 +176,19 @@
             "betaUpdatesDescription": "Receive beta version updates with new features earlier (requires Automatic Updates)",
             "languageUpdates": "Language Pack Updates",
             "languageUpdatesDescription": "Sometimes, we cannot translate the app into all languages in time for an update.\nYou can opt into receiving these small updates, containing only localization changes (requires Automatic Updates)",
+            "updatesDevNotice": "Some Update Centre features might be unavailable in development.",
             "privacyPolicy": "Privacy Policy",
-            "credits": "Credits"
+            "credits": "Credits",
+            "creditsModal": {
+                "developedBy": "Developed by",
+                "contributors": "Contributors",
+                "specialThanks": "Special Thanks to",
+                "developerTAG": "Developer",
+                "testerTAG": "Tester",
+                "articlecowriterTAG": "Article Co-Writer",
+                "registryjsTAG": "Help with a registry-js fork",
+                "qlexcTAG": "for helping me fix that one obscure async/await issue back in v1.\nwithout you, DEADFORGE probably would not exist in the shape it does today."
+            }
         }
     },
     "library": {
