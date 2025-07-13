@@ -173,8 +173,19 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
+            "updatesDevNotice": "",
             "privacyPolicy": "개인정보 보호정책",
-            "credits": "크레딧"
+            "credits": "크레딧",
+            "creditsModal": {
+                "developedBy": "",
+                "contributors": "",
+                "specialThanks": "",
+                "developerTAG": "",
+                "testerTAG": "",
+                "articlecowriterTAG": "",
+                "registryjsTAG": "",
+                "qlexcTAG": ""
+            }
         }
     },
     "library": {

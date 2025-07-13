@@ -176,8 +176,19 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
+            "updatesDevNotice": "",
             "privacyPolicy": "",
-            "credits": ""
+            "credits": "",
+            "creditsModal": {
+                "developedBy": "",
+                "contributors": "",
+                "specialThanks": "",
+                "developerTAG": "",
+                "testerTAG": "",
+                "articlecowriterTAG": "",
+                "registryjsTAG": "",
+                "qlexcTAG": ""
+            }
         }
     },
     "library": {

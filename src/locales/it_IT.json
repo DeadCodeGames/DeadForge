@@ -176,8 +176,19 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
+            "updatesDevNotice": "",
             "privacyPolicy": "Informativa sulla Privacy",
-            "credits": "Crediti"
+            "credits": "Crediti",
+            "creditsModal": {
+                "developedBy": "",
+                "contributors": "",
+                "specialThanks": "",
+                "developerTAG": "",
+                "testerTAG": "",
+                "articlecowriterTAG": "",
+                "registryjsTAG": "",
+                "qlexcTAG": ""
+            }
         }
     },
     "library": {

@@ -182,8 +182,19 @@
             "betaUpdatesDescription": "",
             "languageUpdates": "",
             "languageUpdatesDescription": "",
+            "updatesDevNotice": "",
             "privacyPolicy": "Політика конфіденційності",
-            "credits": "Автори"
+            "credits": "Автори",
+            "creditsModal": {
+                "developedBy": "",
+                "contributors": "",
+                "specialThanks": "",
+                "developerTAG": "",
+                "testerTAG": "",
+                "articlecowriterTAG": "",
+                "registryjsTAG": "",
+                "qlexcTAG": ""
+            }
         }
     },
     "library": {
