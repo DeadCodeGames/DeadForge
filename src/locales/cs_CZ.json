@@ -182,18 +182,18 @@
             "betaUpdatesDescription": "Instalovat předběžné beta verzie s novými funkcemi dříve (vyžaduje Automatické aktualizace)",
             "languageUpdates": "Aktualizace jazykových balíčků",
             "languageUpdatesDescription": "Někdy se nám nepovede úplně přeložit aplikaci do všech jazyků prěd vydáním nové aktualizace\nMůžete se přihlásit na odběr těchto malých aktualizací, které obsahují jenom změny lokalizace (vyžaduje Automatické aktualizace)",
-            "updatesDevNotice": "",
+            "updatesDevNotice": "Některé funkce Centra Aktualizací nemusí být dostupné ve vývojovém prostředí.",
             "privacyPolicy": "Zásady ochrany osobních údajů",
             "credits": "Zásluhy",
             "creditsModal": {
-                "developedBy": "",
-                "contributors": "",
-                "specialThanks": "",
-                "developerTAG": "",
-                "testerTAG": "",
-                "articlecowriterTAG": "",
-                "registryjsTAG": "",
-                "qlexcTAG": ""
+                "developedBy": "Vývojáři",
+                "contributors": "Přispěvatelé",
+                "specialThanks": "Speciální poděkování patří",
+                "developerTAG": "Vývojář",
+                "testerTAG": "Tester",
+                "articlecowriterTAG": "Spoluautor článků",
+                "registryjsTAG": "Pomoc s forkem registry-js",
+                "qlexcTAG": "za pomoc s tím jedním matoucím async/await problémem ve v1\nbez tebe by DEADFORGE pravděpodobně neexistoval v takové podobě, v jaké je dnes."
             }
         }
     },

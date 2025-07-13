@@ -173,18 +173,18 @@
             "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
             "languageUpdates": "言語パックのアップデート",
             "languageUpdatesDescription": "アップデート時に、すべての言語へのアプリの翻訳が間に合わないことがあります。\nローカライズの変更のみを含む、これらの小規模なアップデートは、\n言語パックのアップデートをオンにすることで受け取ることができます（自動アップデートが必要）",
-            "updatesDevNotice": "",
+            "updatesDevNotice": "アップデートセンターの一部の機能は、開発環境では使用できない場合があります。",
             "privacyPolicy": "プライバシー・ポリシー",
             "credits": "クレジット",
             "creditsModal": {
-                "developedBy": "",
-                "contributors": "",
-                "specialThanks": "",
-                "developerTAG": "",
-                "testerTAG": "",
-                "articlecowriterTAG": "",
-                "registryjsTAG": "",
-                "qlexcTAG": ""
+                "developedBy": "開発者",
+                "contributors": "コントリビューター",
+                "specialThanks": "特別な感謝",
+                "developerTAG": "開発者",
+                "testerTAG": "テスター",
+                "articlecowriterTAG": "記事共同執筆者",
+                "registryjsTAG": "registry-jsフォークでヘルプ",
+                "qlexcTAG": "v1のasync/awaitの混乱した問題を解決してくれてありがとう。\n貴方がいなければ、DEADFORGEは今のような形では存在していなかったでしょう。"
             }
         }
     },
