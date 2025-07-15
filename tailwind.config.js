@@ -9,7 +9,7 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                "consolas": ["Consolas", "Courier New", 'Courier', 'monospace'],
+                "consolas": ["Cascadia Mono", "Consolas", "Courier New", 'Courier', 'monospace'],
                 "uniSansCAPS": ["Uni Sans CAPS", "Corporate Logo", ...defaultTheme.fontFamily.sans],
                 "montserrat": ["Montserrat", "Noto Sans JP", ...defaultTheme.fontFamily.sans],
                 "notoSans": ["Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Sans SC", "Noto Sans TC", "Noto Sans Hebrew", ...defaultTheme.fontFamily.sans],
@@ -30,6 +30,15 @@ module.exports = {
                 "notQuiteWhite": "#F0F0F0",
                 "night": "#161616",
                 "fullMoon": "#E9E9E9"
+            },
+            textColor: {
+                'pattern': '#0000', // Transparent text so bg shows
+            },
+            backgroundImage: {
+                'stripes-warning': "repeating-linear-gradient(-45deg, black 0 10px, var(--color-warning) 10px 20px)"
+            },
+            stroke: {
+                'stripes-warning-mini': "repeating-linear-gradient(-45deg, black 0 5px, var(--color-warning) 5px 10px)"
             },
             screens: {
                 "settingsShrink": { max: "999px" },

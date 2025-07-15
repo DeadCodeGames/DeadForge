@@ -1,22 +1,28 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/App.tsx";
-import i18n, { resources } from "@/locales/i18n.ts";
-import { Trans, useTranslation } from "react-i18next";
-import LocalTwemoji from "@/components/CustomElements/LocalTwemoji.tsx";
-import { flatten } from "flat";
+import i18n, { dateFNSResources } from "@/locales/i18n.ts";
+import { useTranslation } from "react-i18next";
 import { Select, SelectOption } from "@/components/CustomElements/Select.tsx";
 import FlipSwitch from "@/components/CustomElements/FlipSwitch";
 import SettingsOption from "./SettingsOption";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import GenericModal from "@/components/GenericModal";
+import MarkdownText from "@/components/CustomElements/MarkdownText";
+import Tooltip from "@/components/CustomElements/Tooltip";
+import Credits from "./Credits";
+import { Link } from "react-router-dom";
+import { format } from "date-fns";
+import LanguageSelector from "@/components/CustomElements/LanguageSelector";
 
 const Settings = () => {
     const { context, setContext } = useContext(AppContext);
     const { t } = useTranslation();
     const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-    const autoUpdateRef = useRef<HTMLInputElement | null>(null)
-    const autoUpdatesForceDisable = true
-
-    console.log(autoUpdateRef.current)
+    const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+    const [isCreditsModalOpen, setIsCreditsModalOpen] = useState(false);
+    const [privacyMarkdown, setPrivacyMarkdown] = useState<string | null>(null);
+    const [privacyLoading, setPrivacyLoading] = useState(false);
+    const [privacyError, setPrivacyError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!window.Electron.isSettingsWindow && context.preferences.useSettingsWindow) {
@@ -27,6 +33,11 @@ const Settings = () => {
             }
             window.Electron.openSettingsWindow();
         }
+    })
+
+    useEffect(() => {
+        window.Electron.onPrivacyUpdate((_, content) => setPrivacyMarkdown(content))
+        return () => {window.Electron.onPrivacyUpdate(() => {})}
     })
 
     const handleThemeChange = (theme: string) => {
@@ -49,17 +60,6 @@ const Settings = () => {
         }));
     };
 
-    const handleLanguageChange = (language: string) => {
-        setContext((prev: any) => ({
-            ...prev,
-            preferences: {
-                ...prev.preferences,
-                language
-            }
-        }));
-        i18n.changeLanguage(language);
-    };
-
     const handleSetIncludeCurrentLocationInHeader = (showCurrentPageTitleInFrame: boolean) => {
         setContext((prev: any) => ({
             ...prev,
@@ -77,16 +77,6 @@ const Settings = () => {
                 ...prev.preferences,
                 showThemeButton,
             },
-        }));
-    }
-
-    const handleSetShowIncompleteLanguagesChange = (showIncompleteLanguages: boolean) => {
-        setContext((prev: any) => ({
-            ...prev,
-            preferences: {
-                ...prev.preferences,
-                showIncompleteLanguages
-            }
         }));
     }
 
@@ -130,36 +120,6 @@ const Settings = () => {
         }));
     };
 
-    const handleAutoUpdateChange = (autoUpdate: boolean) => {
-        setContext((prev: any) => ({
-            ...prev,
-            preferences: {
-                ...prev.preferences,
-                autoUpdate
-            }
-        }));
-    };
-
-    const handleBetaUpdatesChange = (betaUpdates: boolean) => {
-        setContext((prev: any) => ({
-            ...prev,
-            preferences: {
-                ...prev.preferences,
-                betaUpdates
-            }
-        }));
-    };
-
-    const handleLanguageUpdatesChange = (langUpdates: boolean) => {
-        setContext((prev: any) => ({
-            ...prev,
-            preferences: {
-                ...prev.preferences,
-                langUpdates
-            }
-        }));;
-    };
-
     const replaySetup = () => {
         setContext((prev: any) => ({
             ...prev,
@@ -185,54 +145,39 @@ const Settings = () => {
         }
     };
 
-    const calculateTranslationPercentage = (lang: string) => {
-        if (lang === "en_001" || lang === "stringsDebug") return 100;
-
-        const PLURAL_SUFFIXES = ["_zero", "_one", "_two", "_few", "_many", "_other"];
-        const stripPlural = (key: string) => {
-            for (const suffix of PLURAL_SUFFIXES) {
-                if (key.endsWith(suffix)) {
-                    return key.slice(0, -suffix.length);
-                }
-            }
-            return key;
-        };
-
-        const enFlat = flatten(resources["en_001"].translation)!;
-        const langFlat: Record<string, string> = flatten((resources as any)[lang].translation)!;
-
-        // Build set of base keys from English
-        const enBaseKeys = Array.from(
-            new Set(
-                Object.keys(enFlat)
-                    .filter((key) => !key.startsWith("meta"))
-                    .map(stripPlural)
-            )
-        );
-
-        // For each base key, check if any plural form in the target language is non-empty
-        const translatedCount = enBaseKeys.filter((baseKey) => {
-            // Find all possible plural forms for this base key in the target language
-            const pluralForms = PLURAL_SUFFIXES.map(suffix => baseKey + suffix).concat([baseKey]);
-            return pluralForms.some(formKey => langFlat[formKey] !== undefined && langFlat[formKey] !== "");
-        }).length;
-
-        return Math.round((translatedCount / enBaseKeys.length) * 100);
-    };
-
-    const getPercentageColor = (percentage: number) => {
-        const hue = Math.round(percentage * 1.15);
-        return [`hsl(${hue}, 100%, 40%)`, `hsla(${hue}, 100%, 40%, 0.125)`];
-    };
-
     const themePickExpanded = "ml-0 max-w-full w-full", themePickCollapsed = "ml-0 max-w-0 w-0", themePickBaseExpanded = "max-w-xs w-full", themePickBaseCollapsed = "max-w-6 w-6";
 
     const SettingsSeparator = () => (<hr className="border-notQuiteBlack dark:border-notQuiteWhite border-0 border-t-2 border-solid opacity-50 my-8 settingsShrink:my-4 rounded-full" />)
     const SettingsSectionTitle = ({ children }: { children: React.JSX.Element | string }) => (<h2 className="text-xl settingsShrink:text-2xl settingsShrink:text-center font-uniSansCAPS font-bold mb-4">{children}</h2>)
 
+    // Fetch privacy policy markdown
+    const fetchPrivacy = async () => {
+        setPrivacyLoading(true);
+        setPrivacyError(null);
+        try {
+            const md = await window.Electron.fetchPrivacy();
+            setPrivacyMarkdown(md);
+        } catch (e) {
+            setPrivacyError(`Failed to load privacy policy: ${e}`);
+        } finally {
+            setPrivacyLoading(false);
+        }
+    };
+
+    // Open privacy modal and fetch content
+    const openPrivacyModal = () => {
+        window.Electron.updatePrivacy();
+        setIsPrivacyModalOpen(true);
+        fetchPrivacy();
+    };
+    // Open credits modal and fetch content
+    const openCreditsModal = () => {
+        setIsCreditsModalOpen(true);
+    };
+
     return (
         <div className="w-[calc(100%-48px)] h-[calc(100%-48px)] dark:bg-night bg-fullMoon text-night dark:text-fullMoon transition-colors duration-300 font-notoSans overflow-y-auto p-6 relative">
-            <div className="max-w-6xl mx-auto px-12 py-8 settingsShrink:p-0">
+            <div className="max-w-6xl mx-auto px-12 py-8">
                 <h1 className="text-5xl font-uniSansCAPS font-bold settingsShrink:text-center mb-6 settingsShrink:mb-4">{t("sidebar.settings")}</h1>
 
                 {/* Theming Section */}
@@ -342,69 +287,13 @@ const Settings = () => {
 
 
                     {/* Language Switcher */}
-                    <SettingsOption title={t("settings.theming.language")} description={t("settings.theming.languageDescription")}
+                    <SettingsOption
+                        title={t("settings.theming.language")}
+                        description={t("settings.theming.languageDescription")}
                         controls={
-                            <Select
-                                value={context.preferences.language || "en_001"}
-                                onChange={handleLanguageChange}
-                                className="p-2 rounded-lg dark:bg-night bg-fullMoon border border-notQuiteBlack dark:border-notQuiteWhite"
-                            >
-                                {Object.keys(resources)
-                                    .sort((langA, langB) => {
-                                        const priority = (lang: string) => {
-                                            if (lang === "en_001") return 0;
-                                            if (lang === "stringsDebug") return 1;
-                                            return 2;
-                                        };
-                                
-                                        const priorityA = priority(langA);
-                                        const priorityB = priority(langB);
-                                
-                                        if (priorityA !== priorityB) {
-                                            return priorityA - priorityB; // Lower priority number comes first
-                                        }
-                                        const percentageA = calculateTranslationPercentage(langA);
-                                        const percentageB = calculateTranslationPercentage(langB);
-
-                                        if (percentageA !== percentageB) {
-                                            return percentageB - percentageA; // Sort by percentage in descending order
-                                        }
-
-                                        const nameA = (resources as any)[langA].translation.meta.name;
-                                        const nameB = (resources as any)[langB].translation.meta.name;
-                                        return nameA.localeCompare(nameB); // Then sort by name in ascending order
-                                    })
-                                    .map((lang: string) => {
-                                        const percentage = calculateTranslationPercentage(lang);
-                                        const [color, backgroundColor] = getPercentageColor(percentage);
-
-                                        return (
-                                            <SelectOption key={lang} value={lang} hiddenFromSelect={!context.preferences.showIncompleteLanguages && percentage !== 100}>
-                                                <div className="flex row items-center justify-between w-full">
-                                                    <div className="flex flex-row items-center">
-                                                        <LocalTwemoji controlled key={lang + "_flag"} options={{ className: '!w-8 !aspect-square mx-1', base: window.App.isPackaged ? `${process.env.PUBLIC_URL}/twemoji` : undefined }}>{(resources as any)[lang].translation.meta.emoji}</LocalTwemoji>
-                                                        <span className="ml-2 mr-8">{(resources as any)[lang].translation.meta.name}</span>
-                                                    </div>
-                                                    <div className="border-2 border-solid rounded-full text-sm px-2 py-1" style={{ color: color, backgroundColor }}>
-                                                        {percentage}%
-                                                    </div>
-                                                </div>
-                                            </SelectOption>
-                                        );
-                                    })}
-                            </Select>
+                            <LanguageSelector />
                         }
                     />
-
-                    <SettingsOption title={t('settings.theming.languageShowIncomplete')} description={<Trans i18nKey='settings.theming.languageShowIncompleteDescription' components={[(<a href="https://crowdin.com/project/deadforge" target="_blank" rel="noopener noreferrer" key="crowdin">Crowdin</a>)]} />}
-                        controls={
-                            <FlipSwitch
-                                checked={context.preferences.showIncompleteLanguages}
-                                onChange={(e) => { handleSetShowIncompleteLanguagesChange(e.target.checked) }}
-                            />
-                        }
-                    />
-
                 </div>
 
                 <SettingsSeparator />
@@ -481,14 +370,12 @@ const Settings = () => {
                                 <button
                                     onClick={exportData}
                                     className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                                    
                                 >
                                     {t("settings.appData.exportData")}
                                 </button>
                                 <button
                                     onClick={importData}
                                     className="px-4 py-2 rounded-lg bg-opacity-10 bg-notQuiteBlack dark:bg-opacity-10 dark:bg-notQuiteWhite font-bold disabled:cursor-not-allowed disabled:opacity-50"
-                                    
                                 >
                                     {t("settings.appData.importData")}
                                 </button>
@@ -502,46 +389,41 @@ const Settings = () => {
                         }
                     />
 
-                    {/* Auto-updates */}
-                    <SettingsOption title={t("settings.appData.autoUpdate")} description={t("settings.appData.autoUpdateDescription")}
-                        controls={<FlipSwitch checked={autoUpdatesForceDisable ? false : context.preferences.autoUpdate}
-                            onChange={(e) => handleAutoUpdateChange(e.target.checked)}
-                            disabled={autoUpdatesForceDisable}
-                            ref={autoUpdateRef}
+                    {/* Update Centre Link */}
+                    <Link
+                        to="/settings/updates"
+                        className="m-0 no-underline group/update-centre-link"
+                    >
+                        <SettingsOption
+                            title={t("settings.appData.updateCentre")}
+                            description={t("settings.appData.updateCentreDescription")}
+                            controls={
+                                <span className="material-symbols text-4xl mx-1.5 transition-opacity opacity-50 group-hover/update-centre-link:opacity-80">arrow_circle_right</span>
+                            }
                         />
-                        }
-                    />
-
-                    {/* Beta Updates */}
-                    <SettingsOption title={t("settings.appData.betaUpdates")} description={t("settings.appData.betaUpdatesDescription")}
-                        controls={<FlipSwitch checked={autoUpdatesForceDisable ? false : context.preferences.betaUpdates}
-                            onChange={(e) => handleBetaUpdatesChange(e.target.checked)}
-                            disabled={!context.preferences.autoUpdate || autoUpdateRef.current?.disabled || autoUpdatesForceDisable}
-                        />
-                        }
-                    />
-
-                    {/* Language Updates */}
-                    <SettingsOption title={t("settings.appData.languageUpdates")} description={t("settings.appData.languageUpdatesDescription")}
-                        controls={<FlipSwitch checked={autoUpdatesForceDisable ? false : context.preferences.langUpdates}
-                            onChange={(e) => handleLanguageUpdatesChange(e.target.checked)}
-                            disabled={!context.preferences.autoUpdate || autoUpdateRef.current?.disabled || autoUpdatesForceDisable}
-                        />
-                        }
-                    />
+                    </Link>
                 </div>
 
                 <span>
-                    <div className="whitespace-nowrap leading-4 text-center">
-                        {' ႔ ႔'}<br />
-                        {'ᠸ^ ^  <'}
+                    <div className="whitespace-nowrap leading-[15px] text-center flex justify-center">
+                        <Tooltip content="yip!" containerClassName="w-fit">
+                            {' ႔ ႔'}<br />
+                            {'ᠸ^ ^  <'}
+                        </Tooltip>
                     </div>
                 </span>
 
-                <div className="flex flex-row gap-4 flex-wrap justify-center settingsShrink:justify-center opacity-70">
-                    <a href="https://github.com/DeadCodeGames/DeadForge/blob/2024/2025/PRIVACY.md" target="_blank" rel="noopener noreferrer" className="flex flex-row items-center gap-2 text-sm">
-                        <span>{t("settings.appData.privacyPolicy")}</span>
-                    </a>
+                <div className="flex flex-row flex-wrap justify-center settingsShrink:justify-center opacity-70 mt-1 [&>:not(:last-child)]:after:content-['・'] [&>:not(:last-child)]:after:mx-1">
+                    <span className="text-sm flex items-baseline">
+                        <button type="button" onClick={openPrivacyModal} className="underline hover:opacity-100 opacity-80">
+                            <span>{t("settings.appData.privacyPolicy")}</span>
+                        </button>
+                    </span>
+                    <span className="text-sm flex items-baseline">
+                        <button type="button" onClick={openCreditsModal} className="underline hover:opacity-100 opacity-80">
+                            <span>{t("settings.appData.credits")}</span>
+                        </button>
+                    </span>
                 </div>
             </div>
 
@@ -556,6 +438,32 @@ const Settings = () => {
                 cancelText={t("settings.appData.resetDataCancel")}
                 isDangerous={true}
             />
+
+            {/* Privacy Policy Modal */}
+            <GenericModal
+                className="max-w-4xl [&>:first-child]:font-bold [&>:first-child>:first-child>:first-child]:-mt-3 [&>:nth-child(2)>:first-child>:first-child]:absolute [&>:nth-child(2)>:first-child>:first-child]:mt-[-2.4rem]"
+                isOpen={isPrivacyModalOpen}
+                onClose={() => setIsPrivacyModalOpen(false)}
+                title={t("settings.appData.privacyPolicy")}
+            >
+                {privacyLoading ? (
+                    <div className="text-center opacity-70">{t("loading")}</div>
+                ) : privacyError ? (
+                    <div className="text-danger text-center">{privacyError}</div>
+                ) : privacyMarkdown ? (
+                    <MarkdownText className="[&>:first-child]:mt-0 [&>:last-child]:mb-0">{privacyMarkdown.replace(/^.*$\n.*<!-- (.*) -->/m, (_, lastUpdatedDate) => `###### ${t('home.articles.lastEditedOn', {date: format(new Date(lastUpdatedDate), 'PPP', { locale: dateFNSResources[i18n.language as keyof typeof dateFNSResources] })})}`)}</MarkdownText>
+                ) : null}
+            </GenericModal>
+
+            {/* Credits Modal */}
+            <GenericModal
+                isOpen={isCreditsModalOpen}
+                onClose={() => setIsCreditsModalOpen(false)}
+                title={t("settings.appData.credits")}
+                className="[&>:first-child]:pb-0"
+            >
+                <Credits refreshVar={isCreditsModalOpen} />
+            </GenericModal>
         </div>
     );
 }

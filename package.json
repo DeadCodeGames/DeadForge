@@ -1,6 +1,6 @@
 {
   "name": "deadforge",
-  "version": "v2.0.0-Beta-3-Patch-3B",
+  "version": "v2.0.0-Beta-4",
   "description": "An Electron Launcher for DeadCode Projects (AND OTHER STUFF TOO NOW :3).",
   "author": "DeadCodeGames <404@mail.deadcode.is-a.dev> (https://deadcode.is-a.dev)",
   "contributors": [
@@ -22,7 +22,7 @@
     "electron-window-state": "^5.0.3",
     "json-stream-stringify": "^3.1.6",
     "ps-list": "^8.1.1",
-    "registry-js": "^1.16.1",
+    "registry-js": "github:DeadCodeGames/registry-js",
     "vdf": "^0.0.2"
   },
   "devDependencies": {
@@ -34,6 +34,7 @@
     "@electron/rebuild": "^3.7.2",
     "@eslint/js": "^9.26.0",
     "@icons-pack/react-simple-icons": "^12.7.0",
+    "@lucide/lab": "^0.1.2",
     "@types/adm-zip": "^0.5.7",
     "@types/better-sqlite3": "^7.6.13",
     "@types/eslint-plugin-jsx-a11y": "^6.10.0",
@@ -59,9 +60,11 @@
     "globals": "^16.1.0",
     "html-minifier-terser": "^7.2.0",
     "i18next": "^25.0.0",
+    "install": "^0.13.0",
     "lucide-react": "^0.487.0",
     "navigation-api-types": "^0.6.1",
     "nodemon": "^3.1.9",
+    "npm": "^11.4.2",
     "react": "^19.1.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^19.1.0",

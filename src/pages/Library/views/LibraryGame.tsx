@@ -272,7 +272,6 @@ function getLogoUrlFromData(
     suffix: string,
     defaultSuffix: string = 'english'
 ): { url: string | null; logoObj: any } {
-    console.log(game);
     const gameId = String(game.id);
     const gameSource = game.source;
 
@@ -298,7 +297,7 @@ function getLogoUrlFromData(
         return null;
     };
 
-    console.log(customLogoObj, curatedLogoObj, officialLogoObj)
+
 
     // Try current language across all sources
     const customCurrentLang = getLanguageUrl(customLogoObj, suffix);
@@ -684,6 +683,10 @@ const LibraryGame: React.FC = () => {
     const isPreparing = isGameJoin
         ? (gameJoinStates?.some((state) => state.state === "preparing") ?? false)
         : currentGameState?.state === "preparing"
+    
+    const isPreparingUninstall = isGameJoin
+        ? (gameJoinStates?.some((state) => state.state === "uninstall-preparing") ?? false)
+        : currentGameState?.state === "uninstall-preparing"
 
     const isDownloading = isGameJoin
         ? (gameJoinStates?.some((state) => state.state === "downloading") ?? false)
@@ -701,9 +704,17 @@ const LibraryGame: React.FC = () => {
         ? (gameJoinStates?.some((state) => state.state === "applyingPatch") ?? false)
         : currentGameState?.state === "applyingPatch"
     
+    const isCleaningUninstall = isGameJoin
+        ? (gameJoinStates?.some((state) => state.state === "uninstall-cleaning") ?? false)
+        : currentGameState?.state === "uninstall-cleaning"
+    
     const isFinishingUp = isGameJoin
         ? (gameJoinStates?.some((state) => state.state === "finishing") ?? false)
         : currentGameState?.state === "finishing"
+
+    const isFinishingUpUninstall = isGameJoin
+        ? (gameJoinStates?.some((state) => state.state === "uninstall-finishing") ?? false)
+        : currentGameState?.state === "uninstall-finishing"
     
     const downloadProgress = currentGameState?.progress;
     const extraNumberA = currentGameState?.extraNumberA;
@@ -1421,7 +1432,7 @@ const LibraryGame: React.FC = () => {
         )
     }
 
-    console.log(currentGame, currentGameState, gameStateKey)
+
 
     return (
         <div className="h-full w-full overflow-y-auto flex-1 scrollbar-gutter-stable">
@@ -1525,12 +1536,10 @@ const LibraryGame: React.FC = () => {
                                             (resolveDefaultGameVendor(currentGame)?.launchOptions?.length === 0 && currentGame.source !== "deadforge") ||
                                             isLaunching ||
                                             isStopping ||
-                                            isPreparing ||
-                                            isDownloading ||
-                                            isDownloadingPatch ||
-                                            isInstalling ||
-                                            isApplyingPatch ||
-                                            isFinishingUp
+                                            isPreparing || isPreparingUninstall ||
+                                            isDownloading || isDownloadingPatch ||
+                                            isInstalling || isApplyingPatch || isCleaningUninstall ||
+                                            isFinishingUp || isFinishingUpUninstall
                                         }
                                         className={cn(
                                             "font-bold h-14 rounded-md flex items-center transition-all duration-200 justify-between group w-72",
@@ -1541,6 +1550,9 @@ const LibraryGame: React.FC = () => {
                                         !isRunning &&
                                         !isStopping &&
                                         !isChecking &&
+                                        !isPreparingUninstall &&
+                                        !isCleaningUninstall &&
+                                        !isFinishingUpUninstall &&
                                         (resolveDefaultGameVendor(currentGame).updateAvailable === "update" || isPreparing || isDownloading || isInstalling || isFinishingUp) &&
                                         "bg-progress text-white hover:bg-progress/80",
                                             !isLaunching &&
@@ -1553,7 +1565,7 @@ const LibraryGame: React.FC = () => {
                                         !isInstalling &&
                                         !isApplyingPatch &&
                                         !isFinishingUp &&
-                                        resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall" &&
+                                        (resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall" || isPreparingUninstall || isCleaningUninstall || isFinishingUpUninstall) &&
                                         "bg-danger text-white hover:bg-red-700",
                                             !isLaunching &&
                                         !isRunning &&
@@ -1570,6 +1582,9 @@ const LibraryGame: React.FC = () => {
                                         !isStopping &&
                                         !isChecking &&
                                         !needsLauncher &&
+                                        !isPreparingUninstall &&
+                                        !isCleaningUninstall &&
+                                        !isFinishingUpUninstall &&
                                         !resolveDefaultGameVendor(currentGame).updateAvailable &&
                                         String(currentGame?.id) !== "-1" &&
                                         !(resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath) &&
@@ -1580,6 +1595,9 @@ const LibraryGame: React.FC = () => {
                                         !isChecking &&
                                         needsLauncher &&
                                         isLauncherRunning &&
+                                        !isPreparingUninstall &&
+                                        !isCleaningUninstall &&
+                                        !isFinishingUpUninstall &&
                                         !resolveDefaultGameVendor(currentGame).updateAvailable &&
                                         "bg-green-600 hover:bg-green-700 text-white shadow-lg",
                                             !isLaunching &&
@@ -1588,6 +1606,9 @@ const LibraryGame: React.FC = () => {
                                         !isChecking &&
                                         needsLauncher &&
                                         !isLauncherRunning &&
+                                        !isPreparingUninstall &&
+                                        !isCleaningUninstall &&
+                                        !isFinishingUpUninstall &&
                                         !resolveDefaultGameVendor(currentGame).updateAvailable &&
                                             "bg-blue-600 hover:bg-blue-700 text-white shadow-lg",
                                             isChecking &&
@@ -1631,7 +1652,7 @@ const LibraryGame: React.FC = () => {
                                                                         ? "hourglass_bottom"
                                                                         : isChecking
                                                                             ? "hourglass_top"
-                                                                            : isPreparing
+                                                                            : (isPreparing || isPreparingUninstall)
                                                                                 ? "settings"
                                                                                 : (isDownloading || isDownloadingPatch)
                                                                                     ? "downloading"
@@ -1639,17 +1660,19 @@ const LibraryGame: React.FC = () => {
                                                                                         ? "install_desktop"
                                                                                         : isApplyingPatch ?
                                                                                             "healing"
-                                                                                            : isFinishingUp
-                                                                                                ? "sports_score"
-                                                                                                : resolveDefaultGameVendor(currentGame).updateAvailable === "update"
-                                                                                                    ? "upgrade"
-                                                                                                    : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
-                                                                                                        ? "restart_alt"
-                                                                                                        : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                                            ? "download"
-                                                                                                            : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                                                ? "launch"
-                                                                                                                : "play_circle"}
+                                                                                            : isCleaningUninstall ?
+                                                                                                "delete"
+                                                                                                : (isFinishingUp || isFinishingUpUninstall)
+                                                                                                    ? "sports_score"
+                                                                                                    : resolveDefaultGameVendor(currentGame).updateAvailable === "update"
+                                                                                                        ? "upgrade"
+                                                                                                        : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
+                                                                                                            ? "restart_alt"
+                                                                                                            : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                                                ? "download"
+                                                                                                                : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                                                    ? "launch"
+                                                                                                                    : "play_circle"}
                                                         </span>
                                                         <span>
                                                             {isLaunching
@@ -1660,7 +1683,7 @@ const LibraryGame: React.FC = () => {
                                                                         ? t("library.shared.gameState.stopping")
                                                                         : isChecking
                                                                             ? t("library.shared.gameState.checking")
-                                                                            : isPreparing
+                                                                            : (isPreparing || isPreparingUninstall)
                                                                                 ? t("library.shared.gameState.preparing")
                                                                                 : (isDownloading || isDownloadingPatch)
                                                                                     ? t("library.shared.gameState.downloading")
@@ -1668,17 +1691,19 @@ const LibraryGame: React.FC = () => {
                                                                                         ? t("library.shared.gameState.installing")
                                                                                         : isApplyingPatch
                                                                                             ? t("library.update.applying")
-                                                                                            : isFinishingUp
-                                                                                                ? t("library.shared.gameState.finishingUp")
-                                                                                                : resolveDefaultGameVendor(currentGame).updateAvailable === "update"
-                                                                                                    ? t("library.shared.gameState.update")
-                                                                                                    : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
-                                                                                                        ? t("library.shared.gameState.reinstall")
-                                                                                                        : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
-                                                                                                            ? t("library.shared.gameState.install")
-                                                                                                            : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
-                                                                                                                ? t("library.shared.gameState.launch")
-                                                                                                                : t("library.shared.gameState.play")}
+                                                                                            : isCleaningUninstall
+                                                                                                ? t("library.install.cleaningUp")
+                                                                                                : (isFinishingUp || isFinishingUpUninstall)
+                                                                                                    ? t("library.shared.gameState.finishingUp")
+                                                                                                    : resolveDefaultGameVendor(currentGame).updateAvailable === "update"
+                                                                                                        ? t("library.shared.gameState.update")
+                                                                                                        : resolveDefaultGameVendor(currentGame).updateAvailable === "reinstall"
+                                                                                                            ? t("library.shared.gameState.reinstall")
+                                                                                                            : resolveDefaultGameVendor(currentGame).source === "deadforge" && !resolveDefaultGameVendor(currentGame).installPath
+                                                                                                                ? t("library.shared.gameState.install")
+                                                                                                                : ["Tool", "Application", "Launcher"].includes(currentGame?.type || "")
+                                                                                                                    ? t("library.shared.gameState.launch")
+                                                                                                                    : t("library.shared.gameState.play")}
                                                         </span>
                                                     </div>
                                                 )}
@@ -1877,6 +1902,7 @@ const LibraryGame: React.FC = () => {
                                 <span className="uppercase text-xs font-semibold tracking-wider text-gray-100 dark:text-gray-400">{t('library.gameView.lastPlayed')}</span>
                                 <span className="text-base font-medium text-white dark:text-white">
                                     {(() => {
+                                        if (isRunning) return t('library.recentView.now');
                                         const lastPlayed = metrics.lastPlayed;
                                         if (!lastPlayed) return t('library.recentView.neverPlayed') || '-';
                                         const locale = dateFNSResources[i18n.language as keyof typeof dateFNSResources] || dateFNSResources['en_001'];
@@ -1910,6 +1936,21 @@ const LibraryGame: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex flex-row gap-x-2 p-2">
+                        {/* Uninstall Button */}
+                        {resolveDefaultGameVendor(currentGame).source === "deadforge" && resolveDefaultGameVendor(currentGame).installPath && (
+                            <Tooltip content={t("library.shared.uninstall")} position="top">
+                                <button
+                                    className={cn(
+                                        "flex items-center justify-center size-10 rounded-lg bg-fullMoon/50 dark:bg-night/50 backdrop-blur-sm hover:bg-fullMoon/75 dark:hover:bg-night/75 border border-notQuiteBlack/10 hover:border-notQuiteBlack/20 dark:border-notQuiteWhite/10 hover:dark:border-notQuiteWhite/20 border-solid transition-colors duration-500 cursor-pointer",
+                                        "aspect-square text-xl leading-none",
+                                    )}
+                                    onClick={() => openInstallModal(resolveDefaultGameVendor(currentGame), true)}
+                                    style={{ marginRight: 4 }}
+                                >
+                                    <span className="material-symbols">delete</span>
+                                </button>
+                            </Tooltip>
+                        )}
                         {/* DeadForge Store button */}
                         {resolveDefaultGameVendor(currentGame).source === "deadforge" && (
                             <Tooltip content={t("library.shared.openInStore")} position="top">
@@ -1918,7 +1959,7 @@ const LibraryGame: React.FC = () => {
                                         "flex items-center justify-center size-10 rounded-lg bg-fullMoon/50 dark:bg-night/50 backdrop-blur-sm hover:bg-fullMoon/75 dark:hover:bg-night/75 border border-notQuiteBlack/10 hover:border-notQuiteBlack/20 dark:border-notQuiteWhite/10 hover:dark:border-notQuiteWhite/20 border-solid transition-colors duration-500 cursor-pointer",
                                         "aspect-square text-xl leading-none",
                                     )}
-                                    onClick={() => navigate(`/store?path=${encodeURIComponent(`soft/${resolveDefaultGameVendor(currentGame).id}`)}`)}
+                                    onClick={() => navigate(`/store?path=${encodeURIComponent(`soft/${resolveDefaultGameVendor(currentGame).id}/`)}`)}
                                     style={{ marginRight: 4 }}
                                 >
                                     <span className="material-symbols">storefront</span>

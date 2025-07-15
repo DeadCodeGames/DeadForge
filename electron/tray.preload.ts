@@ -33,6 +33,12 @@ contextBridge.exposeInMainWorld('Electron', {
     // eslint-disable-next-line no-unused-vars
     onGameStateChange: (callback: (event: any, source: string, gameId: string, state: string, progress?: number | string) => void) => 
         ipcRenderer.on('game:stateChange', callback),
+    DEADFORGE_downloadUpdate: (includeBeta: boolean) => ipcRenderer.invoke('DEADFORGE:downloadUpdate', includeBeta),
+    // eslint-disable-next-line no-unused-vars
+    DEADFORGE_onUpdateProgress: (callback: (event: any, progress: { percent: number, version: string }) => void) => ipcRenderer.on('DEADFORGE:updateProgress', callback),
+    // eslint-disable-next-line no-unused-vars
+    DEADFORGE_onUpdateStateChange: (callback: (event: any, state: { state: string, version?: string, error?: string }) => void) => ipcRenderer.on('DEADFORGE:updateStateChange', callback),
+    DEADFORGE_installUpdate: () => ipcRenderer.invoke('DEADFORGE:installUpdate'),
 });
 
 contextBridge.exposeInMainWorld('Process', {

@@ -7,6 +7,7 @@ import DEADCODELogo from "@/components/CustomElements/DEADCODELogo"
 import type { SteamLauncherData } from "@/types"
 import { useScrollTimerCheck } from "@/hooks/scrollTimerCheck"
 import { useTranslation, Trans } from "react-i18next"
+import LanguageSelector from "@/components/CustomElements/LanguageSelector"
 
 const FirstLaunchModal = () => {
     const { t } = useTranslation()
@@ -299,17 +300,21 @@ const FirstLaunchModal = () => {
             <div
                 className={`bg-notQuiteBlack text-fullMoon rounded-lg w-full max-w-2xl shadow-xl transition-transform duration-300 ease-in-out ${setupModalActive ? activeClasses : inactiveClasses}`}
             >
-                <div className="p-6 pb-0 border-b border-night">
-                    <h2 className="text-2xl font-uniSansCAPS">
-                        <Trans
-                            i18nKey="settings.appData.initialSetupModal.welcome"
-                            components={{ bold: <span className="font-bold" /> }}
-                        />
-                    </h2>
-                    <p className="text-notQuiteWhite/80 font-montserrat mt-2">
-                        {t("settings.appData.initialSetupModal.welcomeSubheading")}
-                    </p>
+                <div className="flex flex-row justify-between items-center p-6 pb-0">
+                    <div>
+                        <h2 className="text-2xl font-uniSansCAPS">
+                            <Trans
+                                i18nKey="settings.appData.initialSetupModal.welcome"
+                                components={{ bold: <span className="font-bold" /> }}
+                            />
+                        </h2>
+                        <p className="text-notQuiteWhite/80 font-montserrat mt-2">
+                            {t("settings.appData.initialSetupModal.welcomeSubheading")}
+                        </p>
+                    </div>
+                    <LanguageSelector />
                 </div>
+                
 
                 <div className="p-6">
                     {/* Stepper */}

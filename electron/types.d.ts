@@ -136,15 +136,28 @@ export interface ArticleAuthor {
     profilePicture: string;
 }
 
+export interface LinkedRelease {
+    tag: string;
+    url: string
+}
+
+export interface LinkedSoftware {
+    displayName: string;
+    storeId: string
+}
+
 export interface Article {
     title: string;
     authors: ArticleAuthor[];
     bannerImage: string;
+    assetsMap: Record<string, string>;
     content: string;
     publishDate: string;
     lastModified: string;
     tags: string[];
     slug: string;
+    linkedRelease?: LinkedRelease;
+    linkedSoftware?: LinkedSoftware[];
 }
 
 export interface ArticleList {

@@ -6,14 +6,21 @@ import * as SteamStuff from './mainHelpers/SteamStuff'; import * as EpicStuff fr
 import { importBackup, exportBackup, validateBackup } from './mainHelpers/BackupStuff';
 import { closeDB, getAllGamesFromDB, getAllDLCsFromDB, initUserDB, insertPathIntoDB, removePathFromDB, getAllGameJoinsFromDB, updateGameLastPlayed, getPathsFromDB, updateGamePlaytime, getAllCuratedAssetsFromDB, getAllCustomAssetsFromDB, checkIsDeadForgeGameInLibrary, DeadForgeGameObject, addDeadForgeGameToLocalLibrary, getGameMetrics } from './mainHelpers/DataDB';
 import { initWatchers } from './mainHelpers/WatchManager';
-import { Collection, CollectionGame, Collections, GameWarning, OldCollections } from './types';
+import { Collection, CollectionGame, Collections, GameWarning, NormalizedGame, OldCollections } from './types';
 import { waitForGameProcess, monitorExternalProcess } from './mainHelpers/ProcessWatcher';
 import https from 'https';
 import { selectCustomAsset, saveCustomAsset, updateLogoPosition } from './mainHelpers/CustomAssets';
 import { updateArticles, getArticles } from './mainHelpers/ArticleManager';
 import { handleProtocolUrl, registerProtocolHandler } from './mainHelpers/DeadForgeProtocolHandler';
 import { handleDeadForgeUpdate } from './mainHelpers/Updater';
-import { installDeadForgeGame, getGameDownloadSize, updateDeadForgeGame } from './mainHelpers/GameInstallerAndUpdater';
+import { installDeadForgeGame, getGameDownloadSize, updateDeadForgeGame, uninstallDeadForgeGame } from './mainHelpers/GameInstallerAndUpdater';
+import {
+    fetchDeadForgeReleases,
+    selectDeadForgeRelease,
+    findDeadForgeInstallerAsset,
+    downloadDeadForgeInstaller,
+    launchDeadForgeInstaller
+} from './mainHelpers/Updater';
 const gotInstanceLock = app.requestSingleInstanceLock();
 if (!gotInstanceLock) { app.exit(); }
 const windowStateKeeper = require('electron-window-state');
@@ -21,7 +28,29 @@ const windowStateKeeper = require('electron-window-state');
 let installExtension: (extensionReference: ExtensionReference | string | Array<ExtensionReference | string>, options?: InstallExtensionOptions) => Promise<Extension[]>, REACT_DEVELOPER_TOOLS: ExtensionReference;
 
 let mainWindow: BrowserWindow | null = null;
-console.log(app.getPath("temp"))
+
+let downloadedInstallerPath: string | null = null;
+let downloading: boolean = false;
+
+const multipleFilesSize = async (filePaths: string[]): Promise<number> => {
+    console.log(filePaths);
+    const stats = await Promise.all(filePaths.map(async file => {
+        try {
+            return await fs.promises.stat(file);
+        } catch (e) {
+            console.error(e)
+            return { size: 0 } as fs.Stats;
+        }
+    }));
+    return stats.reduce((accumulator, { size }) => accumulator + size, 0);
+}
+
+const dirSize = async (directory: string, filter?: string[]) => {
+    const files = await fs.promises.readdir(directory);
+    const filePaths = files.map(file => path.join(directory, file)).filter(f => !filter?.some(filterF => f === filterF));
+    return multipleFilesSize(filePaths);
+}
+
 export function notifyGamesUpdate() {
     if (mainWindow) {
         const games = getAllGamesFromDB();
@@ -561,8 +590,8 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
         }
 
         settingsWindow = new BrowserWindow({
-            minWidth: 700,
-            minHeight: 450,
+            minWidth: 920,
+            minHeight: 690,
             height: 1000,
             width: 750,
             frame: false,
@@ -574,7 +603,7 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
                 nodeIntegration: true,
                 contextIsolation: true,
                 devTools: app.isPackaged ? false : true,
-                additionalArguments: [`--isPackaged=${app.isPackaged}`]
+                additionalArguments: [`--isPackaged=${app.isPackaged}`, `--deadforgeVersion=${require('../package.json').version}`]
             }
         });
 
@@ -637,9 +666,9 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             trayWindow = null;
             tray?.destroy();
         }
-        if (newPreferences.autoStart && !app.getLoginItemSettings().openAtLogin) {
+        if (newPreferences.autoStart && !app.getLoginItemSettings().openAtLogin && app.isPackaged) {
             app.setLoginItemSettings({ openAtLogin: true });
-        } else if (!newPreferences.autoStart && app.getLoginItemSettings().openAtLogin) {
+        } else if (!newPreferences.autoStart && app.getLoginItemSettings().openAtLogin && app.isPackaged) {
             app.setLoginItemSettings({ openAtLogin: false });
         }
         if (settingsWindow && fromSettingsWindow) {
@@ -1553,6 +1582,24 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             };
         }
     })
+    ipcMain.handle("library:startGameUninstall", async (_, gameId: string, removeUserData: boolean) => {
+        try {
+            if (!mainWindow) {
+                throw new Error('Main window not found');
+            }
+            const result = await uninstallDeadForgeGame(gameId, mainWindow, !removeUserData);
+            return result;
+        } catch (error) {
+            console.error('Failed to uninstall game:', error);
+            return {
+                success: false,
+                error: {
+                    message: error instanceof Error ? error.message : 'Unknown error occurred',
+                    code: 'UNKNOWN_ERROR'
+                }
+            };
+        }
+    });
 
     ipcMain.handle('game:getDownloadSize', async (_, gameId: string) => {
         return await getGameDownloadSize(gameId);
@@ -1645,4 +1692,78 @@ if (!process.argv.find((s) => s === "--update-finished" || !app.isPackaged)) {
             console.error('Error in background game polling loop:', err);
         }
     }, 5000); // every 5 seconds
+
+    const handlePrivacyUpdate = async () => {
+        try {
+            const response = await fetch("https://deadcode.is-a.dev/DeadForge/PRIVACY.md");
+            if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
+            const text = await response.text();
+            const filePath = path.join(app.getPath("userData"), "PRIVACY.md");
+            fs.writeFileSync(filePath, text, 'utf-8');
+            mainWindow?.webContents.send('privacy:updated', text);
+            settingsWindow?.webContents.send('privacy:updated', text);
+            return text
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    ipcMain.handle('privacy:update', handlePrivacyUpdate)
+
+    ipcMain.handle('privacy:fetch', async () => {
+        const privacyPath = path.join(app.getPath("userData"), "PRIVACY.md"); let res: string | undefined;
+        try {
+            if (fs.existsSync(privacyPath))
+                res = fs.readFileSync(privacyPath, 'utf-8')
+            else
+                res = await handlePrivacyUpdate();
+            return res;
+        } catch (e) {
+            console.log(e);
+        }
+    })
+
+    ipcMain.handle('game:getInstalledSize', async (_, gameArg: string) => {
+        const game = JSON.parse(gameArg) as NormalizedGame;
+        const gameFromDB = getAllGamesFromDB().find(g => g.id === game.id && g.source === game.source);
+        console.log(gameFromDB);
+        if (!game.installPath || !gameFromDB) return ({ totalSize: 0, userDataSize: 0 });
+        const userDataFiles = JSON.parse((gameFromDB as any).userDataFiles || "[]").map((f: string) => path.join(game.installPath!, f));
+        const totalSize = await dirSize(game.installPath, userDataFiles), userDataSize = await multipleFilesSize(userDataFiles);
+        return ({totalSize, userDataSize})
+    })
+
+    ipcMain.handle('DEADFORGE:downloadUpdate', async (event, includeBeta: boolean) => {
+        if (downloading) return;
+        downloading = true;
+        mainWindow?.webContents.send('DEADFORGE:updateStateChange', { state: 'downloading' });
+        settingsWindow?.webContents.send('DEADFORGE:updateStateChange', { state: 'downloading' });
+        try {
+            const releases = await fetchDeadForgeReleases();
+            const release = selectDeadForgeRelease(releases, includeBeta);
+            if (!release) throw new Error('No suitable release found');
+            const asset = findDeadForgeInstallerAsset(release);
+            if (!asset) throw new Error('No installer asset found');
+            const destPath = path.join(app.getPath('temp'), asset.name);
+            await downloadDeadForgeInstaller(asset, destPath, (percent) => {
+                mainWindow?.webContents.send('DEADFORGE:updateProgress', { percent, version: release.tag_name });
+                settingsWindow?.webContents.send('DEADFORGE:updateProgress', { percent, version: release.tag_name });
+            });
+            downloadedInstallerPath = destPath;
+            mainWindow?.webContents.send('DEADFORGE:updateStateChange', { state: 'downloaded', version: release.tag_name });
+            settingsWindow?.webContents.send('DEADFORGE:updateStateChange', { state: 'downloaded', version: release.tag_name });
+        } catch (err: any) {
+            mainWindow?.webContents.send('DEADFORGE:updateStateChange', { state: 'error', error: err.message });
+            settingsWindow?.webContents.send('DEADFORGE:updateStateChange', { state: 'error', error: err.message });
+        } finally {
+            downloading = false;
+        }
+    });
+
+    ipcMain.handle('DEADFORGE:installUpdate', async () => {
+        if (downloadedInstallerPath) {
+            launchDeadForgeInstaller(downloadedInstallerPath);
+            app.quit();
+        }
+    });
 }

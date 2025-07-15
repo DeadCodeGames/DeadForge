@@ -21,10 +21,28 @@ contextBridge.exposeInMainWorld('Electron', {
 
     resetAllData: () => ipcRenderer.invoke('app:resetAllData'),
     restartApp: () => ipcRenderer.invoke('app:restart'),
+
+    updatePrivacy: () => ipcRenderer.invoke('privacy:update'),
+    fetchPrivacy: () => ipcRenderer.invoke('privacy:fetch'),
+    // eslint-disable-next-line no-unused-vars
+    onPrivacyUpdate: (callback: (_event: any, content: string) => void) => ipcRenderer.on('privacy:updated', callback),
+
+    DEADFORGE_downloadUpdate: (includeBeta: boolean) => ipcRenderer.invoke('DEADFORGE:downloadUpdate', includeBeta),
+    // eslint-disable-next-line no-unused-vars
+    DEADFORGE_onUpdateProgress: (callback: (event: any, progress: { percent: number, version: string }) => void) => ipcRenderer.on('DEADFORGE:updateProgress', callback),
+    // eslint-disable-next-line no-unused-vars
+    DEADFORGE_onUpdateStateChange: (callback: (event: any, state: { state: string, version?: string, error?: string }) => void) => ipcRenderer.on('DEADFORGE:updateStateChange', callback),
+    DEADFORGE_installUpdate: () => ipcRenderer.invoke('DEADFORGE:installUpdate'),
 })
 
 contextBridge.exposeInMainWorld('Process', {
-    platform: process.platform
+    platform: process.platform,
+    versions: {
+        chrome: process.versions.chrome,
+        node: process.versions.node,
+        electron: process.versions.electron,
+        deadforge: process.argv.find((arg: string) => arg.startsWith('--deadforgeVersion'))?.split('=')[1]
+    }
 })
 
 contextBridge.exposeInMainWorld('App', {

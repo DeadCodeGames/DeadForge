@@ -11,7 +11,7 @@ interface MarkdownTextProps {
 }
 
 type TokenType = "text" | "bold" | "italic" | "strikethrough" | "underline" | "monospace" | "link" | "image" | "spoiler" | "video" | "audio" | "embed"
-type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule" | "alert"
+type BlockType = "paragraph" | "heading" | "unorderedList" | "orderedList" | "horizontalRule" | "alert" | "table"
 type ListType = "unordered" | "ordered"
 type AlertType = "note" | "tip" | "important" | "warning" | "caution"
 
@@ -37,7 +37,17 @@ interface Block {
   alertType?: AlertType
 }
 
+interface TableBlock extends Block {
+  type: "table"
+  header: string[]
+  rows: string[][]
+  align: ("left" | "center" | "right")[]
+}
+
 const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaMap }) => {
+    // Remove HTML comments before parsing
+    const cleanedChildren = children.replace(/<!--([\s\S]*?)-->/g, "")
+    
     const tokenizeInline = (text: string): Token[] => {
         const tokens: Token[] = []
         let currentText = ""
@@ -277,6 +287,41 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i]
+
+            // Table detection: header, separator, then rows
+            if (line.trim().startsWith("|") && line.includes("|") && i + 1 < lines.length) {
+                const nextLine = lines[i + 1]
+                const alignMatch = nextLine.match(/^\s*\|?\s*(:?-+:?\s*\|)+\s*$/)
+                if (alignMatch) {
+                    // Parse header
+                    const header = line.trim().split("|").slice(1, -1).map(cell => cell.trim())
+                    // Parse alignment
+                    const align = nextLine.trim().split("|").slice(1, -1).map(cell => {
+                        const trimmed = cell.trim()
+                        if (trimmed.startsWith(":") && trimmed.endsWith(":")) return "center"
+                        if (trimmed.startsWith(":")) return "left"
+                        if (trimmed.endsWith(":")) return "right"
+                        return "left"
+                    })
+                    // Parse rows
+                    const rows: string[][] = []
+                    let j = i + 2
+                    while (j < lines.length && lines[j].trim().startsWith("|")) {
+                        const row = lines[j].trim().split("|").slice(1, -1).map(cell => cell.trim())
+                        rows.push(row)
+                        j++
+                    }
+                    blocks.push({
+                        type: "table",
+                        content: [],
+                        header,
+                        rows,
+                        align,
+                    } as TableBlock)
+                    i = j - 1
+                    continue
+                }
+            }
 
             // Handle alert blocks
             const alertMatch = line.match(/^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/m)
@@ -584,6 +629,44 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
     }
 
     const renderBlock = (block: Block, index: number): React.ReactNode => {
+        if (block.type === "table") {
+            const tableBlock = block as TableBlock
+            const getAlignClass = (align: "left" | "center" | "right") => {
+                if (align === "center") return "text-center"
+                if (align === "right") return "text-right"
+                return "text-left"
+            }
+            return (
+                <div key={index} className="my-4">
+                    <table className="max-w-full border border-solid border-neutral-500/70 border-collapse text-xs rounded-lg overflow-hidden">
+                        <thead className="border border-solid border-neutral-500/70 rounded-t-lg">
+                            <tr className="rounded-t-lg">
+                                {tableBlock.header.map((cell, i, arr) => (
+                                    <th key={i} className={cn('px-3 py-2 border border-solid border-neutral-500/70 bg-neutral-100 dark:bg-neutral-800 font-bold overflow-hidden', getAlignClass(tableBlock.align[i]), i === 0 && "rounded-tl-lg", i + 1 === arr.length && "rounded-tr-lg")}>{cell}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className={cn("border border-solid border-neutral-500/70 rounded-b-lg")}>
+                            {tableBlock.rows.map((row, rIdx, rArr) => (
+                                <tr key={rIdx} className={cn(rIdx + 1 === rArr.length && 'rounded-b-lg')}>
+                                    {row.map((cell, cIdx, cArr) => {
+                                        // Multiline support: split on \\n, tokenize and render each line
+                                        const lines = cell.split(/\\n/)
+                                        return (
+                                            <td key={cIdx} className={cn('px-3 py-2 text-wrap border border-solid border-neutral-500/70 align-top', getAlignClass(tableBlock.align[cIdx]), (rIdx + 1 === rArr.length && cIdx === 0) && "rounded-bl-lg", (rIdx + 1 === rArr.length && cIdx + 1 === cArr.length) && "rounded-br-lg")}>
+                                                {lines.map((line, lIdx) => (
+                                                    <div key={lIdx}>{renderTokens(tokenizeInline(line))}</div>
+                                                ))}
+                                            </td>
+                                        )
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )
+        }
         if (block.type === "heading") {
             const HeadingTag = `h${block.level}` as keyof JSX.IntrinsicElements
             const headingSizes = {
@@ -645,15 +728,26 @@ const MarkdownText: React.FC<MarkdownTextProps> = ({ children, className, mediaM
                 return <></> /*<br key={index} />*/
             }
 
-            return (
+            const tokens = renderTokens(block.content) as React.ReactElement<React.FragmentProps>;
+
+            const childrenArray = React.Children.toArray(tokens.props.children);
+
+            const shouldOmitWrapper =
+                childrenArray.length === 1 &&
+                React.isValidElement(childrenArray[0]) &&
+                (childrenArray[0].type === 'div' || childrenArray[0].type === 'p');
+
+            return shouldOmitWrapper ? (
+                tokens
+            ) : (
                 <p key={index} className="mb-2">
-                    {renderTokens(block.content)}
+                    {tokens}
                 </p>
-            )
+            );
         }
     }
 
-    const blocks = parseBlocks(children)
+    const blocks = parseBlocks(cleanedChildren)
 
     return (
         <div className={cn("whitespace-pre-wrap", className)}>

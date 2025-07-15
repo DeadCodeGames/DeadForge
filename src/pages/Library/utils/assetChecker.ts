@@ -154,8 +154,6 @@ async function checkMediaAssets(media: Media | GameMedia, game?: NormalizedGame,
 export async function checkMissingAssets(games: NormalizedGame[], curatedAssets: any[] = []): Promise<MissingAssetReport[]> {
     const reports: MissingAssetReport[] = [];
 
-    console.log(games, curatedAssets)
-
     // Check games
     for (const game of games) {
         if (game.source === "deadforge") continue;

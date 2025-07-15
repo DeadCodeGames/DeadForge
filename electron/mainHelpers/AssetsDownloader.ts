@@ -24,7 +24,7 @@ const MEDIA_TO_DB_FIELD: Record<string, string> = {
  * Downloads a file from a remote URL to a local destination path
  * @returns Promise resolving to the destination path if successful
  */
-async function downloadFile(remoteUrl: string, destinationPath: string): Promise<string> {
+export async function downloadFile(remoteUrl: string, destinationPath: string): Promise<string> {
     await fs.promises.mkdir(path.dirname(destinationPath), { recursive: true });
 
     return new Promise((resolve, reject) => {

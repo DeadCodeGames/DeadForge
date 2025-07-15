@@ -16,6 +16,100 @@ import { NotificationProvider } from "./pages/Notifications/NotificationsProvide
 import NotificationDisplay from "./pages/Notifications/NotificationsDisplay.tsx";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary.tsx";
 import Home from "./pages/Home/Home.tsx";
+import UpdateCentre from "./pages/Settings/UpdateCentre"; 
+
+// --- UpdateContext ---
+export const UpdateContext = createContext<any>(null);
+
+const UpdateProvider = ({ children }: { children: React.ReactNode }) => {
+    // Update-related state
+    const [latestStable, setLatestStable] = useState<string | null>(null);
+    const [latestBeta, setLatestBeta] = useState<string | null>(null);
+    const [updateState, setUpdateState] = useState<'none' | 'downloading' | 'downloaded' | 'error'>('none');
+    const [downloadProgress, setDownloadProgress] = useState(0);
+    const [downloadingVersion, setDownloadingVersion] = useState<string | null>(null);
+    const [downloadedVersion, setDownloadedVersion] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fetch releases
+    const updateUpdateState = () => {
+        fetch("https://deadcode.is-a.dev/DeadForge/store/software-gh-pages-cache/deadforge.json")
+            .then(res => res.json())
+            .then((data) => {
+                const releases = data.filter((r: any) => /^v[^01]/.test(r.tag_name));
+                if (!releases.length) return;
+                releases.sort((a: any, b: any) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
+                const stable = releases.find((r: any) => !r.prerelease);
+                const beta = releases.find((r: any) => r.prerelease);
+                setLatestStable(stable?.tag_name ?? null);
+                setLatestBeta(beta?.tag_name ?? null);
+            })
+            .catch(() => {
+                setLatestStable(null);
+                setLatestBeta(null);
+            });
+    };
+
+    useEffect(updateUpdateState, [])
+
+    // Listen for real update events from main process
+    useEffect(() => {
+        const progressListener = (_event: any, progress: { percent: number, version: string }) => {
+            setDownloadProgress(progress.percent);
+            setDownloadingVersion(progress.version);
+        };
+        const stateListener = (_event: any, state: { state: string, version?: string, error?: string }) => {
+            setUpdateState(state.state as any);
+            if (state.state === 'downloaded' && state.version) {
+                setDownloadedVersion(state.version);
+                setDownloadProgress(100);
+            } else if (state.state === 'downloading' && state.version) {
+                setDownloadingVersion(state.version);
+            } else if (state.state === 'error') {
+                setError(state.error || 'Unknown error');
+            }
+        };
+        window.Electron.DEADFORGE_onUpdateProgress(progressListener);
+        window.Electron.DEADFORGE_onUpdateStateChange(stateListener);
+        return () => {
+            // No off/unsubscribe in current API, so nothing to clean up
+        };
+    }, []);
+
+    // Handler for download button (real logic)
+    const handleDownload = (version: string) => {
+        setUpdateState('downloading');
+        setDownloadProgress(0);
+        setDownloadingVersion(version);
+        setDownloadedVersion(null);
+        setError(null);
+        // Determine if this is a beta version
+        const isBeta = Boolean(latestBeta && version === latestBeta);
+        window.Electron.DEADFORGE_downloadUpdate(isBeta);
+    };
+
+    const value = {
+        latestStable,
+        latestBeta,
+        updateState,
+        downloadProgress,
+        downloadingVersion,
+        downloadedVersion,
+        error,
+        setUpdateState,
+        setDownloadProgress,
+        setDownloadingVersion,
+        setDownloadedVersion,
+        handleDownload,
+        updateUpdateState
+    };
+
+    return (
+        <UpdateContext.Provider value={value}>
+            {children}
+        </UpdateContext.Provider>
+    );
+};
 
 const defaultPreferences = {
     initialSetupComplete: false,
@@ -46,7 +140,7 @@ export const AppContext = createContext<any>(
     }
 );
 
-function AppContextsProvider({ children }: { children: React.ReactNode }) {
+const AppContextsProvider = ({ children }: { children: React.ReactNode }) => {
     const [context, setContext] = useState<any>({ preferences: defaultPreferences, storePreload: null, storeWebviewReady: false, setupModalActive: false, v1PrefsAvailable: false, v1Prefs: {} });
     const [shouldSetContext, setShouldSetContext] = useState<boolean>(false);
 
@@ -93,7 +187,9 @@ function AppContextsProvider({ children }: { children: React.ReactNode }) {
         <Router>
             <AppContext.Provider value={{ context, setContext }}>
                 <LibraryProvider>
-                    {children}
+                    <UpdateProvider>
+                        {children}
+                    </UpdateProvider>
                 </LibraryProvider>
             </AppContext.Provider>
         </Router>
@@ -140,7 +236,7 @@ const AppContents = () => {
                 
                 case "store":
                     if (!path) { navigate("/store"); }
-                    else {navigate(`/store?path=${encodeURIComponent(path)}`)}
+                    else {navigate(`/store?path=${encodeURIComponent(path.replace(/\/?$/, "/"))}`)}
                     break;
                 
                 case "library":
@@ -206,6 +302,7 @@ const AppContents = () => {
                             </Route>
                             <Route path="/arcade" element={<Arcade />} />
                             <Route path="/store" element={<Store />} />
+                            <Route path="/settings/updates" element={<UpdateCentre />} />
                             <Route path="/settings" element={<Settings />} />
                         </Routes>
                     </div>
@@ -220,7 +317,15 @@ export default function App() {
         <AppContextsProvider>
             {!(window.Electron.isTray || window.Electron.isSettingsWindow || window.Electron.isNotificationsWindow) && <InitialLoader />}
             {window.Electron.isTray && <Tray />}
-            {window.Electron.isSettingsWindow && <><WinControls /><div className="h-[calc(100vh-36px)] absolute w-full top-9 overflow-hidden"><Settings /></div></>}
+            {window.Electron.isSettingsWindow && <>
+                <WinControls />
+                <div className="h-[calc(100vh-36px)] absolute w-full top-9 overflow-hidden">
+                    <Routes>
+                        <Route path="/settings/updates" element={<UpdateCentre />} />
+                        <Route path="/settings" element={<Settings />} />
+                    </Routes>
+                </div>
+            </>}
             {window.Electron.isNotificationsWindow && <NotificationProvider><NotificationDisplay /></NotificationProvider>}
             {!(window.Electron.isTray || window.Electron.isSettingsWindow || window.Electron.isNotificationsWindow) &&
                 <Routes>
