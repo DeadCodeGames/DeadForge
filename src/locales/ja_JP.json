@@ -185,6 +185,20 @@
                 "articlecowriterTAG": "記事共同執筆者",
                 "registryjsTAG": "registry-jsフォークでヘルプ",
                 "qlexcTAG": "v1のasync/awaitの混乱した問題を解決してくれてありがとう。\n貴方がいなければ、DEADFORGEは今のような形では存在していなかったでしょう。"
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "現在実行中のバージョン",
+                "unknownVersion": "不明なバージョン",
+                "latestStableVersion": "最新の<color>安定</color>バージョン",
+                "latestBetaVersion": "最新の<color>ベータ</color>バージョン",
+                "latestReleases": "最新のリリース",
+                "stable": "安定：",
+                "beta": "ベータ：",
+                "notAvailable": "該当なし",
+                "noUpdateDownloaded": "アップデートがダウンロードされていません",
+                "downloadingUpdate": "アップデートをダウンロード中",
+                "updateDownloaded": "アップデートのダウンロードが完了しました",
+                "quitAndInstall": "終了してインストール"
             }
         }
     },
