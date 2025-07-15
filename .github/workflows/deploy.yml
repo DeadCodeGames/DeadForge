@@ -2,16 +2,8 @@ name: Build and Deploy Unified DeadForge Site
 
 on:
   push:
-    branches: [web]
-  release: 
-    types: 
-      - published
-      - unpublished
-      - created
-      - edited
-      - deleted
-      - prereleased
-      - released
+    branches:
+      - web
   repository_dispatch:
     types: ["store-updated", "software-cache-invalidated"]
 
