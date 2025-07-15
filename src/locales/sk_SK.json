@@ -196,17 +196,18 @@
                 "qlexcTAG": "za pomoc s tým jedným mätúcim async/await problémom vo v1\nbez teba by DEADFORGE pravdepodobne neexistoval v takej podobe, v akej je dnes."
             },
             "updateCentreBanner": {
-                "currentlyRunningVersion": "",
-                "unknownVersion": "",
-                "latestStableVersion": "",
+                "currentlyRunningVersion": "Momentálne spustená verzia",
+                "unknownVersion": "Neznáma verzia",
+                "latestStableVersion": "Najnovšia <color>Stabilná</color> Verzia",
                 "latestBetaVersion": "",
-                "latestReleases": "",
-                "stable": "",
-                "beta": "",
+                "latestReleases": "Najnovšie Vydania",
+                "stable": "Stabilné:",
+                "beta": "Beta:",
+                "notAvailable": "",
                 "noUpdateDownloaded": "",
                 "downloadingUpdate": "",
                 "updateDownloaded": "",
-                "quitAndInstall": ""
+                "quitAndInstall": "Ukončiť a Nainštalovať"
             }
         }
     },

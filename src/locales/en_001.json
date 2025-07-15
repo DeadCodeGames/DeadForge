@@ -197,6 +197,7 @@
                 "latestReleases": "Latest Releases",
                 "stable": "Stable:",
                 "beta": "Beta:",
+                "notAvailable": "N/A",
                 "noUpdateDownloaded": "No Update Downloaded",
                 "downloadingUpdate": "Downloading Update",
                 "updateDownloaded": "Update Downloaded",
