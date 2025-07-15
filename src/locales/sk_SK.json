@@ -199,14 +199,14 @@
                 "currentlyRunningVersion": "Momentálne spustená verzia",
                 "unknownVersion": "Neznáma verzia",
                 "latestStableVersion": "Najnovšia <color>Stabilná</color> Verzia",
-                "latestBetaVersion": "",
+                "latestBetaVersion": "Najnovšia <color>Beta</color> Verzia",
                 "latestReleases": "Najnovšie Vydania",
                 "stable": "Stabilné:",
                 "beta": "Beta:",
-                "notAvailable": "",
-                "noUpdateDownloaded": "",
-                "downloadingUpdate": "",
-                "updateDownloaded": "",
+                "notAvailable": "N/A",
+                "noUpdateDownloaded": "Žiadna stiahnutá aktualizácia",
+                "downloadingUpdate": "Sťahovanie aktualizácie",
+                "updateDownloaded": "Aktualizácia bola stiahnutá",
                 "quitAndInstall": "Ukončiť a Nainštalovať"
             }
         }
