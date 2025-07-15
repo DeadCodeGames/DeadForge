@@ -194,6 +194,19 @@
                 "articlecowriterTAG": "Spoluautor článkov",
                 "registryjsTAG": "Výpomoc s forkom registry-js",
                 "qlexcTAG": "za pomoc s tým jedným mätúcim async/await problémom vo v1\nbez teba by DEADFORGE pravdepodobne neexistoval v takej podobe, v akej je dnes."
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "",
+                "unknownVersion": "",
+                "latestStableVersion": "",
+                "latestBetaVersion": "",
+                "latestReleases": "",
+                "stable": "",
+                "beta": "",
+                "noUpdateDownloaded": "",
+                "downloadingUpdate": "",
+                "updateDownloaded": "",
+                "quitAndInstall": ""
             }
         }
     },

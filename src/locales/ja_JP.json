@@ -185,6 +185,19 @@
                 "articlecowriterTAG": "記事共同執筆者",
                 "registryjsTAG": "registry-jsフォークでヘルプ",
                 "qlexcTAG": "v1のasync/awaitの混乱した問題を解決してくれてありがとう。\n貴方がいなければ、DEADFORGEは今のような形では存在していなかったでしょう。"
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "",
+                "unknownVersion": "",
+                "latestStableVersion": "",
+                "latestBetaVersion": "",
+                "latestReleases": "",
+                "stable": "",
+                "beta": "",
+                "noUpdateDownloaded": "",
+                "downloadingUpdate": "",
+                "updateDownloaded": "",
+                "quitAndInstall": ""
             }
         }
     },

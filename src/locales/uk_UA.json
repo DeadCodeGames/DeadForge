@@ -194,6 +194,19 @@
                 "articlecowriterTAG": "",
                 "registryjsTAG": "",
                 "qlexcTAG": ""
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "",
+                "unknownVersion": "",
+                "latestStableVersion": "",
+                "latestBetaVersion": "",
+                "latestReleases": "",
+                "stable": "",
+                "beta": "",
+                "noUpdateDownloaded": "",
+                "downloadingUpdate": "",
+                "updateDownloaded": "",
+                "quitAndInstall": ""
             }
         }
     },
