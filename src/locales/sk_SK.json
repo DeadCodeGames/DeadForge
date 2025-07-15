@@ -194,6 +194,20 @@
                 "articlecowriterTAG": "Spoluautor článkov",
                 "registryjsTAG": "Výpomoc s forkom registry-js",
                 "qlexcTAG": "za pomoc s tým jedným mätúcim async/await problémom vo v1\nbez teba by DEADFORGE pravdepodobne neexistoval v takej podobe, v akej je dnes."
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "Momentálne spustená verzia",
+                "unknownVersion": "Neznáma verzia",
+                "latestStableVersion": "Najnovšia <color>Stabilná</color> Verzia",
+                "latestBetaVersion": "Najnovšia <color>Beta</color> Verzia",
+                "latestReleases": "Najnovšie Vydania",
+                "stable": "Stabilné:",
+                "beta": "Beta:",
+                "notAvailable": "N/A",
+                "noUpdateDownloaded": "Žiadna stiahnutá aktualizácia",
+                "downloadingUpdate": "Sťahovanie aktualizácie",
+                "updateDownloaded": "Aktualizácia bola stiahnutá",
+                "quitAndInstall": "Ukončiť a Nainštalovať"
             }
         }
     },
