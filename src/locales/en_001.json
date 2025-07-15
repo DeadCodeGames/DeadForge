@@ -188,6 +188,19 @@
                 "articlecowriterTAG": "Article Co-Writer",
                 "registryjsTAG": "Help with a registry-js fork",
                 "qlexcTAG": "for helping me fix that one obscure async/await issue back in v1.\nwithout you, DEADFORGE probably would not exist in the shape it does today."
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "Currently running version",
+                "unknownVersion": "Unknown version",
+                "latestStableVersion": "Latest <color>Stable</color> Version",
+                "latestBetaVersion": "Latest <color>Beta</color> Version",
+                "latestReleases": "Latest Releases",
+                "stable": "Stable:",
+                "beta": "Beta:",
+                "noUpdateDownloaded": "No Update Downloaded",
+                "downloadingUpdate": "Downloading Update",
+                "updateDownloaded": "Update Downloaded",
+                "quitAndInstall": "Quit and Install"
             }
         }
     },
