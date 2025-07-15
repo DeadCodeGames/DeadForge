@@ -68,6 +68,10 @@ jobs:
           mkdir -p ./public/store/software-gh-pages-cache/
           cp -r ./cacher/software-gh-pages-cache/* ./public/store/software-gh-pages-cache/
 
+      - name: Fetch Latest DeadForge Privacy Policy
+        run: |
+          curl -s -o ./public/PRIVACY.md https://raw.githubusercontent.com/DeadCodeGames/DeadForge/refs/heads/2024/2025/PRIVACY.md
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
