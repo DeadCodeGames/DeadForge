@@ -88,7 +88,12 @@
             "useTrayDescription": "Keep the application in the system tray when window is closed",
             "autoStart": "Start on Boot",
             "autoStartDescription": "Launch the application automatically when your computer starts",
-            "unavailableOnLinux": "This setting is not available on Linux systems"
+            "unavailableOnLinux": "This setting is not available on Linux systems",
+            "discordRPC": "Discord Rich Presence",
+            "discordRPCDescription": "Manage Discord RPC Settings",
+            "discordRPCEnabled": "Enable Discord RPC",
+            "discordRPCShowVersion": "Show running DEADFORGE version",
+            "discordRPCShowTime": "Show timestamp of the launch of DEADFORGE"
         },
         "appData": {
             "title": "App Data & Updates",
