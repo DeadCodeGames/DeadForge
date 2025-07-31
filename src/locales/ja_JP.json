@@ -87,7 +87,12 @@
             "useTrayDescription": "ウィンドウが閉じているときは、アプリをシステムトレイに保持します",
             "autoStart": "システム起動時に実行",
             "autoStartDescription": "コンピューターの起動時にアプリを自動的に起動します",
-            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません"
+            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません",
+            "discordRPC": "",
+            "discordRPCDescription": "",
+            "discordRPCEnabled": "",
+            "discordRPCShowVersion": "",
+            "discordRPCShowTime": ""
         },
         "appData": {
             "title": "アプリデータとアップデート",

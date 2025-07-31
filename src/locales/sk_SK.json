@@ -90,7 +90,12 @@
             "useTrayDescription": "Ponechať aplikáciu na pozadí po uzatvorení okna, skrytú v oblasti oznámení",
             "autoStart": "Spustiť pri štarte",
             "autoStartDescription": "Spustiť aplikáciu automaticky po spustení počítača",
-            "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch"
+            "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch",
+            "discordRPC": "",
+            "discordRPCDescription": "",
+            "discordRPCEnabled": "",
+            "discordRPCShowVersion": "",
+            "discordRPCShowTime": ""
         },
         "appData": {
             "title": "Dáta a aktualizácie aplikácie",

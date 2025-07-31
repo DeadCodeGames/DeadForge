@@ -90,7 +90,12 @@
             "useTrayDescription": "",
             "autoStart": "",
             "autoStartDescription": "",
-            "unavailableOnLinux": ""
+            "unavailableOnLinux": "",
+            "discordRPC": "",
+            "discordRPCDescription": "",
+            "discordRPCEnabled": "",
+            "discordRPCShowVersion": "",
+            "discordRPCShowTime": ""
         },
         "appData": {
             "title": "",
