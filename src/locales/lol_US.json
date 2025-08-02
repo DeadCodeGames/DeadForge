@@ -76,7 +76,9 @@
             "languageComplete": "",
             "languageIncomplete": "",
             "languageShowIncomplete": "",
-            "languageShowIncompleteDescription": ""
+            "languageShowIncompleteDescription": "",
+            "reducedMotion": "",
+            "reducedMotionDescription": ""
         },
         "behavior": {
             "title": "",
@@ -91,6 +93,7 @@
             "unavailableOnLinux": "",
             "discordRPC": "",
             "discordRPCDescription": "",
+            "manageDiscordRPC": "",
             "discordRPCEnabled": "",
             "discordRPCShowVersion": "",
             "discordRPCShowTime": ""

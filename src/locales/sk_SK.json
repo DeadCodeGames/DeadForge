@@ -78,7 +78,9 @@
             "languageComplete": "Úplne Preložené",
             "languageIncomplete": "Nepreložené",
             "languageShowIncomplete": "Zobrazovať nekompletné preklady",
-            "languageShowIncompleteDescription": "Zobraziť preklady, ktoré nie sú kompletné. Môžete nám pomôcť DEADFORGE preložiť na našom <0>Crowdine</0>."
+            "languageShowIncompleteDescription": "Zobraziť preklady, ktoré nie sú kompletné. Môžete nám pomôcť DEADFORGE preložiť na našom <0>Crowdine</0>.",
+            "reducedMotion": "",
+            "reducedMotionDescription": ""
         },
         "behavior": {
             "title": "Správanie",
@@ -93,6 +95,7 @@
             "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch",
             "discordRPC": "",
             "discordRPCDescription": "",
+            "manageDiscordRPC": "",
             "discordRPCEnabled": "",
             "discordRPCShowVersion": "",
             "discordRPCShowTime": ""

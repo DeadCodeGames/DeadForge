@@ -76,7 +76,9 @@
             "languageComplete": "Fully Translated",
             "languageIncomplete": "Incomplete",
             "languageShowIncomplete": "Show Incomplete Translations",
-            "languageShowIncompleteDescription": "Show translations that are not fully translated yet. You can contribute to these translations over on <0>Crowdin</0>."
+            "languageShowIncompleteDescription": "Show translations that are not fully translated yet. You can contribute to these translations over on <0>Crowdin</0>.",
+            "reducedMotion": "Reduced Motion",
+            "reducedMotionDescription": "Disable animations and transitions to reduce system load and possibly increase performance"
         },
         "behavior": {
             "title": "Behavior",
@@ -91,6 +93,7 @@
             "unavailableOnLinux": "This setting is not available on Linux systems",
             "discordRPC": "Discord Rich Presence",
             "discordRPCDescription": "Manage Discord RPC Settings",
+            "manageDiscordRPC": "Manage Discord RPC",
             "discordRPCEnabled": "Enable Discord RPC",
             "discordRPCShowVersion": "Show running DEADFORGE version",
             "discordRPCShowTime": "Show timestamp of the launch of DEADFORGE"

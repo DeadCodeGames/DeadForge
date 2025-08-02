@@ -75,7 +75,9 @@
             "languageComplete": "完全翻訳済み",
             "languageIncomplete": "不完全翻訳済み",
             "languageShowIncomplete": "未完了の翻訳を表示",
-            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。"
+            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。",
+            "reducedMotion": "",
+            "reducedMotionDescription": ""
         },
         "behavior": {
             "title": "行動",
@@ -90,6 +92,7 @@
             "unavailableOnLinux": "この設定はLinuxシステムでは利用できません",
             "discordRPC": "",
             "discordRPCDescription": "",
+            "manageDiscordRPC": "",
             "discordRPCEnabled": "",
             "discordRPCShowVersion": "",
             "discordRPCShowTime": ""
