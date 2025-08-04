@@ -79,7 +79,7 @@
             "languageIncomplete": "Nepreložené",
             "languageShowIncomplete": "Zobrazovať nekompletné preklady",
             "languageShowIncompleteDescription": "Zobraziť preklady, ktoré nie sú kompletné. Môžete nám pomôcť DEADFORGE preložiť na našom <0>Crowdine</0>.",
-            "reducedMotion": "",
+            "reducedMotion": "Redukcia animácií",
             "reducedMotionDescription": ""
         },
         "behavior": {
@@ -93,7 +93,7 @@
             "autoStart": "Spustiť pri štarte",
             "autoStartDescription": "Spustiť aplikáciu automaticky po spustení počítača",
             "unavailableOnLinux": "Toto nastavenie nie je dostupné na Linuxových systémoch",
-            "discordRPC": "",
+            "discordRPC": "Discord Rich Presence",
             "discordRPCDescription": "",
             "manageDiscordRPC": "",
             "discordRPCEnabled": "",

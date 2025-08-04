@@ -76,7 +76,7 @@
             "languageIncomplete": "不完全翻訳済み",
             "languageShowIncomplete": "未完了の翻訳を表示",
             "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。",
-            "reducedMotion": "",
+            "reducedMotion": "モーションを減らす",
             "reducedMotionDescription": ""
         },
         "behavior": {
@@ -90,7 +90,7 @@
             "autoStart": "システム起動時に実行",
             "autoStartDescription": "コンピューターの起動時にアプリを自動的に起動します",
             "unavailableOnLinux": "この設定はLinuxシステムでは利用できません",
-            "discordRPC": "",
+            "discordRPC": "Discord Rich Presence（リッチプレゼンス）",
             "discordRPCDescription": "",
             "manageDiscordRPC": "",
             "discordRPCEnabled": "",
