@@ -45,7 +45,7 @@ jobs:
         run: echo "CROWDIN_VERSION=$(npm view @crowdin/cli version)" >> $GITHUB_OUTPUT
       
       - name: Restore npm cache (Crowdin CLI)
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-crowdin-cli-${{ steps.crowdin_version.outputs.CROWDIN_VERSION }}
@@ -93,7 +93,7 @@ jobs:
 
       - name: Sync Crowdin translations
         run: |
-          npm i --no-save --force @octokit/rest @actions/core
+          [ ! -d "node_modules" ] && npm i --no-save --force @octokit/rest @actions/core
           node .github/workflows/commitl10nchanges.js
         env:
           DEADCODEBOT_PAT: ${{ secrets.DEADCODEBOT_PAT }}
