@@ -1,0 +1,37 @@
+{
+    "meta": {
+        "name": "한국어",
+        "emoji": "🇰🇷"
+    },
+    "generic": {
+        "free": "무료"
+    },
+    "catogeries": {
+        "All Categories": "",
+        "Games": ""
+    },
+    "sections": {
+        "links": {
+            "links": "",
+            "home": "홈페이지",
+            "search": ""
+        },
+        "contact": "",
+        "hero": {
+            "latestNews": "",
+            "tags": {
+                "news": "",
+                "upcomingRelease": ""
+            },
+            "articlePublished": "",
+            "gameReleasesOn": ""
+        },
+        "featured": {
+            "featured": ""
+        },
+        "search": {
+            "searchbarPlaceholder": "",
+            "softCatalog": ""
+        }
+    }
+}

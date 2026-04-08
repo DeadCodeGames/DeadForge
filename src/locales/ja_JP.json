@@ -1,0 +1,37 @@
+{
+    "meta": {
+        "name": "日本語",
+        "emoji": "🇯🇵"
+    },
+    "generic": {
+        "free": "無料"
+    },
+    "catogeries": {
+        "All Categories": "全カテゴリー",
+        "Games": "ゲーム"
+    },
+    "sections": {
+        "links": {
+            "links": "リンク",
+            "home": "ホーム",
+            "search": "検索"
+        },
+        "contact": "お問い合わせ",
+        "hero": {
+            "latestNews": "最新お知らせ",
+            "tags": {
+                "news": "お知らせ",
+                "upcomingRelease": "今後のリリース"
+            },
+            "articlePublished": "{{date}}に公開",
+            "gameReleasesOn": "{{date}}でリリース"
+        },
+        "featured": {
+            "featured": "おすすめ"
+        },
+        "search": {
+            "searchbarPlaceholder": "ソフトを検索…",
+            "softCatalog": "ソフトカタログ"
+        }
+    }
+}
