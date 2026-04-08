@@ -93,7 +93,7 @@ jobs:
 
       - name: Sync Crowdin translations
         run: |
-          [ ! -d "node_modules" ] && npm i --no-save --force @octokit/rest @actions/core
+          [ ! -d "node_modules" ] &&npm i --no-save --force @octokit/rest @actions/core
           node .github/workflows/commitl10nchanges.js
         env:
           DEADCODEBOT_PAT: ${{ secrets.DEADCODEBOT_PAT }}
