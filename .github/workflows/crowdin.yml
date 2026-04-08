@@ -46,7 +46,6 @@ jobs:
           set +e
           npx @crowdin/cli upload sources --config .crowdin.yml
           OUTPUT=$(npx @crowdin/cli download --config .crowdin.yml --skip-untranslated-strings)
-          echo $OUTPUT
           result=$?
           if echo $OUTPUT | grep -q "Couldn't find any file to download"; then
             echo "No translations downloaded. Skipping i18n update."
