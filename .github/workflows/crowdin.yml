@@ -103,7 +103,7 @@ jobs:
       - name: Save npm cache (Helpers)
         uses: actions/cache/save@v4
         with:
-          path: ~/.npm
+          path: node_modules
           key: ${{ runner.os }}-octokit-${{ steps.helpers_version.outputs.HELPERS_VERSION }}
 
       - name: Create PR (if not exists)
