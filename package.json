@@ -64,7 +64,7 @@
     "lucide-react": "^0.487.0",
     "navigation-api-types": "^0.6.1",
     "nodemon": "^3.1.9",
-    "npm": "^11.4.2",
+    "npm": "^11.12.1",
     "react": "^19.1.0",
     "react-app-rewired": "^2.2.1",
     "react-dom": "^19.1.0",
