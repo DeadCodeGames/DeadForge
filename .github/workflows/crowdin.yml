@@ -104,7 +104,7 @@ jobs:
         uses: actions/cache/save@v5
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-octokit-${{ steps.crowdin_version.outputs.HELPERS_VERSION }}
+          key: ${{ runner.os }}-octokit-${{ steps.helpers_version.outputs.HELPERS_VERSION }}
 
       - name: Create PR (if not exists)
         env:
