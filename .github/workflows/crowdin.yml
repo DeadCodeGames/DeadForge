@@ -45,7 +45,7 @@ jobs:
         run: echo "CROWDIN_VERSION=$(npm view @crowdin/cli version)" >> $GITHUB_OUTPUT
       
       - name: Restore npm cache (Crowdin CLI)
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-crowdin-cli-${{ steps.crowdin_version.outputs.CROWDIN_VERSION }}
@@ -70,7 +70,7 @@ jobs:
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
           
       - name: Save npm cache (Crowdin CLI)
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-crowdin-cli-${{ steps.crowdin_version.outputs.CROWDIN_VERSION }}
@@ -86,7 +86,7 @@ jobs:
           echo "HELPERS_VERSION=${OCTOKIT_VERSION}-${ACTIONS_CORE_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Restore octokit deps
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-octokit-${{ steps.helpers_version.outputs.HELPERS_VERSION }}
@@ -101,7 +101,7 @@ jobs:
         id: sync-translations
 
       - name: Save npm cache (Helpers)
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-octokit-${{ steps.helpers_version.outputs.HELPERS_VERSION }}
