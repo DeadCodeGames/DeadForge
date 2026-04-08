@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   synchronize-with-crowdin:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: github.actor != 'deadcodebot'
     outputs:
       BRANCH_EXISTS: ${{ steps.pr_branch_make.outputs.BRANCH_EXISTS }}
