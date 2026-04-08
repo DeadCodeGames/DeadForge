@@ -23,8 +23,22 @@ jobs:
         with:
           node-version: 22.14.0
 
+      - name: Restore node_modules cache
+        id: node_modules-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
         run: npm install --force
+
+      - name: Save node_modules cache
+        if: steps.node_modules-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package-lock.json') }}
 
       - name: Run lint
         run: npm run lint
@@ -50,8 +64,29 @@ jobs:
         with:
           node-version: 22.14.0
 
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+
+      - name: Restore npm cache
+        id: npm-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
       - name: Install dependencies
         run: set CI=false && npm install --force
+
+      - name: Save npm cache
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
 
       - name: Build/release Electron app
         uses: DeadCodeGames/action-electron-builder@908b7cf133f1e9bef6d538ab50ad2f7449538cc7
