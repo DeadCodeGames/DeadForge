@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { enUS, cs, sk, ja, fr, it, zhCN, zhTW, de, ko, Locale } from 'date-fns/locale';
+import { enUS, cs, sk, ja, fr, it, zhCN, zhTW, de, ko, uk, Locale } from 'date-fns/locale';
 import {unflatten, flatten} from 'flat';
 
 import en_001 from './en_001.json';
@@ -32,7 +32,19 @@ const resources: Record<string, { translation: object }> = {
     zh_TW: { translation: zh_TW },
 };
 const dateFNSResources: Record<keyof typeof resources, Locale> = {
+    cs_CZ: cs,
+    de_DE: de,
     en_001: enUS,
+    en_PT: enUS,
+    fr_FR: fr,
+    it_IT: it,
+    ja_JP: ja,
+    ko_KR: ko,
+    lol_US: enUS,
+    sk_SK: sk,
+    uk_UA: uk,
+    zh_CN: zhCN,
+    zh_TW: zhTW,
 };
 
 if (!window.App.isPackaged) resources.stringsDebug = { translation: unflatten(Object.fromEntries(Object.entries(flatten(en_001)!).map(([k]) => [k, k]))) };
