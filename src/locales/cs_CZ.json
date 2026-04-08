@@ -1,0 +1,393 @@
+{
+    "meta": {
+        "name": "Čeština",
+        "emoji": "🇨🇿"
+    },
+    "commaSeparator": ", ",
+    "ampersandSeparator": " & ",
+    "showLess": "Zobrazit méně",
+    "showMore": "Zobrazit více",
+    "viewAll": "Zobrazit vše",
+    "loading": "Načítá se",
+    "browse": "Prohlížet",
+    "cancel": "Zrušit",
+    "back": "Zpět",
+    "skip": "Přeskočit",
+    "next": "Dále",
+    "finish": "Dokončit",
+    "sidebar": {
+        "home": "Domov",
+        "library": "Knihovna",
+        "arcade": "Arcade",
+        "store": "Obchod",
+        "settings": "Nastavení",
+        "collapse": "Sbalit"
+    },
+    "home": {
+        "newsAndUpdatesHeader": "Nejnovější zprávy a aktualizace <bold>DEADFORGE</bold>",
+        "jumpBackIn": "Naposledy hráno",
+        "articles": {
+            "publishedOn": "Zveřejněno {{date}}",
+            "lastEditedOn": "Naposledy upraveno {{date}}",
+            "tags": {
+                "deadforgeUpdate": "Aktualizace DEADFORGE",
+                "beta": "Beta",
+                "patch": "Záplata",
+                "languageUpdate": "Aktualizace jazykového balíčku",
+                "metaUpdate": "novinky ze zákulisí",
+                "workInProgress": "Ve vývoji"
+            },
+            "writtenBy_one": "Napsal/-a <0></0>",
+            "writtenBy_few": "Napsali <0></0>",
+            "writtenBy_many": "Napsali <0></0>",
+            "writtenBy_other": "Napsali <0></0>"
+        },
+        "errorWithLoadingArticles": "Chyba při načítání článků:",
+        "errorWithUpdatingArticles": "Chyba při aktualizaci článků:",
+        "errorWithUpdatingArticles-NetworkError": "Zdá se, že se jedná o chybu sítě. Zkontrolujte připojení k internetu a zkuste načíst tuto stránku znovu.",
+        "noArticlesTitle": "Žádné články nejsou k dispozici",
+        "noArticlesDescription": "V tuto chvíli nejsou žádné články. Zkontrolujte prosím připojení k internetu."
+    },
+    "store": {
+        "urlCopied": "Adresa byla úspěšně zkopírovaná"
+    },
+    "tray": {
+        "exit": "Ukončit <0>DEADFORGE</0>",
+        "arcade": "<0>DEADFORGE</0> <1>Arcade</1>"
+    },
+    "settings": {
+        "theming": {
+            "title": "Vzhled",
+            "theme": "Motiv",
+            "themeDescription": "Vyberte si mezi světlým, tmavým a automatickým (systémovým) motivem",
+            "systemTheme": "Dle systému",
+            "darkTheme": "Tmavý",
+            "lightTheme": "Světlý",
+            "windowFrame": "Záhlaví okna",
+            "windowFrameDescription": "Vyberte si záhlaví okna, které sedí vašemu operačnímu systému, nebo které vám vyhovuje",
+            "windowFrameAuto": "Auto (podle OS)",
+            "windowFrameWindows": "Windows",
+            "windowFrameMac": "macOS",
+            "windowFrameLinux": "Linux",
+            "currentPageTitleInFrame": "Zobrazit aktuální název stránky v záhlaví okna",
+            "currentPageTitleInFrameDescription": "Zobrazovat aktuální název stránky v záhlaví okna",
+            "themeButtonInFrame": "Zobrazit přepínač motivů v záhlaví okna",
+            "themeButtonInFrameDescription": "Zvolte, zda zahrnout tlačítko přepínače motivů do hlavičky okna pro rychlý přístup\nLevým tlačítkem přepnete mezi tmavým a světlem, klikněte pravým tlačítkem myši pro přepnutí na automatický (systémový) motiv",
+            "language": "Jazyk",
+            "languageDescription": "Vyberte si váš preferovaný jazyk aplikace",
+            "languageComplete": "Úplně Přeloženo",
+            "languageIncomplete": "Nepřeloženo",
+            "languageShowIncomplete": "Zobrazovat neúplné překlady",
+            "languageShowIncompleteDescription": "Zobrazit překlady, které nejsou kompletné. Můžete nám pomoci s překladem DEADFORGE na našem <0>Crowdinu</0>.",
+            "reducedMotion": "Redukce animací",
+            "reducedMotionDescription": "Vypnout animace a přechody s účelem znížení zatížení systému a zlepšení výkonu"
+        },
+        "behavior": {
+            "title": "Chování",
+            "defaultPage": "Výchozí stránka",
+            "defaultPageDescription": "Vyberte stránku, která se zobrazí při spuštění aplikace",
+            "settingsWindow": "Otevírat nastavení ve samostatném okně",
+            "settingsWindowDescription": "Otevírat nastavení ve samostatném okně namísto sekce ve hlavním okně",
+            "useTray": "Zobrazit v oblasti oznámení",
+            "useTrayDescription": "Ponechat aplikaci na pozadí po uzavření okna, skrytou v oblasti oznámení",
+            "autoStart": "Spustit při startu",
+            "autoStartDescription": "Spustit aplikaci automaticky po spustení počítače",
+            "unavailableOnLinux": "Toto nastavení není dostupné na Linuxových systémech",
+            "discordRPC": "Discord Rich Presence",
+            "discordRPCDescription": "Spravovat nastavení Discordu RPC",
+            "manageDiscordRPC": "Spravovat Discord RPC",
+            "discordRPCEnabled": "Povolit Discord RPC",
+            "discordRPCShowVersion": "Zobrazovat verzi DEADFORGE",
+            "discordRPCShowTime": "Zobrazovat, jak dlouho DEADFORGE běží"
+        },
+        "appData": {
+            "title": "Data a aktualizace aplikace",
+            "initialSetup": "Prvotní nastavení",
+            "initialSetupDescription": "Restartovat počáteční sekvence nastavení, která se zobrazí při prvním spuštění",
+            "initialSetupModal": {
+                "welcome": "Vítejte v <bold>DEADFORGE</bold>",
+                "welcomeSubheading": "Začněme importem vašich dat",
+                "deadforgeDataImport": "Import dat z <bold>DEADFORGE</bold>",
+                "importV1Preferences": "Import nastavení z verze v1",
+                "v1PreferencesDescription": "Zahrnuje vaše nastavení <code>{{colorScheme}}</code>, <code>{{startup}}</code>, <code>{{betaUpdates}}</code>, <code>{{sidebarState}}</code> bočního panelu, <code>{{closeToTray}}</code> a <code>{{discordRichPresence}}</code>.",
+                "noV1PreferencesFound": "Nebylo nalezeno žádné nastavení z verze v1",
+                "importBackupFile": "Importovat záložní soubor aplikace (pouze zálohy verze v2)",
+                "backupFilePlaceholder": "Zadejte cestu k záložnímu archivu DeadForge",
+                "backupValid": "Jo, ta záloha vypadá v pořádku!",
+                "backupInvalid": "Ouha! To nevypadá jako platný záložní soubor.\nMožná jste zadali špatnou cestu, nebo je soubor poškozený.",
+                "steamImport": "Import ze Steamu",
+                "importFromSteam": "Importovat hry ze Steamu",
+                "steamInstallationDirectory": "Instalační složka Steamu",
+                "steamDirectoryPlaceholder": "Zadejte cestu ke složce Steamu",
+                "steamNotFound": "Nepodařilo se najít instalační data Steamu. Ujistěte se, že je vybraná cesta správná.\nSprávná cesta by měla obsahovat spustitelný soubor Steam.",
+                "epicGamesImport": "Import z Epic Games",
+                "importFromEpic": "Importovat hry z Epic Games",
+                "epicAppsDataDirectory": "Složka s daty aplikací Epic Games",
+                "epicDirectoryPlaceholder": "Zadejte cestu ke složce Epic Games",
+                "epicNotFound": "Nepodařilo se najít data aplikací Epic Games. Ujistěte se, že je zvolená cesta správná.",
+                "epicInstructions": "Jak najít správnou složku:\n\n1. Otevřete Epic Games Launcher\n2. Přejděte do Settings → Go to Download Settings → Posuňte dolů na Advanced\n3. V části Fab Library Data Cache Directory uvidíte cestu. Výchozí je C:/ProgramData/Epic/EpicGamesLauncher/VaultCache\n4. Složka Manifests je o úroveň výš: ../Data/Manifests, např. C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests",
+                "epicExecutablePath": "Cesta ke spustitelnému souboru Epic Games Launcher",
+                "epicExecutablePlaceholder": "Zadejte cestu ke spustitelnému souboru Epic Games Launcher",
+                "epicExecutableValid": "Platný spustitelný soubor aplikace Epic Games Launcher.",
+                "epicExecutableInvalid": "Neplatná cesta ke spustitelnému souboru.\nUjistěte se, že jste vybrali správný soubor Epic Games Launcher.",
+                "itchioImport": "Import z itch.io",
+                "importFromItchio": "Importovat hry z itch.io",
+                "itchioDataDirectory": "Složka s daty itch.io",
+                "itchioDirectoryPlaceholder": "Zadejte cestu ke složce itch.io",
+                "itchioNotFound": "Nepodařilo se najít instalační data itch. Ujistěte se, že je zvolená cesta správná.\nSprávná cesta musí obsahovat spustitelný soubor itch.",
+                "itchioExecutablePath": "Cesta ke spustitelnému souboru itch.io",
+                "itchioExecutablePlaceholder": "Zadejte cestu ke spustitelnému souboru itch.io",
+                "itchioExecutableValid": "Nalezen spustitelný soubor itch: {{path}}.",
+                "itchioExecutableInvalid": "Spustitelný soubor itch nebyl nalezen ve zadané cestě.\nTato cesta by měla obsahovat itch-setup a složku app-[verze].",
+                "readyToImport": "Připraveno k importu",
+                "importFromPlatforms": "Importujeme vaše data z následujících platforem:",
+                "deadforgeV1Settings": "Nastavení <bold>DEADFORGE</bold> v1: <check/> Přeneseno",
+                "deadforgeV2BackupImported": "Záloha <bold>DEADFORGE</bold> v2: <check/> Importována z ",
+                "deadforgeV2BackupNotFound": "Záloha <bold>DEADFORGE</bold> v2: <x/> Nebyla nalezena na ",
+                "backupImportWarning": "Importujete záložní archiv DEADFORGE. Tím se přeskočí ostatní kroky nastavení jako import cest Steam, Epic a itch.\nToto nastavení si můžete znovu projít po dokončení importu v části <0>Nastavení</0> → <1>Data a aktualizace</1> → <2>Úvodní nastavení</2> → <3>Opakovat nastavení</3>.",
+                "backupFileNotFound": "Zdá se, že byl záložní soubor přesunut nebo smazán. Prosím upravte jeho cestu v předchozím kroku, než budete pokračovat.",
+                "noPlatformsSelected": "Nebyly vybrány žádné platformy pro import",
+                "finishInstructions": "Klikněte na \"Dokončit\" pro spuštění importu her a dat. Aplikace se automaticky restartuje.\nBěhem importu mohou být staženy další knihovny a soubory.\nProces je plně automatický. Všechny budoucí změny budou zpracovány automaticky a jejich soubory budou také staženy.",
+                "steamSummaryText": "{{gamesCountText}} z <code>{{path}}</code>",
+                "epicGameCountSummaryText": "{{gamesCountText}} z <code>{{path}}</code>",
+                "itchioGameCountSummaryText": "{{gamesCountText}} z <code>{{path}}</code>",
+                "betaUpdates": "stahování Beta aktualizací",
+                "noBetaUpdates": "nestahování beta aktualizací",
+                "closeToTray": "Zavírání do oznamovací oblasti",
+                "dontCloseToTray": "Nezavírání do oznamovací oblasti",
+                "launchAtStartup": "Spouštění při startu systému",
+                "dontLaunchAtStartup": "Nespouštění při startu systému",
+                "useRPC": "používání Discord Rich Presence",
+                "dontUseRPC": "nepoužívání Discord Rich Presence",
+                "collapsed": "Sbaleného",
+                "expanded": "Rozbaleného",
+                "darkModeInContext": "Tmavého motivu",
+                "lightModeInContext": "Světlého motivu",
+                "gameCount_one": "{{count}} hra",
+                "gameCount_few": "{{count}} hry",
+                "gameCount_many": "{{count}} her",
+                "gameCount_other": "{{count}} her",
+                "foundGames_one": "Nalezena {{count}} hra",
+                "foundGames_few": "Nalezeny {{count}} hry",
+                "foundGames_many": "Nalezeno {{count}} her",
+                "foundGames_other": "Nalezeno {{count}} her"
+            },
+            "replaySetup": "Spustit prvotní nastavení",
+            "dataManagement": "Správa dat",
+            "dataManagementDescription": "Export, import a resetování všech dat aplikace",
+            "exportData": "Exportovat",
+            "importData": "Importovat",
+            "resetData": "Resetovat",
+            "resetDataTitle": "Resetovat data aplikace",
+            "resetDataConfirmation": "Jste si jisti, že chcete resetovat všechna data aplikací? Tímto odstraníte všechna vaše nastavení, data o hrách a předvolby. Tuto akci nelze navrátit.",
+            "resetDataConfirm": "Ano, resetovat vše",
+            "resetDataCancel": "Ne, ponechat data",
+            "updateCentre": "Centrum Aktualizací",
+            "updateCentreDescription": "Spravujte nastavení aktualizací a prohlédněte si dostupné aktualizace v Centru Aktualizací.",
+            "autoUpdate": "Automatické aktualizace",
+            "autoUpdateDescription": "Automaticky stáhnout a nainštalovat aktualizace aplikace",
+            "betaUpdates": "Předběžné (Beta) aktualizace",
+            "betaUpdatesDescription": "Instalovat předběžné beta verzie s novými funkcemi dříve (vyžaduje Automatické aktualizace)",
+            "languageUpdates": "Aktualizace jazykových balíčků",
+            "languageUpdatesDescription": "Někdy se nám nepovede úplně přeložit aplikaci do všech jazyků prěd vydáním nové aktualizace\nMůžete se přihlásit na odběr těchto malých aktualizací, které obsahují jenom změny lokalizace (vyžaduje Automatické aktualizace)",
+            "updatesDevNotice": "Některé funkce Centra Aktualizací nemusí být dostupné ve vývojovém prostředí.",
+            "privacyPolicy": "Zásady ochrany osobních údajů",
+            "credits": "Zásluhy",
+            "creditsModal": {
+                "developedBy": "Vývojáři",
+                "contributors": "Přispěvatelé",
+                "specialThanks": "Speciální poděkování patří",
+                "developerTAG": "Vývojář",
+                "testerTAG": "Tester",
+                "articlecowriterTAG": "Spoluautor článků",
+                "registryjsTAG": "Pomoc s forkem registry-js",
+                "qlexcTAG": "za pomoc s tím jedním matoucím async/await problémem ve v1\nbez tebe by DEADFORGE pravděpodobně neexistoval v takové podobě, v jaké je dnes."
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "Aktuálně spuštěná verze",
+                "unknownVersion": "Neznámá verze",
+                "latestStableVersion": "Nejnovější <color>Stabilní</color> Verze",
+                "latestBetaVersion": "Nejnovější <color>Beta</color> Verze",
+                "latestReleases": "Nejnovější vydání",
+                "stable": "Stabilní:",
+                "beta": "Beta:",
+                "notAvailable": "N/A",
+                "noUpdateDownloaded": "Žádná stažená aktualizace",
+                "downloadingUpdate": "Stahování Aktualizace",
+                "updateDownloaded": "Aktualizace byla stažena",
+                "quitAndInstall": "Ukončit a Nainstalovat"
+            }
+        }
+    },
+    "library": {
+        "yourLibrary": "Vaše knihovna",
+        "yourLibraryDescription": "Spravujte a prohlížejte svou herní knihovnu",
+        "shared": {
+            "openInStore": "Otevřít v Obchodu DeadForge",
+            "collections": "Sbírky",
+            "noCollections": "Nenalezeny žádné sbírky",
+            "collectionNamePlaceholder": "Název sbírky",
+            "createCollectionConfirm": "Vytvořit",
+            "createCollectionCancel": "Zrušit",
+            "gameState": {
+                "install": "Nainstalovat",
+                "launch": "Spustit",
+                "launchLauncher": "Spustit {{launcher}}",
+                "play": "Hrát",
+                "stop": "Zastavit",
+                "running": "Spuštěno",
+                "launching": "Spouští se...",
+                "stopping": "Zastavuje se...",
+                "preparing": "Probíhá příprava",
+                "downloading": "Stahuje se",
+                "installing": "Instaluje se",
+                "finishingUp": "Dokončuje se...",
+                "checking": "Probíhá kontrola...",
+                "update": "Dostupná aktualizace",
+                "reinstall": "Vyžaduje se reinstalace"
+            },
+            "favourites": "Oblíbené",
+            "favouritesDescription": "Vaše nejoblíbenější hry",
+            "addFavourite": "Přidat k Oblíbeným",
+            "removeFavourite": "Odebrat z Oblíbených",
+            "createCollection": "Vytvořit novou sbírku",
+            "recentlyPlayed": "Nedávno hrané",
+            "recentlyPlayedDescription": "Vrhněte se zpět do vašich nedávných dobrodružství",
+            "allGames": "Všechny hry",
+            "yourGames": "Vaše hry",
+            "allGamesDescription": "Prohlédněte si svou úplnou knihovnu",
+            "allGamesDescriptionAlternate": "Vaše úplná knihovna her",
+            "uninstall": "Odinstalovat"
+        },
+        "sidebar": {
+            "homeButton": "Domov",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "Filtrovat dle stavu oblíbenosti",
+                    "unfiltered": "Zobrazit všechny hry",
+                    "favourites": "Zobrazit pouze oblíbené hry"
+                },
+                "launchability": {
+                    "description": "Filtrovat dle spustitelnosti",
+                    "unfiltered": "Zobrazit všechny hry",
+                    "launchable": "Zobrazit pouze spustitelné hry"
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "Možnosti řazení",
+                    "title": "Název",
+                    "recent": "Poslední čas spuštění"
+                },
+                "direction": {
+                    "description": "Směr řazení",
+                    "asc": "Vzestupně",
+                    "desc": "Sestupně"
+                }
+            },
+            "empty": {
+                "emptyLibrary": "Nebyly nalezeny žádné hry v knihovně.",
+                "emptyAfterFilters": "Žádné hry neodpovídají vašim filtrům."
+            },
+            "wtflolhow": "co to kurva lmao",
+            "recent": "Nedávné",
+            "neverPlayed": "Nikdy nehrané",
+            "uncategorized": "Nezařazené"
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "Sbalit",
+                "expand": "Rozbalit",
+                "rename": "Přejmenovat sbírku",
+                "delete": "Smazat sbírku",
+                "clearFavorites": "Vyčistit Oblíbené"
+            },
+            "games": {
+                "viewDetails": "Zobrazit detaily"
+            }
+        },
+        "homeView": {
+            "noGamesFound": "Nebyly nalezeny žádné hry",
+            "noGamesFoundDescription": "Vaše knihovna čeká na naplnění! Připojte své herní platformy, a začněte hrát.",
+            "connect": "Připojit platformy"
+        },
+        "gameView": {
+            "loading": "Hra se načítává...",
+            "checkStatus": "Zkontrolovat stav",
+            "checkStatusDescription": "Zkontrolujte, zda proces hry již běží",
+            "gameNotes": "Poznámky ke hře",
+            "gameNotesTooltip": "Poznámky ke hrám jsou spravovány vývojáři a komunitou <1>DeadForge</1>.\nMůžete přispět k nim, i vybranému vizuálnímu materiálu <3>DeadForge</3> pro externí softvér, a další cool věci na <5>stránce GitHub DeadCodeGames/DeadForgeExternalData</5>.",
+            "noGameNotes": "Pro tuto hru nejsou k dispozici žádné poznámky.",
+            "installDir": "Adresář pro instalaci",
+            "lastPlayed": "Naposledy hráno",
+            "playTime": "Odehraný čas"
+        },
+        "recentView": {
+            "now": "Právě teď",
+            "today": "Dnes",
+            "thisWeek": "Tento Týden",
+            "thisMonth": "Tento Měsíc",
+            "neverPlayed": "Nikdy nehráno",
+            "noRecentGames": "Žádné nedávné hry",
+            "noRecentGamesDescription": "Zde se zobrazí hry, které spustíte"
+        },
+        "favouritesView": {
+            "noFavourites": "Zatím nemáte žádné oblíbené hry",
+            "noFavouritesDescription": "Přidejte hry k Oblíbeným a uvidíte je zde"
+        },
+        "collectionsView": {
+            "description": "Uspořádejte své hry do vlastních sbírek",
+            "new": "Nová sbírka",
+            "noCollections": "Ještě nemáte žádné sbírky",
+            "noCollectionsDescription": "Vytvořte si svou první sbírku, a zorganizujte si svou herní knihovnu",
+            "noCollectionsCTA": "Vytvořit sbírku",
+            "header": {
+                "name": "Název",
+                "gameCount": "Počet her",
+                "actions": "Možnosti"
+            },
+            "gameCount_one": "{{count}} hra",
+            "gameCount_few": "{{count}} hry",
+            "gameCount_many": "{{count}} hry",
+            "gameCount_other": "{{count}} her"
+        },
+        "collectionView": {
+            "noGamesInCollection": "V této sbírce nejsou žádné hry",
+            "noGamesInCollectionDescription": "Hry do této sbírky můžete přidat z knihovny, nebo samostatních stránek her.",
+            "collectionNotFound": "Sbírka se nenašla",
+            "collectionNotFoundDescription": "Sbírka, kterou hledáte, neexistuje.",
+            "collectionNotFoundCTA": "Zpět na sbírky"
+        },
+        "install": {
+            "title": {
+                "install": "Instalace <b>{{title}}</b>",
+                "reinstall": "Reinstalace <b>{{title}}</b>",
+                "uninstall": "Odinstalace <b>{{title}}</b>"
+            },
+            "install": "Nainstalovat",
+            "reinstall": "Přeinstalovat",
+            "uninstall": "Odinstalovat",
+            "reinstallReason": "Zdá se, že aktuálně nainstalovaná verze této hry není v naši historii vydání. Z tohoto důvodu ji DEADFORGE nemůže aktualizovat na nejnovější verzi a vyžaduje úplnou reinstalaci.\nSoubory označené vývojáři jako soubory uchovávající uživatelská data budou zachovány.",
+            "update": "Aktualizovat",
+            "installLocation": "Umístění instalace",
+            "downloadSize": "Velkost stáhnutého balíčku:",
+            "installSize": "Velkost nainstalovaného softvéru:",
+            "noReleaseinfo": "Softwaru s ID {{id}} chybí informace o vydání",
+            "copyingFiles": "Kopírují se soubory...",
+            "updatingDeadForgeDB": "Aktualizuje se databáza DeadForge",
+            "updatingWindowsRegistry": "Aktualizuje se Registr Windows",
+            "backingUpUserDataFiles": "Zálohují se uživatelská data",
+            "restoringUserDataFiles": "Obnovují se uživatelská data",
+            "cleaningUp": "Probíhá čištění...",
+            "installedSize": "Velikost nainstalovaného programu",
+            "userDataSize": "Velikost Uživatelských Dat",
+            "totalSize": "Celková velikost na disku (včetně Uživatelských Dat)",
+            "sizeToRemove": "Velikost dat k odstranění",
+            "removeUserData": "Odstranit také Uživatelská Data"
+        },
+        "update": {
+            "applying": "Aplikuje se aktualizace",
+            "applyingPatch": "Aplikuje se aktualizace {{A}}/{{B}}"
+        }
+    }
+}

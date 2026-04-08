@@ -1,0 +1,381 @@
+{
+    "meta": {
+        "name": "日本語",
+        "emoji": "🇯🇵"
+    },
+    "commaSeparator": "、",
+    "ampersandSeparator": "と",
+    "showLess": "一部表示",
+    "showMore": "もっと見る",
+    "viewAll": "全て表示",
+    "loading": "ロード中",
+    "browse": "閲覧",
+    "cancel": "キャンセル",
+    "back": "戻る",
+    "skip": "スキップ",
+    "next": "次へ",
+    "finish": "終える",
+    "sidebar": {
+        "home": "ホーム",
+        "library": "ライブラリー",
+        "arcade": "アーケード",
+        "store": "ストア",
+        "settings": "設定",
+        "collapse": "折りたたむ"
+    },
+    "home": {
+        "newsAndUpdatesHeader": "最新の<bold>DEADFORGE</bold>ニュースとアップデート",
+        "jumpBackIn": "最後にプレイした",
+        "articles": {
+            "publishedOn": "{{date}}に公開",
+            "lastEditedOn": "{{date}}に最終更新",
+            "tags": {
+                "deadforgeUpdate": "DEADFORGE アップデート",
+                "beta": "ベータ",
+                "patch": "パッチ",
+                "languageUpdate": "言語パックアップデート",
+                "metaUpdate": "舞台裏のニュース",
+                "workInProgress": "開発中"
+            },
+            "writtenBy_other": "<0></0>によって書かれました"
+        },
+        "errorWithLoadingArticles": "記事の読み込みエラー：",
+        "errorWithUpdatingArticles": "記事の更新エラー：",
+        "errorWithUpdatingArticles-NetworkError": "これはネットワークエラーのようです。インターネット接続を確認して、このページを再読み込みしてください。",
+        "noArticlesTitle": "利用可能な記事はありません",
+        "noArticlesDescription": "現在表示される記事がありません。インターネット接続を確認してください。"
+    },
+    "store": {
+        "urlCopied": "URLは正常にコピーされました"
+    },
+    "tray": {
+        "exit": "<0>DEADFORGE</0>を終了",
+        "arcade": "<0>DEADFORGE</0> <1>アーケード</1>"
+    },
+    "settings": {
+        "theming": {
+            "title": "外観",
+            "theme": "テーマ",
+            "themeDescription": "ライト、ダーク、自動（システム）テーマから選択",
+            "systemTheme": "システム",
+            "darkTheme": "ダーク",
+            "lightTheme": "ライト",
+            "windowFrame": "ウィンドウ枠のスタイル",
+            "windowFrameDescription": "OSまたは個人の好みに合わせてウィンドウの枠のスタイルを選択します",
+            "windowFrameAuto": "自動（OSに基づいて）",
+            "windowFrameWindows": "ウィンドウズ",
+            "windowFrameMac": "マックOS",
+            "windowFrameLinux": "リナックス",
+            "currentPageTitleInFrame": "ウィンドウ枠に現在のページタイトルを表示する",
+            "currentPageTitleInFrameDescription": "ウィンドウ枠に現在のページタイトルを含めるかどうか",
+            "themeButtonInFrame": "ウィンドウ枠にテーマの切り替えを表示",
+            "themeButtonInFrameDescription": "クイックアクセスのために、ウィンドウ枠にテーマ切り替えボタンを含めるかどうか\n左クリックでダーク／ライトテーマを切り替え、右クリックでシステム設定に切り替え",
+            "language": "言語",
+            "languageDescription": "アプリの言語を選択して",
+            "languageComplete": "完全翻訳済み",
+            "languageIncomplete": "不完全翻訳済み",
+            "languageShowIncomplete": "未完了の翻訳を表示",
+            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。",
+            "reducedMotion": "モーションを減らす",
+            "reducedMotionDescription": "パフォーマンスを向上させるため、アニメーションとトランジションを無効にしてシステムの負荷を軽減します"
+        },
+        "behavior": {
+            "title": "行動",
+            "defaultPage": "デフォルトページ",
+            "defaultPageDescription": "アプリの起動時に表示するページを選択します",
+            "settingsWindow": "設定を別ウィンドウで開く",
+            "settingsWindowDescription": "メインアプリの代わりに専用ウィンドウに設定を表示する",
+            "useTray": "システムトレイに表示",
+            "useTrayDescription": "ウィンドウが閉じているときは、アプリをシステムトレイに保持します",
+            "autoStart": "システム起動時に実行",
+            "autoStartDescription": "コンピューターの起動時にアプリを自動的に起動します",
+            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません",
+            "discordRPC": "Discord Rich Presence（リッチプレゼンス）",
+            "discordRPCDescription": "Discord RPCの設定を管理",
+            "manageDiscordRPC": "Discord RPCを管理",
+            "discordRPCEnabled": "Discord RPCを有効化",
+            "discordRPCShowVersion": "実行中のDEADFORGEバージョンを表示",
+            "discordRPCShowTime": "DEADFORGEの起動のタイムスタンプを表示"
+        },
+        "appData": {
+            "title": "アプリデータとアップデート",
+            "initialSetup": "初期設定",
+            "initialSetupDescription": "最初の起動時に表示される初期設定シーケンスを再起動します",
+            "initialSetupModal": {
+                "welcome": "<bold>DEADFORGE</bold>へようこそ",
+                "welcomeSubheading": "始めるためにデータをインポートしましょう",
+                "deadforgeDataImport": "<bold>DEADFORGE</bold> データインポート",
+                "importV1Preferences": "v1設定をインポート",
+                "v1PreferencesDescription": "これには、<code>{{colorScheme}}</code> の設定、<code>{{startup}}</code> の設定、<code>{{betaUpdates}}</code> の設定、<code>{{sidebarState}}</code> のサイドバー状態、<code>{{closeToTray}}</code> の設定、そして <code>{{discordRichPresence}}</code> の設定が含まれます。",
+                "noV1PreferencesFound": "v1設定をインポートない",
+                "importBackupFile": "アプリのバックアップ ファイルをインポート（v2バックアップのみ）",
+                "backupFilePlaceholder": "DeadForgeバックアップアーカイブファイルのパスを入力して",
+                "backupValid": "は～い、そのバックアップは良く見えます！",
+                "backupInvalid": "なんてこった！有効なバックアップファイルのようには見えません。\nファイルパスが間違っているか、ファイルが破損している可能性があります。",
+                "steamImport": "Steamインポート",
+                "importFromSteam": "Steamからゲームをインポート",
+                "steamInstallationDirectory": "Steamディレクトリ",
+                "steamDirectoryPlaceholder": "Steamディレクトリのパスを入力して",
+                "steamNotFound": "Steamのインストールデータを見つけることができませんでした。選択したパスが正しいことを確認してください。\n正しいパスにSteamの実行ファイルが含まれている必要があります。",
+                "epicGamesImport": "Epic Gamesインポート",
+                "importFromEpic": "Epic Gamesからゲームをインポート",
+                "epicAppsDataDirectory": "Epic Gamesアプリデータディレクトリ",
+                "epicDirectoryPlaceholder": "Epic Gamesディレクトリのパスを入力して",
+                "epicNotFound": "Epic Gamesアプリデータが見つかりませんでした。選択したパスが正しいことを確認してください。",
+                "epicInstructions": "正しいフォルダを見つけるには：\n\n1. Epic Games Launcherを開きます\n2. 設定（Settings）→ ダウンロード設定に移動（Go to Download Settings）→ 下にスクロールして「詳細」（Advanced）を開きます\n3. Fab ライブラリー データキャッシュディレクトリー（Fab Library Data Cache Directory）の項目に、PC上のパスが表示されます。デフォルトでは\n　C:/ProgramData/Epic/EpicGamesLauncher/VaultCache です\n4. Manifests フォルダは、その1つ上の階層、つまり ../Data/Manifests にあります。たとえば、C:/ProgramData/Epic/EpicGamesLauncher/Data/Manifests のようになります",
+                "epicExecutablePath": "Epic Games Launcherの実行ファイルのパス",
+                "epicExecutablePlaceholder": "Epic Games Launcherの実行ファイルのパスを入力して",
+                "epicExecutableValid": "有効なEpic Games Launcher実行ファイル。",
+                "epicExecutableInvalid": "無効な実行ファイルパスです。\nEpic Games Launcher実行ファイルを選択してください。",
+                "itchioImport": "itch.ioインポート",
+                "importFromItchio": "itch.ioからゲームをインポート",
+                "itchioDataDirectory": "itchアプリのデータディレクトリ",
+                "itchioDirectoryPlaceholder": "itchディレクトリのパスを入力して",
+                "itchioNotFound": "itchのインストールデータを見つけることができませんでした。選択したパスが正しいことを確認してください。\n正しいパスにitchの実行ファイルが含まれている必要があります。",
+                "itchioExecutablePath": "itchアプリ実行ファイルのパス",
+                "itchioExecutablePlaceholder": "itch実行ファイルのパスを入力して",
+                "itchioExecutableValid": "itchの実行ファイルが見つかりました: {{path}}。",
+                "itchioExecutableInvalid": "指定されたディレクトリに、itch実行ファイルが見つかりませんでした。\nこのパスにはitch-setup実行ファイルとapp-[バージョン]フォルダが直接含まれている必要があります。",
+                "readyToImport": "インポートの準備完了",
+                "importFromPlatforms": "以下のプラットフォームからデータをインポートします：",
+                "deadforgeV1Settings": "<bold>DEADFORGE</bold> v1設定：<check/> 転送された",
+                "deadforgeV2BackupImported": "<bold>DEADFORGE</bold> v2 バックアップ：<check/> インポート元：",
+                "deadforgeV2BackupNotFound": "<bold>DEADFORGE</bold> v2 バックアップ：<x/> 指定された場所にバックアップが見つかりませんでした：",
+                "backupImportWarning": "DEADFORGEバックアップアーカイブをインポートしています。これにより、Steam・Epic・itch のパスのインポートなど、他の初期設定ステップは自動的にスキップされます。\nバックアップのインポート完了後に、<0>設定</0> → <1>アプリデータとアップデート</1> → <2>初期設定</2> → <3>初期設定を再度開始</3> から、再びこの初期設定をやり直すこともできます。",
+                "backupFileNotFound": "選択したバックアップファイルが削除または移動されているようです。続行する前に、バックアップファイルのパスを修正してください。",
+                "noPlatformsSelected": "インポート用のプラットフォームが選択されていません",
+                "finishInstructions": "「終える」をクリックすると、ゲームとデータのインポートが始まり、アプリは自動で再起動されます。 \nインポート中に、必要に応じて追加のゲームライブラリアセットがダウンロードされることがあります。 \nすべての処理は自動で行われ、インポート済みライブラリの更新も自動的に反映され、アセットも順次ダウンロードされます。",
+                "steamSummaryText": "<code>{{path}}</code>から検出された{{gamesCountText}}",
+                "epicGameCountSummaryText": "<code>{{path}}</code>から検出された{{gamesCountText}}",
+                "itchioGameCountSummaryText": "<code>{{path}}</code>から検出された{{gamesCountText}}",
+                "betaUpdates": "ベータアップデート",
+                "noBetaUpdates": "ベータアップデートなし",
+                "closeToTray": "システムトレイに閉じる",
+                "dontCloseToTray": "システムトレイに閉じない",
+                "launchAtStartup": "システム起動時に実行",
+                "dontLaunchAtStartup": "システム起動時に実行ない",
+                "useRPC": "Discord RPCを使用",
+                "dontUseRPC": "Discord RPCを使用ない",
+                "collapsed": "折りたたみ",
+                "expanded": "拡張済み",
+                "darkModeInContext": "ダーク・モード",
+                "lightModeInContext": "ライト・モード",
+                "gameCount_other": "{{count}}本ゲーム",
+                "foundGames_other": "{{count}}のゲームが見つかりました"
+            },
+            "replaySetup": "初期設定を再度開始",
+            "dataManagement": "データ管理",
+            "dataManagementDescription": "全てのアプリデータをエクスポート、インポート、リセットする",
+            "exportData": "エクスポート",
+            "importData": "インポート",
+            "resetData": "リセット",
+            "resetDataTitle": "アプリデータをリセット",
+            "resetDataConfirmation": "全てのアプリデータをリセットしてもよろしいですか？設定とゲームデータがすべて削除されます。この操作は元に戻せません。",
+            "resetDataConfirm": "はい、全てをリセットします",
+            "resetDataCancel": "いいえ、自分のデータを保持します",
+            "updateCentre": "アップデートセンター",
+            "updateCentreDescription": "アップデートセンターで、アップデートの設定を管理し、利用可能なアップデートを表示します。",
+            "autoUpdate": "自動アップデート",
+            "autoUpdateDescription": "アプリアップデートを自動的にダウンロードしてインストールします",
+            "betaUpdates": "ベータアップデート",
+            "betaUpdatesDescription": "より前に新機能でベータ版の更新を受け取る（自動アップデートが必要）",
+            "languageUpdates": "言語パックのアップデート",
+            "languageUpdatesDescription": "アップデート時に、すべての言語へのアプリの翻訳が間に合わないことがあります。\nローカライズの変更のみを含む、これらの小規模なアップデートは、\n言語パックのアップデートをオンにすることで受け取ることができます（自動アップデートが必要）",
+            "updatesDevNotice": "アップデートセンターの一部の機能は、開発環境では使用できない場合があります。",
+            "privacyPolicy": "プライバシー・ポリシー",
+            "credits": "クレジット",
+            "creditsModal": {
+                "developedBy": "開発者",
+                "contributors": "コントリビューター",
+                "specialThanks": "特別な感謝",
+                "developerTAG": "開発者",
+                "testerTAG": "テスター",
+                "articlecowriterTAG": "記事共同執筆者",
+                "registryjsTAG": "registry-jsフォークでヘルプ",
+                "qlexcTAG": "v1のasync/awaitの混乱した問題を解決してくれてありがとう。\n貴方がいなければ、DEADFORGEは今のような形では存在していなかったでしょう。"
+            },
+            "updateCentreBanner": {
+                "currentlyRunningVersion": "現在実行中のバージョン",
+                "unknownVersion": "不明なバージョン",
+                "latestStableVersion": "最新の<color>安定</color>バージョン",
+                "latestBetaVersion": "最新の<color>ベータ</color>バージョン",
+                "latestReleases": "最新のリリース",
+                "stable": "安定：",
+                "beta": "ベータ：",
+                "notAvailable": "該当なし",
+                "noUpdateDownloaded": "アップデートがダウンロードされていません",
+                "downloadingUpdate": "アップデートをダウンロード中",
+                "updateDownloaded": "アップデートのダウンロードが完了しました",
+                "quitAndInstall": "終了してインストール"
+            }
+        }
+    },
+    "library": {
+        "yourLibrary": "あなたのライブラリー",
+        "yourLibraryDescription": "ゲームコレクションの管理と探索",
+        "shared": {
+            "openInStore": "DeadForgeストアで開く",
+            "collections": "コレクション",
+            "noCollections": "コレクションが見つかりません",
+            "collectionNamePlaceholder": "コレクション名",
+            "createCollectionConfirm": "作る",
+            "createCollectionCancel": "キャンセル",
+            "gameState": {
+                "install": "インストール",
+                "launch": "起動",
+                "launchLauncher": "{{launcher}}を起動",
+                "play": "プレイ",
+                "stop": "停止",
+                "running": "実行中",
+                "launching": "起動中…",
+                "stopping": "停止中…",
+                "preparing": "準備中",
+                "downloading": "ダウンロードしています",
+                "installing": "インストール中",
+                "finishingUp": "仕上げ⋯",
+                "checking": "確認中…",
+                "update": "アップデートが利用できます",
+                "reinstall": "再インストールが必要です"
+            },
+            "favourites": "お気に入り",
+            "favouritesDescription": "あなたの最も愛されているゲーム",
+            "addFavourite": "お気に入りに追加",
+            "removeFavourite": "お気に入りから削除",
+            "createCollection": "新しいコレクションを作成",
+            "recentlyPlayed": "最近プレイされた",
+            "recentlyPlayedDescription": "最近の冒険に飛び戻りましょう！",
+            "allGames": "全ゲーム",
+            "yourGames": "あなたのゲーム",
+            "allGamesDescription": "コレクション全体を閲覧する",
+            "allGamesDescriptionAlternate": "あなたの完全なゲームライブラリ",
+            "uninstall": "アンインストール"
+        },
+        "sidebar": {
+            "homeButton": "ホーム",
+            "filters": {
+                "favouriteStatus": {
+                    "description": "お気に入りのステータスでフィルタ",
+                    "unfiltered": "全ゲームを表示",
+                    "favourites": "お気に入りのゲームのみ表示"
+                },
+                "launchability": {
+                    "description": "起動可能性でフィルター",
+                    "unfiltered": "全ゲームを表示",
+                    "launchable": "起動可能なゲームのみを表示"
+                }
+            },
+            "sorting": {
+                "types": {
+                    "description": "並べ替えのオプション",
+                    "title": "タイトル",
+                    "recent": "前回の起動時間"
+                },
+                "direction": {
+                    "description": "並べ替えの方向",
+                    "asc": "昇順",
+                    "desc": "降順"
+                }
+            },
+            "empty": {
+                "emptyLibrary": "ライブラリにゲームが見つかりません。",
+                "emptyAfterFilters": "フィルターに一致するゲームはありません。"
+            },
+            "wtflolhow": "未来人かよｗｗｗどうしてこうなった",
+            "recent": "最近",
+            "neverPlayed": "未プレイ",
+            "uncategorized": "その他"
+        },
+        "contextMenu": {
+            "collections": {
+                "collapse": "折りたたむ",
+                "expand": "開く",
+                "rename": "コレクション名を変更",
+                "delete": "コレクションを削除",
+                "clearFavorites": "お気に入りを消去"
+            },
+            "games": {
+                "viewDetails": "詳細を表示"
+            }
+        },
+        "homeView": {
+            "noGamesFound": "ゲームが見つかりませんでした",
+            "noGamesFoundDescription": "ゲームライブラリが満たされるのを待っています! 開始するでゲームプラットフォームを接続して。",
+            "connect": "プラットフォームを接続"
+        },
+        "gameView": {
+            "loading": "ロード中…",
+            "checkStatus": "起動ステータスを確認",
+            "checkStatusDescription": "ゲームプロセスがすでに実行されているかどうかを確認します",
+            "gameNotes": "ゲーム・ノーツ",
+            "gameNotesTooltip": "ゲーム・ノーツは<1>DeadForge</1>の開発者とコミュニティによって管理されています。\n外部ソフト用の<3>DeadForge</3>アセットや、その他のクールなものは、<5>DeadCodeGames/DeadForgeExternalData</5>のGitHubページでコントリビュートできます。",
+            "noGameNotes": "このゲームでノーツはありません。",
+            "installDir": "インストール先",
+            "lastPlayed": "最終プレイ日時",
+            "playTime": "プレイ時間"
+        },
+        "recentView": {
+            "now": "今すぐ",
+            "today": "今日",
+            "thisWeek": "今週",
+            "thisMonth": "今月",
+            "neverPlayed": "未プレイ",
+            "noRecentGames": "最近のゲームはありません",
+            "noRecentGamesDescription": "プレイしたゲームはここに表示されます"
+        },
+        "favouritesView": {
+            "noFavourites": "お気に入りはまだありません",
+            "noFavouritesDescription": "ゲームをお気に入りに追加して、ここで表示する"
+        },
+        "collectionsView": {
+            "description": "ゲームをコレクションに整理する",
+            "new": "新しいコレクションを作成",
+            "noCollections": "コレクションはまだありません",
+            "noCollectionsDescription": "ゲームを整理するために最初のコレクションを作成します",
+            "noCollectionsCTA": "コレクションを作成",
+            "header": {
+                "name": "名前",
+                "gameCount": "ゲーム数",
+                "actions": "動作"
+            },
+            "gameCount_other": "{{count}}本ゲーム"
+        },
+        "collectionView": {
+            "noGamesInCollection": "このコレクションにはゲームがありません",
+            "noGamesInCollectionDescription": "ライブラリや個々のゲームページからこのコレクションにゲームを追加します。",
+            "collectionNotFound": "このコレクションが見つかりません",
+            "collectionNotFoundDescription": "あなたが探しているコレクションは存在しません。",
+            "collectionNotFoundCTA": "コレクションに戻る"
+        },
+        "install": {
+            "title": {
+                "install": "<b>{{title}}</b>をインストール",
+                "reinstall": "<b>{{title}}</b>を再インストール",
+                "uninstall": "<b>{{title}}</b>をアンインストール"
+            },
+            "install": "インストール",
+            "reinstall": "再インストール",
+            "uninstall": "アンインストール",
+            "reinstallReason": "現在インストールされているこのゲームのバージョンは、リリース履歴に存在しないようです。\nそのため、DEADFORGEでは最新バージョンへのクリーンなアップデートができず、再インストールが必要となります。\nただし、開発者によってユーザーデータを保存するファイルとして指定されたものは保持されます。",
+            "update": "アップデート",
+            "installLocation": "インストール場所",
+            "downloadSize": "ダウンロード・サイズ：",
+            "installSize": "インストール・サイズ：",
+            "noReleaseinfo": "ID {{id}} のソフトにリリース情報がありません",
+            "copyingFiles": "ファイルをコピー中⋯",
+            "updatingDeadForgeDB": "DeadForge DBを更新中⋯",
+            "updatingWindowsRegistry": "Windowsレジストリを更新中⋯",
+            "backingUpUserDataFiles": "ユーザーデータをバックアップ中",
+            "restoringUserDataFiles": "ユーザーデータを復元中",
+            "cleaningUp": "清掃中…",
+            "installedSize": "インストール済みプログラムサイズ",
+            "userDataSize": "ユーザーデータのサイズ",
+            "totalSize": "ディスク上の合計サイズ（ユーザーデータを含む）",
+            "sizeToRemove": "削除するデータのサイズ",
+            "removeUserData": "ユーザーデータも削除する"
+        },
+        "update": {
+            "applying": "パッチを適用中",
+            "applyingPatch": "{{B}}個中{{A}}個目のパッチを適用中"
+        }
+    }
+}
