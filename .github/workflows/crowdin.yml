@@ -83,7 +83,7 @@ jobs:
         run: |
           OCTOKIT_VERSION=$(npm view @octokit/rest version)
           ACTIONS_CORE_VERSION=$(npm view @actions/core version)
-          echo "HELPERS_VERSION=${OCTOKIT_VERSION},${ACTIONS_CORE_VERSION}" >> $GITHUB_OUTPUT
+          echo "HELPERS_VERSION=${OCTOKIT_VERSION}-${ACTIONS_CORE_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Restore octokit deps
         uses: actions/cache/restore@v5
