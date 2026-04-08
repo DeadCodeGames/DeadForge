@@ -17,7 +17,19 @@ import sk_SK from './sk_SK.json';
 import zh_TW from './zh_TW.json';
 import uk_UA from './uk_UA.json';
 const resources: Record<string, { translation: object }> = {
+    cs_CZ: { translation: cs_CZ },
+    de_DE: { translation: de_DE },
     en_001: { translation: en_001 },
+    en_PT: { translation: en_PT },
+    fr_FR: { translation: fr_FR },
+    it_IT: { translation: it_IT },
+    ja_JP: { translation: ja_JP },
+    ko_KR: { translation: ko_KR },
+    lol_US: { translation: lol_US },
+    sk_SK: { translation: sk_SK },
+    uk_UA: { translation: uk_UA },
+    zh_CN: { translation: zh_CN },
+    zh_TW: { translation: zh_TW },
 };
 const dateFNSResources: Record<keyof typeof resources, Locale> = {
     cs_CZ: cs,
