@@ -75,7 +75,9 @@
             "languageComplete": "完全翻訳済み",
             "languageIncomplete": "不完全翻訳済み",
             "languageShowIncomplete": "未完了の翻訳を表示",
-            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。"
+            "languageShowIncompleteDescription": "まだ完全に翻訳されていない翻訳を表示します。<0>Crowdin</0>で翻訳を協力いただけます。",
+            "reducedMotion": "モーションを減らす",
+            "reducedMotionDescription": "パフォーマンスを向上させるため、アニメーションとトランジションを無効にしてシステムの負荷を軽減します"
         },
         "behavior": {
             "title": "行動",
@@ -87,7 +89,13 @@
             "useTrayDescription": "ウィンドウが閉じているときは、アプリをシステムトレイに保持します",
             "autoStart": "システム起動時に実行",
             "autoStartDescription": "コンピューターの起動時にアプリを自動的に起動します",
-            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません"
+            "unavailableOnLinux": "この設定はLinuxシステムでは利用できません",
+            "discordRPC": "Discord Rich Presence（リッチプレゼンス）",
+            "discordRPCDescription": "Discord RPCの設定を管理",
+            "manageDiscordRPC": "Discord RPCを管理",
+            "discordRPCEnabled": "Discord RPCを有効化",
+            "discordRPCShowVersion": "実行中のDEADFORGEバージョンを表示",
+            "discordRPCShowTime": "DEADFORGEの起動のタイムスタンプを表示"
         },
         "appData": {
             "title": "アプリデータとアップデート",

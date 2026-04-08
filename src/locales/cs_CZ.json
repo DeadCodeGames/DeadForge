@@ -78,7 +78,9 @@
             "languageComplete": "Úplně Přeloženo",
             "languageIncomplete": "Nepřeloženo",
             "languageShowIncomplete": "Zobrazovat neúplné překlady",
-            "languageShowIncompleteDescription": "Zobrazit překlady, které nejsou kompletné. Můžete nám pomoci s překladem DEADFORGE na našem <0>Crowdinu</0>."
+            "languageShowIncompleteDescription": "Zobrazit překlady, které nejsou kompletné. Můžete nám pomoci s překladem DEADFORGE na našem <0>Crowdinu</0>.",
+            "reducedMotion": "Redukce animací",
+            "reducedMotionDescription": "Vypnout animace a přechody s účelem znížení zatížení systému a zlepšení výkonu"
         },
         "behavior": {
             "title": "Chování",
@@ -90,7 +92,13 @@
             "useTrayDescription": "Ponechat aplikaci na pozadí po uzavření okna, skrytou v oblasti oznámení",
             "autoStart": "Spustit při startu",
             "autoStartDescription": "Spustit aplikaci automaticky po spustení počítače",
-            "unavailableOnLinux": "Toto nastavení není dostupné na Linuxových systémech"
+            "unavailableOnLinux": "Toto nastavení není dostupné na Linuxových systémech",
+            "discordRPC": "Discord Rich Presence",
+            "discordRPCDescription": "Spravovat nastavení Discordu RPC",
+            "manageDiscordRPC": "Spravovat Discord RPC",
+            "discordRPCEnabled": "Povolit Discord RPC",
+            "discordRPCShowVersion": "Zobrazovat verzi DEADFORGE",
+            "discordRPCShowTime": "Zobrazovat, jak dlouho DEADFORGE běží"
         },
         "appData": {
             "title": "Data a aktualizace aplikace",

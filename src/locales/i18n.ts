@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { enUS, cs, sk, ja, fr, it, zhCN, zhTW, de, ko, Locale } from 'date-fns/locale';
+import { enUS, cs, sk, ja, fr, it, zhCN, zhTW, de, ko, uk, Locale } from 'date-fns/locale';
 import {unflatten, flatten} from 'flat';
 
 import en_001 from './en_001.json';
@@ -10,12 +10,12 @@ import en_PT from './en_PT.json';
 import fr_FR from './fr_FR.json';
 import it_IT from './it_IT.json';
 import ja_JP from './ja_JP.json';
-import zh_CN from './zh_CN.json';
 import ko_KR from './ko_KR.json';
 import lol_US from './lol_US.json';
 import sk_SK from './sk_SK.json';
-import zh_TW from './zh_TW.json';
 import uk_UA from './uk_UA.json';
+import zh_CN from './zh_CN.json';
+import zh_TW from './zh_TW.json';
 const resources: Record<string, { translation: object }> = {
     cs_CZ: { translation: cs_CZ },
     de_DE: { translation: de_DE },
@@ -42,6 +42,7 @@ const dateFNSResources: Record<keyof typeof resources, Locale> = {
     ko_KR: ko,
     lol_US: enUS,
     sk_SK: sk,
+    uk_UA: uk,
     zh_CN: zhCN,
     zh_TW: zhTW,
 };

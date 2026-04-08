@@ -9,25 +9,25 @@ async function syncCrowdinTranslations() {
     });
     
     const [owner, repo] = ["DeadCodeGames", "DeadForge"];
-    const mainBranch = '2024/2025';
+    const masterBranch = '2025/2026';
     const l10nBranch = 'l10n_crowdin_translations';
     
     console.log('Starting Crowdin translations sync...');
     
     try {
-        // Get main branch reference
-        console.log('Fetching main branch...');
-        const { data: mainRef } = await octokit.git.getRef({
+        // Get master branch reference
+        console.log('Fetching master branch...');
+        const { data: masterRef } = await octokit.git.getRef({
             owner,
             repo,
-            ref: `heads/${mainBranch}`
+            ref: `heads/${masterBranch}`
         });
         
-        // Get main commit and tree
-        const { data: mainCommit } = await octokit.git.getCommit({
+        // Get master commit and tree
+        const { data: masterCommit } = await octokit.git.getCommit({
             owner,
             repo,
-            commit_sha: mainRef.object.sha
+            commit_sha: masterRef.object.sha
         });
         
         // Backup locale files from current working directory
@@ -50,7 +50,7 @@ async function syncCrowdinTranslations() {
             console.log('Branch l10n_crowdin_translations exists, using it...');
         } catch (error) {
             if (error.status === 404) {
-                console.log('Creating new branch l10n_crowdin_translations from main...');
+                console.log('Creating new branch l10n_crowdin_translations from master...');
                 l10nBranchExists = false;
             } else {
                 throw error;
@@ -68,8 +68,8 @@ async function syncCrowdinTranslations() {
             });
             baseSha = l10nCommit.tree.sha;
         } else {
-            // Use main as base
-            baseSha = mainCommit.tree.sha;
+            // Use master as base
+            baseSha = masterCommit.tree.sha;
         }
         
         // Restore locale files from backup
@@ -97,7 +97,7 @@ async function syncCrowdinTranslations() {
             repo,
             message: 'chore(i18n): sync Crowdin translations',
             tree: tree.sha,
-            parents: l10nBranchExists ? [l10nRef.object.sha] : [mainRef.object.sha]
+            parents: l10nBranchExists ? [l10nRef.object.sha] : [masterRef.object.sha]
         });
         
         if (l10nBranchExists) {
@@ -176,8 +176,21 @@ async function restoreLocaleFilesFromWorkspace(
     }
     
     const changedFiles = [];
-    
-    // Create blobs for all backup files
+
+    // Fetch the full base tree (recursive) once so we can compare file SHAs
+    const { data: baseTree } = await octokit.git.getTree({
+        owner,
+        repo,
+        tree_sha: baseSha,
+        recursive: 'true'
+    });
+    const existingBlobs = new Map(
+        baseTree.tree
+            .filter(item => item.type === 'blob')
+            .map(item => [item.path, item.sha])
+    );
+
+    // Only stage files that have actually changed
     for (const backupFile of localeBackup) {
         const { data: blob } = await octokit.git.createBlob({
             owner,
@@ -185,7 +198,13 @@ async function restoreLocaleFilesFromWorkspace(
             content: backupFile.content,
             encoding: 'utf-8'
         });
-        
+
+        const existingSha = existingBlobs.get(backupFile.path);
+        if (existingSha === blob.sha) {
+            console.log(`Skipping unchanged file: ${backupFile.path}`);
+            continue;
+        }
+
         changedFiles.push({
             path: backupFile.path,
             mode: '100644',
@@ -193,8 +212,8 @@ async function restoreLocaleFilesFromWorkspace(
             sha: blob.sha
         });
     }
-    
-    console.log(`Restored ${changedFiles.length} locale files`);
+
+    console.log(`${changedFiles.length} locale file(s) changed out of ${localeBackup.length}`);
     return changedFiles;
 }
 

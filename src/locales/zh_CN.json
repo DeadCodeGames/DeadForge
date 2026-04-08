@@ -75,7 +75,9 @@
             "languageComplete": "",
             "languageIncomplete": "",
             "languageShowIncomplete": "",
-            "languageShowIncompleteDescription": ""
+            "languageShowIncompleteDescription": "",
+            "reducedMotion": "",
+            "reducedMotionDescription": ""
         },
         "behavior": {
             "title": "",
@@ -87,7 +89,13 @@
             "useTrayDescription": "",
             "autoStart": "",
             "autoStartDescription": "",
-            "unavailableOnLinux": ""
+            "unavailableOnLinux": "",
+            "discordRPC": "",
+            "discordRPCDescription": "",
+            "manageDiscordRPC": "",
+            "discordRPCEnabled": "",
+            "discordRPCShowVersion": "",
+            "discordRPCShowTime": ""
         },
         "appData": {
             "title": "",
