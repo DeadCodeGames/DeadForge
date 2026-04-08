@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   synchronize-with-crowdin:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     if: github.actor != 'deadcodebot'
     outputs:
       BRANCH_EXISTS: ${{ steps.pr_branch_make.outputs.BRANCH_EXISTS }}
@@ -40,6 +40,16 @@ jobs:
             echo "TARGET_BRANCH=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Get Crowdin CLI version
+        id: crowdin_version
+        run: echo "CROWDIN_VERSION=$(npm view @crowdin/cli version)" >> $GITHUB_OUTPUT
+      
+      - name: Restore npm cache (Crowdin CLI)
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-crowdin-cli-${{ steps.crowdin_version.outputs.CROWDIN_VERSION }}
+
       - name: Run Crowdin and handle no translation case
         id: run_crowdin
         run: |
@@ -58,18 +68,43 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          
+      - name: Save npm cache (Crowdin CLI)
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-crowdin-cli-${{ steps.crowdin_version.outputs.CROWDIN_VERSION }}
       
       - name: Update i18n.ts
         run: node .github/workflows/l10ncheck.js
 
+      - name: Get Octokit and Actions Core versions
+        id: helpers_version
+        run: |
+          OCTOKIT_VERSION=$(npm view @octokit/rest version)
+          ACTIONS_CORE_VERSION=$(npm view @actions/core version)
+          echo "HELPERS_VERSION=${OCTOKIT_VERSION}-${ACTIONS_CORE_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Restore octokit deps
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-octokit-${{ steps.helpers_version.outputs.HELPERS_VERSION }}
+
       - name: Sync Crowdin translations
         run: |
-          npm i --no-save --force @octokit/rest @actions/core
+          [ ! -d "node_modules" ] &&npm i --no-save --force @octokit/rest @actions/core
           node .github/workflows/commitl10nchanges.js
         env:
           DEADCODEBOT_PAT: ${{ secrets.DEADCODEBOT_PAT }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: sync-translations
+
+      - name: Save npm cache (Helpers)
+        uses: actions/cache/save@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-octokit-${{ steps.helpers_version.outputs.HELPERS_VERSION }}
 
       - name: Create PR (if not exists)
         env:
