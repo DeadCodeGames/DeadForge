@@ -68,7 +68,6 @@ export function initUserDB() {
         heroHash: "TEXT", 
         headerHash: "TEXT",
         capsuleHash: "TEXT",
-        title: "TEXT",
         type: "TEXT",
         ratings: "TEXT",
         executablesToWatch: "TEXT",
@@ -252,7 +251,7 @@ export function getAllGamesFromDB() {
     for (const [client, tableName] of Object.entries(clients)) {
         const rows = selectRows(db, tableName);
         for (const row of rows) {
-            const game = { id: row.id, name: row.name, installPath: row.installPath, launchOptions: row.launchOptions, raw: row.raw, source: client, media: { iconUrl: row.icon, logoUrl: row.logo, heroUrl: row.hero, headerUrl: row.header, capsuleUrl: row.capsule }, type: row.type, lastPlayed: row.lastPlayed } as NormalizedGame;
+            const game = { id: row.id, name: row.name, installPath: row.installPath, launchOptions: row.launchOptions, raw: row.raw, source: client, media: { iconUrl: row.icon, logoUrl: row.logo, heroUrl: row.hero, headerUrl: row.header, capsuleUrl: row.capsule }, type: row.type, lastPlayed: row.lastPlayed, userDataFiles: row?.userDataFiles } as NormalizedGame;
             if (row.updateAvailable) game.updateAvailable = row.updateAvailable;
             // Override lastPlayed with data from metrics if available
             const metricKey = `${client}-${row.id}`;

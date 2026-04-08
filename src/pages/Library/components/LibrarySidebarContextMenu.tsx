@@ -271,7 +271,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     }
 
     const openInStore = () => {
-        navigate(`/store?path=${encodeURIComponent(`soft/${game.id}`)}`)
+        navigate(`/store?path=${encodeURIComponent(`soft/${game.id}/`)}`)
     }
 
     // Get game type for proper button label
@@ -410,17 +410,21 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         if (!state) return '';
 
         const stateClasses: Record<Exclude<GameState['state'], 'idle'>, string> = {
-            launching: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            running: 'text-green-500 hover:text-blue-400 bg-gradient-to-l from-green-500/50 hover:from-blue-500/50 to-transparent',
-            stopping: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            preparing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            downloading: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            downloadingPatch: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            installing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            applyingPatch: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            finishing: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
-            checking: 'text-neutral-400 bg-gradient-to-l from-neutral-500/50 to-transparent'
+            launching: 'text-blue-400 animate-pulse',
+            running: 'text-green-500',
+            stopping: 'text-blue-400 animate-pulse',
+            preparing: 'text-blue-400 animate-pulse',
+            downloading: 'text-blue-400 animate-pulse',
+            downloadingPatch: 'text-blue-400 animate-pulse',
+            installing: 'text-blue-400 animate-pulse',
+            applyingPatch: 'text-blue-400 animate-pulse',
+            finishing: 'text-blue-400 animate-pulse',
+            checking: 'text-neutral-400 animate-pulse',
+            'uninstall-preparing': 'text-red-400 animate-pulse',
+            'uninstall-cleaning': 'text-red-400 animate-pulse',
+            'uninstall-finishing': 'text-red-400 animate-pulse'
         };
+
 
         return stateClasses[state];
     };
@@ -441,7 +445,10 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             installing: 'install_desktop',
             applyingPatch: 'healing',
             finishing: 'sports_score',
-            checking: 'hourglass_top'
+            checking: 'hourglass_top',
+            'uninstall-preparing': 'settings',
+            'uninstall-cleaning': 'delete',
+            'uninstall-finishing': 'sports_score'
         };
 
         return stateIcons[state];
@@ -454,11 +461,14 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
     const isStopping = currentState === 'stopping';
     const isChecking = currentState === 'checking';
     const isPreparing = currentState === 'preparing';
+    const isPreparingUninstall = currentState === 'uninstall-preparing'
     const isDownloading = currentState === 'downloading';
     const isDownloadingPatch = currentState === 'downloadingPatch';
     const isInstalling = currentState === 'installing';
+    const isCleaningUninstall = currentState === 'uninstall-cleaning'
     const isApplyingPatch = currentState === 'applyingPatch';
     const isFinishing = currentState === 'finishing';
+    const isFinishingUpUninstall = currentState === 'uninstall-finishing'
 
     // Helper to determine the primary action for the Play/Launch button
     const getPrimaryAction = () => {
@@ -466,12 +476,13 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         if (String(gameId) === '-1' || (needsLauncher && !isLauncherRunning)) {
             return 'launchLauncher';
         }
-        if (isPreparing) return 'preparing';
+        if (isPreparing || isPreparingUninstall) return 'preparing';
         if (isDownloading) return 'downloading';
         if (isDownloadingPatch) return 'downloadingPatch';
         if (isInstalling) return 'installing';
         if (isApplyingPatch) return 'applyingPatch';
-        if (isFinishing) return 'finishingUp';
+        if (isCleaningUninstall) return 'cleaningUp'
+        if (isFinishing || isFinishingUpUninstall) return 'finishingUp';
         if (isLaunching) return 'launching';
         if (isStopping) return 'stopping';
         if (isChecking) return 'checking';
@@ -488,10 +499,18 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
         onClick: openInStore
     };
 
-    console.log(currentState);
+    // Uninstall button (only for deadforge games that are installed)
+    const uninstallButton: (MenuItemType | MenuItemWithPrefix | false) =
+        resolveDefaultGameVendor(game).source === "deadforge" && Boolean(resolveDefaultGameVendor(game).installPath) && {
+            id: "uninstall",
+            icon: "delete",
+            label: t("library.shared.uninstall"),
+            onClick: () => openInstallModal(resolveDefaultGameVendor(game), true),
+            className: "text-red-500 hover:bg-red-500/10",
+        };
 
     // Define menu items
-    const menuItems: (MenuItemType | MenuItemWithPrefix)[] = [
+    const menuItems: (MenuItemType | MenuItemWithPrefix)[] = useMemo(() => [
         // Play/Launch button
         ...[(isLaunchable || resolveDefaultGameVendor(game).source === "deadforge") && {
             id: "play",
@@ -514,6 +533,8 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                         return t("library.shared.gameState.downloading");
                     case 'installing':
                         return t("library.shared.gameState.installing");
+                    case 'cleaningUp':
+                        return t("library.install.cleaningUp")
                     case 'applyingPatch':
                         return t("library.update.applying");
                     case 'finishingUp':
@@ -565,7 +586,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
                 (isLaunching || isStopping) && 'animate-pulse',
                 (((needsLauncher || String(game.id) === '-1') && !isLauncherRunning && !currentState) || resolveDefaultGameVendor(game).updateAvailable === "update" || ((!resolveDefaultGameVendor(game).installPath || (currentState !== "checking" && currentState)) && resolveDefaultGameVendor(game).source === "deadforge")) && 'text-blue-400',
                 currentState === "checking" && "text-neutral-500",
-                (resolveDefaultGameVendor(game).updateAvailable === "reinstall" && !currentState) && "text-red-500"
+                ((resolveDefaultGameVendor(game).updateAvailable === "reinstall" && !currentState) || isPreparingUninstall || isCleaningUninstall || isFinishingUpUninstall ) && "text-red-500"
             ),
             icon_prefix: needsLauncher && !isLauncherRunning ?
                 resolveDefaultGameVendor(game)?.source === 'steam' ? <SiSteam className="w-4 h-4" /> :
@@ -581,6 +602,7 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             onClick: viewGame
         },
         ...[openInStoreButton].filter(i => i !== false),
+        ...[uninstallButton].filter(i => i !== false),
         // Divider
         {
             id: "divider-1",
@@ -601,7 +623,10 @@ const LibrarySidebarContextMenu: React.FC<LibrarySidebarContextMenuProps> = ({
             type: "submenu",
             items: collectionsItems
         }
-    ];
+    ], [
+        isRunning, isLaunching, isStopping, isChecking, isPreparing, isPreparingUninstall, isDownloading, isDownloadingPatch, isInstalling, isCleaningUninstall, isApplyingPatch, isFinishing, isFinishingUpUninstall,
+        collectionsItems, currentState, game, gameType, getPrimaryAction, getStateIcon, isGameInFavorites, isLaunchable, isLauncherRunning, launchGame, launchSourceLauncher, needsLauncher, onClose, openInStoreButton, openInstallModal, setGameState, t, toggleFavorite, uninstallButton, viewGame
+    ]);
 
     return (
         <ContextMenu

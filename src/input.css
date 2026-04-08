@@ -48,6 +48,8 @@ html:not([updateStatus="appnotloaded"])y {
 html {
     @apply transition-opacity duration-500 ease-in-out;
     --osuLogoAnimationSpeed: calc(1s);
+    --color-warning: #FBB000;
+    --warning-stripes: repeating-linear-gradient(-45deg, black 0 10px, var(--color-warning) 10px 20px);
 }
 
 /* Body reset & base style */

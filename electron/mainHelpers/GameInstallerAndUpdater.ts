@@ -5,7 +5,7 @@ import * as path from "path";
 import * as fs from "fs";
 import * as fsPromises from "fs/promises";
 import AdmZip from "adm-zip";
-import { HKEY, RegistryValueType, setValue, createKey } from "registry-js";
+import { HKEY, RegistryValueType, setValue, createKey, deleteKey } from "registry-js";
 import { updateRow, selectRows } from "./dbHelpers";
 import getDB from "./DataDB";
 import { notifyGamesUpdate } from "../main";
@@ -66,7 +66,7 @@ async function downloadFile(url: string, destination: string, mainWindow: Browse
         onDownloadProgress: (progressEvent) => {
             if (progressEvent.total) {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'downloading', percentCompleted);
+                mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'downloading', percentCompleted);
             }
         }
     });
@@ -219,7 +219,7 @@ async function getDirectorySize(dirPath: string): Promise<number> {
 async function fetchExecutableOptions(releases: GitHubRelease[], installPath: string): Promise<LaunchOption[]> {
     const launchOptions: LaunchOption[] = [];
 
-    const newestRelease = releases[releases.length - 2];
+    const newestRelease = releases[0];
 
     // Find all executable option files
     const optionFiles = newestRelease.assets.filter(asset =>
@@ -271,7 +271,7 @@ async function fetchExecutableOptions(releases: GitHubRelease[], installPath: st
 // Fetches user-data-files.txt from the newest release, splits by lines, returns array
 async function fetchUserDataFiles(releases: GitHubRelease[]): Promise<string[]> {
     // Find the newest release (same logic as getNewestReleaseFullPackage)
-    const newestRelease = releases[releases.length - 2];
+    const newestRelease = releases[0];
     const userDataFileAsset = newestRelease.assets.find(asset => asset.name === "user-data-files.txt");
     if (!userDataFileAsset) return [];
     try {
@@ -313,7 +313,7 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
             // Fetch installPath and userDataFiles from DB
             const row = selectRows(db, "deadforgeGames", `id = @id`, { id: gameId })[0];
             if (!row || !row.installPath) {
-                mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+                mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
                 throw new InstallationError('Install path not found for reinstall', 'INSTALL_PATH_NOT_FOUND');
             }
             actualInstallPath = row.installPath;
@@ -325,7 +325,7 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
             // Preserve user data files
             tempPreserveDir = path.join(await ensureTempDirectory(), `${gameId}-preserve`);
             await fsPromises.mkdir(tempPreserveDir, { recursive: true });
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'preparing', "library.install.backingUpUserDataFiles")
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'preparing', "library.install.backingUpUserDataFiles")
             preservedPaths = [];
             for (const relPath of userDataFilesArr) {
                 const src = path.resolve(actualInstallPath, relPath);
@@ -337,7 +337,7 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
                     // Ignore if file doesn't exist
                 }
             }
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'installing', "library.install.cleaningUp")
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'installing', "library.install.cleaningUp")
             // Clean install directory except for user data files
             await cleanInstallDirectory(actualInstallPath, userDataFilesArr);
         }
@@ -347,14 +347,14 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
         const software = softwareList.find(s => s.id === gameId);
 
         if (!software) {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
             throw new InstallationError('Software not found', 'NOT_FOUND');
         }
 
         // Get releases and validate
         const releases = await validateAndFetchReleases(software);
         if (!releases || releases.length === 0) {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
             throw new InstallationError('No releases found', 'NO_RELEASES');
         }
 
@@ -366,7 +366,7 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
 
         // Download the file
         try {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'downloading', 0);
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'downloading', 0);
             await downloadFile(downloadUrl, downloadPath, mainWindow, gameId);
         } catch (e) {
             console.error(`Failed to download file:`, e);
@@ -377,7 +377,7 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
         }
 
         // Set state to installing
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'installing', "library.install.copyingFiles");
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'installing', "library.install.copyingFiles");
 
         // Extract and install
         try {
@@ -405,7 +405,7 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
 
         // Restore preserved user data files if reinstall
         if (reinstall && preservedPaths.length > 0 && tempPreserveDir) {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.restoringUserDataFiles")
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.restoringUserDataFiles")
             for (const { src, dest } of preservedPaths) {
                 try {
                     await fsPromises.copyFile(dest, src);
@@ -421,9 +421,9 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
         // After successful extraction, calculate actual installation size
         const actualSize = await getDirectorySize(actualInstallPath);
         const currentTime = Math.floor(Date.now() / 1000);
-        const version = releases[releases.length - 2].tag_name;
+        const version = releases[0].tag_name;
 
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingDeadForgeDB");
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingDeadForgeDB");
 
         // Fetch executable options
         const launchOptions = await fetchExecutableOptions(releases, actualInstallPath);
@@ -443,15 +443,15 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
             userDataFiles: JSON.stringify(userDataFilesArr)
         }, `id = @id`, { id: gameId });
 
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingWindowsRegistry");
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingWindowsRegistry");
 
         // Update registry with actual size
         updateRegistry(gameId, actualInstallPath, version, actualSize);
 
         // Set state back to idle on success
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'checking');
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'checking');
 
-        checkForDeadForgeGameUpdates(gameId).then(() => mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle'));
+        checkForDeadForgeGameUpdates(gameId).then(() => mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle'));
 
         return {
             success: true,
@@ -462,7 +462,7 @@ export async function installDeadForgeGame(gameId: string, installPath: string, 
         };
     } catch (error) {
         // Set state back to idle on error
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
 
         if (error instanceof InstallationError) {
             return {
@@ -630,7 +630,7 @@ export async function updateDeadForgeGame(gameId: string, mainWindow: BrowserWin
         // Get installed game row
         const row = selectRows(db, "deadforgeGames", `id = @id`, { id: gameId })[0];
         if (!row || !row.installPath) {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
             throw new InstallationError('Install path not found for update', 'INSTALL_PATH_NOT_FOUND');
         }
         const installPath = row.installPath;
@@ -639,20 +639,20 @@ export async function updateDeadForgeGame(gameId: string, mainWindow: BrowserWin
         const softwareList = await fetchSoftwareList();
         const software = softwareList.find(s => s.id === gameId);
         if (!software) {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
             throw new InstallationError('Software not found', 'NOT_FOUND');
         }
         // Get releases and validate
         const releases = await validateAndFetchReleases(software);
         if (!releases || releases.length === 0) {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
             throw new InstallationError('No releases found', 'NO_RELEASES');
         }
         // Find installed version index
         const releaseTags = releases.map(r => r.tag_name);
         const installedIdx = releaseTags.indexOf(installedVersion);
         if (installedIdx === -1) {
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
             throw new InstallationError('Installed version not found in releases', 'INSTALLED_VERSION_NOT_FOUND');
         }
         if (installedIdx === 0) {
@@ -673,7 +673,7 @@ export async function updateDeadForgeGame(gameId: string, mainWindow: BrowserWin
                 throw new InstallationError(`patch.zip not found in release ${release.tag_name}`, 'PATCH_NOT_FOUND');
             }
             const patchZipPath = path.join(tempDir, `${gameId}-patch-${release.tag_name}.zip`);
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'downloadingPatch', 0, currentPatch, totalPatches);
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'downloadingPatch', 0, currentPatch, totalPatches);
             await downloadFileWithProgress(patchAsset.browser_download_url, patchZipPath, mainWindow, gameId, currentPatch, totalPatches);
             patchZipPaths.push(patchZipPath);
         }
@@ -682,7 +682,7 @@ export async function updateDeadForgeGame(gameId: string, mainWindow: BrowserWin
         console.log(patchZipPaths.map((v, i) => [i, v] as [number, string]));
         for (const [i, patchZipPath] of patchZipPaths.map((v, i) => [i, v] as [number, string])) {
             currentPatch = i + 1;
-            mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'applyingPatch', `library.update.applyingPatch`, currentPatch, totalPatches);
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'applyingPatch', `library.update.applyingPatch`, currentPatch, totalPatches);
             await applyPatchZip(patchZipPath, installPath);
             await fsPromises.unlink(patchZipPath);
         }
@@ -690,7 +690,7 @@ export async function updateDeadForgeGame(gameId: string, mainWindow: BrowserWin
         const actualSize = await getDirectorySize(installPath);
         const currentTime = Math.floor(Date.now() / 1000);
         const version = releases[0].tag_name;
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingDeadForgeDB");
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingDeadForgeDB");
         // Fetch executable options
         const launchOptions = await fetchExecutableOptions(releases, installPath);
         // Fetch user data files
@@ -706,10 +706,10 @@ export async function updateDeadForgeGame(gameId: string, mainWindow: BrowserWin
             updateAvailable: "",
             userDataFiles: JSON.stringify(userDataFilesArr)
         }, `id = @id`, { id: gameId });
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingWindowsRegistry");
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'finishing', "library.install.updatingWindowsRegistry");
         updateRegistry(gameId, installPath, version, actualSize);
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'checking');
-        checkForDeadForgeGameUpdates(gameId).then(() => mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle'));
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'checking');
+        checkForDeadForgeGameUpdates(gameId).then(() => mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle'));
         return {
             success: true,
             error: null,
@@ -718,7 +718,7 @@ export async function updateDeadForgeGame(gameId: string, mainWindow: BrowserWin
             size: actualSize
         };
     } catch (error) {
-        mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
         if (error instanceof InstallationError) {
             return {
                 success: false,
@@ -747,7 +747,7 @@ async function downloadFileWithProgress(url: string, destination: string, mainWi
         onDownloadProgress: (progressEvent) => {
             if (progressEvent.total) {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                mainWindow.webContents.send('game:stateChange', 'deadforge', gameId, 'downloading', percentCompleted, currentFile, totalFiles);
+                mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'downloading', percentCompleted, currentFile, totalFiles);
             }
         }
     });
@@ -757,4 +757,77 @@ async function downloadFileWithProgress(url: string, destination: string, mainWi
         writer.on('finish', resolve);
         writer.on('error', reject);
     });
+}
+
+export async function uninstallDeadForgeGame(gameId: string, mainWindow: BrowserWindow, keepUserData: boolean = false): Promise<InstallationResult> {
+    try {
+        const db = getDB();
+        // 1. Fetch game row
+        const row = selectRows(db, "deadforgeGames", `id = @id`, { id: gameId })[0];
+        if (!row || !row.installPath) {
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+            return {
+                success: false,
+                error: { message: 'Install path not found for uninstall', code: 'INSTALL_PATH_NOT_FOUND' }
+            };
+        }
+        const installPath = row.installPath;
+        let userDataFilesArr: string[] = [];
+        try {
+            userDataFilesArr = row.userDataFiles ? JSON.parse(row.userDataFiles) : [];
+        } catch {
+            userDataFilesArr = [];
+        }
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'uninstall-preparing');
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, 1000)
+        })
+        // 2. Remove files
+        if (fs.existsSync(installPath)) {
+            mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'uninstall-cleaning');
+            if (keepUserData && userDataFilesArr.length > 0) {
+                // Remove everything except user data files
+                await cleanInstallDirectory(installPath, userDataFilesArr);
+            } else {
+                // Remove entire install directory
+                await fsPromises.rm(installPath, { recursive: true, force: true });
+            }
+        }
+        // 3. Remove registry key
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'uninstall-finishing', "library.uninstall.cleaningWindowsRegistry");
+        try {
+            const keyPath = `${REGISTRY_BASE_PATH}\\${gameId}`;
+            deleteKey(HKEY.HKEY_CURRENT_USER, keyPath);
+        } catch (e) {
+            console.log(e);
+        }
+        // 4. Update DB
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'uninstall-finishing', "library.uninstall.updatingDeadForgeDB");
+        updateRow(db, "deadforgeGames", {
+            installed: "false",
+            installPath: "",
+            installSize: 0,
+            installedVersion: "",
+            updateAvailable: "",
+            launchOptions: "[]"
+        }, `id = @id`, { id: gameId });
+        // 5. Notify renderer and finish
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+        notifyGamesUpdate();
+        return {
+            success: true,
+            error: null,
+            installPath: "",
+            size: 0
+        };
+    } catch (error) {
+        mainWindow?.webContents.send('game:stateChange', 'deadforge', gameId, 'idle');
+        return {
+            success: false,
+            error: {
+                message: error instanceof Error ? error.message : 'Unknown error occurred',
+                code: 'UNKNOWN_ERROR'
+            }
+        };
+    }
 }

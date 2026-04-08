@@ -64,11 +64,21 @@ declare global {
             navigateExternal: (url: string) => void,
             getDefaultInstallPath: (gameId: string) => Promise<string>,
             installGame: (gameid: string, installPath: string, reinstall?: boolean) => Promise<{ success: true, error: null } | { success: false, error: Error }>,
+            uninstallGame: (gameid: string, removeUserData: boolean) => Promise<{ success: true, error: null } | { success: false, error: Error }>,
             updateGame: (gameid: string) => Promise<{ success: true, error: null } | {success: false, error: Error}>,
             getDownloadSize: (gameId: string) => Promise<{ success: true, size: number, error: null } | { success: false, size: null, error: Error }>,
             onGameStateChange: (callback: (_event: any, source: string, gameId: string, state: GameState["state"], progress?: GameState["progress"], extraNumberA?: GameState["extraNumberA"], extraNumberB?: GameState["extraNumberB"]) => void) => void,
             removeGameStateChangeListener: (callback: (_event: any, source: string, gameId: string, state: GameState["state"], progress?: GameState["progress"], extraNumberA?: GameState["extraNumberA"], extraNumberB?: GameState["extraNumberB"]) => void) => void,
             getGameMetrics: (source: string, gameId: string) => Promise<{ lastPlayed: number, totalPlayedFor: number }>,
+            fetchPrivacy: () => Promise<string>,
+            updatePrivacy: () => void,
+            onPrivacyUpdate: (callback: (_event: any, content: string) => void) => void,
+            getSoftwareSize: (game: string) => Promise<any>,
+            // DEADFORGE update methods
+            DEADFORGE_downloadUpdate: (includeBeta: boolean) => Promise<void>;
+            DEADFORGE_onUpdateProgress: (callback: (event: any, progress: { percent: number, version: string }) => void) => void;
+            DEADFORGE_onUpdateStateChange: (callback: (event: any, state: { state: string, version?: string, error?: string }) => void) => void;
+            DEADFORGE_installUpdate: () => Promise<void>;
         };
         Process: {
             platform: 'aix' | 'darwin' | 'freebsd' | 'linux' | 'openbsd' | 'sunos' | 'win32';
@@ -269,7 +279,7 @@ export type CollectionGame = {
 }
 
 export type GameState = {
-    state: 'launching' | 'running' | 'stopping' | 'idle' | 'downloading' | 'downloadingPatch' | 'installing' | 'applyingPatch' | 'checking' | 'preparing' | 'finishing';
+    state: 'launching' | 'running' | 'stopping' | 'idle' | 'downloading' | 'downloadingPatch' | 'installing' | 'applyingPatch' | 'checking' | 'preparing' | 'finishing' | 'uninstall-preparing' | 'uninstall-cleaning' | 'uninstall-finishing';
     gameId: string;
     source: string;
     progress?: number | string;
@@ -303,6 +313,16 @@ export interface ArticleAuthor {
     profilePicture: string;
 }
 
+export interface LinkedRelease {
+    tag: string;
+    url: string
+}
+
+export interface LinkedSoftware {
+    displayName: string;
+    storeId: string
+}
+
 export interface Article {
     title: string;
     authors: ArticleAuthor[];
@@ -313,6 +333,8 @@ export interface Article {
     lastModified: string;
     tags: string[];
     slug: string;
+    linkedRelease?: LinkedRelease;
+    linkedSoftware?: LinkedSoftware[];
 }
 
 export interface ArticleList {

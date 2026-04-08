@@ -3,7 +3,7 @@ import { getLocalizedGameName, LibraryContext, LibrarySidebarContext } from '../
 import { Link, useNavigate } from 'react-router-dom';
 import { SiEpicgames, SiItchdotio, SiSteam } from '@icons-pack/react-simple-icons';
 import DEADCODELogo from '@/components/CustomElements/DEADCODELogo';
-import { Collection, Filters, NormalizedGame, NormalizedGameJoin, NormalizedPseudoGameJoin, Sorting, GameState } from '@/types';
+import { Collection, Filters, NormalizedGame, NormalizedGameJoin, NormalizedPseudoGameJoin, Sorting, GameState, LaunchOption } from '@/types';
 import Tooltip from '@/components/CustomElements/Tooltip';
 import LibrarySidebarContextMenu from '@/pages/Library/components/LibrarySidebarContextMenu';
 import CollectionContextMenu from '@/pages/Library/components/CollectionContextMenu';
@@ -329,7 +329,10 @@ const LibrarySidebar: React.FC = () => {
             installing: 'text-blue-400 animate-pulse',
             applyingPatch: 'text-blue-400 animate-pulse',
             finishing: 'text-blue-400 animate-pulse',
-            checking: 'text-neutral-400 animate-pulse'
+            checking: 'text-neutral-400 animate-pulse',
+            'uninstall-preparing': 'text-red-400 animate-pulse',
+            'uninstall-cleaning': 'text-red-400 animate-pulse',
+            'uninstall-finishing': 'text-red-400 animate-pulse'
         };
 
         const stateIcons: Record<Exclude<GameState['state'], 'idle'>, string> = {
@@ -342,7 +345,10 @@ const LibrarySidebar: React.FC = () => {
             installing: 'install_desktop',
             applyingPatch: 'healing',
             finishing: 'sports_score',
-            checking: 'hourglass_top'
+            checking: 'hourglass_top',
+            'uninstall-preparing': 'settings',
+            'uninstall-cleaning': 'delete',
+            'uninstall-finishing': 'sports_score'
         };
 
         // Since we know activeState is not null and is one of the valid states,
@@ -368,7 +374,10 @@ const LibrarySidebar: React.FC = () => {
             applyingPatch: 'text-blue-400 bg-gradient-to-l from-blue-500/50 to-transparent',
             finishing: 'to-transparent from-blue-500/50',
             idle: 'to-transparent from-transparent',
-            checking: 'to-transparent from-neutral-500/50'
+            checking: 'to-transparent from-neutral-500/50',
+            'uninstall-preparing': 'text-red-400 bg-gradient-to-l from-red-500/50 to-transparent',
+            'uninstall-cleaning': 'text-red-400 bg-gradient-to-l from-red-500/50 to-transparent',
+            'uninstall-finishing': 'text-red-400 bg-gradient-to-l from-red-500/50 to-transparent'
         };
         
         if (!activeState) return cn('absolute inset-0 bg-gradient-to-l from-0% to-75% transition-[opacity,background-image] duration-200', gradientColors.idle);
@@ -459,6 +468,32 @@ const LibrarySidebar: React.FC = () => {
     }, [dateFnsLocale])
 
     const navigate = useNavigate();
+
+    const resolveAllGameVendors = useCallback((game: NormalizedGame | NormalizedPseudoGameJoin): NormalizedGame => {
+        if (((game): game is NormalizedPseudoGameJoin => game?.type === "GameJoin")(game)) {
+            const sourceKeys = Object.keys(game.source)
+            const sourceString = sourceKeys.join(",") as unknown as NormalizedGame["source"]
+            const defaultClient = game.source[game.defaultClient]
+
+            return {
+                id:
+                    typeof game.id === "string"
+                        ? game.id
+                        : JSON.stringify(Object.fromEntries(Object.entries(game.source).map(([key, value]) => [key, value.id]))),
+                source: sourceString,
+                name: JSON.stringify(defaultClient.name),
+                type: defaultClient.type,
+                installPath: JSON.stringify(
+                    Object.fromEntries(Object.entries(game.source).map(([key, val]) => [key, val.installPath])),
+                ),
+                launchOptions: Object.entries(game.source)
+                    .flatMap(([,val]) => val.launchOptions)
+                    .filter(Boolean) as LaunchOption[],
+            }
+        }
+        
+        return game
+    }, [])
 
     const sidebarItems = useMemo(() => {
         const gamesJoined = [...games.filter(game => !gameJoinsPopulated.some(join => (join?.clients?.[game.source as keyof typeof join.clients] as NormalizedGame)?.id === game.id)), ...gameJoinsPopulated.map(transformGameJoinIntoUsableFormat)];
@@ -653,7 +688,7 @@ const LibrarySidebar: React.FC = () => {
                                 to={`/library/game/${typeof game.source === "object" ? "" : `${game.source}-`}${game.id}`}
                                 onClick={(e) => {if (e.shiftKey || e.ctrlKey) {navigate(`/library/game/${typeof game.source === "object" ? "" : `${game.source}-`}${game.id}`)}}}
                                 key={`${category}-${typeof game.source === "object" ? "join" : game.source}-${game.id}`}
-                                className="no-underline no-user-drag m-0 group-has-[input:checked]/category:hidden"
+                                className={cn("no-underline no-user-drag m-0 group-has-[input:checked]/category:hidden", (resolveAllGameVendors(game)?.installPath?.[0] === "{" ? Object.values(JSON.parse(resolveAllGameVendors(game).installPath || "{}") as Record<string, string>).filter(Boolean).length === 0 : !resolveAllGameVendors(game).installPath) && "opacity-75")}
                             >
                                 <li
                                     className="flex flex-row items-center gap-2 p-1.5 rounded-md hover:bg-white/25 transition-colors duration-200 m-0 relative overflow-hidden group/game-item"

@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import https from 'https';
 import crypto from 'crypto';
+import { LinkedRelease, LinkedSoftware } from '../types';
 
 interface ArticleAuthor {
     name: string;
@@ -29,6 +30,8 @@ interface Article {
     lastModified: string;
     tags: string[];
     slug: string;
+    linkedRelease?: LinkedRelease;
+    linkedSoftware?: LinkedSoftware[];
     contentHash?: string;
 }
 

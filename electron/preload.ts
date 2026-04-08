@@ -110,6 +110,14 @@ contextBridge.exposeInMainWorld('Electron', {
             content: string;
             publishDate: string;
             lastModified: string;
+            linkedRelease: {
+                tag: string;
+                url: string
+            },
+            linkedSoftware: {
+                displayName: string;
+                storeId: string
+            }[];
             tags: string[];
             slug: string;
         }
@@ -129,6 +137,8 @@ contextBridge.exposeInMainWorld('Electron', {
                 content: article.content,
                 publishDate: article.publishDate,
                 lastModified: article.lastModified,
+                linkedRelease: article.linkedRelease,
+                linkedSoftware: article.linkedSoftware,
                 tags: article.tags,
                 slug: article.slug
             }))
@@ -139,6 +149,7 @@ contextBridge.exposeInMainWorld('Electron', {
     getDefaultInstallPath: (gameId: string) => ipcRenderer.invoke('library:getDefaultGameInstallPath', gameId),
     installGame: (gameId: string, installPath: string, reinstall?: boolean) => ipcRenderer.invoke('library:startGameInstall', gameId, installPath, reinstall),
     updateGame: (gameId: string) => ipcRenderer.invoke('library:startGameUpdate', gameId),
+    uninstallGame: (gameId: string, removeUserData: boolean) => ipcRenderer.invoke('library:startGameUninstall', gameId, removeUserData),
     getDownloadSize: (gameId: string) => ipcRenderer.invoke('game:getDownloadSize', gameId),
 
     // Game state change handler
@@ -150,6 +161,18 @@ contextBridge.exposeInMainWorld('Electron', {
         ipcRenderer.removeListener('game:stateChange', callback),
 
     getGameMetrics: (source: string, gameId: string) => ipcRenderer.invoke('metrics:getGameMetrics', { source, gameId }),
+
+    updatePrivacy: () => ipcRenderer.invoke('privacy:update'),
+    fetchPrivacy: () => ipcRenderer.invoke('privacy:fetch'),
+    // eslint-disable-next-line no-unused-vars
+    onPrivacyUpdate: (callback: (_event: any, content: string) => void) => ipcRenderer.on('privacy:updated', callback),
+    getSoftwareSize: (game: NormalizedGame) => ipcRenderer.invoke('game:getInstalledSize', game),
+    DEADFORGE_downloadUpdate: (includeBeta: boolean) => ipcRenderer.invoke('DEADFORGE:downloadUpdate', includeBeta),
+    // eslint-disable-next-line no-unused-vars
+    DEADFORGE_onUpdateProgress: (callback: (event: any, progress: { percent: number, version: string }) => void) => ipcRenderer.on('DEADFORGE:updateProgress', callback),
+    // eslint-disable-next-line no-unused-vars
+    DEADFORGE_onUpdateStateChange: (callback: (event: any, state: { state: string, version?: string, error?: string }) => void) => ipcRenderer.on('DEADFORGE:updateStateChange', callback),
+    DEADFORGE_installUpdate: () => ipcRenderer.invoke('DEADFORGE:installUpdate'),
 });
 
 contextBridge.exposeInMainWorld('Process', {

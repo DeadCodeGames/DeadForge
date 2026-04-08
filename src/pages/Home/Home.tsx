@@ -11,8 +11,22 @@ import Tooltip from '@/components/CustomElements/Tooltip';
 import GameCard from '../Library/components/GameCard';
 import { cn } from '@/lib/utils';
 import { TFunction } from 'i18next/typescript/t';
+import { Link } from 'react-router-dom';
+
+// eslint-disable-next-line no-unused-vars
+const tagClassMap: (key: string, t: TFunction) => { font: string; text?: string; bg?: string; border?: string, content: string } | undefined = (key: string, t: TFunction) => {
+    switch (key) {
+        case 'deadforge update': return { font: 'font-uniSansCAPS font-bold uppercase', text: 'bg-notQuiteBlack dark:bg-notQuiteWhite', bg: 'bg-notQuiteWhite dark:bg-notQuiteBlack', border: 'border-notQuiteBlack/40 dark:border-notQuiteWhite/40', content: t('home.articles.tags.deadforgeUpdate') }
+        case 'beta': return { font: 'font-uniSansCAPS font-bold uppercase', text: 'bg-notQuiteBlack dark:bg-notQuiteWhite', bg: 'bg-notQuiteWhite dark:bg-notQuiteBlack', border: 'border-notQuiteBlack/40 dark:border-notQuiteWhite/40', content: t('home.articles.tags.beta') }
+        case 'patch': return { font: 'font-uniSansCAPS font-bold uppercase', text: 'bg-notQuiteBlack dark:bg-notQuiteWhite', bg: 'bg-notQuiteWhite dark:bg-notQuiteBlack', border: 'border-notQuiteBlack/40 dark:border-notQuiteWhite/40', content: t('home.articles.tags.patch') }
+        case 'language update': return { font: 'font-uniSansCAPS font-bold uppercase', text: 'bg-notQuiteBlack dark:bg-notQuiteWhite', bg: 'bg-notQuiteWhite dark:bg-notQuiteBlack', border: 'border-notQuiteBlack/40 dark:border-notQuiteWhite/40', content: t('home.articles.tags.languageUpdate') }
+        case 'meta update': return { font: 'font-notoSans font-normal lowercase', text: '', bg: '', border: '', content: t('home.articles.tags.metaUpdate') }
+        case 'work in progress': return { font: 'font-consolas font-bold', text: "text-white", bg: 'bg-stripes-warning', border: 'border-2 border-solid border-black dark:border-white', content: t('home.articles.tags.workInProgress') }
+    }
+};
 
 const ArticlesList = memo(function ActionList({ list, t }: { list: Article[], t: TFunction }) {
+    console.log(list);
     return (
         <>
             {list.map((article) => (
@@ -30,14 +44,25 @@ const ArticlesList = memo(function ActionList({ list, t }: { list: Article[], t:
                             {article.title}
                             {/* Tags */}
                             <div className="flex flex-wrap gap-2 items-center justify-end -mt-0.5">
-                                {article.tags.map((tag) => (
-                                    <span
-                                        key={tag}
-                                        className="px-3 py-1 bg-neutral-200 dark:bg-neutral-700 rounded-full text-sm inline-flex flex-row font-montserrat uppercase text-nowrap"
-                                    >
-                                        {tag}
-                                    </span>
-                                ))}
+                                {article.tags.map((tag) => {
+                                    // Define a case-insensitive map of tag styles
+                                    const tagKey = tag.toLowerCase();
+                                    const tagClasses = tagClassMap(tagKey, t) || { font: '', text: '', bg: '', border: '', content: tag };
+                                    return (
+                                        <span
+                                            key={tag}
+                                            className={cn(
+                                                'px-3 py-1 bg-neutral-200 dark:bg-neutral-700 rounded-full text-sm inline-flex flex-row font-montserrat uppercase text-nowrap border border-solid border-transparent',
+                                                tagClasses.font,
+                                                tagClasses.text,
+                                                tagClasses.bg,
+                                                tagClasses.border
+                                            )}
+                                        >
+                                            {tagClasses.content}
+                                        </span>
+                                    );
+                                })}
                             </div>
                         </h1>
                         <div className="flex flex-row gap-2 mb-6">
@@ -83,6 +108,33 @@ const ArticlesList = memo(function ActionList({ list, t }: { list: Article[], t:
                                     )}
                                 </div>
                             </div>
+                            {
+                                (article.linkedRelease || article.linkedSoftware) && (
+                                    <>
+                                        <div className='border border-solid border-notQuiteBlack/40 dark:border-notQuiteWhite/40 py-2 my-auto mx-4' />
+                                        <div className="flex flex-col justify-center text-sm gap-0.5">
+                                            {article.linkedRelease && (
+                                                <div className="flex flex-row items-center gap-1">
+                                                    <span className="material-symbols text-xl">commit</span>
+                                                    <a className="no-underline hover:underline m-0" href={article.linkedRelease.url} target='_blank' rel='noreferrer'>{article.linkedRelease.tag}</a>
+                                                </div>
+                                            )}
+                                            {article.linkedSoftware && (
+                                                <div className="flex flex-row items-center gap-1">
+                                                    <span className="material-symbols text-xl">shopping_bag</span>
+                                                    {article.linkedSoftware.map((l, i, a) => {
+                                                        return (
+                                                            <span key={i}>
+                                                                <Link to={`/store?path=${encodeURIComponent(`soft/${l.storeId}/`)}`} className="no-underline hover:underline m-0">{l.displayName}</Link>{i + 1 < a.length && t("commaSeparator")}
+                                                            </span>
+                                                        )
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </>
+                                )
+                            }
                         </div>
                         <div className="">
                             <MarkdownText mediaMap={article.assetsMap} className='font-notoSans'>
@@ -217,7 +269,7 @@ const Home = () => {
             })
             .filter(({ lastPlayed }) => lastPlayed > 0)
             .sort((a, b) => b.lastPlayed - a.lastPlayed);
-    }, [games, gameJoinsPopulated, launchTimestamps]);
+    }, [games, gameJoinsPopulated, launchTimestamps, transformGameJoinIntoUsableFormat]);
 
     return (
         <div className="overflow-hidden w-full flex flex-col-reverse 2xl:flex-row h-[calc(100%-1.5rem)] 2xl:h-full pt-6 2xl:pt-0 2xl:pr-4 bg-fullMoon dark:bg-night">

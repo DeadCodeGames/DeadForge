@@ -23,9 +23,9 @@ export const LibraryContext = createContext<{
     setFavourites: React.Dispatch<React.SetStateAction<CollectionGame[]>>;
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     setGameState: (gameId: string, source: string, state: GameState['state'], progress?: number | string, extraNumberA?: number, extraNumberB?: number) => void;
-    installModalState: { isOpen: boolean, game: NormalizedGame | null };
+    installModalState: { isOpen: boolean, game: NormalizedGame | null, uninstall: boolean };
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    openInstallModal: (game: NormalizedGame) => void;
+    openInstallModal: (game: NormalizedGame, uninstall?: boolean) => void;
     closeInstallModal: () => void;
         }>({
             games: [],
@@ -44,7 +44,7 @@ export const LibraryContext = createContext<{
             setCollections: () => { },
             setFavourites: () => { },
             setGameState: () => { },
-            installModalState: { isOpen: false, game: null },
+            installModalState: { isOpen: false, game: null, uninstall: false },
             openInstallModal: () => { },
             closeInstallModal: () => { },
         });
@@ -120,9 +120,9 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
     const location = useLocation();
     // hack for persisting the library location when switching tabs
     const [lastVisitedLibraryLocation, setLastVisitedLibraryLocation] = useState<string>('/library');
-    const [installModalState, setInstallModalState] = useState<{ isOpen: boolean, game: NormalizedGame | null }>({ isOpen: false, game: null });
-    const openInstallModal = (game: NormalizedGame) => setInstallModalState({ isOpen: true, game });
-    const closeInstallModal = () => setInstallModalState({ isOpen: false, game: null });
+    const [installModalState, setInstallModalState] = useState<{ isOpen: boolean, game: NormalizedGame | null, uninstall: boolean }>({ isOpen: false, game: null, uninstall: false });
+    const openInstallModal = (game: NormalizedGame, uninstall: boolean = false) => setInstallModalState({ isOpen: true, game, uninstall: uninstall || false });
+    const closeInstallModal = () => setInstallModalState({ isOpen: false, game: null, uninstall: false });
 
     const setGameState = (gameId: string, source: string, state: GameState['state'], progress?: number | string, extraA?: number, extraB?: number) => {
         setGameStates(prev => {
@@ -272,7 +272,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
                 }
                 return { ...dlc, name };
             });
-            console.log(updatedGames, updatedDLCs, updatedGameJoins, updatedCuratedAssets, updatedCustomAssets);
+
             setGames(updatedGames);
             setDLCs(updatedDLCs);
             setGameJoins(updatedGameJoins);
@@ -412,7 +412,7 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
                 isOpen={installModalState.isOpen}
                 onClose={closeInstallModal}
                 onInstall={async (installPath) => {
-                    if (!installModalState.game) return;
+                    if (!installModalState.game || installModalState.uninstall) return;
                     try {
                         const gameId = typeof installModalState.game.id === "object" ? JSON.stringify(installModalState.game.id) : installModalState.game.id;
                         const result = await window.Electron.installGame(gameId, installPath, installModalState.game.updateAvailable === "reinstall");
@@ -426,7 +426,22 @@ const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
                         console.error("Failed to install game:", error);
                     }
                 }}
+                onUninstall={async (gameId, removeUserData) => {
+                    if (!installModalState.game || !gameId || !installModalState.uninstall) return;
+                    try {
+                        const result = await window.Electron.uninstallGame(gameId, removeUserData);
+                        if (!result.success) {
+                            console.error("Failed to uninstall game:", result.error);
+                        } else {
+                            console.log(result);
+                            closeInstallModal();
+                        }
+                    } catch (error) {
+                        console.error("Failed to uninstall game:", error);
+                    }
+                }}
                 game={installModalState.game as any}
+                uninstall={installModalState.uninstall}
             />
         </LibraryContext.Provider>
     );

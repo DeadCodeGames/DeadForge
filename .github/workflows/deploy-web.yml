@@ -2,7 +2,17 @@ name: Build and Deploy Unified DeadForge Site
 
 on:
   push:
-    branches: [web]
+    branches:
+      - 2024/2025
+  release: 
+    types: 
+      - published
+      - unpublished
+      - created
+      - edited
+      - deleted
+      - prereleased
+      - released
   repository_dispatch:
     types: ["store-updated", "software-cache-invalidated"]
 
@@ -17,6 +27,10 @@ concurrency:
 
 jobs:
   build-and-deploy:
+    if: |
+      github.event_name == 'repository_dispatch' ||
+      github.event_name == 'release' ||
+      (github.ref == 'refs/heads/2024/2025' && contains(join(github.event.commits.*.added, github.event.commits.*.modified), 'PRIVACY.md'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout DeadForge
