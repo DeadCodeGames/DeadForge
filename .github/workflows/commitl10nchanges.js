@@ -8,7 +8,7 @@ async function syncCrowdinTranslations() {
         auth: process.env.DEADCODEBOT_PAT
     });
     
-    const [owner, repo] = ["DeadCodeGames", "DeadForgeStore"];
+    const [owner, repo] = ["DeadCodeGames", "DeadForge"];
     const masterBranch = '2025/2026';
     const l10nBranch = 'l10n_crowdin_translations';
     
