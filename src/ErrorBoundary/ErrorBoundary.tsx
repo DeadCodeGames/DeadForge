@@ -31,7 +31,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
         this.setState({ error, errorInfo, hasError: true });
-        console.error("Error caught by ErrorBoundary:", error, errorInfo.componentStack, errorInfo.digest);
+        console.error("Error caught by ErrorBoundary:", error, errorInfo.componentStack);
     }
 
     dismissError = (): void => {
