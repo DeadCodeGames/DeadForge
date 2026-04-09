@@ -14,3 +14,10 @@ updates:
       dev-dependencies:
         patterns: 
           - "*"
+      electron-bundle:
+        patterns:
+          - "electron"
+          - "better-sqlite3"
+          - "electron-builder"
+          - "@electron/*"
+          - "electron-devtools-installer"
